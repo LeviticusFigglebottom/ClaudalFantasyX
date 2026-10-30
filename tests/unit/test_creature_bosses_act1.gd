@@ -17,6 +17,7 @@ const VOWBOUND_ANCHORS: Array[StringName] = [&"vfx_core", &"vfx_keepsake"]
 ## The intro is a display for the camera's hold (choreo.json boss_intro hold_sec 1.6–2.4 plus its ease-in).
 const SKILLS_PATH := "res://game/data/battle/skills.json"
 const VOWBOUND_PATH := "res://game/data/battle/vowbound.json"
+const ENCOUNTERS_PATH := "res://game/data/battle/encounters.json"
 const INTRO_MIN_SEC := 1.5
 const INTRO_MAX_SEC := 3.5
 
@@ -26,7 +27,8 @@ var made: Array[Node] = []
 func before_each() -> void:
 	for n in made:
 		if is_instance_valid(n):
-			n.get_parent().remove_child(n)
+			if n.get_parent() != null:
+				n.get_parent().remove_child(n)
 			n.free()
 	made.clear()
 
@@ -73,6 +75,29 @@ func test_every_act1_boss_and_vowbound_stands_in_as_a_real_body() -> void:
 		)
 
 
+## GPU QA rows 12/35: the battle builds each boss encounter's foes through BattleStage.stand_in_spec into a
+## FighterStandIn; one whose scene is missing or empty falls back to the capsule. Build them the same way.
+func test_every_act1_boss_encounter_seats_real_bodies_not_capsules() -> void:
+	var bosses: Array[StringName] = []
+	bosses.append_array(BOSSES)
+	bosses.append_array(PEOPLE_BOSSES)
+	var seen := {}
+	for row: Dictionary in _json(ENCOUNTERS_PATH).get("encounters", []) as Array:
+		for eid: Variant in row.get("enemies", []) as Array:
+			var cid := StringName(str(eid))
+			if not bosses.has(StringName(String(cid).get_slice("#", 0))):
+				continue
+			seen[String(cid).get_slice("#", 0)] = true
+			var f := FighterStandIn.new()
+			(Engine.get_main_loop() as SceneTree).root.add_child(f)
+			made.append(f)
+			f.setup(cid, BattleStage.stand_in_spec(cid), {})
+			assert_true(f.has_actor(), "%s in %s is drawn as its model, not a capsule" % [cid, row.get("id", "")])
+	for id in bosses:
+		assert_true(seen.has(String(id)), "%s is fought in some encounter (the check is live)" % id)
+	before_each()
+
+
 func test_every_act1_vowbound_skill_and_finisher_has_its_clip() -> void:
 	var skills := {}
 	for row: Dictionary in _json(SKILLS_PATH).get("skills", []) as Array:
@@ -88,6 +113,7 @@ func test_every_act1_vowbound_skill_and_finisher_has_its_clip() -> void:
 			var kind := StringName(str((skills.get(str(sid), {}) as Dictionary).get("kind", "")))
 			var clip := a.clip_for(StringName(str(sid)), kind)
 			assert_true(a.has_clip(clip), "%s's %s plays a clip it has (%s)" % [id, sid, clip])
+	before_each()
 
 
 func _json(path: String) -> Dictionary:

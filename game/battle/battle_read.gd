@@ -27,7 +27,7 @@ static func is_read(sk: Dictionary) -> bool:
 ##  luck}, affinities: {weak, resist, immune, absorb: [element ids]}, delay_immune,
 ##  statuses: [status ids, sorted]}.
 ## HP, MP and statuses are the target's at the moment it is read; the stats are its battle
-## values before breaks (Power Break and the rest show as statuses).
+## values before breaks (Weakened and the rest show as statuses).
 static func reveal(target: BattleCombatant, row: Dictionary) -> Dictionary:
 	var stats := {}
 	for key in STAT_KEYS:

@@ -329,12 +329,18 @@ func _dawn() -> void:
 	assert_true(zone.stage.actor(&"kerrid").visible, "Kerrid is waiting at the milestone")
 	assert_true(zone.stage.actor(&"kerrid").position.distance_to(zone.stage.mark(&"milestone").position) < 0.01)
 	assert_false(zone.stage.actor(&"kerrid_stair").visible, "the stair is empty by day")
-	assert_true(zone.stage.actor(&"asha").position.distance_to(zone.stage.mark(&"road_asha").position) < 0.01)
+	# act1_gpu_qa row 39: the party walks the road with Rhen; their stage bodies hand over to the followers.
+	var party := zone.player.get_node_or_null(NodePath(String(HeroFieldParty.NAME))) as HeroFieldParty
+	for id: StringName in [&"asha", &"toma"]:
+		assert_false(zone.stage.actor(id).visible, "%s's stage body is off: the follower walks with Rhen" % id)
+		assert_true(party == null or not party.staged(id), "%s follows Rhen up the road" % id)
 	assert_false(_trigger(&"toma").is_available(), "the strand's prompts are over")
 
 
 func _road_out_and_act_break() -> void:
 	assert_true(_trigger(&"milestone").on_touched())
+	for id: StringName in [&"asha", &"toma"]:
+		assert_true(zone.stage.actor(id).visible, "%s is staged again for the road scene" % id)
 	assert_true(&"ch09_road_002" in lines, "'It was.'")
 	assert_true(BELOW in lines, "'Somebody's still below.'")
 	assert_eq(speakers.get(BELOW, &""), &"kerrid")

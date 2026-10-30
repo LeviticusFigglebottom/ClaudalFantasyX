@@ -7,6 +7,7 @@ extends TestCase
 const CROWD := "res://game/data/world/npc/crowd.json"
 const ASHCROWN := "res://game/levels/ch05/ashcrown/ashcrown.tscn"
 const BRINE_SHOALS := "res://game/levels/ch06/brine_shoals/brine_shoals.tscn"
+const CORROW := "res://game/levels/ch08/corrow/corrow.tscn"
 const TEST_DATA := "user://crowd_layer_test.json"
 const DT := 1.0 / 60.0
 const BASE_CLIPS: Array[StringName] = [&"idle", &"talk", &"walk"]
@@ -286,4 +287,91 @@ func test_a_crowd_person_replaces_the_zone_cast_villager() -> void:
 		assert_true(
 			npc != null and HeroMotion.player_of(tender) == npc.anim, "the cutscene's clips play the crowd person"
 		)
+	_done()
+
+
+## M3-HER-1142: a `body` row wears a crowd body with no crowd person, and `silhouette` draws it as one glowing shape
+## that casts no shadow; its `tuning` keeps it from glancing at the party.
+func test_a_silhouette_row_wears_a_bare_crowd_body_as_one_glowing_shape() -> void:
+	var zone := _greybox_zone(["figure"])
+	var layer := _layer(
+		zone,
+		[
+			{
+				"npc_id": "storm_figure_test",
+				"body": "crowd_man_lean_a",
+				"silhouette": "#5fd6e0",
+				"tuning": {"glance": {"radius_m": 0.0}},
+				"stand_in": "CutsceneStage/Actors/figure",
+				"attach": "child"
+			}
+		]
+	)
+	assert_eq(layer.build(), 1, "the body row makes one villager")
+	var npc := layer.villager(&"storm_figure_test")
+	assert_true(npc != null and npc.actor != null, "wearing a body")
+	if npc == null or npc.actor == null:
+		_done()
+		return
+	assert_eq(npc.actor.scene_file_path, VillagerLayer.CROWD_ACTOR_PATH % ["crowd_man_lean_a", "crowd_man_lean_a"])
+	assert_false((zone.get_node(^"CutsceneStage/Actors/figure/StandIn") as Node3D).visible, "the capsule is hidden")
+	var meshes := npc.actor.find_children("*", "MeshInstance3D", true, false)
+	assert_true(meshes.size() > 0, "the body has meshes")
+	var want := NpcSilhouette.material_for(Color.html("#5fd6e0"))
+	for node: Node in meshes:
+		var mi := node as MeshInstance3D
+		assert_eq(mi.material_override, want, "%s wears the silhouette" % mi.name)
+		assert_eq(mi.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "%s casts no shadow" % mi.name)
+	assert_eq(float((npc.tuning["glance"] as Dictionary)["radius_m"]), 0.0, "the row's tuning is merged")
+	_done()
+
+
+## M3-HER-1142: the real Corrow zone's storm figure is a body, not a capsule, once its layer is built.
+func test_the_corrow_storm_figure_is_a_silhouette_in_the_real_zone() -> void:
+	var zone := (load(CORROW) as PackedScene).instantiate() as Node3D
+	_holder().add_child(zone)
+	var layer := VillagerLayer.wire(zone, &"ch08/corrow")
+	layer.build()
+	var figure := zone.get_node_or_null(^"CutsceneStage/Actors/figure")
+	assert_true(figure != null, "the figure's stage actor")
+	var npc := layer.villager(&"corrow_storm_figure")
+	assert_true(npc != null and npc.get_parent() == figure and npc.actor != null, "a body rides inside it")
+	if figure != null:
+		var capsule := figure.get_node_or_null(^"StandIn") as Node3D
+		assert_true(capsule == null or not capsule.visible, "its capsule is hidden")
+	_done()
+
+
+## big17 (test_zone_cast): two crowd people at the same work start their work loop at their own phase, as the idle
+## does, so Tamsule's fisher and boatman never haul in step.
+func test_two_people_at_the_same_work_are_out_of_step() -> void:
+	var zone := _greybox_zone(["fisher", "boatman"])
+	var layer := _layer(
+		zone,
+		[
+			{
+				"npc_id": "tamsule_fisher",
+				"crowd": "tamsule_fisher",
+				"stand_in": "CutsceneStage/Actors/fisher",
+				"attach": "child"
+			},
+			{
+				"npc_id": "tamsule_boatman",
+				"crowd": "tamsule_boatman",
+				"stand_in": "CutsceneStage/Actors/boatman",
+				"attach": "child"
+			}
+		]
+	)
+	assert_eq(layer.build(), 2)
+	var a := layer.villager(&"tamsule_fisher")
+	var b := layer.villager(&"tamsule_boatman")
+	for i in 30:
+		a.tick(DT)
+		b.tick(DT)
+	assert_true(a.working() and b.working(), "both at rest at their work")
+	assert_eq(a.current_clip, b.current_clip, "the same work clip")
+	var length := a.anim.get_animation(a.current_clip).length
+	var gap := absf(a.anim.current_animation_position - b.anim.current_animation_position)
+	assert_true(minf(gap, length - gap) > 0.05, "out of step (%.3f s apart)" % gap)
 	_done()

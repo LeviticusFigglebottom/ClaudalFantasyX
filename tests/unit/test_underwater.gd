@@ -103,6 +103,21 @@ func test_rig_builds_every_part_and_follows_the_tier() -> void:
 	host.free()
 
 
+## The lantern's bounce-pass refresh is deferred through the rig (the Lead, 10-29: underwater_rig.gd:401 handed a freed
+## root to a deferred static call 2-12 times a run). A rig freed before the flush drops the call; a rig out of any scene
+## refreshes nothing.
+func test_the_lantern_s_bounce_refresh_is_bound_to_the_rig() -> void:
+	var host := _scene()
+	var rig := host.get_node("Rig") as UnderwaterRig
+	rig.call(&"_refresh_bounce_passes")  # in its scene: refreshes under the scene root
+	var call := Callable(rig, &"_refresh_bounce_passes")
+	host.free()  # the zone left before the deferred call ran
+	assert_false(call.is_valid(), "the queued call dies with the rig, so the flush skips it")
+	var orphan := UnderwaterRig.new()
+	orphan.call(&"_refresh_bounce_passes")  # no scene root: nothing to refresh, no error
+	orphan.free()
+
+
 func test_rig_switches_off_whole_and_authors_fog_only_for_god_rays() -> void:
 	var host := _scene()
 	var rig := host.get_node("Rig") as UnderwaterRig

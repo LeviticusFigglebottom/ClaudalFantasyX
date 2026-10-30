@@ -35,6 +35,7 @@
     {"id": "ch05_cinder_matron", "name_key": "ENC_CH05_CINDER_MATRON", "scripted": true, "opening": "normal",
      "prompt_key": "TUT_CINDER_MATRON_CRUST", "arena": "ashcrown_anvil_court", "enemies": ["cinder_matron"]},
     {"id": "ch04_sail_leeches", "name_key": "ENC_CH04_SAIL_LEECHES", "scripted": true, "opening": "ambush",
+     "turn_prompt_hero": "asha", "turn_prompt_key": "TUT_CH04_VOWBOUND",
      "arena": "derelict_deck_night", "enemies": ["sail_leech", "sail_leech"]},
     {"id": "ch04_bottle_hermit", "name_key": "ENC_CH04_BOTTLE_HERMIT", "scripted": true, "opening": "normal",
      "prompt_key": "TUT_CH04_SWAP", "turn_prompt_hero": "ysolde", "turn_prompt_key": "TUT_CH04_READ",

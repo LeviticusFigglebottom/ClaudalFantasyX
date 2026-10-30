@@ -45,4 +45,14 @@ creatures-b re-renders the six encounters at the home camera when it lands.
   fit its bounds (the intro's M3-BPR-404 fit applied to the default framing for that encounter); a seat alone can't
   do it without breaking the big-move shots. hullgnaw, drownbell and bottle_hermit need no seat.
 
+## Follow-up (creatures-b @ a654ccc5, d4d52043; GPU QA row 36, 2026-10-29)
+- **undertows_reach [-2.6, 0, -2.4] -> [-5.0, 0, -2.4]:** at the old seat the hand's digits reached x 1.2-1.7, between
+  Asha and Toma, so the arm lay over the party lane. Moved out along its own axis it still grips the wall-head and its
+  fingers read (self-rendered with M3-BPR-425's rest_by_enemy frame), with a clear gap before the party. Pinned by
+  test_battle_boss_seat `test_the_reach_keeps_its_arm_out_of_the_party_lane`: every clip's bones below 4 m stay 1.5 m
+  short of the nearest party mark (it fails at the old seat on attack, cast, attack_dark and cast_dark).
+  The intro frame is unchanged (its camera fits the boss bounds).
+- **spar_wraith:** creatures.json `stand_in.yaw_deg` 45 (was the default 90). At 90 the battle camera saw the A-frame
+  edge-on, one mast with the body hidden behind it; at 45 the frame, the hanging body and the glowing seam read.
+
 ## Review log

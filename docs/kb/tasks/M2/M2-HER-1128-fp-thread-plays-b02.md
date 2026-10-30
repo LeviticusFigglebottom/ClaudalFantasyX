@@ -2,9 +2,9 @@
 id: M2-HER-1128
 title: "Request (slice-polish): the first-playable thread test skips B02 (Neme's table) after the tideline win"
 role: qa
-status: todo
-owner_session: ""
-reviewer: qa
+status: review
+owner_session: "integration-qa (claude/hero-integration)"
+reviewer: cinematics
 depends_on: []
 milestone: M2
 request-from: qa
@@ -20,8 +20,15 @@ Haluna with `_load_zone()` and never calls `begin()` after the battle. So the sl
 and the save at the shrine happens with the objective line still on "to Neme's".
 
 ## Acceptance criteria
-- [ ] After `_win_battle(&"ch02_tideline")`, the thread arrives at Haluna as the game does (story.begin()), B02 plays,
+- [x] After `_win_battle(&"ch02_tideline")`, the thread arrives at Haluna as the game does (story.begin()), B02 plays,
       and `ch02_ate_at_nemes` is set before the shrine save.
-- [ ] Remove `ch02_ate_at_nemes` from tests/integration/qa_known.json "unraised". `--filter=qa_threads` stays green.
+- [x] Remove `ch02_ate_at_nemes` from tests/integration/qa_known.json "unraised". `--filter=qa_threads` stays green.
+
+## Notes
+- 2026-10-29 integration-qa: after the tideline win, the thread places Rhen at BattleReturn and calls
+  `story.begin()`, as the game's arrival does. B02 plays, and `ch02_ate_at_nemes` is set and asserted before the
+  shrine save. qa_known.json's `unraised` is empty now. `--filter=fp_thread` 2/0, `--filter=qa_threads` 1/0. The
+  reviewer is slice-polish (cinematics), since test_fp_thread is theirs; integration-qa wrote the fix, so it
+  can't review it.
 
 ## Review log

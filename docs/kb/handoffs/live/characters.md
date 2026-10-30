@@ -275,3 +275,119 @@ SUPERSEDED (by the request @ f5f509ac) RENDER-REQUEST @ 70efe4f1: asha_clip_knee
 RENDER-REQUEST @ f5f509ac: toma_battle_idle,toma_battle_attack,toma_battle_ko,toma_battle_victory,toma_clip_walk_cycle,toma_clip_stack_bowls,rhen_front,rhen_face_neutral,rhen_battle_ko,rhen_battle_victory,rhen_battle_finisher,rhen_clip_kneel,rhen_clip_take_hand,liss_face,liss_face_stylized; why: the shots changed since my last approvals. They cover M2-CHR-515 (Toma's spear gripped), M2-CHR-513 (Rhen's ko, victory and finisher, plus the kneel drift), and M2-CHR-521 (Liss's and Rhen's fringe ends stagger). 15 shots. Asha's shots wait for M2-CHR-522 (the skirt rework), so they render once, with the grip, the set-down and the new skirt together.
 SELF-RENDERED @ 9053b9cf: asha_clip_run, asha_clip_walk_cycle, asha_clip_turn, asha_extreme_pose, asha_front, asha_clip_kneel_over_rhen, asha_clip_offer_hand, asha_clip_laugh, asha_battle_idle, kerrid_front, kerrid_face, kerrid_clip_collar_haul, moll_front, moll_face, moll_clip_yield. All drift or are new, as expected; no baselines written. What I saw: the staff is in her fist in every standing view, and laid on the floor beside her in the kneels. The skirt hangs below the knee in walk and run, with no flat disc. extreme_pose still has the flat raised-knee front (stress stage, M2-CHR-515 item 5). Kerrid and Moll read well at full figure. **At dialogue range the short-hair cards and the beards are blotchy** (Toma's too, the M1-QA-09 beard finding). Kerrid's beard has a hard notch round the mouth and white flecks in the hair. Look-dev task M2-CHR-524 is next.
 SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4 phases from the side and the 3/4 front, her walk at 2 phases, and Toma's and Rhen's runs from the side at 2 phases (plus the same Asha run strip before the fix). What I saw: before, the free left arm went near-straight out to chest height on the forward swing and swung wide of the body from behind. After, the elbow stays bent near the body and the hand comes up to the chest, matching the walk's quiet arm. Toma's and Rhen's runs read compact and grounded. The staff still leans in the fist mid-stride (the M2-CHR-515 pivot clearing the skirt), as before. No baselines written; the walk shots are unaffected; asha_clip_run will drift.
+
+## FROM 2026-10-29 (Lead session_01Bg3iP7cPGyjbX4CyniBahc; integration branch claude/new-session-mj8c3c)
+- Merged `origin/claude/new-session-mj8c3c` into claude/characters (28ef466f; the only conflict was pc-gpu.md, taken
+  from the integration branch: not this track's file).
+- MERGE-READY @ 2c2acb54 (+ its docs commit): **Pell's second look-dev pass (M3-CHR-506)**, pell_review.md's five open
+  items: rounder lid openings scaled inside the warp (blink and units follow), a dark eye ring and a dark lid margin;
+  round flat ears; a flat right hand on the throat in storm_call and cast (hero_clips FLAT_HAND, Pell's library only);
+  a stronger saddle pattern, body clumps and a soft-edged throat stripe; a thicker upper neck under the skull. GLB
+  4.79 MB, LOD1 1.32 MB. Checks: verify --job pell 37/37 identical natively, X86_V4-off and X86_V3+V4-off; rig_probe
+  pell OK; test_pell, test_hero_clips (every other library byte-identical), test_hero_battle_clips,
+  test_hero_locomotion, test_blender_builds OK; Godot post_import 21, hero_stage 11, pell 3 OK; validate_data,
+  taskboard OK. SELF-RENDERED all 14 pell_* shots and viewed them (before/after in pell_review.md). Left: smooth skin
+  up close, a warm-orange face under the warm key, a small knob at the back of the skull in profile.
+- MERGE-READY @ 5d52c33e: **the named Act I NPCs cast as themselves (M3-CHR-519; CONSOLIDATED: named-NPC capsules are
+  characters')**. Every layout row for a built named NPC cast a generic villager (ferrymaster as fisher, Ione as
+  vendor, the Stillguard as fisher/netmender...). Now 28 rows in 9 layouts name their own model; only the `cast` or
+  `model` value changed. Actor wrappers for the Stillguard soldiers and Ivo under villagers/ (ZoneCast's path), with
+  PROVENANCE rows. Checks: every named model has every clip its dialogue calls except the Stillguard's (M3-CHR-590,
+  next) and `look_at` (the sequencer's turn); Godot zone_cast 3 and ch01_stage_models 1 OK; validate_data OK.
+  For the Lead: act1-chapters and slice-polish own those layout files; this touches only the cast values, per the
+  ownership line. The inventory's neme/osu/reed rows in haluna.tscn are VillagerLayer's at runtime
+  (game/data/world/npc/zones/ch02_haluna.json puts the models in the capsules), so a static audit still sees the
+  capsule; Pell's Ch9 capsules are the party's (integration-qa), with a swap note in M3-CHR-519.
+- MERGE-READY @ c57fa703: **M3-CHR-590, the Stillguard dialogue clips** for all six variants: `walk_torch` (the torch
+  carried low in the shield hand's fist; raised, the strapped shield cut into the shoulder), `hold_arm` (the shield
+  hand closes on the wright girl's forearm about a metre up; contact point = the left fist at the last frame, in the
+  task notes for Cinematics), `let_go` (hold_arm played back), the shared `kneel_palms_flat` (spear set down) and
+  `shake_head`. New hand shape: a fist (HAND_SHAPE), on the same solve as Pell's flat hand. Checks: test_stillguard,
+  test_hero_clips (every other library byte-identical), test_hero_battle_clips, test_hero_locomotion, test_pell,
+  test_moll OK (90); rig_probe stillguard_a..f OK with pinned, reasoned allowances; validate_data, taskboard OK.
+  SELF-RENDERED the three new shots (stillguard_a_clip_walk_torch, stillguard_c_clip_hold_arm,
+  stillguard_a_clip_kneel_palms_flat; no baselines): fists closed, spear on the floor in the kneel. Also filed
+  M3-CHR-591 (request to creatures: Haluna's town trio can wear their own models).
+- Tried and reverted: a staggered fringe for Ione. The hard line is the painted scalp hairline and the chips are the
+  short-hair cards on Asha's long-hair atlas; filed as M3-CHR-592 with the plan (Moll's square line is toma_hair's
+  shared hairline table).
+- MERGE-READY @ 2295265c: **M3-CHR-592, Ione's crop** on Toma's short-hair tufts (opt-in `tufts` in villager_hair and
+  write_materials; only Ione turns it on). The square chips on her crown are gone at dialogue range; the fringe edge
+  is softer. villager_ione identical on the three numpy paths, test_villagers 45 OK; self-rendered villager_ione_face
+  before and after. Next in M3-CHR-592: the other named NPCs' crops (gatekeeper, clerk, Kell, Tavi) and Moll's line.
+- Merged the integration branch (ADR 0201's banned word: no hits in characters' files).
+- MERGE-READY @ 5667eedb: **Pell's field row** (Lead routing: the Prologue City/Vigils/Pell capsule, M3-HER-1140, and
+  fp_prologue's failing vigil test). hero_motion.json `pell` (pell_lod1, walk 1.27, run 3.13 m/s, measured with
+  HeroClipGait, which reproduces Kerrid's recorded 0.71/1.80), so every Pell vigil takes his body. fp_prologue's test
+  expected Liss and Pell to stay capsules: both have bodies now (Liss since her field row). Checks: Godot fp_prologue
+  8/0, hero_field_actor 14/0; `--filter=hero_` 111 with 2 failures, test_hero_field_snaps (Rhen in haluna_wake and
+  drowned_choir: hero-integration's and act1-chapters', known, not this change). test_qa_capsules still lists
+  Haluna's villager capsules (static scan; VillagerLayer swaps them at runtime). The vigil's pose and mark stay
+  slice-polish's (`back_to_sea` is Pell's vigil clip).
+- MERGE-READY @ 23ee1e74: **M3-CHR-102 (Lead routing; PC QA row 31), Asha's skirt over Rhen on the beach.** The cause
+  is the posture, not the cloth settings: on one knee with the left foot planted, the raised knee (0.44 m up, 0.38 m
+  forward) carries the floor-length skirt 0.63 m in front of her, and Rhen lies inside that. Asha's kneel is now the
+  two-knee kneel with the same lean (persona key `kneel_both`, Asha only): kneel_over_rhen, laugh, offer_hand,
+  take_hand and rise_to_stand. The hem now reaches 0.24 m in front (0.66 m to the side). Self-rendered
+  slice_beach_h05_asha on lead/gate-big17's marks with the new clips: the skirt lies on the sand beside him, no blue
+  mass, and both faces still read. **Slice-polish: the marks can stay.** Their static `world_pose` on
+  CutsceneStage/Actors/asha (haluna.tscn) is still the one-knee pose; the clip replaces it when it starts, but they may
+  want it on both knees to match (theirs to change). slice_beach_h06_toma hung in capture (600 s) on cloud lavapipe
+  on the gate-big17 tree, both before and after; not rendered. Checks: test_hero_clips (every other library
+  byte-identical), test_asha, test_hero_battle_clips, test_hero_locomotion (99 with villagers) OK; rig_probe asha OK;
+  Godot hero_stage 11 (the stage solve matches the baked kneel), cutscene_pose 5, post_import 21 OK.
+- MERGE-READY @ a3efec09: **M3-CHR-592, more crops on the short-hair tufts**: the gatekeeper, the clerk, Kell and
+  Tavi. Kell's white crop read as chips and now reads as soft dense hair (before/after viewed); the clerk's too; the
+  gatekeeper's and Tavi's sit mostly under their headbands. All four identical on the three numpy paths;
+  test_villagers OK. Not changed: the strand-tuned grey crops (Fenn, the ferrymaster, Garo, Hobb, Sabe, the
+  scaleman; `grey_strands`), and Moll's square fringe line (toma_hair's shared hairline table).
+- MERGE-READY @ e374376b + 21a3f966: **Pell's dialogue portraits** (big17's one new red,
+  test_dialogue_box "pell has a model, so a portrait"): his entry in tools/portraits/portraits.json (a closer camera:
+  at 2.3 m the default framed his neck), five emotions rendered and viewed, PROVENANCE rows. test_hero_portraits
+  counts him (31) and its no-portrait example is now the purser. Godot dialogue_box 26/0, hero_portraits 9/0.
+  speakers.json still names `portrait_pell_placeholder` (ui-menus' row; the test passes on the files).
+- MERGE-READY @ (the grey crops commit) + 21a3f966: **M3-CHR-592, the grey crops on the tufts** (the ferrymaster,
+  Garo, Hobb, Sabe, the scaleman; `grey_strands` now has a tufts form: grey cards take the short atlas's sparse column,
+  narrower). Before/after viewed: soft dense crops, no chips. Fenn reverted (on the tufts his thin white hair read as
+  a bald dome). All five identical on the three numpy paths; test_villagers OK. Their manifest portraits (and Ione's,
+  Kell's, Tavi's) re-rendered to match, viewed.
+- Merged the integration branch (big17) @ ba7913e7: kept big17's scaleman mark with his own model, its data-driven
+  fp_prologue vigil test, and the union of the portrait manifest (Pell added to ui-menus' 30). Post-merge: Godot
+  fp_prologue 8/0, ch01_stage_models 1/0, dialogue_box 26/0, hero_portraits 9/0; zone_cast 3/1 (the fisher idle,
+  known since big16); validate_data and taskboard OK.
+- MERGE-READY @ fb707070: **M3-CHR-592, Moll's fringe** ends on a broken edge (`_hair.front_break`; toma_hair takes an
+  optional hairline, default Toma's). moll_face viewed before and after. Verify: moll 40/40 identical on all three
+  numpy paths; toma 38, stillguard 178 and ivo 27 identical natively (unchanged); test_moll, test_toma,
+  test_stillguard, test_short_hair_dialogue OK. M3-CHR-592 is in review (rendering).
+- Merged lead/gate-big18 into claude/characters (13ea98ef; ui-menus' Pell portraits and camera taken, my duplicate
+  PROVENANCE rows dropped, the two rows for big18's deleted Haluna placeholder kit files dropped).
+- **The Lead's final-quality audit (party + every named Act I NPC), done on big18 + this branch.** Self-rendered and
+  viewed 69 shots in five batches: every face close-up (party, Moll, Ivo, a Stillguard, Sefir, 20 named villagers),
+  talk and laugh, walk/run cycles and the gait strip, the story clips (kneels, hauls, grips, the cast), the battle
+  heroes (idle, attack, cast, ko, victory, finisher), the field party, and the silhouette line-ups. Rig probes on the
+  ten heroes and 17 named villagers: all pass (cloth, props in fists, nothing through the body). Found and fixed:
+  - **Bodies:** Ch6's `inquisitor` was a generic vendor: now Moll. The four Reed polers and the two wright children
+    wore the Haluna Reed and the lane child: now their own models. Ch8's Stillguard `officer` had no body: built as a
+    named Stillguard (M3-CHR-593: helmed, shield, no spear, the hatchet the scene's prop in his fist; idle, walk,
+    hatchet_blow; job `officer` identical on the three numpy paths; stillguard 178 and ivo 27 still identical).
+  - **Hair:** Tender Ruwen's grey read as light flakes: single strands now (verified on the three paths).
+  - Checked and left: Ivo's laugh (an open mouth with his broken tooth, not a stray tongue); Asha's run (the wide
+    skirt is M2-CHR-522's accepted look); the Old Ferryman, the boat seller, the wrights and the two unnamed children
+    stay on townsfolk bodies (act1_ch05.md §27: roles the generic villagers cover).
+  - Checks: Godot zone_cast 5, ch06_thread 5, ch08_thread 6, post_import 21, hero_stage 11 (all 0 failed);
+    test_villagers, test_hero_clips, test_stillguard, test_blender_builds OK; validate_data, taskboard OK.
+- MERGE-READY @ (this commit): the audit's fixes (ac2cef62, the officer's test and import files, Tender's strands).
+- **BACKLOG EMPTY:** every Lead-routed item is merge-ready, the audit is clean, and what remains needs the real GPU
+  (PC-QUEUE: Pell's fur read and warm face under the warm key).
+- (was) **In progress:** Pell's second look-dev pass (M3-CHR-506, pell_review.md "What still does not read" 1–5): rounder
+  lid openings and a dark eye ring, round flat ears, a flat right hand in storm_call and cast, the fur pattern, the
+  nape ridge.
+- **Queue after Pell:** act1_gpu_qa row 31 (open, but it is staging: M3-CHR-543 to cinematics); the Act I inventory's
+  characters rows (neme, osu, reed capsules in haluna.tscn, and Pell's in corrow_night.tscn) are level-owner swaps
+  (M3-CHR-519, Pell's swap note added); then my own audit of the named NPCs at dialogue range.
+
+### PC-QUEUE
+- Pell (M3-CHR-506) on the real GPU: the fur's read at full figure and the face's warm orange under the warm key
+  (lavapipe has no real sheen/SSS balance); pell_front, pell_face, pell_storm_ch8.
+- **WIP on the branch head (2026-10-30):** the Lead's big17-review items (Asha's skirt as soft cloth in big poses, the
+  villagers' face variety) are rebuilding. **Merge only up to MERGE-READY @ 440c1f9e** until a new MERGE-READY line.

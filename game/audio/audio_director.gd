@@ -156,6 +156,7 @@ func setup(mix_table: Dictionary, music_table: Dictionary, sfx_table: Dictionary
 		music.name = "Music"
 		add_child(music)
 	music.floor_db = float(music_cfg().get("floor_db", -60.0))
+	music.beat_max_wait_sec = float(music_cfg().get("beat_sync_max_wait_sec", 0.0))
 	if sfx == null:
 		sfx = SfxBank.new()
 		sfx.name = "Sfx"

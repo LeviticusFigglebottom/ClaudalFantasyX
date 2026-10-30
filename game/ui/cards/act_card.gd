@@ -79,14 +79,22 @@ func show_act(n: int) -> bool:
 	if row.is_empty():
 		push_warning("ActCard: no act %d in %s" % [n, DATA_PATH])
 		return false
+	show_titled(str(row.get("label_key", "")), str(row.get("title_key", "")))
 	act = n
-	_label.text = tr(str(row.get("label_key", "")))
-	_title.text = tr(str(row.get("title_key", "")))
+	return true
+
+
+## The act card's two-line shape for any numeral line and name (two loc keys): a chapter title card (M3-CIN-1233,
+## game/flow/chapter_card.gd: "Chapter 4" over the rule, "The Pilgrim's Wake").
+func show_titled(label_key: String, title_key: String) -> void:
+	act = 0
+	_label.text = tr(label_key)
+	_title.text = tr(title_key)
+	_title.autowrap_mode = TextServer.AUTOWRAP_OFF
 	HudLayout.place(_title, _d.get("title", {}))
 	_label.visible = true
 	_rule.visible = true
 	_start()
-	return true
 
 
 ## Shows one line alone on black (a loc key), such as a "one month earlier" title.
@@ -94,6 +102,7 @@ func show_caption(key: String) -> void:
 	act = 0
 	_label.text = ""
 	_title.text = tr(key)
+	_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART  # a caption may be a sentence (B12's voice-over)
 	HudLayout.place(_title, _d.get("caption", {}))
 	_label.visible = false
 	_rule.visible = false

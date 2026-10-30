@@ -1,24 +1,26 @@
-[gd_resource type="ShaderMaterial" load_steps=4 format=3]
+[gd_resource type="ShaderMaterial" load_steps=3 format=3]
 
 [ext_resource type="Shader" path="res://game/shaders/character/character_hair.gdshader" id="sh"]
-[ext_resource type="Texture2D" path="res://assets/characters/asha/textures/asha_hair.png" id="t0"]
-[ext_resource type="Texture2D" path="res://assets/characters/asha/textures/asha_hairflow.png" id="t1"]
+[ext_resource type="Texture2D" path="res://assets/characters/toma/textures/toma_shorthair.png" id="t0"]
 
 [resource]
 resource_name = "hair_grey"
 render_priority = 0
 shader = ExtResource("sh")
 shader_parameter/tex_hair = ExtResource("t0")
-shader_parameter/tex_hairflow = ExtResource("t1")
-shader_parameter/alpha_boost = 1.4
+shader_parameter/alpha_boost = 0.85
 shader_parameter/col_root = Color(0.549, 0.525, 0.490, 1)
 shader_parameter/col_spec_primary = Color(0.416, 0.392, 0.376, 1)
 shader_parameter/col_tip = Color(0.549, 0.525, 0.490, 1)
-shader_parameter/depth_occlusion = 0.65
+shader_parameter/depth_occlusion = 0.85
+shader_parameter/diffuse_wrap = 0.3
+shader_parameter/flow_strength = 0.0
 shader_parameter/indirect_specular = 0.06
-shader_parameter/root_occlusion = 0.6
-shader_parameter/spec_primary_exponent = 120.0
-shader_parameter/spec_primary_intensity = 0.16
-shader_parameter/spec_secondary_intensity = 0.06
+shader_parameter/kajiya_diffuse_mix = 0.15
+shader_parameter/root_occlusion = 0.85
+shader_parameter/spec_primary_exponent = 60.0
+shader_parameter/spec_primary_intensity = 0.07
+shader_parameter/spec_secondary_intensity = 0.0
+shader_parameter/strand_value_jitter = 0.12
 shader_parameter/transmission_strength = 0.2
 shader_parameter/wind_response = 0.0

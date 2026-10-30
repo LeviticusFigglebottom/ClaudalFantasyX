@@ -2,7 +2,8 @@
   "reefball_hud": {
     "doc": "M3-UI-01: the Reefball match HUD (SPEC 6.10, docs/kb/design/reefball.md, docs/kb/tech/ui.md 'Reefball HUD'). A view over ReefballMatch only: every number shown comes from the engine (snapshot, legal_actions, preview, the signals). Rects are [x, y, w, h] at the 1920 x 1080 reference; a section's pin is the edge it keeps its margin to at 16:10 and 21:9 (HudLayout.place, M2-UI-29). Panels grown by their text (130% text, a longer language) grow away from their pin. Column widths are px; *_role are theme palette roles.",
     "framing": {"rect": [48, 40, 600, 128], "pin": "top_left", "pad": 14, "gap": 2},
-    "scoreboard": {"rect": [660, 32, 600, 148], "pin": "top", "pad": 12, "gap": 0, "side_width": 180, "dash_width": 40},
+    "scoreboard": {"rect": [660, 32, 600, 148], "pin": "top", "pad": 12, "gap": 0, "side_width": 180, "dash_width": 40,
+                   "name_min_scale": 0.75},
     "contact": {"rect": [660, 196, 600, 120], "pin": "top", "pad": 12, "gap": 2,
                 "yours_role": "focus_gold", "theirs_role": "stone"},
     "read": {"rect": [1272, 40, 600, 312], "pin": "top_right", "pad": 14, "gap": 4, "header_height": 40,
