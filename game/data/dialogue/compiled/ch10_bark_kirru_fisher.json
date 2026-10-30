@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch10_bark_kirru_fisher",
+ "source": "game/data/dialogue/ch10/ch10_bark_kirru_fisher.dlg",
+ "start": "ch10_bark_kirru_fisher",
+ "nodes": {
+  "ch10_bark_kirru_fisher": {
+   "headers": {"location": "ch10/reedhollow"},
+   "ops": [
+    {"op": "line", "id": "ch10_bark_fisher_001", "key": "DLG_CH10_BARK_FISHER_001", "speaker": "kirru", "emotion": "soft_smile", "voice": "", "src": 5, "name_key": "DLG_NAME_KIRRU_KIRRU_FISHER"}
+   ]
+  }
+ }
+}

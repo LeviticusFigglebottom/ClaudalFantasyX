@@ -53,6 +53,25 @@ func test_events_play_their_rows() -> void:
 	_done()
 
 
+## M4-A2P-092: an Act II boss staged before its encounter exists (choreo.json boss_intro.by_enemy) is named by its
+## intro's title key; a written encounter's own row still wins over the title key.
+func test_a_staged_boss_is_named_by_its_title_key() -> void:
+	var s := _listener()
+	var staged := ["mangrove_drowner", "lamp_engine", "avalanche_ram", "wakefin"]
+	for boss: String in staged:
+		var title := "BOSS_TITLE_%s" % boss.to_upper()
+		assert_eq(s.on_event(&"boss_intro", ["ch1x_unwritten", title]), StringName("sting_boss_" + boss), boss)
+	assert_eq(
+		s.on_event(&"boss_intro", ["ch01_hullgnaw", "BOSS_TITLE_WAKEFIN"]),
+		&"sting_boss_hullgnaw",
+		"the encounter's own row wins"
+	)
+	reduced = true
+	assert_eq(s.on_event(&"boss_intro", ["x", "BOSS_TITLE_WAKEFIN"]), &"sting_boss_wakefin_soft", "reduced audio")
+	reduced = false
+	_done()
+
+
 func test_reduced_audio_swaps_the_boss_stings() -> void:
 	var s := _listener()
 	reduced = true

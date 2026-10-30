@@ -248,7 +248,7 @@ class TestCommitted(unittest.TestCase):
             self.assertEqual(h & (h - 1), 0, f.name)
 
     def test_mantle_gold_share_is_the_budget_choice(self):
-        """act1_npcs.md §1.4 gold budget: the mantle's gold coverage is lowered (no exception claimed) to 14%, what a
+        """act1_npcs.md §1.4 gold budget: the mantle's gold coverage is lowered (no exception claimed) to 13%, what a
         front waist-up frame allows beside the crown (TestPosed). The clothmask's gold channel over the mantle's island
         is that share (the 1 px blur aside)."""
         import numpy as np
@@ -257,7 +257,7 @@ class TestCommitted(unittest.TestCase):
         import sefir_costume as C
 
         target = json.loads((SRC / "sefir_params.json").read_text())["_costume"]["mantle_gold_coverage"]
-        self.assertAlmostEqual(target, 0.14)
+        self.assertAlmostEqual(target, 0.13)  # 0.14 until GPU QA row 54's hair left 5.03% gold in the front frame
         with Image.open(OUT / "textures" / "sefir_cloth_clothmask.png") as im:
             m = np.asarray(im.convert("RGBA"), dtype=float) / 255.0
         n = m.shape[0]

@@ -31,6 +31,7 @@ No branch has an Act II row in `enemies.json` yet: every branch still has the 28
   - ui checks the pages in the pseudo-loc walk;
   - ui posts a render request for a bestiary shot on an Act II page;
   - ui adds the `portrait` angles to the render request, if creatures hasn't.
+- 2026-10-30 ui-menus: M4-C10-03 added `tannin_archer`, `root_crab` and `fen_leech` with names and lore, but **no `model`**. Each needs `"model": "res://game/creatures/<id>/<id>_battle.tscn"` (the creatures.json `scene`, already built, with its bestiary portrait baked). Without it the bestiary page has no picture, and the fight likely draws a capsule (the stand-in path). It is a one-field edit per row in Combat's file.
 
 ## Review log
 - 2026-10-28, ui-menus: **paused (ADR 0041, the human's refocus on Act I at final quality).** What is built stays on claude/ui and merges as is; nothing is reverted. Resume when a new ADR lifts the pause.

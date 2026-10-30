@@ -24,6 +24,7 @@ import math
 
 import numpy as np
 
+SECTOR_EDGE_TOL = 1e-6  # rad: skirt_bone_specs' sector edge tolerance
 SKIRT_SECTORS = 16  # big14's review (the skirt as cloth): 8 panels were too coarse to fold; 16 halve each panel
 SKIRT_BONE = "DEF-skirt_"
 ARMPIT_BONE = "DEF-armpit."
@@ -89,7 +90,9 @@ def skirt_bone_specs(P_outer: np.ndarray, centre: np.ndarray, z_pivot: float, z_
     for k in range(SKIRT_SECTORS):
         phi = 2.0 * math.pi * k / SKIRT_SECTORS
         d = np.abs((az - phi + math.pi) % (2.0 * math.pi) - math.pi)
-        r0 = float(rad[d < math.pi / SKIRT_SECTORS].max())
+        # a ring column on a sector's edge counts for both sides: with 64 columns over 16 sectors every fourth one lies
+        # exactly on an edge, and a strict test picked a side by the angle's last bit (host determinism, M2-CHR-11)
+        r0 = float(rad[d < math.pi / SKIRT_SECTORS + SECTOR_EDGE_TOL].max())
         u = np.array([math.sin(phi), -math.cos(phi), 0.0])
         top = np.array([centre[0], centre[1], z_pivot]) + u * r0
         knee = np.array([top[0], top[1], z_pivot + (z_knee - z_pivot) * SKIRT_SPLIT])

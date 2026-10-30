@@ -243,9 +243,15 @@
     },
     "flat_engine": {
       "scene": "res://game/creatures/flat_engine/flat_engine_battle.tscn",
-      "contact": {"attack": 0.8, "cast": 0.8},
+      "vfx_anchors": {"core": "vfx_core", "wound": "vfx_wound"},
+      "contact": {"attack": 0.8, "cast": 0.8, "break": 0.6},
+      "loop": ["idle", "ready", "idle_broken"],
       "ko_fade_sec": 1.2,
-      "stand_in": {"yaw_deg": 90.0},
+      "stand_in": {"yaw_deg": 20.0},
+      "phases": {
+        "broken": {"clip": "break", "idle": "idle_broken", "hide": ["Engine"], "show": ["EngineBroken"], "sec": 0,
+                   "clips": {"hit": "hit_broken", "hit_b": "hit_b_broken", "ready": "idle_broken", "ko": "ko_broken"}}
+      },
       "portrait": {"yaw_deg": 30.0, "pitch_deg": 24.0}
     },
     "ilun": {
@@ -274,23 +280,33 @@
     "nhoa": {
       "scene": "res://game/creatures/nhoa/nhoa_battle.tscn",
       "vowbound": true,
-      "clip_by_skill": {"silt_fall": "cast", "deep_well": "deep_well", "nhoa_echo": "echo", "farewell_tide": "special"},
       "contact": {"attack": 0.55, "cast": 0.8, "deep_well": 1.0, "echo": 0.65, "special": 1.45},
+      "clip_by_skill": {"silt_fall": "cast", "deep_well": "deep_well", "nhoa_echo": "echo", "farewell_tide": "special"},
       "stand_in": {"yaw_deg": -90.0, "height": 3.2, "radius": 0.5}
     },
     "hesk": {
       "scene": "res://game/creatures/hesk/hesk_battle.tscn",
       "vowbound": true,
-      "clip_by_skill": {"knot_light": "cast", "cord_lift": "cleanse", "hesk_mending": "mending", "pass_cord": "special"},
       "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45, "cleanse": 0.9, "mending": 0.8},
+      "clip_by_skill": {"knot_light": "cast", "cord_lift": "cleanse", "hesk_mending": "mending", "pass_cord": "special"},
       "stand_in": {"yaw_deg": -90.0, "height": 2.4, "radius": 0.6}
     },
     "ethren": {
       "scene": "res://game/creatures/ethren/ethren_battle.tscn",
       "vowbound": true,
+      "contact": {"attack": 0.55, "cast": 0.8, "stop": 0.9, "ward": 0.8, "special": 1.45},
       "clip_by_skill": {"level_hand": "cast", "hold_the_hour": "cast", "lacquer_screen": "cast", "still_water": "special"},
-      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
       "stand_in": {"yaw_deg": -90.0, "height": 2.5, "radius": 0.6}
+    },
+    "kesh": {
+      "scene": "res://game/creatures/kesh/kesh_battle.tscn",
+      "vowbound": true,
+      "clip_by_skill": {"voice_water": "voice_water", "voice_lightning": "voice_lightning", "voice_fire": "voice_fire",
+                        "voice_ice": "voice_ice", "voice_holy": "voice_holy", "voice_glimmer": "voice_glimmer",
+                        "the_seven": "special"},
+      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.8, "voice_water": 0.9, "voice_lightning": 0.7, "voice_fire": 0.8,
+                  "voice_ice": 0.9, "voice_holy": 0.8, "voice_glimmer": 0.9},
+      "stand_in": {"yaw_deg": -90.0, "height": 4.2, "radius": 0.8}
     },
     "ilun_held": {
       "scene": "res://game/creatures/ilun/ilun_held_battle.tscn",
@@ -332,7 +348,7 @@
     "ethren_held": {
       "scene": "res://game/creatures/ethren/ethren_held_battle.tscn",
       "ko": "release",
-      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "contact": {"attack": 0.55, "cast": 0.8, "stop": 0.9, "ward": 0.8, "special": 1.45},
       "phases": {"release": {"clip": "release", "hold": true}},
       "stand_in": {"yaw_deg": 90.0, "height": 2.5, "radius": 0.6}
     }

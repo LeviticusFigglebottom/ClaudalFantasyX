@@ -28,6 +28,8 @@ Clip audit (tools/creatures/clip_audit.gd, 2026-10-30): worst slip 0.0 cm (attac
 Strong silhouette (bristles) and a pale base that separates it from any floor. Risk: low.
 Encounters in data: `ch11_vey_urchins` (no Act II arena is named yet: judge it in the arena the encounter gets).
 
+**Salt-glass, not ice (2026-10-30, the Lead; ADR 0015):** the spines' rime is a salt crust and the plinth a glossy salt-glass mound (slot `glass` replaces `ice`). Viewed: creature_rime_urchin. Portrait re-baked.
+
 ## Reuse of existing generators
 Its own build.
 

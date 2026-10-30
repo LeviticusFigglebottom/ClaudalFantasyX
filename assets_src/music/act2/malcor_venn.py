@@ -152,7 +152,9 @@ def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None)
     L = len(full)
     for _ in range(4):                    # one limiter gain curve for both stems, from the full stack (wrap-aware)
         f = full * gain
-        lg = limit_gain(np.concatenate([f[-ctx:], f, f[:ctx]]), -3.0)[ctx: ctx + L]   # drums overshoot when decoded
+        # the limiter reads the loudest of the stack and each stem: a stem alone can peak where the stems cancel
+        env = np.maximum.reduce([np.abs(f)] + [np.abs(x * gain) for x in loops])
+        lg = limit_gain(np.concatenate([env[-ctx:], env, env[:ctx]]), -3.0)[ctx: ctx + L]   # drums overshoot decoded
         cur = integrated_lufs(f * lg[:, None])
         if abs(cur - TARGET_LUFS) < 0.1:
             break

@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch16_bark_turning_back",
+ "source": "game/data/dialogue/ch16/ch16_bark_turning_back.dlg",
+ "start": "ch16_bark_turning_back",
+ "nodes": {
+  "ch16_bark_turning_back": {
+   "headers": {"location": "ch16/pale_rim"},
+   "ops": [
+    {"op": "line", "id": "ch16_bark_back_001", "key": "DLG_CH16_BARK_BACK_001", "speaker": "townsfolk", "emotion": "exhausted", "voice": "", "src": 5, "name_key": "DLG_NAME_TOWNSFOLK_WADER", "tags": ["long"]}
+   ]
+  }
+ }
+}

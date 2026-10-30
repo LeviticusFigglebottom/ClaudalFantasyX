@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/water/water_ocean.gdshader" id="1_ocean"]
+
+[resource]
+resource_name = "pale_rim_water"
+render_priority = 0
+shader = ExtResource("1_ocean")
+shader_parameter/col_deep = Color(0.3686, 0.5490, 0.5647, 1)
+shader_parameter/col_scatter_shallow = Color(0.4980, 0.7216, 0.7216, 1)
+shader_parameter/absorption_per_m = Vector3(2.0, 0.5, 0.42)
+shader_parameter/absorption_scale = 0.8
+shader_parameter/scatter_energy = 0.25
+shader_parameter/caustic_strength = 0.3
+shader_parameter/col_foam = Color(0.933, 0.965, 0.957, 1)
+shader_parameter/col_sss = Color(0.7490, 0.9020, 0.8784, 1)
+shader_parameter/foam_crest_threshold = 0.62

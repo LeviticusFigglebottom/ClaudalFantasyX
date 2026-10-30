@@ -60,7 +60,9 @@ func _play(which: String) -> void:
 	if row.is_empty() or choreo.camera == null or intro == null:
 		return
 	# the intro's own framing of the boss, as it stands now (BattleBossHeroShot, M3-BPR-423)
+	intro.hero_override = row.get("hero", {}) as Dictionary
 	intro._frame_boss(which == "fall")
+	intro.hero_override = {}
 	choreo.camera.play_moment(
 		StringName(which),
 		intro._pose,

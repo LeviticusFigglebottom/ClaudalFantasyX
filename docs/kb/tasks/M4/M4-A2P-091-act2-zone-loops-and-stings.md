@@ -20,4 +20,6 @@ Two zone loops not yet written, the `nhoa`, `hesk` and `ethren` bound and summon
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §3.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
 
+- 2026-10-30 (audio): done: music.json zone rows for all 14 Act II zones (the Act II audit's Zones section is 0), cloudloom and sanctum_of_the_level, the seven Vowbound stings, battle_heretic.
+
 ## Review log
