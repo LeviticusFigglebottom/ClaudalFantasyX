@@ -1410,3 +1410,14 @@ MERGE-READY @ ace2d088c: M4-A2P-1705 (ADR 0121), plus requests M4-A2P-1703 and M
     chapters'. Requested as **M4-A2P-1706** (cinematics: act1-chapters).
   - **Waiting:** the Drownbell re-measure, on M3-HER-1168 (creatures).
 MERGE-READY @ 3df48256a: M4-A2P-1707, the Act II Continue sweep; M4-A2P-1706 requested.
+- 2026-10-31 00:50, **the Lead's 21:46 note: the Ch6 and Ch8 objective rows** (M4-A2P-1708, 5f317889c).
+  - **The HUD already does it.** The line slides in by itself only when an objective applies. The empty line (OBJ_NONE,
+    or a zone's idle_keys line) waits for the button, and the Where-to-next card says the same. New rows need nothing
+    from the UI: the tracker reads them, and validate_data checks their targets.
+  - **New guard, test_objective_coverage (2/0):** every location with a zone map (prologue to Ch13) has a main
+    objective row, and the empty line on arrival stays hidden. Brine Shoals, Corrow and the Coilspire are KNOWN_EMPTY
+    until act1-chapters' rows land. Then the run prints that the entry is stale, without failing.
+  - **To act1-chapters:** four mid-zone gaps where the line goes empty unless a cutscene bridges them (list in
+    M4-A2P-1708's notes): Haluna's wake after `ch04_shell_set`, Pemakar after `ch05_met_kerrid`, the bell galleries
+    after `ch07_tidecup_played`, and Corrow night after `ch09_ebbing_danced`.
+MERGE-READY @ 5f317889c: M4-A2P-1708, the objective coverage guard.
