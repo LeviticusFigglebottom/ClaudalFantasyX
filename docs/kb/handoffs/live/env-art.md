@@ -589,6 +589,14 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **LEAD (19:45), answered: M3-ENV-1391's last box. MERGE-READY @ 4f46aecd.** LowHull's outrigger lay along the run's
+  two plank bridges, its booms through their rails. It now floats alongside the run (z -21.25, yaw 180), with its
+  AABB 0.1 m clear. The salvage on the planks over LowHull still blocks the way, and both still drift with the block.
+  - Viewed from the run, from the bridge and from the side.
+  - The AABB mirror of cloud-qa's check lists only the dive raft's three intended pairs.
+  - test_oruvel_moorings drops the LowHull allowance and passes; test_zone_dressing_ch01 OK.
+  - Godot `--filter=ch01` and `--filter=edge_walls` are green.
+  - The Ch4 pass continues (the galley's satin walls are in at 7d2197e6).
 - **LEAD (19:25), IN PROGRESS: the Ch4 beauty pass (the Haluna wake, the Brightwater ferry), then the Prologue-to-Ch4
   transitions as played.** Eye-height stills are rendering.
 - **LEAD (18:24), answered: the Ch2 Haluna and Ch3 causeway beauty pass (M4-A2P-1400, review: art). MERGE-READY @ dadb6930.**
