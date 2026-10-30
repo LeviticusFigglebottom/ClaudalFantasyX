@@ -634,7 +634,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - The full tools suite overran its 20-minute timeout on this container, so I ran the battle and flow modules
     instead.
   - Next: M4-A2P-019, the Act II loadouts (re-run every Act II suite on its chapter's loadout).
-- MERGE-READY @ (this push)
+- MERGE-READY @ fe3686aea
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
