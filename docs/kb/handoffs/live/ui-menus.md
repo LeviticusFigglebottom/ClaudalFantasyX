@@ -788,3 +788,21 @@ Skipped: coverage. game/battle got comment edits only (the renamed Breaks), no c
 - 2026-10-30 03:30, **BACKLOG EMPTY:** the 23:52 list and my controller-only menu pass are done. Real-hardware
   pace (pad feel, menu sound latency) is a PC-QUEUE item: a pad walk of every Act I menu on the PC, holding the
   d-pad and stick in the bag, the codex and the Lattice.
+- 2026-10-30 04:30, **the Lead's 01:08 item: Act II preparation, docs only (ADR 0203).** No act1_gpu_qa row is open for
+  this track except row 33, which is fixed twice (503b99839, c0e98a59) and waits on the PC's re-walk.
+  The spec, all `draft: pre-gate`, is in `docs/kb/plan/act2/ui/`:
+  - README (the index, what exists, the loc-key totals);
+  - screens (the document reader, seven heroes, six callable Vowbound, Pell's Listen, Act II shops);
+  - hud (rooted, drain, repair, the flat-engine part and tide pulse, the darkness fight, element cycling, buff strip,
+    the set pieces, objectives);
+  - tutorials (12 battle prompts, 4 field tips);
+  - codex_bestiary (6 world, 8 people, 4 Vowbound, 5 records, 14 bestiary rows, the Listen marks);
+  - portraits (14 speakers; Merel's wedding red; Kerrid's `guilty`);
+  - heresy (dark Order shrines refuse, travel lists them greyed, Order shops refuse, the heretic subtitle and slot tag);
+  - kerrid (a second codex body, `guilty` baked, one quiet Status line, nothing in battle).
+  About 225 loc keys are listed, plus Narrative's record sentences.
+  Decisions taken as defaults (the Lead can overrule):
+  - a Vowbound codex category, with Act I's three moved in;
+  - dark shrines visible on travel and the map, greyed;
+  - the heretic subtitle on the field menu, never red.
+- 2026-10-30 04:30, **BACKLOG EMPTY:** the 01:08 item is done. Act II work waits on the `act1-complete` tag (ADR 0203).
