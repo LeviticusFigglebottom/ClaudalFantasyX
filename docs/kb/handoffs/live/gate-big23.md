@@ -37,3 +37,27 @@ PROVENANCE rows; no conflict markers.
 - 13:04: per the Lead, the PC takes the post-merge captures (big21's 173 missing shots, big22's), the full suite and the
   Blender verifies (gpu/shots-big22). The cloud big21 capture is stopped (my loops and their renders only); the fast
   gate is this session's only job.
+- **Playtest FAST-TRACKs merged mid-batch** (each followed by a re-run of every test it can affect):
+  - env-art @ 28b005ad: Oruvel's walkways get edge walls, so the hero can't step off into the water (3d728282).
+  - m2-slice @ 76cb77bc: New Game opens the Prologue on its title card, not in the underwater sequence (c054ce54);
+    plus the seabed's Blender job, which turns test_blender_builds green (12218c98).
+  - act1-chapters @ 752b6dc8: encounter pacing: every random-fight zone draws a 95–145 m gap (a 31–44 s breather at a
+    run), a walked and timed grace after every battle (b529758f). It also brings the Lowlight CreatureAmbientVfx fix.
+  - env-art @ db759643: the Underway's old-tin and shaft-limpet prop glbs for its playtest placements (e82e8282).
+  - Not yet pushed: characters' run animation, integration-qa's post-battle return and water guard. They go in big24
+    (or into big23 if the Lead holds it).
+- battle-presentation @ 3d65ec00 (13:02, "a lone foe keeps its seat") was merged (1792dafe): it fixes its own Hullgnaw
+  reds from the pin c552664f. test_battle_boss_seat 3/0, test_battle_boss_camera 5/0.
+- **Re-runs after the merges:** 45 files (Oruvel, Prologue, title, saves, every changed test), then 17 more for the
+  pacing merge, then the Underway's 2: all green except the two routed reds below.
+
+GATE-FAST-DONE big23 @ e82e8282 (14:05 UTC). Import clean, boot smoke 0 ERROR lines, no script errors in any log. Every red is
+branch content (red on its owner's branch alone) or already routed. **Merge-approved under the Lead's standing rule.**
+Remaining reds, FAST-TRACK list:
+- creatures: test_resident_loads ("haluna.tscn lists …/shopkeeper_actor.tscn", smith, innkeeper): its 92f60b06 made
+  them crowd people while Haluna's NPC table still names their actors. Red on claude/creatures alone.
+- act2-plan (with act1-chapters): test_qa_threads: the Act II objectives (act2-plan's, taken over ui's) end on in-chapter
+  flags the Ch10–13 threads don't raise yet (20 waits, e.g. ch10_farewell_tide_seen, which nothing sets, and
+  ch13_read_ledgers). Red on claude/act2-plan alone. test_qa_flag_reach: ch14_steps_held has no setter (act2-plan alone).
+- creatures-b: test_avalanche_ram (from big22). Known and routed: test_cutscene_sfx_files and test_status_names
+  (act2-plan), test_palette_check, test_villagers, test_screenshots.
