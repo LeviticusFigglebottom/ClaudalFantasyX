@@ -270,6 +270,7 @@
       "resume": true,
       "_note": "Ch10, Reedhollow, the Kirru roost-village: Act II final (M3-AUD-840; Git LFS; the older M3-AUD-804 render, assets/audio/music/reedhollow.ogg, stays committed but nothing plays it); zone row by M4-A2P-091"
     },
+    "farewell_tide": {"file": "res://assets/audio/act2/music/farewell_tide.ogg", "beat": {"bpm": 60.0, "downbeat_offset_s": 0.5}, "_note": "M4-A2P-090: Ch10 C3, the Kirru farewell-tide at dusk, ~90 s through-composed; reedhollow's clutch line and the Letting's first cell in the Kirru mode; ends on the rise held open, then the backs turned (assets_src/music/act2/farewell_tide.py; plain git, ADR 0175)"},
     "sunken_vey": {
       "file": "res://assets/audio/music/act2/sunken_vey.ogg",
       "resume": true,

@@ -22,6 +22,8 @@ RULES = [
     ("music/act2/wakefin_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Wakefin's two stems, stacked at -16 (Git LFS, M3-AUD-844/845)"),
     ("music/act3/hesper_and_ilsabet_s*.ogg", "stem", -16.0, 0.5, -1.0, "the revenant pair's two stems, stacked at -16 (Git LFS, M3-AUD-858)"),
     ("music/*.ogg", "integrated", -16.0, 0.5, -1.0, "music beds, themes and cutscene cues"),
+    ("act2/music/*_p*.ogg", "stem", -16.0, 0.5, -1.0, "Act II boss stems in plain git, stacked at -16 (ADR 0175)"),
+    ("act2/music/*.ogg", "integrated", -16.0, 0.5, -1.0, "Act II scene cues, loops and stings in plain git (ADR 0175)"),
     ("ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "ambience beds (mix.md: -26, peaks well down)"),
     ("act2/ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "Act II ambience beds (M4-A2P-093, ADR 0175)"),
     # M3-AUD-859 (assets_src/sfx/act3/kite_foley.py; Git LFS): the Kite's deck beds and foley
