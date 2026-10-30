@@ -1124,3 +1124,21 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
      - Checks: validate_data clean; gen_crowd --check; tools test_npc 30 OK; Godot crowd 13/0, villager 41/0.
 - **MERGE-READY @ 35e467a3** (the bespoke shopkeepers and the Act II crowds).
 - **BACKLOG EMPTY:** every Act II town whose bodies exist has its crowd. Reedhollow's Kirru clutch waits on characters (no human body fits). Still waiting on Combat's conduit_crawler row.
+- **Your 13:08 relay: the Kirru crowd and Reedhollow.**
+  - **Four Kirru bodies @ c6105cbf:** `kirru_man` (2.38 m), `kirru_woman` (2.20 m), `kirru_elder_woman` (2.16 m) and `kirru_youngster` (1.62 m).
+    - **Built on Pell's own build.** `assets_src/crowd/kirru/build_kirru.py` runs build_pell.py as a library on pell_params.json with each body's overrides (kirru_bodies.json). They share his head warp, fur, crest, whiskers, webs, mantle, name-shell, staff and palette rules, and a fix to Pell reaches them on their next rebuild.
+    - **Variety:** age and sex show in proportion, fur shade, grey guard hairs, crest and mantle reed. Costume and shell measures scale with height.
+    - **What ships:** the LOD1 (about 27k triangles) with Pell's maps at half resolution, about 8.5 MB a body.
+    - **Clips:** `crowd_kirru_clips.tres` is Pell's idle, talk and walk on the crowd armature; the import fits the hips per body.
+    - **Pipeline:** 4 `crowd_kirru_*` blender_builds jobs, verified byte-identical (37 files each); PROVENANCE rows; validate_npc and tests cover them.
+    - **Review stage `kirru_lineup`:** shots `kirru_lineup_front` and `kirru_lineup_faces`, the four beside Pell. SELF-RENDERED and viewed. **Their baselines are needed.**
+    - Art note: docs/kb/art/characters/kirru_crowd.md. Ownership row appended. The named Pell, Owa and the Kirru child stay characters'.
+  - **Reedhollow @ 1e31f521:**
+    - The clutch: eight bodies on the greybox's hidden `clutch_0..7` stage actors, so the farewell-tide shows Kirru. No two neighbours match in either line.
+    - Watchers: one on each house platform, facing the lagoon (R01), on CrowdSpots.
+    - Viewed in the zone, with the clutch revealed in a temporary scene.
+    - Which way the clutch faces is the layout's and the cutscene's (chapters).
+  - Checks: validate_data clean; taskboard; gdlint; tools test_npc 33 OK; Godot crowd 14/0, villager 42/0, npc 10/0; verify_blender_builds 4/4 identical.
+    - The `oruvel_seabed.glb` "uncovered" line is the pre-existing one, already routed to slice-polish.
+- **MERGE-READY @ 1e31f521** (the Kirru crowd and Reedhollow).
+- **BACKLOG EMPTY:** every Act II town has its crowd, Reedhollow included. Still waiting on Combat's conduit_crawler row.
