@@ -267,6 +267,31 @@ func _at(row: StringName) -> int:
 	return FieldMenuModel.ROOT_IDS.find(row)
 
 
+func test_at_the_largest_text_nothing_on_the_root_overlaps() -> void:
+	# The Act I UI pass of 2026-10-30: at 130 % the card names sat on the HP rows and the objective ran into the help.
+	var was := UiSettings.shared()
+	var big := UiSettings.new()
+	big.set_value(UiSettings.TEXT_SCALE, 1.3)
+	UiSettings.set_shared(big)
+	_open()
+	var objective: Label = menu.get(&"_objective")
+	var help: Label = menu.get(&"_help")
+	var bottom := objective.position.y + objective.get_combined_minimum_size().y
+	assert_true(
+		bottom <= help.position.y + 0.5, "the objective ends above the help (%s > %s)" % [bottom, help.position.y]
+	)
+	for card: PartyCard in menu.party_cards():
+		if not card.visible:
+			continue
+		var name_label: Label = card.get(&"_name")
+		var hp_head: Label = (card.get(&"_heads") as Array)[0]
+		var slot := float((FieldMenu.load_data().get("party", {}) as Dictionary).get("line_height", 0.0)) * 1.3
+		assert_true(hp_head.position.y - name_label.position.y >= slot - 0.5, "the name's line grows with the text")
+		assert_true(hp_head.position.y + hp_head.size.y <= card.size.y, "the rows stay on the card")
+	_free()
+	UiSettings.set_shared(was)
+
+
 func _model(heroes: Array[StringName]) -> FieldMenuModel:
 	return FieldMenuModel.new(GameStateData.new(), heroes, NAMES)
 
