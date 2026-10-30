@@ -565,3 +565,28 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - MERGE-READY Act II read-through @ 98e94c41c
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 118–120, 1000; M4-A2P-112 items 3, 5 and 6.
 - **Correction (task ids):** big27's final renumbering moved my Act I read-through tasks 115/116/117 to **M4-A2P-1000/1001/1002**, not 118–120. This branch now carries the gate's three files. The Act II read-through request I had filed as 1000 is now **M4-A2P-1003**. Taskboard clean.
+
+## 2026-10-30: Act I tutorial and tip-card clarity pass (Lead; pillar 4)
+- **Read in play order against the code:** 25 battle `TUT_*` lines, the field tip cards, Ch1's story prompts and the trial hints. Every claim was traced in `game/battle`, the field code and the data, and I re-checked the main ones myself (the rim rule, armour-break turns, the field-clearing finishers, the UI names).
+- **Text fixed (13 `TUT_*` rows plus 2 Ch1 prompts; an in-place wording change of other tracks' loc rows, at the Lead's request, no reorder):**
+  - **Drownbell rim:** says only fast physical hits while it gathers count. The hidden rule was invisible before.
+  - **Vowbound call (Ch4):** no longer says "answers Asha now"; Ilun answered from Ch3. It says how a call ends and what it costs.
+  - **Flood / dark:** say the *finisher* clears them (Floodnet, Flare Line), not the call.
+  - **Armour break:** "three of their turns". The timeline shows no durations.
+  - **Hound:** says what it actually does (the guard isn't built).
+  - **Kick Off:** "a third of an Attack's time", not "almost no time".
+  - **Fliers:** dodge "more than most", not "most".
+  - **"Hold it on a shield":** now names Toma's Hold the Stair.
+  - **Blinded:** now Darkness, the game's name.
+  - **Polyp:** says why to kill it.
+  - **Matron:** "ice", and her Recrust.
+  - **Tether:** no climbing back up.
+  - **Shutter:** says what opening it does.
+- **Filed (mechanics, not words):**
+  - **M4-A2P-1004 → ui-menus:** the field-menu, menu-save and Swell tips **never fire** (their flag is set inside the battle scene); the tips start a chapter late since ADR 0042; layout shrines miss the shrine tip.
+  - **M4-A2P-1005 → slice-polish:** two Ch1 prompts (tether, shutter) are **lost before they show**; the Ch3 hint holds 1.5 s.
+  - **M4-A2P-1006 → act1-chapters' combat seat:** the hound's guard isn't built; Swap, the timeline and Poison are taught chapters late (turn prompts at the wickfry and the Tideline).
+- **Checks:** validate_data 0/0 · dlgc 0/0 · loc tests OK · taskboard clean. Godot: `tutorial` 5/0, `tip` 5/0, `battle_boss_prompts` 1/0, `battle_boss_status` 5/0, `ch01_battles` 5/0, `ch04_battles` 5/0, `set_piece_hud` 8/0, `input_parity_glyphs` 7/0.
+  - `ch01_zones` is 6/6 red, **and red the same on the unchanged tree**: an integration script error in its setup (`test_ch01_zones.gd:128` `auto_update` on Nil), not this change.
+- MERGE-READY tutorial pass @ 16b18b2c1
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1006; M4-A2P-112 items 3, 5 and 6.
