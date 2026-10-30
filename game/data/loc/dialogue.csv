@@ -1405,6 +1405,8 @@ DLG_TEST_CUTSCENE_002,Fixture option A.
 DLG_TEST_CUTSCENE_003,Fixture option B.
 DLG_TEST_CUTSCENE_004,Fixture closing narration.
 DLG_TEST_CUTSCENE_GROUP_001,Group fixture line.
+DLG_TEST_CUTSCENE_MEMORY_001,Memory fixture line.
+DLG_TEST_CUTSCENE_MEMORY_002,After the memory.
 DLG_TEST_CUTSCENE_POSE_001,Pose fixture line.
 DLG_TEST_CUTSCENE_POSE_002,Pose fixture closing line.
 DLG_TEST_CUTSCENE_RELEASE_VFX_001,Release fixture line.
