@@ -688,6 +688,21 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
     fen's dead are snagged in it, and they cannot rise."
 - MERGE-READY @ c33c39015 (row 34 fix; FAST-TRACK for big20)
 
+- **One definition per Act II boss; the combat seat's numbers are applied (merged lead/gate-big20, which is
+  fast-gated).**
+  - **The Drowner:** the Combat side's record row stands. My second definition, its two skills and its loc rows are
+    dropped.
+    - Re-tuned that row's stats (HP 2200, str 11, mag 8, def 200, uprooted def 160).
+    - 1,000 seeds: naive 1.1, role (Ysolde) 62.1, smart 100 over 20+ turns.
+  - **The Lamp Engine, the Ram and the Wakefin:** my pre-tuned stats are applied and the suites added, all in band.
+    The Lamp Engine's role band stays report only until its parts data is in.
+  - Kept my engine keys on the record regulars (the ray's `glide`, the skate's `ambush`).
+  - Took creatures-b's documented Nhoa and Hesk clip maps (their own `deep_well`, `echo`, `cleanse` and `mending`
+    clips) and dropped their `vowbound_pending` (the rows exist).
+  - Checks: act2_bosses, ch10_thread, boss, validate, balance tool tests, vfx_coverage.
+  - **Next:** the Lamp Engine's parts and the conduit crawler (M4-A2P-022's data), now that its row is here.
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
