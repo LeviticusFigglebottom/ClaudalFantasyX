@@ -232,3 +232,11 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - "cold" lines in Ch11 (the deep's cold).
 - validate_data 0/0; loc tools tests OK.
 - MERGE-READY @ dc18517e3
+
+## 2026-10-30: Act I proofread pass (Lead request), in progress
+- **Mechanical checks on Act I text (about 2,900 strings):** doubled words, spacing, unbalanced quotes and brackets, a spell-check against the glossary, and near-duplicate proper nouns. No defects found. Every hit was intentional: ellipses, spaced formats, coined words, and Daro Pemakan's surname.
+- **LEAD-ASK (needs an ADR; it touches ui-menus, combat and progression):** the house spelling is mixed.
+  - Prose, lore and the glossary use British: colour, armour, grey, harbour, honour, favour, traveller, practised, metres.
+  - The UI and stat strings use American: `STAT_DEFENSE` "Defense", `STATUS_*_BREAK_DESC` "defense", `EQUIP_MENU_SLOT_ARMOR` and `STATUS_MENU_ARMOR` "Armor", `FIELD_MENU_EQUIP_DESC` "armor", `TUT_CH05_ARMOR_BREAK` "Armored … armor" (while the same chapter's `ROLE_KERRID` says "Breaks armour"), `SET_PALETTE*` "Color palette / colors / Colorblind-friendly", `TITLE_HELP_SETTINGS`, `FIELD_MENU_SETTINGS_DESC`, `SET_MENU_HELP_ACCESSIBILITY`.
+  - "Customize" (‑ize) is consistent and fine under Oxford spelling.
+  - **Proposal:** British (Oxford) everywhere a player reads it, as the glossary already does. That means Defence, Armour, Colour palette, Colour-blind-friendly; keys unchanged. It's about 15 strings; I'll do it as one FAST-TRACK when you say yes.
