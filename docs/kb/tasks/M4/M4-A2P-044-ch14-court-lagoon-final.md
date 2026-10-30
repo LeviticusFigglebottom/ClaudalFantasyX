@@ -2,9 +2,8 @@
 id: M4-A2P-044
 title: "The Lacquer Court and the lagoon at night at final quality, with the watching city"
 role: environment
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "env-art (claude/env-art, 2026-10-30)"
 depends_on: [M4-A2P-047]
 reviewer: rendering
 milestone: M4
