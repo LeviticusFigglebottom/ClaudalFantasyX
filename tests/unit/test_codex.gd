@@ -48,7 +48,7 @@ func test_entries_unlock_by_flag_by_record_or_always_and_locked_ones_are_not_lis
 	assert_eq(_ids(m.entries_in(&"world")), [&"glimmer"] as Array[StringName], "only the always entry at first")
 	assert_true(m.entries_in(&"records").is_empty())
 	assert_eq(m.categories()[0]["found"], 1)
-	assert_eq(m.categories()[0]["total"], 12, "locked entries still count (Act I's ten, M3-UI-207's Kirru and Ullari)")
+	assert_eq(m.categories()[0]["total"], 16, "locked entries count: Act I's 10, M3-UI-207's 2, the story track's 4")
 	flags[&"ch02_met_asha"] = true
 	assert_eq(
 		_ids(m.entries_in(&"world")),
@@ -143,7 +143,7 @@ func test_the_menu_lists_categories_with_counts_and_new_and_shows_a_category_lin
 	var menu := _menu()
 	var cats := menu.categories_page()
 	assert_eq(cats.row_count(), 4)
-	assert_eq(cats.rows[0]["right"], tr("CODEX_ROW_COUNT_FMT").format({"found": 4, "total": 12}))
+	assert_eq(cats.rows[0]["right"], tr("CODEX_ROW_COUNT_FMT").format({"found": 4, "total": 16}))
 	assert_eq(cats.rows[0]["mp"], tr("CODEX_NEW_TAG"), "unread entries: New, in words")
 	assert_eq(cats.rows[3]["mp"], "", "nothing found: nothing new")
 	assert_eq(menu.column, CodexMenu.Column.CATEGORIES)
