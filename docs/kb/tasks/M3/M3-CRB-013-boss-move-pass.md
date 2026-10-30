@@ -24,6 +24,9 @@ end) from the battle camera in the creature's own fight, plus head close-ups; a 
   5 on `cast`, the Spar-wraith 5 on 2, the Hullgnaw 3 on `attack`, the Matron 4 on 2); Ilun's Brine Lash is his
   basic attack. Each skill gets its own clip (creatures.json `clip_by_skill`, phase `clips` maps for phase poses).
 - Bottle hermit: the glass never moved, so every move read faint at battle distance. Fixed (9e2c4f93, 119af519).
-- Hullgnaw: the strike plunges the head into the deck; the intro and KO rise from and sink into solid planks.
+- Hullgnaw: the strike plunges the head into the deck; the intro and KO rise from and sink into solid planks. Fixed
+  (2026-10-30): a breach in the deck is part of its model, and the intro, KO and frames go through it (a test holds
+  it there). Gnaw lunges level (contact 0.8). Rib Lash (0.8), Thrash (1.25) and Coil have their own clips, and
+  idle_b is authored. See docs/kb/art/creatures/act1/hullgnaw.md, "Move pass".
 
 ## Review log

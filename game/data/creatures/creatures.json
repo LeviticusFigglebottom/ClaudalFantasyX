@@ -77,7 +77,8 @@
       "break_parts": {"toll": {"whole": ["Rim"], "broken": ["RimBroken"]}}
     },
     "hullgnaw": {
-      "scene": "res://game/creatures/hullgnaw/hullgnaw_battle.tscn", "contact": {"attack": 0.8},
+      "scene": "res://game/creatures/hullgnaw/hullgnaw_battle.tscn", "contact": {"attack": 0.8, "rib_lash": 0.8, "thrash": 1.25},
+      "clip_by_skill": {"gnaw": "attack", "rib_lash": "rib_lash", "thrash": "thrash", "gnaw_coil": "coil"},
       "ko_fade_sec": 0.8,
       "phases": {"breaking": {"clip": "phase_break", "hide_after": ["Ribs"], "sec": 0}},
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
