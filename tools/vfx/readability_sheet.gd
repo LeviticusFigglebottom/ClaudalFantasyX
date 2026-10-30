@@ -44,12 +44,14 @@ func _run() -> void:
 			await _one(enc, sc, out, checks)
 		var f := FileAccess.open(out.path_join("%s_checks.json" % enc), FileAccess.WRITE)
 		f.store_string(JSON.stringify(checks, "  "))
+		f.close()
 		summary[String(enc)] = {
 			"overflow": (checks["overflow"] as Array).size(), "floats": (checks["floats"] as Array).size()
 		}
 		print("READABILITY %s %s" % [enc, summary[String(enc)]])
 	var sf := FileAccess.open(out.path_join("summary.json"), FileAccess.WRITE)
 	sf.store_string(JSON.stringify(summary, "  "))
+	sf.close()
 	get_tree().quit()
 
 
@@ -62,7 +64,7 @@ func _one(enc: StringName, text_scale: float, out: String, checks: Dictionary) -
 	ctl.set_meta(BattleBossIntro.META_PLAYED, String(enc))
 	var party := SWEEP.party_for(enc)
 	ctl.start_battle(party[0], party[1], enc, SEED)
-	var settings := UiSettings.new()
+	var settings := UiSettings.shared()  # the game's own settings (the HUD's rows read the shared text scale)
 	settings.set_value(UiSettings.TEXT_SCALE, text_scale)
 	ctl.hud.apply_settings(settings)
 	var guard := 0
