@@ -1097,6 +1097,19 @@ that test at this branch's zones.
   - **Gotcha for new Haluna pieces:** a fresh glb's `.import` needs `import_script/path` set the same way.
     `import_settings.py` (env-art's) could pin it as the other kits' `*_import_settings.py` do.
   - **MERGE-READY @ c6dec98b.**
+- **Act II zone-to-zone transitions, Ch13–17 (10-30):**
+  - **Method:** each zone instanced alone. Each spawn was placed through the zone's own `place_at` with its field
+    camera live. Each exit was checked by flooding the walkable ground from the spawns.
+  - **Spawns:** all 13 (Ansedra 3, the Court 3, Archive 1, Sanctum 1, the open sea 2, the Rim 2 + Encounter,
+    Choir 1, Hollowmere 1) are clean: none overlaps a wall, all have ground, none faces a wall within 2 m, and the
+    field camera neither travels more than 1.5 m settling nor loses its line to the hero.
+  - **Exits:** every exit is reachable on foot (Ansedra's `to_sanctum` and `to_archive`, the Archive's and the
+    Sanctum's `to_city`, the Court's `barge`, the open sea's `dawn`, Hollowmere's `ship`), except one.
+  - **The exception:** the Pale Rim's `to_choir` stands at x 230, past the greybox `Sand`'s end at x 220, so it can
+    never fire on foot. It's chapters' greybox (`RIM_LEN + 10`): request **M4-A2P-116**, to move it to about 216
+    or lengthen the sand. My dressing follows either way.
+  - **Act II town interiors:** still none (see above).
+  - **MERGE-READY @ 1f9d2e8c** (the request; no change of mine was needed).
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
   god rays now) at High 1440p against the 0.3 ms target.
