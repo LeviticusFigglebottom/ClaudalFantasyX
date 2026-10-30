@@ -46,3 +46,4 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 
 **Next (the Lead's assignment):** draft beat sheets, marked `draft: pre-gate`, docs only: Ch10, then Ch14, then Ch15.
 - MERGE-READY @ f6f406fa: `docs/kb/story/beats/act2_ch10.md` (draft: pre-gate; M4-C10-01's sheet, not yet reviewed). Checks: validate_data 0/0 (banned terms over docs/kb/story), taskboard --check clean. Skipped: dlgc (no .dlg), Godot (docs only).
+- MERGE-READY @ a273058e: `docs/kb/story/beats/act2_ch14.md` (draft: pre-gate; M4-C14-01). Proposes the names Commander Brannoc Hale and Warden Dask, and "Outside the Level" as the heresy's words (banned-terms clean). Lead review asked (IP-echo-sensitive). Checks: validate_data 0/0. Skipped: dlgc, Godot (docs only).
