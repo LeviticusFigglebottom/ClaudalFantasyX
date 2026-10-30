@@ -73,7 +73,7 @@ Shot ids are proposed in §7 (U = unlamped, the barge; K = the confession; H = H
 | B10 | **The dock-master** | `ch17/hollowmere` dock, `fathers_door` | 06:00 | C | 2.0 | H04–H06 | `silence` | The worst errand. | `ch15_liss_told_father` |
 | B11 | **Hollowmere** | `ch17/hollowmere` (first visit) | 06:15 | P | 5.0 | H07, H08 | ambience only (no zone loop: §6) | Grief among allies; the people his order burned look at Toma's pauldron. | — |
 | B12 | **"Let me carry him."** | a jetty by the bier | 07:30 | E | 3.0 | H09–H11 | `silence` | Toma's confession; his faith breaks; Liss lets him carry Tobin. | `ch15_toma_confessed`, `ch15_toma_carried_tobin` |
-| B13 | **The pyre-raft** | `pyre_raft`, the flotilla's lee | 18:00 | C | 2.0 | H12–H14 | `tobin_pyre` (proposed, §6) | Hollowmere's goodbye, in its own way. | `ch15_pyre_raft` |
+| B13 | **The pyre-raft** | `pyre_raft`, the flotilla's lee | 18:00 | C | 2.0 | H12–H14 | `hush_first_verse` (reprise, ADR 0204 §12) | Hollowmere's goodbye, in its own way; and something lost anyway. | `ch15_pyre_raft` |
 | B14 | *Side scene: "Two Daces"* (optional) | `supper`, the dock-master's hull-house | 19:30 | E | 4.0 | H15 | `silence` (lamp-hiss) | Rhen and Liss's father: two different memories of Dace. | `ch15_supper_with_father` |
 | B15 | **The ship** | the dock, `ship` | 05:30 next day | C | 1.0 | H16 | `silence` → (Ch16) | A Hollowmere ship will carry them to the Rim. | `ch15_complete` |
 
@@ -174,7 +174,7 @@ Sets `ch15_kerrid_told`. ~360 words, of which ~280 are Kerrid's.
 
 ### B10. The dock-master (C, 2 min)
 - **H04:** Hollowmere at dawn, with the fog lifting to grey-rose and the first oil lamps lit on the hulls (color script `ch15`: "the Hollowmere dawn lifts to grey-rose with the first oil lamps"), the first warm light since the court. The barge is drawn into the dry-dock berths by the dock-master's own people.
-- **H05:** **Liss's father**, the dock-master, keeper of the dry-dock berths (liss_varrow.md). A big, quiet, sun-dark man with line-marks to the shoulders and a dock-hook in his belt, at his hull-house door (`fathers_door`). He knows the barge is an Ansedran bridal barge. He knows who went to Ansedra to be married. He looks at the canopy, then at his daughter. (Name: Narrative's call; this sheet proposes **Aldous Varrow**, checked against the banned-terms list. The father may stay "the dock-master" on screen.)
+- **H05:** **Liss's father**, the dock-master, keeper of the dry-dock berths (liss_varrow.md). A big, quiet, sun-dark man with line-marks to the shoulders and a dock-hook in his belt, at his hull-house door (`fathers_door`). He knows the barge is an Ansedran bridal barge. He knows who went to Ansedra to be married. He looks at the canopy, then at his daughter. (**Aldous Varrow**, approved by ADR 0204 §4. On screen he's mostly "the dock-master".)
 - **H06:** Liss walks up the dock to him. **We don't hear it.** The camera stays on the barge, with the party, at the bier, at a distance: Liss talking, short; her father not moving; then his hand on the back of her head, pulling her face into his shoulder. Rule: **no dialogue is heard in this beat**. The player saw the death; the errand is hers. Sets `ch15_liss_told_father`.
 
 ### B11. Hollowmere (P, 5 min)
@@ -208,10 +208,11 @@ Sets `ch15_kerrid_told`. ~360 words, of which ~280 are Kerrid's.
 ### B13. The pyre-raft (C, 2 min)
 - **H12:** dusk in the flotilla's lee, the first warm-gold dusk in Act II (it is still Act II's grade, but Hollowmere's lamps are warm). A small raft of salvage timber, built in a day by the dock-master's people. Tobin on it under the bridal cloth, with his wedding cord in his hands. Hollowmere on every hull, all four thousand, quiet.
 - **H13:** the dock-master pushes the raft off with his dock-hook. A Saltwright lights it with an oil lamp (the first flame struck near the party since the court: rule 3 ends at dawn). It burns going out on the tide.
-- **What happens to Tobin's light** (an **open question for Narrative**, §10.1). This sheet's proposal follows bible §7, "the dead want to be useful", and plants the Saltwrights' blind spot without judging it:
+- **What happens to Tobin's light** (**ADR 0204 §13**: caught in a Saltwright lamp, and something is still lost). It follows bible §7, "the dead want to be useful", and plants the Saltwrights' blind spot without judging it:
   - the motes that have clung to Tobin since the court rise off the burning raft (they are held, so they drift sideways, low, toward the hulls, toward Liss);
   - the dock-master holds up a **salt-glass lamp-housing**, and the motes go into it, as Hollowmere's dead always do. He closes it. It glows, bound, steady (`glimmer_bound`).
-  - **H14:** Asha watches it, and so does Pell. Pell turns his back to the water and to the lamp. Nobody says anything. Liss takes the lamp from her father and holds it against her chest.
+  - **But not all of them** (pillar 6): the raft is already burning, and the heat reaches the housing as he holds it over the water. **The glass cracks** with a small sharp crack. A thread of Tobin's light escapes through the crack and drifts out over the dark water with the smoke, held, sideways, and is gone. The lamp still glows, dimmer, with a crack across it.
+  - **H14:** Asha watches it, and so does Pell. Pell turns his back to the water and to the lamp. Nobody says anything. Liss takes the cracked lamp from her father and holds it against her chest. She runs her thumb along the crack once.
   - Act III pays it: Liss's "Every lamp on this ship is somebody" (voice guide), and the Unbinding costs her this lamp too.
 - Sets `ch15_pyre_raft`. No dialogue.
 
@@ -238,7 +239,7 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-015 adds them). 
 | `ch15_liss_told_father` | B10 (critical) | Ch17 | act_outline Ch17: "Liss's father hasn't spoken since Tobin's pyre-raft" |
 | `ch15_toma_confessed` | B12 (critical) | Ch16, Ch18, Ch20 | Toma's scripture fragments vanish (voice guide); Ch18's optional Haluna lifting |
 | `ch15_toma_carried_tobin` | B12 (critical) | Ch17 | The dock-master nods to Toma once, in Ch17 |
-| `ch15_pyre_raft` | B13 | Ch18, the Ending | Liss's lamp (if §10.1's proposal stands) |
+| `ch15_pyre_raft` | B13 | Ch17, Ch18, the Ending | Liss's cracked lamp (ADR 0204 §13): she tries to mend the crack in Act III and can't; at H09 it goes with everything else |
 | `ch15_supper_with_father` | B14 (optional) | Ch17 | The dock-master breaks his silence to show Rhen the berth where Dace built his first hull (act_outline Ch17's side scene) more readily |
 | `ch15_complete` | B15 (end) | flow (Ch16 gate) | — |
 
@@ -271,12 +272,14 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-015 adds them). 
 
 **The fight in the dark** (M4-A2P-062): the only light is the moon and the sea-glow. **Pillar 4 holds: the timeline shows everything.** The telegraphs are **sound and sea-glow**, never lamp light.
 
-**Phases (two):**
+**Phases** (ADR 0204 §6 keeps the creatures-b lane's `close_circle`; Combat may cut it with sim data):
 1. **Circling (100–50%).** Mostly the fin.
    - **The cut:** a telegraphed charge (one turn): a hiss off one side and the sea-glow brightening along its path. Then the fin sweeps the deck and strikes the **back** of the formation's side it came from. Pillar 4: the timeline names "The Cut", and the glow shows the side.
-   - **The dive:** the fin goes under and the water goes dark, so it is **untargetable** for a turn, then a ring of sea-glow marks where it will surface (the glide rule, M4-A2P-021: untargetable on alternate turns).
-   - **Role answer:** Rhen's precise strikes land on the fin when it surfaces, and turn manipulation moves the party's turns off the cut's.
-2. **Breaching (`wakefin_breaching`, below 50%).** It rises alongside to strike with the whole body, and **its spine wounds show** when it breaches (wakefin.md): a breach turn is the window, when Kerrid's armour break and big blows land.
+   - **The dive (`sound_dive`):** the fin goes under and the water goes dark, and the Wakefin gains **evasion up for a turn**, with a clear telegraph on the timeline and a ring of sea-glow marking where it will surface (ADR 0204 §3: evasion, **not** untargetable; pillar 4).
+   - **One whole animal** (ADR 0204 §3): the fin is never a separate target and there are no deck adds; the Wakefin is one combatant.
+   - **Role answer:** Rhen's precise strikes land when it surfaces, and turn manipulation moves the party's turns off the cut's.
+2. **Close circle (`close_circle`, 50–25%).** It tightens its circle round the barge: the cut comes every other turn instead of every third, from alternating sides (the creatures-b lane's phase).
+3. **Breaching (`wakefin_breaching`, below 25%).** It rises alongside to strike with the whole body, and **its spine wounds show** when it breaches (wakefin.md): a breach turn is the window, when Kerrid's armour break and big blows land.
    - It is also when it's most dangerous: the bill strikes a front-line hero hard.
 
 **Rules:**
@@ -286,7 +289,7 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-015 adds them). 
 - No random encounters on the barge before or after.
 
 **Balance:** the Act II boss band (naive ≤ 3%, role_answer 55–80%, smart 70–90%, p90 ≤ 80) on the Ch15 loadout (M4-A2P-019).
-**Music:** `wakefin` (two stems, rendered: M3-AUD-845); stem 2 on `wakefin_breaching`.
+**Music:** `wakefin` (two stems, rendered: M3-AUD-845); stem 2 on `close_circle`.
 
 ---
 
@@ -299,7 +302,7 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-015 adds them). 
 | `kerrid_at_sea` | B06 (enters on K04), B07, B08 (tail) | **Cutscene bed**, ~2.5 min (not yet written, act2_finals.md; M4-A2P-090) | A bed for a voice, as `iskarra_vigil`: low, slow, almost nothing. **KERRID_STAIR far below** (his motif from Ch8's stair). It must never swell under a line: it sits under his speech the way the sea sits under the barge. On K10 ("Your father, Rhen.") it drops out entirely for two bars, then returns. It ends on K20's wide. |
 | `hollowmere_answers` | B09 | **Cue**, ~60 s (not yet written; M4-A2P-090) | CURRENT_SONG: one rough voice into nothing; a silence; then many voices answering out of the fog, the chart's next phrase. Diegetic: voices only, no instruments until the hulls appear (then the flotilla's windmills and tide-wheels as a soft rhythmic layer). **Keep it distinct from `current_song`** (Dace's, Ch1/Ch8). |
 | ambience only | B10, B11, B12 | — | Hollowmere's own sound (gulls, tide-wheels, hammers, a pump's hum), with **no zone loop**. The act3 `hollowmere` cue (M3-AUD-852: "warmth returns, low and long") is **Ch17's**, and the first visit is grief. |
-| `tobin_pyre` | B13 | **New, proposed** (~60 s; add to M4-A2P-090) | A Saltwright fiddle on a hull, playing **the wedding's vow phrase** (from `peace_wedding`) slowly, once, unaccompanied, as the raft burns out on the tide. If Audio prefers, `silence` with the fire and the tide only. |
+| `hush_first_verse` (reprise) | B13 | Reprise (ADR 0204 §12) | The pyre-raft reprises the Hush's first verse, sparse. ~~`tobin_pyre`~~ is withdrawn. |
 | `silence` | B10, B12, B14 (lamp hiss) | — | — |
 
 **SFX:**
@@ -389,7 +392,7 @@ New shot ids for `ch15/open_sea` and `ch17/hollowmere` (to add to open_sea_ch15.
 ### Rendering (M4-A2P-049)
 1. **The shoal (K01–K04, K19):** a held field on the sea floor (hundreds of motes), rising to the surface and drifting **sideways** across the deck toward one actor (Kerrid): an attractor on him, as act1_ch09's mourner attractors. No mote rises above the deck's height. On K19 the attractor releases and the field drifts on past the barge and sinks back.
 2. **Kerrid's scars (K04, K19):** the rope-burn emission (M4-A2P-054's mask) driven by a cutscene track: up to 0.6 on K04, motes emitted sideways from the scar sockets (art/characters/kerrid.md §9); easing to Ch10's ≤ 0.15 over ~6 s on K19.
-3. **Tobin's held motes (U03, H13):** a small held field anchored at the bier, clinging near Liss's hand. In B13 it drifts low toward the lamp-housing (if §10.1 stands) and is **bound**: the motes go still inside it and turn `glimmer_bound` (steady, no drift: color rule 2).
+3. **Tobin's held motes (U03, H13):** a small held field anchored at the bier, clinging near Liss's hand. In B13 it drifts low into the lamp-housing and is **bound**: the motes go still inside it and turn `glimmer_bound` (steady, no drift: color rule 2). When the housing cracks, a thread escapes, held, sideways over the water with the smoke (ADR 0204 §13).
 4. **The dark battle (B04):** M4-A2P-062.
 5. **No warm source** at night (rule 3), and the Hollowmere dawn's first oil lamps (H04).
 
@@ -413,14 +416,14 @@ New shot ids for `ch15/open_sea` and `ch17/hollowmere` (to add to open_sea_ch15.
    - Pell's turn.
 
 ### Audio (M4-A2P-090)
-`kerrid_at_sea`, `hollowmere_answers`, `tobin_pyre` (proposed), and the SFX in §6.
+`kerrid_at_sea`, `hollowmere_answers`, the `hush_first_verse` reprise (ADR 0204 §12), and the SFX in §6.
 
 ### UI
 1. Kerrid's codex page rewrite and his post-reveal barks behind `ch15_kerrid_told` (M4-A2P-008).
 2. Hollowmere's save point is a Saltwright lamp-post with a slate (plan §4.2), not an Order shrine.
 
 ### Combat (M4-A2P-015, M4-A2P-021)
-§5: the Wakefin's two phases, the cut (a telegraph by side), the dive (glide: untargetable alternate turns), the breach window. `scripted: true`.
+§5: the Wakefin's phases (circling, `close_circle`, `wakefin_breaching`), the cut (a telegraph by side), `sound_dive` (evasion up, telegraphed: ADR 0204 §3), the breach window. One combatant. `scripted: true`.
 
 ### Systems / Chapters (M4-A2P-015)
 1. **Speakers:** `dock_master`, `hollowmere_widow`, `hollowmere_wright`, `hollowmere_child`.
@@ -440,8 +443,8 @@ The confession's rhythm is yours: it must feel like a man deciding, line by line
 
 ## 10. Open questions for review
 
-1. **Tobin's light (B13).** This sheet proposes that the dock-master catches Tobin's held motes in a salt-glass lamp, Hollowmere's custom (bible §7: "the dead want to be useful"; "their blind spot: they are hoarding the dead too"). It plants Liss's Act III ("Every lamp on this ship is somebody") and the Unbinding's cost to her, and it shows the Saltwright way honestly, with love, right after the farewell-tide. **The alternative:** the light goes out with the raft on the tide (held, to the sea), and nobody catches it. Narrative decides. If the lamp stands, Act III must pay it (Liss lets it go at H09).
-2. **Names proposed here:** the dock-master **Aldous Varrow** (checked against `tools/banned_terms.txt`). He may stay "the dock-master" on screen, which suits him.
+1. ~~Tobin's light~~: **resolved by ADR 0204 §13**: caught in a Saltwright lamp; the raft burns and the lamp cracks (B13).
+2. ~~Names~~: **approved by ADR 0204 §4** (Aldous Varrow).
 3. **K15's word "Stilled"** names the Order's rite as lore, said by the one man who saw it done. ADR 0016 bans performing it and staging it near the wedding, not mentioning it. If the Lead prefers it unspoken in Act II, cut K15's third sentence.
 4. **`ch12_toma_saw_breath`** is read here and must be declared by Ch12's sheet (M4-C12-01).
 5. **The current-song (H02):** Rhen recognises the *family* of the song, not the song. If Narrative wants no Dace seed in Ch15 at all, cut his turn on H02.

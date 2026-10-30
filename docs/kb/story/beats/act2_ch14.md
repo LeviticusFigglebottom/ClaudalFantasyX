@@ -128,7 +128,7 @@ Shot ids are proposed in §7 (W = the wedding court, S = the water-steps, L = th
 - The `peace_wedding` loop **breaks** on the declaration's first line: the ceremony's melody stops mid-phrase, and under it there is only the court's held breath (§6). Sets `ch14_declared_heretics`. ~110 words.
 
 ### B04. "Stand aside, Okeru." (C, 1 min)
-- **W11:** Stillguard move toward Asha. Toma steps in front of her with his tide-shield up. His **old commander** (a Stillguard officer, grey-bearded, decent; name him in the script; this sheet proposes **Commander Brannoc Hale**, checked against the banned-terms list) comes to the foot of the dais and speaks to him as to a son:
+- **W11:** Stillguard move toward Asha. Toma steps in front of her with his tide-shield up. His **old commander** (a Stillguard officer, grey-bearded, decent; name him in the script; **Commander Brannoc Hale**, approved by ADR 0204 §4) comes to the foot of the dais and speaks to him as to a son:
   - Commander: *"Stand aside, Okeru. You know me. Stand aside, and be level."*
   - Toma (a long pause before the hard truth: voice guide): *"I know you, sir."* He does not move. *"I am on my shield."*
   - He doesn't answer "Be level." It's the first time in the game he lets the greeting go unanswered. **Cinematics:** hold on it; the player who knows the Ch9 side scene hears the silence (toma_okeru.md; his faith *breaks* in Ch15, and this is the crack opening).
@@ -268,6 +268,7 @@ act_outline Ch14: "No side scene; the chapter runs straight on." The only option
 | `silence` | B04, B05 | — | Court noise only: shuffling, a shield set down, the hull-captains, one cry. Tobin's death has **no music**. |
 | `lagoon_escape` | B06 (part 1, under the set piece), B07 (part 2), B08 (part 3) | **Not yet written** (~2 min, M4-A2P-090) | Part 1: urgent but low; the Order's hum (ORDER_HUM) broken up and turned rhythmic. Part 2: **the first ripple**: the first open, moving music in Ansedra, a slow wide melody with a pulse like poling. The bells come in as a diegetic layer, pitched to the cue's key. Part 3: Merel at the gate; the melody thins to one line and stops when the gate drops. |
 | `malcor_venn` | B09 | **Boss, two stems** (not yet written, M4-A2P-092) | Stem 1 (the still water): pressing, flat, metronomic, the engine's paddle-press as the pulse. Stem 2 (the boarding): percussion and low brass-like synth, a man's fight. |
+| `battle_heretic` | every regular battle from B03 on | **Variant regular-battle cue** (ADR 0204 §9; audio lane) | The party fights as heretics from the declaration on, through the rest of Act II. |
 | `unlamped` | B10 (first bars) | Zone loop (exists, M3-AUD-843) | It begins as Ch14 ends. |
 
 **SFX:**
@@ -409,6 +410,6 @@ The poling input's pacing and the bells' build are yours.
 ## 10. Open questions for review
 
 1. **"Outside the Level"** as the heresy's formal words (B03) is a proposal in our own idiom. Narrative may coin a better one; check it against the banned-terms list (the inspiring game's words for its church's heretics must not be echoed).
-2. **Names proposed here:** Commander **Brannoc Hale** (Toma's old commander) and Warden **Dask** (Merel's father, a living Warden). Both are checked against `tools/banned_terms.txt`. Narrative may rename them.
+2. ~~Names~~: **approved by ADR 0204 §4**: Commander Brannoc Hale, Warden Dask, and "Outside the Level" (§1 above too).
 3. **The set piece (B06)** is design default (b). If Combat finds the chapter too fight-heavy with B09 behind it, the steps can become a cutscene with Kerrid's last-onto-the-barge kept. The rhyme with Ch8's stair is the reason to keep it.
 4. **What happens to Merel** is left for Act III (`ch14_merel_taken`). Narrative decides; this sheet's suggestion is that she lives, held in her father's house, and the Ch18 revisit can find her.

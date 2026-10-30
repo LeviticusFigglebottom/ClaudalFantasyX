@@ -155,7 +155,7 @@ Shot ids are proposed in §7 (A = Ansedra, S = the Sanctum, R = the Archive's re
 - **The mechanic:** the **document reader** (M4-A2P-080). Liss (the player, with Liss) pulls ledgers. Each opens in the reader as a spread of Lit Age lamp-ledger pages (loc-keyed record texts: M4-A2P-004). The player can **lay two or three records side by side** and mark matches. Ysolde reads the Lamptongue aloud on request (her line per record). No fail state: the reader only records what's been found.
 - **What day one finds** (three records the player must open; others optional):
   1. **A Lamplighter's lamp-ledger** of the First Rising: an engineer's log of binding glimmer into the anchor-engines at Iskarra, with the binders' names and marks, among them a **Saltwright-style line-mark** on a founder's signature line. Liss: *"That's a wright mark. On a founder."* (They were binders.)
-  2. **The Binding Ledger:** an entry recording that the founders **bound themselves and the storm together**: "the Cage made, the heart sung in, the watch kept by one". Ysolde translates it flat. Asha reads over her shoulder and goes still.
+  2. **The Binding Ledger:** an entry recording that the founders **bound themselves and the storm together**. The page is **torn** across: what's left reads only *"…the Cage made… …the heart sung in… …kept by one…"* (ADR 0204 §15: fragmentary, a torn line, not a statement). Ysolde translates the fragments flat and doesn't guess at the gaps. Asha reads over her shoulder and goes still.
   3. **The first Salt Edict's draft**, in the margin of a later ledger, in a clear hand: *"Forbid the binding, that the binding be kept."* Liss reads it twice. *"So only they bind."* (bible §6 creed: "The Order forbids binding so that only the Order binds.")
 - Sets `ch13_read_ledgers`. **Rule 1:** nobody draws the conclusion about who's still alive. ~80 words of spoken lines, plus the record texts (M4-A2P-004 writes them, at about 300 words over the three days).
 
@@ -405,5 +405,5 @@ Check §0's rules against every shot, especially:
 ## 10. Open questions for review
 
 1. **The record texts' wording** (B07's three, B08's margin, B09's signatures) is M4-A2P-004's. This sheet fixes only what they must show. The Lead reviews them against ADR 0016 (b) for how much they say: the ledgers show binding, the roll shows *kept/spent*, the hands show continuity, and nothing names the Abiding.
-2. **"The Binding Ledger" phrase** ("the Cage made, the heart sung in, the watch kept by one") gives the player the founding mechanism in nine words. If the Lead thinks that spends Ch16's Choir truth early, cut it to "the founders bound themselves and the storm together" (act_outline's own words) and leave "the heart sung in" to Kesh. ADR 0016 keeps for the Choir only *what the Hush does to the singer*, so this line is probably safe, but the call is the Lead's.
+2. ~~The Binding Ledger phrase~~: **resolved by ADR 0204 §15**: it stays, as a torn fragment (B07), and the Choir truth lands in Ch16.
 3. **Sefir's "Be level, Okeru" / "And still" (A06)** makes Ch14's unanswered "Be level" land. Keep both or neither.

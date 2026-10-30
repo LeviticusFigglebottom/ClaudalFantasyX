@@ -99,7 +99,7 @@ Shot ids: K01–K07 are keth_pass.md's composed shots; the rest are proposed in 
 ### B02. The switchbacks (P, 8 min)
 - **The zone:** three switchback flights along the cliff (the greybox ramps; the kit's `keth_road_switchback`, `keth_scree_slope`), with pass-cords on the drop side and cairns with cords tied round them. Snow in the air in gusts (weather only, rule 1).
 - **Systems:**
-  - random encounters (M4-C11-03: `ridge_lynx` pounces on the weakest, `cord_moth` unravels a buff, `scree_crawler` is armoured, so Kerrid is the answer);
+  - random encounters (M4-C11-03: `ridge_lynx` pounces on the weakest, `cord_moth` unravels a buff, `scree_crawler` is armoured, so Kerrid is the answer). ADR 0204 §2: the lynx and the crawler carry **snow and grit, never frost**;
   - a save shrine at the second saddle (an Order shrine, an old one);
   - one chest.
 - **Barks** (~110 words):
@@ -237,9 +237,9 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-012 adds them). 
 
 **Arena:** `keth_seep_terrace` (env-art, M3-ENV-717): the old road's paved top, the seeping wall behind the Ram, the drop to the switchback behind the camera. Staged ids (M3-BPR-419; M3-BPR-408 has its charge camera): enemy `avalanche_ram`; no phases (act2_finals.md: stem 2 is the bellow's rage under 50% HP).
 
-**The fight** (one phase, two moods):
+**The fight** (two phases; ADR 0204 §6 keeps the creatures-b lane's `torn_fleece` phase, and Combat may cut it with sim data):
 - **The charge:** telegraphed (one turn: it lowers its head, `charge_side` camera, M3-BPR-408), a heavy blow on the front line. Each charge that lands against the wall **brings down stone and scree** off the broken coping: a **field hazard** (rule 1: never snow). It is a `field_rules` row: the party side gains a stacking **Slow** (or a flat hit each turn) while the scree field is up, round by round, until cleared. Ysolde's fire burns the seep-soaked grass and **clears the field** (`clears_field`), as Virel cleared Ch8's dark.
-- **The rage (under 50%):** stem 2. It bellows (a cast) and gains Haste for two turns. Toma's Provoke and counters keep it off the back line, and Kerrid's armour break on the matted fleece opens the seep-lit partings (weak points: `spawn_wound`).
+- **The rage (`torn_fleece`, under 50%):** the matted wool tears open on the charges (wet wool, never ice: ADR 0204 §2, M4-A2P-059) and the seep-lit partings show. Stem 2. It bellows (a cast) and gains Haste for two turns. Toma's Provoke and counters keep it off the back line, and Kerrid's armour break on the matted fleece opens the seep-lit partings (weak points: `spawn_wound`).
 - **Hesk isn't bound yet** (B10 comes after), so the fight uses the party and the first four Vowbound.
 
 **What it teaches:** mind the field. The longer the fight, the worse the ground. Clear it or end it.
@@ -256,7 +256,8 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-012 adds them). 
 |---|---|---|---|
 | `keth_pass` | B01, B02, B03 (stripped), B05 (in), B13 | Zone loop (exists, M3-AUD-841) | — |
 | `avalanche_ram` | B06 | Boss, two stems (exists, M3-AUD-845) | — |
-| `quellan` | B08, B12 (night, fire-side) | Zone loop (exists, M3-AUD-841) | B12 wants a sparse night mix (a stem mute). |
+| `quellan` | B08 | Zone loop (exists, M3-AUD-841) | — |
+| `ysolde_theme` (reprise) | B12 | Reprise (ADR 0204 §12) | Ysolde's confession reprises her theme, sparse, by the fire. |
 | `cloudloom` | B09, B10 (bed), B11 (stripped) | **Zone loop**, ~120 s (not yet written: act2_finals.md; M4-A2P-091) | The open-roofed weaving-hall: wind through cords as a texture, a plain sung line (Ullari timbre), high and clear. Holy without being churchly: no Order hum, no organ-like pad. Cold colour, nothing icy. |
 | `hesk_bound` | B10 (C03) | **Sting**, ≤ 8 s (not yet written; M4-A2P-091) | The fifth verse's first phrase in a plain, steady woman's voice, a reader's. Ends on *mir*. |
 | `hesk_summon` | (her first battle call) | Sting ≤ 6 s (M4-A2P-091) | — |
@@ -330,6 +331,8 @@ New shot ids for `ch12/keth_pass`, `ch12/quellan` and `ch12/cloudloom` (to add t
 ---
 
 ## 9. Requests to other roles
+
+**Footsteps (ADR 0204 §11):** the pass's road is `slate`, the weather drifts are `snow`; env-art marks the surfaces.
 
 ### Rendering (M4-A2P-049)
 1. **Breath fog** (B03; everywhere outdoors in Ch12): a per-actor breath VFX on every living character in cold zones, **never on Kerrid**, in cutscenes and in the field. A data flag per actor (`breathes: false` on Kerrid), so no later chapter forgets it.
