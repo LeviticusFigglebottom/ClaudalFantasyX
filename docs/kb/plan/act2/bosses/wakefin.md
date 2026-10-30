@@ -7,10 +7,12 @@ owner: creatures-b
 ---
 # The Wakefin (`wakefin`), Ch15 boss: design sheet (draft: pre-gate)
 
-**Built:** mesh, rig and 5 clips (`idle`, `attack`, `cast`, `hit`, `ko`; [art sheet](../../../art/creatures/act2/wakefin.md),
-the open spine wounds of M3-CRE-635). Choreo has its intro (`boss`, 2.4 s), the blade-under gather and camera pressure
-(M3-BPR-418). Music `wakefin` exists. **Missing:** the enemy row, skills, a clip per skill, `intro`, `ready`, `hit_b`,
-`idle_b`, the breach rig, the anchors, the darkness-lit telegraphs (M4-A2P-062).
+**Built:** the model at the final bar with its move pass (M4-CRB-004, [art sheet](../../../art/creatures/act2/wakefin.md)
+"As built"): the `breach` root, the anchors, a clip per proposed skill, `intro`, `ready`, `idle_b`, `hit_b`, the
+`close_circle` phase (`phase_close`, `idle_close`, its stance clips, the torn tip) and the KO, with the contacts and the
+phase's `clips` map in creatures.json. Choreo has its intro (`boss`, 2.4 s), the blade-under gather and camera pressure
+(M3-BPR-418). Music `wakefin` exists. **Missing:** the enemy row and skills (combat), the staging at sea and the
+darkness-lit telegraphs (M4-A2P-062).
 
 **What the fight teaches:** the dark doesn't hide the rules. It is fought on the drifting, unlamped bridal barge, with
 Tobin's bier under the stern canopy. Its telegraphs are sounds and the sea-glow, and the timeline still shows every
@@ -23,7 +25,7 @@ turn (pillar 4). It is a quiet, cold fight before the act's emotional peak (Kerr
 - **On a strike:** the whole fish breaches alongside, 6 m long, bill first. The body is wet lacquer black, so it only
   reads against the sea-glow it throws up. The breach must clear the rail by at least 1.2 m so its outline sits
   against the brighter water, not the dark deck.
-- **Facing:** broadside to the camera when it circles (`stand_in.yaw_deg` 60); the blade's flat faces the camera on the
+- **Facing:** broadside to the camera when it circles (`stand_in.yaw_deg` 90 at the staging in the art sheet; 60 as drafted); the blade's flat faces the camera on the
   pass nearest the party, never edge-on. An edge-on blade at 12 m is a stick.
 
 ## 2. Materials
@@ -64,7 +66,23 @@ breach arcs over the rail, and the sweep stays above the deck by at least 0.3 m.
 | phase `close_circle` *(proposed)* | `phase_close` *(proposed)* (2.0 s) | — | it rams the hull once (the barge rocks), then circles tight | — | `vfx_phase`; the barge's rock is staging (battle-presentation) |
 | KO | `ko_close` *(proposed)* | — (3.0 s) | it rolls belly-up and drifts away, the wake fading | — | the sea goes quiet |
 
-## 5. Phase change *(proposed: the plan names none)*
+### Clip map for combat (built, M4-CRB-004)
+
+Every clip below exists; creatures.json has the `contact` times and the phase's `clips` map. Combat adds
+`clip_by_skill` once the skills are in skills.json (the validator rejects unknown skill ids).
+
+| Skill id (proposed) | Clip | Contact (s) | In `close_circle` |
+|---|---|---|---|
+| `fin_cut` | `attack` | 0.8 | `attack_close`, 0.8 |
+| `sound_dive` | `dive` | 1.0 (it is under; the blade's top stays in view) | `dive_close`, 1.0 |
+| `wakefin_rise` | `rise_strike` | 0.85 | `rise_strike_close`, 0.85 |
+| `wake_wash` | `wake_wash` | 0.75 | `wake_wash_close`, 0.75 |
+| `bill_strike` | `bill_strike_close` | 0.7 | (phase 2 only) |
+| phase `close_circle` | `phase_close` → `idle_close` (hides `BladeTip`) | 0.85 (the ram) | — |
+
+The KO is `ko` (`ko_close` in the close circle, through the `clips` map), not `ko_close` alone.
+
+## 5. Phase change *(proposed: the plan names none; built)*
 
 - **Trigger:** 50% HP.
 - **Clip:** `phase_close`, ending on `idle_close`.

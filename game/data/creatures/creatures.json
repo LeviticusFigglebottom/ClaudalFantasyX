@@ -141,9 +141,19 @@
     },
     "wakefin": {
       "scene": "res://game/creatures/wakefin/wakefin_battle.tscn",
-      "contact": {"attack": 0.8, "cast": 1.5},
+      "vfx_anchors": {"core": "vfx_core", "wound": "vfx_wound"},
+      "contact": {"attack": 0.8, "cast": 1.5, "dive": 1.0, "rise_strike": 0.85, "wake_wash": 0.75, "phase_close": 0.85,
+                  "attack_close": 0.8, "cast_close": 1.5, "dive_close": 1.0, "rise_strike_close": 0.85,
+                  "wake_wash_close": 0.75, "bill_strike_close": 0.7},
+      "loop": ["idle", "ready", "idle_close", "ready_close"],
       "ko_fade_sec": 1.2,
-      "stand_in": {"yaw_deg": 60.0},
+      "stand_in": {"yaw_deg": 90.0},
+      "phases": {
+        "close_circle": {"clip": "phase_close", "idle": "idle_close", "hide_after": ["BladeTip"], "sec": 0,
+                         "clips": {"attack": "attack_close", "cast": "cast_close", "dive": "dive_close",
+                                   "rise_strike": "rise_strike_close", "wake_wash": "wake_wash_close",
+                                   "hit": "hit_close", "hit_b": "hit_b_close", "ready": "ready_close", "ko": "ko_close"}}
+      },
       "portrait": {"yaw_deg": 60.0, "pitch_deg": 10.0, "rim_energy": 2.8, "kick_energy": 1.8}
     },
     "tannin_archer": {

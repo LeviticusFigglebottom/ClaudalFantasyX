@@ -454,7 +454,7 @@ func test_the_avalanche_ram_charges_bellows_and_lies_down() -> void:
 func test_the_wakefin_circles_cuts_dives_and_floats_belly_up() -> void:
 	var w := _actor(WAKEFIN)
 	assert_eq(w.current_clip, &"idle")
-	assert_false(w.enter_phase(&"uprooted"), "a boss without phases: its sheet asks for none")
+	assert_false(w.enter_phase(&"uprooted"), "not one of its phases (its own is close_circle)")
 	assert_true(w.play_action(&"", &"physical"))
 	assert_eq(w.current_clip, &"attack", "the cut")
 	assert_true(is_equal_approx(w.contact_time(&"attack"), 0.8), "the blade sweeps the deck at 0.8 s")
@@ -463,11 +463,17 @@ func test_the_wakefin_circles_cuts_dives_and_floats_belly_up() -> void:
 	var skel := w.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
 	var bones: Array[String] = ["root", "head", "bill", "fin_0", "fin_1", "fin_2", "pec_l", "pec_r"]
 	bones.append_array(["tail_upper", "tail_lower"])
+	# M4-CRB-004: the breach root (its travel), the blade's torn tip, and the three VFX anchors
+	bones.append_array(["breach", "blade_tip", "vfx_wound", "vfx_core", "vfx_phase"])
 	for k in 10:
 		bones.append("spine_%d" % k)
 	for b in bones:
 		assert_true(skel.find_bone(b) >= 0, "the rig has %s" % b)
-	assert_eq(skel.get_bone_count(), bones.size(), "spine 10, the bill, a blade of 3, pectorals, tail lobes")
+	assert_eq(
+		skel.get_bone_count(),
+		bones.size(),
+		"breach, spine 10, the bill, a blade of 3 and its tip, pectorals, tail lobes, three anchors"
+	)
 	var player := w.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
 	var fin := skel.find_bone("fin_2")
 	player.play(&"idle")
