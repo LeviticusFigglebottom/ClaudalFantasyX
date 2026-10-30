@@ -666,7 +666,9 @@ func evaluate(shot: CameraShot, delta: float) -> CameraPose:
 			var from := _smoothed(shot, "follow_pos", desired, rate, delta) as Vector3
 			return CameraPose.looking(from, aim_target, fov, shot.dof_dict(), shot.roll_deg)
 	var fixed_aim := aim_target if subject != target else _to_world(shot.look_at)
-	if subject == target and target != null:  # a safety net: a locked frame that would lose the leader turns to him
+	# A safety net: a volume's locked frame that would lose the leader turns to him. A cutscene's shot is composed
+	# on purpose (Ch1's O10 frames a gull, not Rhen: PC QA row 59), so it never turns.
+	if subject == target and target != null and shot != _scripted_shot:
 		fixed_aim = keep_in_frame(
 			_to_world(shot.position),
 			fixed_aim,
