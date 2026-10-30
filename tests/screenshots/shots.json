@@ -9812,6 +9812,171 @@
         },
         "time_scale": 4.0
       }
+    },
+    {
+      "id": "liss_clip_press_wound",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/liss/liss_clip_press_wound.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_clip_fight_free",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/liss/liss_clip_fight_free.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_clip_lift",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/toma/toma_clip_lift.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_c_clip_withdraw_wounded",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_c_clip_withdraw_wounded.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_pull_pin",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/merel_pull_pin.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kerrid_clip_turn_palms",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_clip_turn_palms.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "pell_clip_kneel",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/pell/pell_clip_kneel.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_clip_remove_pin",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_clip_remove_pin.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_clip_square_pages",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_clip_square_pages.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_clip_wash_hand",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/liss/liss_clip_wash_hand.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_knock",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_knock.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_clip_touch",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_touch.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_clip_sleep_sitting",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_sleep_sitting.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_clip_bow",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/toma/toma_clip_bow.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tobin_lift",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/tobin_lift.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }
