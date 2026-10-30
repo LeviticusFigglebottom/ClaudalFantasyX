@@ -1363,7 +1363,7 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
       I'm noting that for story, not editing their drafts.
   - **Capacity offer (ADR 0207 §1):** cinematics can take frames, staging or cutscene tooling for another track by
     request task.
-- **Lead's question: the Haluna add-to-tree split (the human's black-screen report). Status @ this commit:**
+- **Lead's question: the Haluna add-to-tree split (the human's black-screen report). Status, MERGE-READY @ fdc9ece5d (the revert):**
   - **97c591c34 is reverted here.** It deferred Asha's beach pose one frame during a swap.
     - Probe runs on this head and the earlier one (scene_swap_probe `--to=haluna --resident-loads --warm-resident`,
       headless): with the deferral, 3 of 19 crashed (signal 11, mid-swap, just after the prewarm finishes); without
