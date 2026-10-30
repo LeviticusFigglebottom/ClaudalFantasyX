@@ -852,6 +852,8 @@ DLG_CH10_STRAP_004,Many walked through. Some walked back.
 DLG_CH10_STRAP_005,I will leave it. It is where he put it down.
 DLG_CH10_SCRAPE_001,Not ours. Not wright marks. Somebody counting.
 DLG_CH10_SCRAPE_002,Standing places.
+DLG_CH10_SHRINE_001,A ring of shells hangs from a mangrove root over the water. Every one has a name cut on the inside. They knock together softly when the wind moves.
+DLG_CH10_SHRINE_002,The Kirru never asked what the Order thinks of you. The shells go on knocking.
 DLG_CH10_NETS_001,It is in the water now. Thank you.
 DLG_NAME_KIRRU_KIRRU_WIDOW,Kirru widow
 DLG_CH10_NETS_002,My mate's net is still in the channel. Where the three went. I cannot go there yet.
@@ -925,6 +927,8 @@ DLG_CH11_MARK_012,He was the best of us. Everybody says. And you're sitting on h
 DLG_CH11_BENCH_001,Pair-built.
 DLG_CH11_BENCH_002,Yeah.
 DLG_CH11_NHOA_001,She is here. She is not lifted. Do not speak yet. Please.
+DLG_CH11_SHRINE_001,"The Level-stone is cold. The lamp beside it still burns, but the shrine doesn't know you any more."
+DLG_CH11_SHRINE_002,"A Level-stone on the highest dry step, and beside it a lamp the keepers say has never once gone out. The water is two steps down."
 DLG_CH11_ALTAR_001,"One more year, on that step. Thank you."
 DLG_CH11_ALTAR_002,The altar lamp has to go up a step before the water reaches it. There used to be four of us to lift it.
 DLG_CH11_ALTAR_003,Toma lifts it.
@@ -1003,6 +1007,8 @@ DLG_CH12_CORD_002,Somebody loved this animal.
 DLG_CH12_PRAYERS_001,What do they say?
 DLG_CH12_PRAYERS_002,Prayers. A pilgrim's devotions. The Cantor who stayed here was Ullari: they tie everything.
 DLG_CH12_PRAYERS_003,It is very old wool.
+DLG_CH12_SHRINE_001,"The Order's stone won't answer. The cords the Ullari hung on it are still there, knotted for the dead, and nobody has taken them down."
+DLG_CH12_SHRINE_002,"A Level-stone by the well, hung all over with Ullari cords. Somebody has knotted a name onto the Order's stone, and somebody else has left it there."
 DLG_CH12_DCORD_001,"That's my father's cord. Red, with the double knot. He tied it on her the spring she was born."
 DLG_NAME_ULLARI_WOMAN_DORRO_S_DAUGHTER,Dorro's daughter
 DLG_CH12_DCORD_002,I'm sorry. About her. And him.
@@ -1082,6 +1088,8 @@ DLG_CH13_REG_006,You did.
 DLG_CH13_REG_007,I'll write mine under hers.
 DLG_CH13_MOORINGS_001,They pole well here.
 DLG_CH13_MOORINGS_002,Too well.
+DLG_CH13_SHRINE_001,"The basin is still, as it always is. It shows your faces. It doesn't show you anything else."
+DLG_CH13_SHRINE_002,A small basin of still water on a white plinth. It holds the sky without a ripple. Pilgrims touch the rim and don't touch the water.
 DLG_CH13_FLAME_001,Straight as a mast. I've walked it twenty times. Thank you.
 DLG_NAME_TOWNSFOLK_YOUNG_LAMPLIGHTER,Young Lamplighter
 DLG_CH13_FLAME_002,"It leans. Every time I walk, it leans. Six of us carry them in, and mine's the one that leans."
@@ -1245,6 +1253,7 @@ DLG_CH15_CARRY_006,I have said 'Be level' every morning of my life. I am not goi
 DLG_CH15_CARRY_007,I know what a camp looks like after. I've stood in two.
 DLG_CH15_CARRY_008,I'm not going to say it's all right.
 DLG_CH15_CARRY_009,Let me carry him. Please. I don't ask you to forgive me. Let me carry him.
+DLG_CH15_SHRINE_001,"A carved prow on an old hull, hung with small lamps, one for each of Hollowmere's drowned. Somebody keeps them trimmed. Nobody here asks whether you're inside the Level."
 DLG_CH15_PHRASE_001,"You're the Cantor. You sing for a living, then. Try this one. It's for the water off the bow."
 DLG_CH15_PHRASE_002,There are no words.
 DLG_CH15_PHRASE_003,The water doesn't know words. It knows low and high. Low in the middle. Like that.
@@ -1345,6 +1354,7 @@ DLG_CH16_COUNT_006,Put a stone on it. For whoever it was.
 DLG_CH16_SHIP_001,This is as far as she floats. We'll wait. As long as it takes.
 DLG_NAME_HULL_CAPTAIN_SHIP_S_CAPTAIN,Ship's captain
 DLG_CH16_SHIP_002,Keep it dry.
+DLG_CH16_SHRINE_001,"A cairn taller than Kerrid, white with salt. The waders say whoever reaches it may rest here. Every stone was carried out by someone who meant to walk home again."
 DLG_CH16_CAIRN_001,This one fell. The next ones will walk past it and be lost.
 DLG_CH16_CAIRN_002,Then we put it back.
 DLG_CH16_CAIRN_003,Big stones first. Then small.
