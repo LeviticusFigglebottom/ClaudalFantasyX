@@ -589,10 +589,35 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **2026-10-29 ~23:15, IN PROGRESS: the Lead's final-quality audit of Prologue–Ch4 as played, on `lead/gate-big18`
-  @ d00d3284** (a scratch worktree; it holds env-art's head). Per zone, at player eye: four-way vistas at every spawn,
-  every NPC from the front, every interactable, door and zone transition from its approach (~330 stills, points from
-  each zone's layout and a headless dump of its scene). Findings and fixes follow here as they land.
+- **MERGE-READY @ 312270ef (+ this log): the Lead's final-quality audit of Prologue–Ch4 as played, on
+  `lead/gate-big18` @ d00d3284.** 330 player-eye stills in nine zones, all viewed: four-way vistas at every spawn, every
+  NPC from the front, every interactable, door and zone transition from its approach (points from each zone's layout
+  and a headless dump of its scene).
+  - **Fixed in env-art's lane, each viewed after:**
+    - **Oruvel:** the dive raft's carved gull stood on air (DiveGull is a marker in the air); new kit piece `gull_post`
+      (a lashed pole and lintel) carries it. 5331498f.
+    - **Haluna:** the chapel court's west view and the causeway head's dunes read as bare sand (the scatters stopped at
+      x -150 / -40); the village scatters run to x -260 and the dunes to -90 at the same density, with frangipani and
+      palms in the chapel's west sightline. f44e218d.
+    - **The causeway:** one even saltgrass size read as a tiled field; clumps now grow with their patch. e7d5852a.
+    - **Ch4's islet landing:** one smooth dark slab at night; reef boulders and rubble round its rim, low ledges off the
+      walk, tide pools and wrack (`islet_landing`, the walk band kept level). 312270ef.
+  - **Filed (not env-art's files):** **M3-ENV-754** (slice-polish): the Underway zone's sun casts hard window panes on
+    the floor (GreyboxZone's sun has no angular size; the arenas' M3-ENV-1323 values). **M3-ENV-755** (slice-polish):
+    the First Verse's sky is one flat tan (its depth fog's `fog_sky_affect` 1.0 covers the dusk gradient).
+  - **Seen and fine:** the Prologue's city, the Underway's rooms, Oruvel's town and NPCs, Haluna's lanes, shops and
+    NPCs, the Shell Shrine, the ferry and the derelict (night), the wake night. Frames inside a wall, a party member or a
+    prop are the audit rig's (a point on a spawn or against a block), not the dressing.
+  - **Not fixed:** the Prologue plaza's joints show rows of bright sub-pixel ticks at a distance. Three tries (the slab
+    sides' occlusion, no salt, 2.4 cm joints) changed nothing on lavapipe, so all three are reverted (the plaza glb is
+    back to its pre-audit bytes). It looks like specular aliasing of the paving's flecks with no TAA. PC-QUEUE.
+  - **Checks:** `test_oruvel_kit`, `test_zone_dressing_ch01`, `test_iskarra`, `test_haluna_kit`, `test_haluna_dressing`,
+    `test_brightwater_ferry_kit`, `test_ch04_validate`, `test_causeway_gameplay` OK; Godot `--filter=haluna` 65/0,
+    `--filter=causeway` 16/0; validate_data, taskboard. Blender: oruvel, haluna, brightwater_ferry kits rebuilt (only the
+    named pieces and the manifests changed).
+  - **Drift to expect at the gate:** `zone_oruvel_*` (the gull post), Haluna shots looking west from the chapel or the
+    causeway head, the causeway's C-shots and `causeway_*` battle backdrops (the grass sizes), `ch04_*` and
+    `brightwater_landing_*` that see the islet.
 - **MERGE-READY @ e557740d: the Lead's two big17 reds (both already red on big16 @ ff82858c), fixed; integration
   ccf44ba4 merged in first.**
   - **`test_iskarra_city::test_the_city_instances_its_pieces_with_kit_materials`** ("VigilLights has meshes"): my lit vigil
@@ -707,6 +732,11 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- **The night lagoon (Haluna, the Ch4 wake): reads too bright on lavapipe.** The shallows glow luminous cyan from the
+  dock end, with the moonlit white sand lifting it. Proposal: `HalunaMood.night_sea_glow` 0.12 -> **0.07** (colour
+  script rule 3 allows it; `haluna_mood.gd`), judged on the real GPU before changing it.
+- **The Prologue plaza's joint ticks:** rows of bright sub-pixel ticks in the paving's joints at a distance (lavapipe,
+  no TAA). Check with TAA at High; if they stay, the paving material needs a flecks fade by distance.
 - M2-ENV-12 / M2-RND-17: the Shell Shrine's cold first frame (188 ms measured on m2-slice) on hardware.
 - The Ch4 derelict at night (M3-ENV-1228): how her moon-fill reads at High (D01, the transom, the name-board).
 - `ch01_bell_room`: the room reads washed out in its warm haze on lavapipe (walls, door and Rhen visible). Judge the
