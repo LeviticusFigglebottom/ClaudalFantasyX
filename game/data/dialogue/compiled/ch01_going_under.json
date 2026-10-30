@@ -16,16 +16,18 @@
     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 24},
     {"op": "cue", "cue": "fade", "args": ["out", 0.4], "kwargs": {}, "src": 25},
     {"op": "cue", "cue": "camera", "args": ["U10"], "kwargs": {}, "src": 26},
-    {"op": "cue", "cue": "music", "args": ["going_under"], "kwargs": {"fade": 0.5}, "src": 27},
-    {"op": "cue", "cue": "fade", "args": ["in", 1.5], "kwargs": {}, "src": 28},
-    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "rhen", "count": 60, "drift": "down_seaward"}, "src": 29},
-    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 30},
-    {"op": "cue", "cue": "camera", "args": ["U11"], "kwargs": {}, "src": 31},
-    {"op": "cue", "cue": "wait", "args": [17.4], "kwargs": {}, "src": 32},
-    {"op": "cue", "cue": "fade", "args": ["out", 2.5], "kwargs": {}, "src": 33},
-    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 2.0}, "src": 34},
-    {"op": "line", "id": "ch01_under_002", "key": "DLG_CH01_UNDER_002", "speaker": "", "emotion": "neutral", "voice": "", "src": 35, "narrator": "rhen", "tags": ["vo"]},
-    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 36}
+    {"op": "cue", "cue": "light", "args": ["DiveLamp", "on"], "kwargs": {}, "src": 30},
+    {"op": "cue", "cue": "music", "args": ["going_under"], "kwargs": {"fade": 0.5}, "src": 31},
+    {"op": "cue", "cue": "fade", "args": ["in", 1.5], "kwargs": {}, "src": 32},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "under_rhen", "count": 60, "drift": "down_seaward"}, "src": 33},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 34},
+    {"op": "cue", "cue": "camera", "args": ["U11"], "kwargs": {}, "src": 35},
+    {"op": "cue", "cue": "wait", "args": [17.4], "kwargs": {}, "src": 36},
+    {"op": "cue", "cue": "fade", "args": ["out", 2.5], "kwargs": {}, "src": 37},
+    {"op": "cue", "cue": "light", "args": ["DiveLamp", "off", 2.5], "kwargs": {}, "src": 38},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 2.0}, "src": 39},
+    {"op": "line", "id": "ch01_under_002", "key": "DLG_CH01_UNDER_002", "speaker": "", "emotion": "neutral", "voice": "", "src": 40, "narrator": "rhen", "tags": ["vo"]},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 41}
    ]
   }
  }

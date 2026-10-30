@@ -24,13 +24,18 @@ Rhen [afraid]: Go! Don't look back, go! #line:ch01_under_001
 @wait 1.5
 @fade out 0.4
 @camera U10
+// M3-CIN-1232 (PC GPU QA, the dive's gaps): U10 and U11 are under the water now (Oruvel's UnderwaterRig), not on
+// the waterline; the warm light is his lantern (the stage's dive_lamp, below the lens), and the motes sink through
+// the frame from under_rhen rather than at the player, who is still up on the pen.
+@light DiveLamp on
 @music going_under fade=0.5
 @fade in 1.5
-@vfx glimmer_held at=rhen count=60 drift=down_seaward
+@vfx glimmer_held at=under_rhen count=60 drift=down_seaward
 @wait 4.0
 @camera U11
 @wait 17.4
 @fade out 2.5
+@light DiveLamp off 2.5
 @music silence fade=2.0
 Narrator(rhen) [neutral]: My father used to sing the currents. I hadn't heard it in eleven years. Then nothing. #line:ch01_under_002 #vo
 @wait 3.0
