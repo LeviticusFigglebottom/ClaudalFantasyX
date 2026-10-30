@@ -757,7 +757,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - The well's mouth is ringed off, so Pell kneels beside it, not over it.
   - Five shots viewed. Checks: ch11, walkable, snaps, field_camera, zone_cast.
   - Next: the Ch12 mount (0421).
-- MERGE-READY @ (this push)
+- MERGE-READY @ bbcea317b
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
