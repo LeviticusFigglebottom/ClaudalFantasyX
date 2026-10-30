@@ -1637,6 +1637,40 @@
       "mean_turns_min": {
         "smart": 30
       }
+    },
+    {
+      "id": "ch16_abiding_guard",
+      "chapter": "Ch16 boss (Sefir's Abiding guard at the Drowned Choir: the first and two guards who close ranks on him; Toma's Shell Breaker answers the first, Kerrid's cleaves the guards; the storm wakes at 50%; he yields at 25% and the guards go with him, the hand-over to the storm's set piece; act2_plan: the Act II boss curve, smart report only with an ease floor as ch05_cinder_matron; tuned by the chapters combat seat; the ch08_seawall loadout until M4-A2P-019)",
+      "kind": "boss",
+      "encounter": "ch16_abiding_guard",
+      "active": [
+        "toma",
+        "kerrid",
+        "asha"
+      ],
+      "reserve": [
+        "rhen",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          3
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          55,
+          80
+        ],
+        "smart": null,
+        "ward_guard": null
+      },
+      "p90_turns_max": 80,
+      "loadout": "ch08_seawall",
+      "swell": "good",
+      "mean_turns_min": {
+        "smart": 30
+      }
     }
   ]
 }
