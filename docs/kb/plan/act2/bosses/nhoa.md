@@ -10,9 +10,11 @@ owner: creatures-b
 
 **Built** (M3-CRE-642, in review): 14,820 triangles, 28 bones, 13 clips (`idle`, `idle_b`, `ready`, `attack`, `cast`,
 `hit`, `hit_b`, `defend`, `ko`, `victory`, `rise`, `dismiss`, `special`), five slots; the Act III held form with its
-`release` clip (M3-CRE-647). [Art sheet](../../../art/creatures/vowbound/nhoa.md). **Missing:** the `vowbound.json` row
-and skills (M4-A2P-024), `clip_by_skill`, the two anchors, the per-skill clips below, the summon and bind cinematics
-(M4-A2P-061, 071), Farewell-Tide's rising column (VFX), the `nhoa_bound` and `nhoa_summon` stings.
+`release` clip (M3-CRE-647). [Art sheet](../../../art/creatures/vowbound/nhoa.md). **Final pass (M4-CRB-006, in
+review):** the two anchors, `deep_well` and `echo`, every clip played from idle's first frame, Farewell-Tide's lift,
+and the audit fixes (15,672 triangles, 30 bones, 16 clips; see "As built" below). **Missing:** the `vowbound.json` row
+and skills (M4-A2P-024), and with them `clip_by_skill` (ready below); the summon and bind cinematics (M4-A2P-061, 071);
+Farewell-Tide's rising column (VFX); the `nhoa_bound` and `nhoa_summon` stings.
 
 **Who:** Ressa, the 56th Cantor, the only Kirru Cantor and Pell's clutch-sister. Bound in Lowlight's drowned sanctum at
 the foot of the well-shaft (Ch11). **Grave and kind: a sister, not a spirit of winter.**
@@ -50,8 +52,8 @@ As built (28 bones). **Add (unweighted):** `vfx_core` (the chest, on `spine_2`),
 | ready | `ready` (built) | — (1.4 s) | head lifts, hands spread, strands gather | — | — |
 | `attack` | `attack` (built) | 0.0–0.55 s: the hand drawn back across her body → 0.55 s (1.2 s) | an open-handed sweep, strands following | one foe | — |
 | `silt_fall` *(proposed)* | `cast` (built) | 0.0–0.8 s: both hands drawn up, strands streaming → 0.8 s (1.6 s) | hands pushed forward | one foe: Ice | a mote-swarm settles onto the target like silt; a cold haze, no crystals |
-| `deep_well` *(proposed)* | `deep_well` *(proposed)* | 0.0–0.9 s: she sinks 0.3 m, arms wide and low → 1.0 s (1.8 s) | her arms sweep up from below | all foes: Ice, Slow | the swarm rises from the water under the foes and settles on them |
-| `nhoa_echo` *(proposed)* | `echo` *(proposed; not built)* | 0.0–0.5 s: a mirror-still pause, head cocked toward the foe → 0.65 s (1.4 s) | her own version of the move, in strands | as the copied action | a faint double of her outline (VFX) |
+| `deep_well` *(proposed)* | `deep_well` (built) | 0.0–0.9 s: she sinks 0.28 m, arms wide and low → 1.0 s (1.8 s) | her arms sweep up from below | all foes: Ice, Slow | the swarm rises from the water under the foes and settles on them |
+| `nhoa_echo` *(proposed)* | `echo` (built) | 0.0–0.5 s: a mirror-still pause, head cocked toward the foe → 0.65 s (1.4 s) | her own version of the move, in strands | as the copied action | a faint double of her outline (VFX) |
 | `farewell_tide` (Swell) | `special` (built) | 0.0–1.45 s: arms lifted, strands drawn up → 1.45 s (2.4 s) | the column | all foes | **the only Vowbound finisher whose motes go up**: the settling silt turning and rising (`glimmer_lift`); `finisher` shot, then up the column |
 | defend | `defend` (built) | — (1.2 s) | arms crossed, strands wrapped round her front | — | — |
 | hit | `hit`, `hit_b` (built) | peak 0.1 s | the neck snaps back, strands scatter and settle | — | — |
@@ -90,3 +92,22 @@ from `idle`'s first frame. The Act III held form (`release`) is built and is Act
 1. Copy limits: does `nhoa_echo` copy a boss's charge skill, or only ordinary skills? Draft: ordinary skills only.
 2. Echo check: Ice in fourth place is the residual overlap ADR 0015 accepted. Her setting is unfrozen and her beat is
    Pell's silence. No skill name here is a tiered spell name.
+
+## As built (M4-CRB-006, 2026-10-30)
+
+- **Anchors** (unweighted): `vfx_core` in her chest on `spine_2`, `vfx_keepsake` at the name-shell on `neck_0`.
+- **Clips:** `idle`, `idle_b`, `ready`, `rise`, `dismiss`, `attack`, `cast`, `deep_well`, `echo`, `hit`, `hit_b`,
+  `defend`, `ko`, `victory`, `special`, and `release` (the held form). Every clip is played from idle's first frame;
+  `rise` starts folded. Lowest vertex 0.053 m (the KO), so nothing goes into the water.
+- **Farewell-Tide** lifts her 0.2 m at the contact (0.23 m through the hold), with the strands drawn up over the hem:
+  the only finisher that rises.
+- **The echo** is its own clip: a mirror-still pause with the head cocked and the near palm lifted, then a thrust at
+  0.65 s. If combat wants the copy to replay her `attack`, `cast` or `deep_well` after the pause instead, that's a
+  presentation choice; every one of those clips exists.
+- **Clip map, ready to paste** into creatures.json `nhoa` once M4-A2P-024 adds the skills (validate_creatures rejects
+  unknown skill ids before that):
+  `"clip_by_skill": {"silt_fall": "cast", "deep_well": "deep_well", "nhoa_echo": "echo", "farewell_tide": "special"}`.
+  Contacts (in creatures.json on `nhoa` and `nhoa_held`): attack 0.55, cast 0.8, deep_well 1.0, echo 0.65,
+  special 1.45.
+- **Audit:** the beads shade as even points of light (no crystal facets, ADR 0015); the body is dry and matte; the
+  neck and head are denser; the KO's crowns stay up, not lowered at the foes. Details are in the art sheet.

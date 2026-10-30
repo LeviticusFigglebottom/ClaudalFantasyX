@@ -274,8 +274,8 @@
     "nhoa": {
       "scene": "res://game/creatures/nhoa/nhoa_battle.tscn",
       "vowbound": true,
-      "vowbound_pending": "M3-CRE-642 asks Combat for the vowbound.json row (docs/kb/art/creatures/vowbound/nhoa.md, open questions)",
-      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "vowbound_pending": "M4-A2P-024 (combat) adds the vowbound.json row and skills; the clip map is ready in docs/kb/art/creatures/vowbound/nhoa.md (As built, M4-CRB-006)",
+      "contact": {"attack": 0.55, "cast": 0.8, "deep_well": 1.0, "echo": 0.65, "special": 1.45},
       "stand_in": {"yaw_deg": -90.0, "height": 3.2, "radius": 0.5}
     },
     "hesk": {
@@ -325,7 +325,7 @@
     "nhoa_held": {
       "scene": "res://game/creatures/nhoa/nhoa_held_battle.tscn",
       "ko": "release",
-      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "contact": {"attack": 0.55, "cast": 0.8, "deep_well": 1.0, "echo": 0.65, "special": 1.45},
       "phases": {"release": {"clip": "release", "hold": true}},
       "stand_in": {"yaw_deg": 90.0, "height": 3.2, "radius": 0.5}
     },
