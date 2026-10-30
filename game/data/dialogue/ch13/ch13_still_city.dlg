@@ -16,7 +16,7 @@ location: ch13/ansedra
 @camera A02
 @sfx pole_no_wake
 @wait 2.0
-Rhen [worried]: They're not making ripples. How are they not making ripples? #line:ch13_city_001
+Rhen [worried]: They're not making ripples. How are they not making ripples? I make ripples in a bath. #line:ch13_city_001
 @wait 1.5
 @camera A03
 @mark kerrid kerrid_moorings walk
