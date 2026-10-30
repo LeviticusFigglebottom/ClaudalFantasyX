@@ -1160,6 +1160,17 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     coverage is clean, `--check` is byte-identical, test_blender_builds OK. Not run under Blender here (none in
     this container).
   - Noted: the three Haluna shopkeeper rows in haluna_villagers.json go (characters' M3-CHR-512); I won't restore them.
+- **PC GPU QA pass 5, row 58, MERGE-READY @ 95fa3be28** (row 60 is fixed per the PC):
+  - **Hullgnaw:** a cool key from O16's side and a cyan rim from seaward (`hullgnaw_lights`, switched on for the
+    scene). On lavapipe the ribs and head now read against the storm water.
+  - **The Child:** Rhen's lantern side keys the children warm and a cool rim parts them from the net
+    (`pen_lights`). P01 tightens to 28° on them.
+  - **O07 / Sadi:**
+    - Pass 5's "two boats, no Sadi" was the big20 camera regression I fixed earlier; O07 is the name-board insert
+      again.
+    - The beat sheet makes O07 the one insert, with no one in it, so Sadi gets her own single, O07_sadi, for her
+      lines (her ship behind her). New pending still `ch01_sadi_mooring`.
+  - Viewed: all four stills. The GPU should confirm the Hullgnaw's light (PC-QUEUE).
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
