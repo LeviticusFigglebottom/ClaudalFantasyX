@@ -9375,6 +9375,134 @@
         },
         "time_scale": 4.0
       }
+    },
+    {
+      "id": "ch12_breath_p04",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch12/keth_pass/keth_pass.tscn",
+            "scene_id": "ch12_breath",
+            "spawn": "RamArena",
+            "hold_line": "ch12_breath_001",
+            "flags": [
+              "ch12_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch12_knot_p05",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch12/keth_pass/keth_pass.tscn",
+            "scene_id": "ch12_the_knot",
+            "spawn": "PassFoot",
+            "hold_line": "ch12_knot_002",
+            "flags": [
+              "ch12_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch12_voices_q04",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch12/quellan/quellan.tscn",
+            "scene_id": "ch12_forty_seven_voices",
+            "spawn": "FromPass",
+            "hold_line": "ch12_voices_001",
+            "flags": [
+              "ch12_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch12_hesk_c07",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch12/cloudloom/cloudloom.tscn",
+            "scene_id": "ch12_hesk",
+            "spawn": "Hall",
+            "hold_line": "ch12_prayers_001",
+            "flags": [
+              "ch12_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
     }
   ]
 }
