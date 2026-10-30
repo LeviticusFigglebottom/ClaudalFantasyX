@@ -295,7 +295,7 @@
       "scene": "res://game/creatures/ethren/ethren_battle.tscn",
       "vowbound": true,
       "contact": {"attack": 0.55, "cast": 0.8, "stop": 0.9, "ward": 0.8, "special": 1.45},
-      "clip_by_skill": {"level_hand": "cast", "hold_the_hour": "cast", "lacquer_screen": "cast", "still_water": "special"},
+      "clip_by_skill": {"level_hand": "cast", "hold_the_hour": "stop", "lacquer_screen": "ward", "still_water": "special"},
       "stand_in": {"yaw_deg": -90.0, "height": 2.5, "radius": 0.6}
     },
     "kesh": {
