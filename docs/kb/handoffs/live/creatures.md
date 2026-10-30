@@ -1036,3 +1036,9 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - Viewed: creature_rime_urchin (its baseline needs re-approval). Portrait re-baked.
   - LEAD-ASK (design's call, not ours): `rime_urchin` absorbs ice in enemies.json, and `rime_spine` has the ice element in skills.json. The name "Rime Urchin" and those ids stay unless design changes them.
 - **MERGE-READY @ f0ba253a.** BACKLOG EMPTY (05:40): your new urchin item is done; everything else is unchanged from 04:40.
+- **Your 05:52 relay:**
+  1. M4-A2P-056 is noted as ours (already in `review`).
+  2. The tortoise and scree crawler LOD1 was already done @ 664e7c86 (7,674 triangles, past 16 m).
+  3. **Rime urchin, water not ice: DONE @ 2894526a.** It absorbs water, and `rime_spine` is water. The ids, the name and the loc stay; the lore line still reads true of salt.
+     - Checks: validate_data clean; Godot battle 818/0 and creature 88/0; tools battle-data suites OK.
+- **MERGE-READY @ 2894526a.** BACKLOG EMPTY, the same as at 04:40.
