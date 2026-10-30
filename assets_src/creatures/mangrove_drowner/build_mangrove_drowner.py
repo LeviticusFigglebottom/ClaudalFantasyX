@@ -1069,16 +1069,17 @@ def rising_water_risen(specs: list[dict]) -> ck.Clip:
 
 def rising_water_clip(specs: list[dict]) -> ck.Clip:
     """rising_water (contact 1.0): the roots' arches lift and part over their planted feet, the mass heaves up and
-    the trunk rises a little with it (0-0.9 s, the tell), a last surge at 1.0 s, held, then it settles."""
+    the trunk rises with it (0-0.9 s, the tell), a last surge at 1.0 s, held, then it settles. The Act II boss feel
+    pass (10-30): the heave doubled; at the battle camera the party-wide call had moved 30 px on a 378 px body."""
     c = ck.Clip("rising_water", 2.0)
     for t, s in ((0.0, 0.0), (0.4, 0.35), (0.85, 0.75), (1.0, 1.0), (1.4, 0.9), (2.0, 0.0)):
         for i, spec in enumerate(specs):
-            bend(c, i, spec, t, -10.0 * s, 8.0 * s, 6.0 * s)
-        c.key("core0", t, (-5.0 * s, 0.0, 0.0), (0.0, 0.26 * s, 0.08 * s))
-        c.key("core2", t, (-10.0 * s, 0.0, 0.0))
-        c.key("root", t, (-1.5 * s, 0.0, 0.0), (0.0, 0.07 * s, 0.0))
+            bend(c, i, spec, t, -18.0 * s, 14.0 * s, 10.0 * s)
+        c.key("core0", t, (-9.0 * s, 0.0, 0.0), (0.0, 0.55 * s, 0.12 * s))
+        c.key("core2", t, (-16.0 * s, 0.0, 0.0))
+        c.key("root", t, (-4.0 * s, 0.0, 0.0), (0.0, 0.18 * s, 0.0))
         for k in range(len(AERIAL)):
-            c.key(f"aerial{k}", t, (7.0 * s, 0.0, 5.0 * s * (1 if k % 2 else -1)))
+            c.key(f"aerial{k}", t, (14.0 * s, 0.0, 10.0 * s * (1 if k % 2 else -1)))
     osc(c, "core1", 0.85, 1.5, (4.0, 0.0, 3.0), 6.0)
     return c
 
