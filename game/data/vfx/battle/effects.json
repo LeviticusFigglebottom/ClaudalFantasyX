@@ -8171,35 +8171,35 @@
     "sound_dive": {
       "kind": "particles",
       "anchor": "target",
-      "at": "feet",
+      "at": "head",
       "layers": [
         {
           "color": "#1C6B78",
-          "color_end": "#061A2B",
+          "color_end": "#1FA3A6",
           "swatches": [
             "sea_glow",
-            "abyss_navy"
+            "lagoon_teal"
           ],
-          "amount": 48,
-          "lifetime_s": 0.9,
-          "explosiveness": 0.85,
+          "amount": 56,
+          "lifetime_s": 1.6,
+          "explosiveness": 0.3,
           "velocity_m_s": [
-            0.05,
-            0.15
+            0.4,
+            0.9
           ],
-          "spread_deg": 5,
+          "spread_deg": 25,
           "gravity": [
             0,
-            0.5,
+            0.4,
             0
           ],
           "size_m": [
-            0.16,
+            0.15,
             0.3
           ],
           "energy": 1.4,
-          "emission_radius_m": 1.6,
-          "turbulence": 0.0,
+          "emission_radius_m": 0.9,
+          "turbulence": 0.3,
           "direction": [
             0,
             1,
@@ -8208,13 +8208,13 @@
         },
         {
           "color": "#1C6B78",
-          "color_end": "#1FA3A6",
+          "color_end": "#061A2B",
           "swatches": [
             "sea_glow",
-            "lagoon_teal"
+            "abyss_navy"
           ],
-          "amount": 40,
-          "lifetime_s": 1.4,
+          "amount": 24,
+          "lifetime_s": 2.2,
           "explosiveness": 0.3,
           "velocity_m_s": [
             0.4,
@@ -8240,7 +8240,7 @@
           ]
         }
       ],
-      "note": "The Wakefin sounds: the water darkens, a ring of sea-glow marks where it will rise and the glow climbs its fin (a glow, not a light)."
+      "note": "The Wakefin sounds: it goes under and sea-glow rises off the water where its fin was, marking where it will come up (a glow, not a light)."
     },
     "wake_breach": {
       "kind": "particles",

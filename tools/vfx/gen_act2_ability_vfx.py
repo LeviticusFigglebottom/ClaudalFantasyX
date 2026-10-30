@@ -69,10 +69,10 @@ SKILLS = {
     "ram_bellow": fx("head", sink("mortar_white", "overcast_slate", 40, 0.5),
                      "The bellow brings the snow down off the wall onto the party (wet snow, never ice)."),
     "fin_cut": fx("chest", slash("sea_glow", "abyss_navy", 40), "The Wakefin's blade cuts across the rail: a seam of sea-glow."),
-    # feet, not ground: ground sits on the body's near face, which for a fin in the water is against the barge's hull
-    # and motes of it rise up the fin: the ring alone, at the waterline, was under the rail from the deck (10-30)
-    "sound_dive": fx("feet", ring("sea_glow", "abyss_navy", 48, 1.6) + A1.rise("sea_glow", "lagoon_teal", 40, 1.4, 0.5),
-                     "The Wakefin sounds: the water darkens, a ring of sea-glow marks where it will rise and the glow climbs its fin (a glow, not a light)."),
+    # at its head, rising: from the fight's frame the barge's rail hides the whole waterline beside the hull, so a ring
+    # on the water (tried at the near face, then at the fin's feet, 10-30) was never seen; the fin dives as it sounds
+    "sound_dive": fx("head", A1.rise("sea_glow", "lagoon_teal", 56, 1.6, 0.9) + A1.rise("sea_glow", "abyss_navy", 24, 2.2, 0.5),
+                     "The Wakefin sounds: it goes under and sea-glow rises off the water where its fin was, marking where it will come up (a glow, not a light)."),
     "wake_breach": fx("chest", spray("sea_glow", "deep_teal_shadow", 60),
                       "It breaches alongside and the fin sweeps the deck: black water lit from below."),
     "wake_wheel": fx("ground", spray("deep_teal_shadow", "sea_glow", 44),

@@ -44,7 +44,7 @@ static func _chapter(enc_id: StringName) -> int:
 
 
 ## M4-A2P-062: the Wakefin's fight is lit by the sea-glow alone. A hit's white core is dimmed there (dark_arenas),
-## the sea-glow is not, and Sound Dive's ring marks the water around the fin (not its near face against the hull).
+## the sea-glow is not, and Sound Dive's glow rises at the fin's crest (on the water it was under the barge's rail).
 func test_the_wakefin_fight_is_lit_by_the_sea_glow() -> void:
 	var ctl := (load("res://game/battle/scene/battle_sandbox.tscn") as PackedScene).instantiate() as BattleController
 	ctl.auto_start = false
@@ -62,7 +62,7 @@ func test_the_wakefin_fight_is_lit_by_the_sea_glow() -> void:
 	var fin := ctl.engine.enemies[0].id
 	var at := vfx.anchor(fin, str((effects["sound_dive"] as Dictionary)["at"]))
 	var home := ctl.stage.stand_in(fin).global_position
-	assert_true(Vector2(at.x - home.x, at.z - home.z).length() < 0.1, "the ring is centred on the fin")
+	assert_true(at.y >= home.y + 1.0, "the glow rises off the water at the fin's crest, over the barge's rail")
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()
 	var lit := (load("res://game/battle/scene/battle_sandbox.tscn") as PackedScene).instantiate() as BattleController
