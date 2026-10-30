@@ -65,7 +65,7 @@ The Eighth Verse, the Letting, is the one that doesn't end on *mir*: it ends on 
   - Ethren (Ch13): "a patient, kind man's voice".
   - Kesh (Ch16): the stones, all ten mouths at once.
   
-  The `*_bound` stings carry each verse's first line, on its vowels: *a-e a-e* for Nhoa, *e-i e-i* for Hesk, *e-e e-e* for Ethren, *u-a o* for Kesh. Their sung text is the first line of the table. Kesh's Swell, *The Seven*, sings verses 1–7 at once.
+  Today's `*_bound` stings (`vowbound_stings.py`) are instrumental (Nhoa's Kirru whistle, Hesk's single sung "a", glass and bowed string). When SPEC §16 Q4/Q5 settles a voice, each takes its verse's first line from the table. Kesh's Swell, *The Seven*, sings verses 1–7 at once.
 - Verse 8 is cut plain in the Choir stones. Ysolde reads it in Ch19; Asha sings it in the Letting.
 
 ## 3. Act III's placeholders: the final texts
