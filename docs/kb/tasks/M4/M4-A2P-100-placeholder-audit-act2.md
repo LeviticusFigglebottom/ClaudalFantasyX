@@ -2,8 +2,7 @@
 id: M4-A2P-100
 title: "placeholder_audit.py --act 2 (report only), and the Act II inventory file"
 role: qa
-status: blocked
-blocked-by: ADR 0203
+status: todo
 owner_session: ""
 depends_on: []
 reviewer: lead
@@ -19,6 +18,6 @@ ADR 0203's preparation item: extend `tools/placeholder_audit.py` (today `LAST_CH
 
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). ADR 0203 names integration-qa for this. It is tools work, allowed before the gate.
-- Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+- 2026-10-30: the Lead made this `todo` now (tools work, allowed before the gate) and handed it to integration-qa.
 
 ## Review log
