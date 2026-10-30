@@ -1981,3 +1981,18 @@ MERGE-READY @ (this commit).
   57 MB, 4 in flight, requested only when the change starts. SceneRouter waits on nothing else.
 - **Filed M3-HER-1167 (ui-menus):** start the New Game zone's loads with `ResidentLoads.load_scene()` while the
   title shows, as `warm()` does for the bodies, so the hold finds them in.
+
+### big25 (4b198810), merged here; the Lead 10-30 17:04
+- **The test_qa_field_camera red in big24 and big25 (lowlight.tscn:Sanctum) is fixed by 314559cfc,** which big25
+  doesn't carry (it took this branch before it). On big25 + this branch (1204cbffd, a fresh import):
+  test_qa_field_camera 2/0 and field_shore 3/0. **big26 needs 314559cfc, together with b335f0325.**
+- **The field-camera rows on big25 + this branch:**
+  - qa_field_camera 2/0 (spawn sweep with in-face and steep checks) covers 24 (DockShore), 47 (FerryAft) and 38
+    (Coilspire's Encounter). The only KNOWN entries are Tier4 (M3-HER-1157, env-art-b's spawn) and B02 (M3-HER-1160,
+    m2-slice).
+  - qa_party 3/0, camera_director 56/0.
+  - **37 (AfterHarrier):** the still on this tree shows Rhen clear at centre, Asha and Toma at a reading scale.
+  - **66 (Ch4 opening), real time:** never nearer than 5.1 m in the 12 s after the release; 6 of 111 samples during
+    the 1.2 s cross-town blend; settles on NemeDoor at 9.8 m.
+  - **21 (Haluna beach start), real time:** 0 of 121 samples out of frame; settles on beach_shallows at 7.5 m.
+MERGE-READY @ (this commit) (it includes 314559cfc and b335f0325).
