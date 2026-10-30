@@ -265,6 +265,17 @@
    "shadow": false,
    "attenuation": 1.2,
    "color": "#9DB4D6"
+  },
+  {
+   "at": [
+    8.2,
+    0.22,
+    9.2
+   ],
+   "energy": 1.1,
+   "range": 6.0,
+   "shadow": false,
+   "attenuation": 1.2
   }
  ],
  "greybox": {
@@ -782,6 +793,15 @@
    "y": 0.0,
    "yaw_deg": 0.0,
    "block": "NameBoardWrapped"
+  },
+  {
+   "piece": "ferry_lantern",
+   "at": [
+    8.2,
+    9.2
+   ],
+   "y": 0.4,
+   "yaw_deg": 0.0
   }
  ]
 }

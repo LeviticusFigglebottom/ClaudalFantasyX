@@ -30,6 +30,18 @@ chapter's (layout actors, the zone's host wiring).
 - [ ] Optional, for the staging to read as written: the clutch nearer the waterline (x ≈ 61–62, not 64–65), so the
       party has room behind it on the shore; the T-shots are framed for either.
 
+- [ ] **Ch11** (added 2026-10-30, staged from act2_ch11_direction.md): **sunken_vey** stage actors `asha`, `liss`,
+      `pell`, `kerrid` (the scripts mark them to `liss_landing`, `pell_landing_back`, `rhen_court`, `asha_court`,
+      `landing_pell`, `landing_asha`, `line_*`); **lowlight** `asha`, `liss`, `pell`, `ysolde`, `kerrid`, and `nhoa` as an
+      actor at the `nhoa` mark (ch11_nhoa's `@anim nhoa turn_head pell`; a Saint body from creatures-b's Nhoa).
+- [ ] Ch11's lamp bench holds its input three times (`hold_steady`, `turn_collar`, `seat_it`): the zone's hold gate
+      with those prompts.
+
+- [ ] **Ch12** (added 2026-10-30, from act2_ch12_direction.md): **keth_pass** `asha`, `toma`, `ysolde`, `liss`,
+      `pell`, `kerrid`, `ullari_woman` (the knot), and `avalanche_ram` at the seep pool (creatures-b's Ram); **quellan**
+      `asha`, `ysolde`, `toma` in the inn (Asha on the bench at about (34.6, 0, -7.4)); **cloudloom** `asha`, `ysolde`,
+      `toma`, `rhen` and `hesk` on the dais (creatures-b's Hesk).
+
 ## Notes
 - Cinematics' staging review (M4-C10-01) and M4-A2P-070. The stills wait on these actors.
 

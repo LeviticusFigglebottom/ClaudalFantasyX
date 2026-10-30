@@ -1,13 +1,72 @@
 {
   "_doc": "Fixture for tests/unit/test_cutscene_staging.gd (M4-CIN-1304). Never used by game content.",
-  "replace": ["swapped"],
+  "replace": [
+    "swapped"
+  ],
   "shots": {
-    "swapped": {"pos": [5, 5, 5], "look_at": [0, 0, 0], "fov": 30},
-    "T01": {"pos": [0, 2, 6], "look_at": [0, 1, 0], "fov": 40},
-    "kept": {"pos": [9, 9, 9], "look_at": [0, 0, 0], "fov": 70}
+    "swapped": {
+      "pos": [
+        5,
+        5,
+        5
+      ],
+      "look_at": [
+        0,
+        0,
+        0
+      ],
+      "fov": 30
+    },
+    "T01": {
+      "pos": [
+        0,
+        2,
+        6
+      ],
+      "look_at": [
+        0,
+        1,
+        0
+      ],
+      "fov": 40
+    },
+    "kept": {
+      "pos": [
+        9,
+        9,
+        9
+      ],
+      "look_at": [
+        0,
+        0,
+        0
+      ],
+      "fov": 70
+    }
   },
   "marks": {
-    "shore_front": [1, 0, -2, 90],
-    "pell_gate": [9, 9, 9, 0]
+    "shore_front": [
+      1,
+      0,
+      -2,
+      90
+    ],
+    "pell_gate": [
+      9,
+      9,
+      9,
+      0
+    ]
+  },
+  "props": {
+    "lamp": {
+      "at": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "scene": "res://game/data/cutscene/ch12/inn_fire.tscn"
+    }
   }
 }

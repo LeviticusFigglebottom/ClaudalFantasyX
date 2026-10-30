@@ -57,6 +57,21 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	InputNames.note(event, _num("pad_deadzone"))
+	if phase == Phase.IN or phase == Phase.HOLD:
+		for action in TutorialTips.actions_named(current):
+			if InputMap.has_action(action) and event.is_action_pressed(action):
+				dismiss()
+				return
+
+
+## Fades the tip on show out now (the player pressed what it teaches, the Lead's first-hour pass, 2026-10-30: the
+## menu tip no longer waits out a visit to the menu and then asks again for what was just done).
+func dismiss() -> void:
+	if phase != Phase.IN and phase != Phase.HOLD:
+		return
+	var v := _visibility()
+	phase = Phase.OUT
+	_t = (1.0 - v) * _num("fade_sec")  # from where the fade is, without a jump
 
 
 func _process(delta: float) -> void:

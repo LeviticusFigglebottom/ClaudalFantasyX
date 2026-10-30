@@ -5,7 +5,8 @@
 // the dock, through the kneeling figure seen from the causeway-head path; going to Neme's door instead
 // ends the night and the scene is gone. In the world the re-inking always happens (C4-08 shows it).
 // Rules: no more than four Ysolde lines in a row; complete sentences, no contractions; she explains
-// nothing about herself and does not give her name (C4-09 does). She is cold because warmth would make
+// nothing about herself and does not give her name (C4-09 does), so her nameplate reads "The stranger"
+// (M4-A2P-116 B1). She is cold because warmth would make
 // it unbearable. "Once." is a widow's answer the player can't read yet (Ch13 pays it).
 // Music: ysolde_theme (sketch). The chapter flow sets ch04_saw_ysolde_ink.
 title: ch04_the_ink
@@ -16,11 +17,11 @@ location: ch04/haluna_wake
 @camera H15
 @anim ysolde ink_shell
 @sfx ink_brush at=ysolde
-Ysolde [cold]: Hold the lamp, if you are going to stand there. #line:ch04_ink_001
+Ysolde as "The stranger" [cold]: Hold the lamp, if you are going to stand there. #line:ch04_ink_001
 @anim rhen hold_lamp
 Rhen [neutral]: What's wrong with the ink? #line:ch04_ink_002
-Ysolde [neutral]: They cut the name well. They inked it with fishing-ink, soot and oil. Salt lifts that in a season. #line:ch04_ink_003
-Ysolde [neutral]: Ansedran lacquer outlasts the stone it is in. #line:ch04_ink_004
+Ysolde as "The stranger" [neutral]: They cut the name well. They inked it with fishing-ink, soot and oil. Salt lifts that in a season. #line:ch04_ink_003
+Ysolde as "The stranger" [neutral]: Ansedran lacquer outlasts the stone it is in. #line:ch04_ink_004
 Rhen [smile]: So you go round villages fixing other people's spelling. #line:ch04_ink_005
 @wait 2.0
 Rhen [neutral]: ...Sorry. #line:ch04_ink_006
@@ -29,14 +30,14 @@ Rhen [neutral]: ...Sorry. #line:ch04_ink_006
 @sfx ink_brush at=ysolde
 @wait 1.5
 Rhen [sad]: That's her mother's. #line:ch04_ink_007
-Ysolde [neutral]: Yes. #line:ch04_ink_008
+Ysolde as "The stranger" [neutral]: Yes. #line:ch04_ink_008
 @wait 2.0
 Rhen [neutral]: Have you done this before? #line:ch04_ink_009
 @wait 1.0
-Ysolde [neutral]: Once. #line:ch04_ink_010
+Ysolde as "The stranger" [neutral]: Once. #line:ch04_ink_010
 @wait 2.0
 @anim ysolde cap_ink
-Ysolde [cold]: Go to sleep. The tide will not wait for anyone tomorrow. #line:ch04_ink_011
+Ysolde as "The stranger" [cold]: Go to sleep. The tide will not wait for anyone tomorrow. #line:ch04_ink_011
 @mark ysolde wall_away walk
 @wait 1.5
 @letterbox off

@@ -26,8 +26,10 @@ Rhen [neutral]: Asha. On the shrine steps, Toma said... #line:ch03_dock_001
 Asha [soft_smile]: How was your day, Rhen? Truly. #line:ch03_dock_002
 Rhen [tender]: ...Long. Good, mostly. #line:ch03_dock_003
 <<endif>>
-Rhen [neutral]: You leave the day after tomorrow. #line:ch03_dock_004
-Asha [neutral]: At first tide. The causeway won't wait for me. #line:ch03_dock_005
+// M4-A2P-115 A1: nobody tells Rhen when she leaves (the market's "Two days..." are overheard pieces he misses the sum
+// of), so he asks, from the bag he saw at Neme's, and she tells him.
+Rhen [neutral]: You're leaving, aren't you? The bag at Neme's. #line:ch03_dock_012
+Asha [neutral]: The day after tomorrow. At first tide. The causeway won't wait for me. #line:ch03_dock_005
 Rhen [determined]: Then let me come. As your guardian. I can dive, and I can carry, and I don't scare. #line:ch03_dock_006
 Asha [smile]: Yes. #line:ch03_dock_007
 Toma [worried]: Asha. A guardian is not chosen on a dock, at night— #line:ch03_dock_008

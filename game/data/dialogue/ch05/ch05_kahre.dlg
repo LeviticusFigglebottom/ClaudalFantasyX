@@ -40,7 +40,7 @@ Toma [soft_smile]: ...Asha. #line:ch05_kahre_004
 @camera A08
 @fade in 0.8
 @music silence fade=2.0
-Rhen [smile]: Three hundred years in there with a hammer. You'd think he'd run out of things to hit. #line:ch05_kahre_005
+Rhen [smile]: All those years in there with a hammer. You'd think he'd run out of things to hit. #line:ch05_kahre_005
 @anim kerrid look_at rhen
 @wait 0.8
 @anim kerrid look_at sea

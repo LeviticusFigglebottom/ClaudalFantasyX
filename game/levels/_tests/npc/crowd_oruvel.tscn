@@ -12,3 +12,11 @@ zone_id = &"ch01/oruvel"
 [node name="Crowd" type="Camera3D" parent="Cameras"]
 transform = Transform3D(0.656524, 0.109463, -0.74632, 0, 0.989414, 0.145118, 0.754305, -0.0952734, 0.649575, 7, 1.65, -2.5)
 fov = 45.0
+
+[node name="DeckNorth" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.5547, -0.103047, 0.825645, 0, 0.992301, 0.123847, -0.83205, -0.0686978, 0.55043, 14, 2.6, -12)
+fov = 45.0
+
+[node name="DeckSouth" type="Camera3D" parent="Cameras"]
+transform = Transform3D(-0.524097, -0.110642, 0.844441, 0, 0.991525, 0.129914, -0.851658, 0.0680876, -0.519656, 4, 2.8, -12)
+fov = 45.0

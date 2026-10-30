@@ -141,6 +141,13 @@ STANDARD: dict[str, dict] = {
                          "metallic_specular": 0.8},
 }
 
+# The Ch1 Underway dressing pass (the Lead, 10-30: the underwater light, the caustics): the zone is walked under the
+# surface, where the water shader's projected caustics never reach, so every weathered surface lights its own web
+# (env_weathering uw_caustics), strongest on the floor, fading with depth and into the murk.
+UW_CAUSTICS = 1.2
+for _spec in MATERIALS.values():
+    _spec["params"]["uw_caustics"] = UW_CAUSTICS
+
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])

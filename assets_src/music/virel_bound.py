@@ -1,5 +1,5 @@
 """`virel_bound`: the sting when Asha binds Virel, the Fire Vowbound, in the Coilspire's crown chamber (M3-AUD-822;
-act1_ch08.md B06, after `coilspire_flues`), 7.9 s.
+act1_ch08.md B06, after `coilspire_flues`), 7.9 s and its drone held on.
 
 Original (SPEC §2). The brief: "The Hush's first phrase on a high reed instrument over the flue drone. It is the first
 statement of the theme by a wind instrument." The phrase is our own Hush theme's first six notes (hush_theme_v2.py
@@ -9,7 +9,7 @@ written for this cue (`spire_reed` below; virel_summon.py plays it too): bright,
 vibrato, and its last note held. Virel is "a kite made of fire, held perfectly still", so nothing under the reed
 moves: the flues' drone is F# and C#, the trial's tiers (F#2, C#3, F#3, C#4), each a breathy tuned air column that
 breathes slowly, with a thin copper hiss over it. The drone swells in, the reed sings, the last F# is held, and the
-drone lets go. No drums, no crackle (Virel's fire belongs to her battle sting).
+drone settles low and holds on under the scene's end (HOLD_S), then lets go. No drums, no crackle (Virel's fire belongs to her battle sting).
 
 Stereo, at the music target (-16 LUFS integrated), on the Music bus (`@music virel_bound`; music.json).
 
@@ -48,6 +48,11 @@ OUT = os.path.join(ROOT, "assets", "audio", "music", "virel_bound.ogg")
 SEED = 20261822
 TARGET_LUFS = -16.0
 LENGTH = 7.9
+# The flues' drone held after the sting (the Lead's 10-30 19:25 item, Act I's beats as played): ch08_binding runs
+# about 4 s past the 7.9 s sting, and the zone's cue returns 3 s after that (act1_playthrough.py), so the drone stays
+# on, settled HOLD_DB down (under the loudness gate: the sting's -16 LUFS doesn't move), for HOLD_S, and lets go.
+HOLD_S = 10.0
+HOLD_DB = -12.0
 ## MEL_A (A minor) into the Coilspire's F-sharp minor, an octave up: -3 + 12 semitones
 VIREL_SHIFT = 9
 PHRASE_NOTES = 6              # the Hush's first phrase: MEL_A's first six notes (two bars of 3/4)
@@ -136,7 +141,7 @@ GAINS = {"reed": 0.0, "flues": -17.2, "hiss": -9.2}
 
 def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None) -> dict:
     g = rng(SEED)
-    mx = Mixer(LENGTH + 0.5)
+    mx = Mixer(LENGTH + HOLD_S + 0.5)
     mx.bus("reed", GAINS["reed"], send=0.38, process=lambda x: filt(x, [bq_highpass(400, 0.7),
                                                                          bq_peak(3000, -2.0, 1.0)]))
     mx.bus("flues", GAINS["flues"], send=0.45, process=lambda x: filt(x, [bq_highpass(60, 0.7), bq_lowpass(2500, 0.7)]))
@@ -150,6 +155,10 @@ def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None)
     for j, (p, lvl) in enumerate(FLUES):
         x = flue(n(p), LENGTH, lvl, rng(SEED + 100 + j), swell_in=1.0 + 0.2 * j, let_go=end - 0.2 + 0.15 * j)
         mx.add("flues", x, 0.0, pan=(-0.45, 0.4, -0.2, 0.25)[j])
+    held = 10 ** (HOLD_DB / 20)
+    for j, (p, lvl) in enumerate(FLUES[:2]):                              # F# and C# stay on, low and still
+        x = flue(n(p), HOLD_S + 1.5, lvl * held, rng(SEED + 200 + j), swell_in=1.2, let_go=HOLD_S - 1.0)
+        mx.add("flues", x, end - 0.6, pan=(-0.45, 0.4)[j])
     hiss = g.standard_normal(int(LENGTH * SR))
     tt = np.arange(len(hiss)) / SR
     hiss *= np.clip(tt / 1.5, 0, 1) * np.where(tt > end, np.exp(-(tt - end) / 0.8), 1.0) * 0.05
@@ -158,7 +167,7 @@ def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None)
                         early_level=0.28, lowcut=90.0, seed=SEED % 9973)
     st: dict = {}
     HUSH._bus_stats(mx, st)
-    y = mx.render(reverb=hall, reverb_return_db=-2.0)[: int(LENGTH * SR)]
+    y = mx.render(reverb=hall, reverb_return_db=-2.0)[: int((LENGTH + HOLD_S) * SR)]
     k = int(1.4 * SR)
     y[-k:] *= np.linspace(1, 0, k)[:, None] ** 2
     y = normalize_integrated(y, TARGET_LUFS, ceiling_db=-2.0)

@@ -32,8 +32,27 @@ func test_the_galleries_lead_to_lowlight_and_back() -> void:
 	_open(LOWLIGHT)
 	story.begin()
 	assert_true(bool(Game.get_flag(&"ch11_reached_lowlight")))
+	# M4-A2P-114: the engine hall (B06), its fight, B07 on the return, then Nhoa in the drowned sanctum (B09)
+	assert_false(_trigger(&"sanctum").is_available(), "the sanctum waits on the engine")
+	assert_true(_trigger(&"engine").on_touched())
+	assert_true(not hand_offs.is_empty() and hand_offs.back()[0] == ZoneStory.KIND_BATTLE, "the Lamp Engine wakes")
+	var r := hand_offs.back()[1] as BattleRequest
+	assert_eq(r.encounter, &"ch11_lamp_engine")
+	assert_eq(r.victory_flag, &"ch11_engine_released")
+	Game.set_flag(&"ch11_engine_released")  # the battle's victory
+	_close()
+	_open(LOWLIGHT)
+	story.begin()
+	assert_true(bool(Game.get_flag(&"ch11_twice_seen")), "B07 plays on the return")
+	assert_false(_trigger(&"engine").is_available(), "the hall is quiet")
+	assert_true(_trigger(&"sanctum").on_touched())
+	assert_true(bool(Game.get_flag(&"ch11_nhoa_bound")), "Nhoa is bound")
 	assert_true(_trigger(&"to_vey").on_touched())
 	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch11/sunken_vey", "spawn": "FromLowlight"}])
+	_close()
+	_open(VEY)
+	story.begin()
+	assert_true(bool(Game.get_flag(&"ch11_complete")), "back up the galleries: B11 closes the chapter")
 	_close()
 	Game.state = saved_state
 

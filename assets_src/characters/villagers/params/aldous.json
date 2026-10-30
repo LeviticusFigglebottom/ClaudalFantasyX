@@ -1,0 +1,137 @@
+{
+ "_about": "Aldous Varrow, Hollowmere's dock-master, keeper of the flotilla's dry-dock berths, father of Liss and Tobin (act2_ch15.md B10 H05; ADR 0204 \u00a74; on screen mostly 'the dock-master'), about 58: a big, quiet, sun-dark man with Saltwright line-marks to the shoulders (liss_textures' generator: a long working life's record) and a dock-hook in his belt (a hand prop, Cinematics' attach). Tobin's and Liss's family face (their ancestry mix and eye tilt) older and heavier; a grey crop and a grey stubble. A sleeveless salt-faded work tunic so the marks show, rope-brown trousers to the shin, a leather belt-sash, sandals. Clips: push_raft (H13, the raft pushed off with the hook) and hold_up_housing (H14, the salt-glass housing raised for the motes). M4-A2P-052. Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules, not by bb_params.",
+ "name": "aldous",
+ "height_m": 1.86,
+ "heads_tall": 7.4,
+ "shoulder_width_heads": 1.92,
+ "chest_width_heads": 1.42,
+ "chest_depth_heads": 1.02,
+ "waist_width_heads": 1.3,
+ "hip_width_heads": 1.34,
+ "crotch_height_heads": 3.56,
+ "arm_span_ratio": 1.02,
+ "hand_length_heads": 0.8,
+ "foot_length_ratio": 0.15,
+ "neck_length_heads": 0.42,
+ "neck_width_ratio": 0.56,
+ "head_width_ratio": 0.68,
+ "femininity": 0.05,
+ "muscle": 0.7,
+ "mass": 0.35,
+ "breast": 0.0,
+ "eye_scale": 1.06,
+ "ipd_m": 0.064,
+ "arm_abduction_deg": 47.0,
+ "skin_hex": "#8E6448",
+ "eye_tilt_deg": 2.0,
+ "jaw_width": 1.08,
+ "cheekbone_height": 0.003,
+ "cheekbone_width": 1.04,
+ "chin_size": 1.02,
+ "nose_bridge_width": 0.98,
+ "nose_tip_projection": 0.98,
+ "lip_fullness": 0.74,
+ "lip_close": 0.6,
+ "lip_seal": 0.96,
+ "lip_lower_fullness": 0.74,
+ "mouth_corner_lift": -0.0004,
+ "brow_ridge": 1.1,
+ "donor_mix_african": 0.3,
+ "donor_mix_asian": 0.35,
+ "donor_mix_caucasian": 0.35,
+ "_skin": {
+  "hex": "#8E6448",
+  "age": 0.7,
+  "freckles": 0,
+  "reach_bands": {
+   "L": 0,
+   "R": 0
+  },
+  "seed": 521,
+  "lip": "#8A5848",
+  "body_size": [
+   2048,
+   1024
+  ],
+  "line_marks": {
+   "seed": 5211,
+   "placement": {
+    "forearm": 7,
+    "upper_arm": 6,
+    "collar_neck": 2
+   },
+   "length_m": [
+    0.03,
+    0.06
+   ],
+   "line_mm": 1.0,
+   "gap_mm": 1.4,
+   "dot_mm": 2.2
+  },
+  "stubble": 0.7
+ },
+ "_hair": {
+  "kind": "cropped",
+  "tufts": true,
+  "grey_strands": true,
+  "hairline": "male",
+  "seed": 522,
+  "length_m": [
+   0.008,
+   0.013
+  ],
+  "recede": 0.04,
+  "scalp_cards": [
+   420,
+   320,
+   200
+  ],
+  "hairline_cards": 0,
+  "colour": "#5E5850",
+  "grey": "#A9A39A",
+  "grey_share": 0.6,
+  "underpaint": "#4A443E",
+  "brow": "#4C463F"
+ },
+ "_eyes": {
+  "iris": "#2E2014"
+ },
+ "_costume": {
+  "top": {
+   "mat": "cloth_a",
+   "hem": "hip",
+   "sleeve": 0.0,
+   "neck_v_m": 0.05,
+   "armhole_drop_m": 0.1,
+   "cover_margin_m": 0.02
+  },
+  "trousers": {
+   "mat": "cloth_b",
+   "hem": "shin",
+   "loose_m": 0.014
+  },
+  "sash": {
+   "mat": "cloth_c",
+   "width_m": 0.07,
+   "turns": 1,
+   "tails_m": 0.14
+  },
+  "sandals": "leather"
+ },
+ "_tints": {
+  "cloth_a": "#9AA39E",
+  "cloth_b": "#6E5038",
+  "cloth_c": "#4A3424",
+  "leather": "#FFFFFF"
+ },
+ "_build": {
+  "shapes": "all",
+  "host_snaps": true,
+  "garment_fit": true
+ },
+ "_persona": {
+  "sway": 0.5,
+  "lean": 2.0,
+  "arms_down": 40.0
+ }
+}

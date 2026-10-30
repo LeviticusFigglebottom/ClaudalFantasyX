@@ -69,7 +69,8 @@
                        "floodnet": "chant", "breakwater": "finisher", "toll": "toll", "ram_bellow": "cast", "wake_breach": "cast", "wake_wheel": "cast",
                        "reel_shot": "item", "anchor_fall": "finisher",
                        "brine_spit": "cast", "shroud_sweep": "cast", "undertow_pull": "cast",
-                       "gnaw": "finisher", "ladle_swing": "finisher", "pounce": "finisher"},
+                       "gnaw": "finisher", "ladle_swing": "finisher", "pounce": "finisher",
+                       "hook_sweep": "cast", "rod_sweep": "cast"},
     "item_style": "item",
     "reaction": {
       "doc": "The target's reaction on the contact beat. damage: recoil_m away from the actor and tilt_deg back, out and back over sec; heal: a lift_m rise; miss: a sidestep of dodge_m; push (M3-BPR-411): a hit that only pushes its target down the timeline (the ward shoved back by Rope Dive, Grip the Stair, Hand Closes; Drag Net) staggers it recoil_m back; immune (M3-BPR-406): a blow on a damage-immune foe (the Reach's Breach) stops dead, a stiff sideways shudder of shudder_m, shudders times over sec, no recoil, none under reduced motion. clip names the model clip tried first (the clip contract).",
@@ -234,6 +235,9 @@
                         "spar_wraith": {"back_m": 3.0, "up_m": 1.5, "fov": 50.0},
                         "mangrove_drowner": {"back_m": 1.8, "up_m": 1.1, "fov": 50.0},
                         "lamp_engine": {"back_m": 1.4, "up_m": 0.9, "fov": 50.0}},
+      "rest_by_vowbound": {"doc": "creatures-b's as-played notes (10-30): a called Vowbound stands on the middle party slot, right before the camera. While one with a row is out, the fight's rest frame moves back_m along the view and up_m higher, at fov (as rest_by_enemy, applied after it); it comes home when the Vowbound leaves. Kesh (4.2 m, rising further in The Seven) ran out of the top of the frame; Ethren (2.5 m) filled a third of it.",
+                           "kesh": {"back_m": 3.0, "up_m": 1.4, "fov": 52.0},
+                           "ethren": {"back_m": 2.6, "up_m": 1.0, "fov": 52.0}},
       "enemy_by_actor": {"doc": "M3-BPR-408: a foe whose actions get their own framing, by its enemy id (otherwise enemy). The Avalanche Ram's charge rides side-on (the boss camera sheet, 10-30: from 0.25 m up and 5.2 m out, Toma's shield stood across the Ram and its head left the frame; 1.0 m up and 7.2 m out keep both).",
                          "avalanche_ram": {"lead": "charge_side", "contact": ""}},
       "by_style": {
@@ -461,7 +465,7 @@
       "by_enemy": {
         "lamp_engine": {"shot": "boss_tall", "hold_sec": 2.4, "title_key": "BOSS_TITLE_LAMP_ENGINE",
                         "epithet_key": "BOSS_EPITHET_LAMP_ENGINE", "on_retry": false},
-        "avalanche_ram": {"shot": "boss", "hold_sec": 2.0, "title_key": "BOSS_TITLE_AVALANCHE_RAM",
+        "avalanche_ram": {"shot": "boss", "hero": false, "hold_sec": 2.0, "title_key": "BOSS_TITLE_AVALANCHE_RAM",
                           "epithet_key": "BOSS_EPITHET_AVALANCHE_RAM", "on_retry": false},
         "mangrove_drowner": {"shot": "boss_tall", "hold_sec": 2.2, "title_key": "BOSS_TITLE_MANGROVE_DROWNER",
                              "epithet_key": "BOSS_EPITHET_MANGROVE_DROWNER", "on_retry": false},

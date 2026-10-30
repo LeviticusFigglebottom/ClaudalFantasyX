@@ -265,8 +265,33 @@ def copy_grade() -> None:
         (ZONE / "lut_ch06_smoke.png.import").write_text(imp, encoding="utf-8")
     env = (PREVIEW / "brine_shoals_ch06_environment.tres").read_text(encoding="utf-8")
     env = env.replace("res://game/levels/_tests/brine_shoals_kit/", RES_ZONE)
-    (ZONE / "brine_shoals_environment.tres").write_text(env, encoding="utf-8")
+    (ZONE / "brine_shoals_environment.tres").write_text(zone_fog(env), encoding="utf-8")
     shutil.copyfile(PREVIEW / "brine_shoals_water_material.tres", ZONE / "brine_shoals_water_material.tres")
+
+
+# The zone's haze (env-art-b's beauty pass, 10-30): the preview's volumetric fog (0.02 over 80 m, sky untouched) capped
+# the far flats in a flat brown band under a pale sky. Thinner volumetric fog, and a depth fog that takes the sky's
+# colour (aerial perspective) and lies low over the flats, let the shoals fade into the sea light instead.
+ZONE_FOG = {
+    "fog_light_color": "Color(0.78, 0.74, 0.66, 1)",
+    "fog_sun_scatter": "0.25",
+    "fog_density": "0.008",
+    "fog_aerial_perspective": "0.9",
+    "fog_sky_affect": "0.45",
+    "fog_height": "1.5",
+    "fog_height_density": "0.12",
+    "volumetric_fog_density": "0.007",
+}
+
+
+def zone_fog(env: str) -> str:
+    """The preview's environment with ZONE_FOG set: each key replaces its line, or is added after fog_enabled."""
+    for key, value in ZONE_FOG.items():
+        line = f"{key} = {value}"
+        env, n = re.subn(rf"^{key} = .*$", line, env, flags=re.M)
+        if n == 0:
+            env = re.sub(r"^fog_enabled = true$", lambda m, add=line: m.group(0) + "\n" + add, env, count=1, flags=re.M)
+    return env
 
 
 def main() -> None:

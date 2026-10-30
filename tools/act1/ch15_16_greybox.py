@@ -168,7 +168,7 @@ def pale_rim() -> dict:
                   solid=False)]
     for side, (x, z, sx, sz) in enumerate(((RIM_LEN * 0.5 - 20.0, -30.5, RIM_LEN + 40.0, 1.0),
                                            (RIM_LEN * 0.5 - 20.0, 30.5, RIM_LEN + 40.0, 1.0),
-                                           (-40.5, 0.0, 1.0, 60.0), (RIM_LEN + 20.5, 0.0, 1.0, 60.0))):
+                                           (-40.5, 0.0, 1.0, 60.0), (RIM_LEN + 1.0, 0.0, 1.0, 60.0))):
         blocks.append(box(f"Haze{side}", x, 1.5, z, sx, 3.0, sz, color=COL_SAND))  # the white closes in: bounds
     blocks.append(box("Ship", -30.0, 1.5, 0.0, 6.0, 3.0, 18.0, color=COL_HULL))
     for k in range(8):  # cairns the waders keep to
@@ -202,7 +202,8 @@ def pale_rim() -> dict:
         + [{"id": f"Wade{k}", "mode": "pan_follow", "at": [r3(x0 + 30.0), 1.5, 0.0], "size": [60.0, 4.0, 60.0],
             "pos": [r3(x0 - 6.0), 4.5, 8.0], "look_at": [r3(x0 + 30.0), 0.8, 0.0], "fov": 50, "priority": 1}
            for k, x0 in enumerate((-30.0, 30.0, 90.0, 150.0, 210.0 - 30.0))],
-        "triggers": [{"id": "to_choir", "activation": "touch", "at": [RIM_LEN + 10.0, 0.0, 0.0], "size": [2.0, 0, 20.0],
+        # M4-A2P-1500 (env-art-b): the exit stands on the sand, which ends at RIM_LEN; the east haze closes there
+        "triggers": [{"id": "to_choir", "activation": "touch", "at": [RIM_LEN - 4.0, 0.0, 0.0], "size": [2.0, 0, 20.0],
                       "payload": {"beat": "to_choir"}, "yaw": 0.0}],
         # M4-C16-03: the rim's random fights (act2_roster.md Ch16); none in the Drowned Choir
         "encounters": {"table": [{"encounter": "ch16_rim_skates", "weight": 1}, {"encounter": "ch16_rim_crawlers", "weight": 1}],

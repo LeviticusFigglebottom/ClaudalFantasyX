@@ -819,3 +819,107 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   ch11_lamp_engine (Kahre, Hesk), ch12_avalanche_ram (Virel, Ethren, Kesh). **With battle-presentation:** this run
   checks the bodies and clips; their effects land with big25, and I re-run the same passes on it to view each effect
   on its body (the agreed split) and file any misfit to them.
+
+## 2026-10-30 17:10: STATUS for the Lead's 17:04 (not idle)
+- **Act II boss as-played passes: DONE** (Ch10 Drowner, Ch11 Lamp Engine, Ch12 Ram, and Ch15 Wakefin; Ch13 has no
+  boss encounter on big25 either). Stills of intro, each phase and the defeat viewed; findings above (15:40, 16:30).
+  Nothing in my models needed a fix; the fixes from the Act I passes are in.
+- **MERGE-READY @ fc7106b6c** (big25 merged in, no conflicts, validate_data 0/0).
+- **Vowbound summon passes: RUNNING since 16:45** (two render jobs; all seven Vowbound, each skill and the Swell,
+  in Ch10–12). Results land here as each finishes.
+- **FAST-TRACK fixed, MERGE-READY @ 6973ffc08: test_battle_lineup (ch11_lamp_engine).** Fixed in my data, so nothing is
+  needed from act1-chapters: the encounter's slots stay as they are. The Lamp Engine's stand-in yaw is now 80°
+  (it was 55°). Its footprint at 55° was 2.10 m because the 3.6 x 2.35 m body stood diagonally. At 80° it is 1.75 m,
+  and the crawlers clear it: needed 1.75 + 0.52 + 0.12 = 2.39 m, against 2.49 and 2.55. The 90° problem was the near
+  arm crossing the core; rendered in the intro hero shot at 80°, both the closed and opened stances keep both arms
+  raised either side and the core whole. lamp_engine.md "As built" is updated. Checks: Godot battle_lineup 5/0
+  (red before), creature 159/0, boss green, boss_seat and stand_in 3/0, validate_data 0/0.
+- **Vowbound summon passes so far** (each skill once, then the Swell, in the mounted Act II fights):
+  - **Ethren** (ch12 Ram): Level Hand (`cast`, the wings open), Hold the Hour (`stop`: the 618d916b map fix seen in
+    play), Lacquer Screen (`ward`, the wings swing forward), the Still Water finisher (`special`), hit and KO all read.
+  - **Virel** (ch12): Kite Flare (`cast`), the Flare Line finisher, attack and hit all read.
+  - **Ilun** and **Nhoa** (ch10 Drowner): every skill read (Ilun's Brine Lash, Tidal Ward and Floodnet; Nhoa's Silt
+    Fall, `deep_well` and `echo`). Their finishers are being re-run: the sweep first unleashed through the party's
+    Swell system, which a Vowbound doesn't use. It now acts with the finisher, as the menu does.
+  - **For battle-presentation:** on Ilun's dismissal, the Drowner's fall camera ends inside its roots, which fill the
+    frame.
+  - Running: Kesh (ch12), Hesk and Kahre (ch11, more turns), and the two finishers.
+
+## 2026-10-30 18:05: STATUS for the Lead's 18:04. Not blocked; both items are pushed.
+- **The Lamp Engine lineup red: FIXED, MERGE-READY @ 6973ffc08** (stand-in yaw 80°; battle_lineup 5/0). It's in my
+  data, so nothing is needed from act1-chapters. Not on the integration branch yet.
+- **The Act II boss as-played passes: DONE** (Ch10 Drowner, Ch11 Lamp Engine, Ch12 Ram, and Ch15 Wakefin; Ch13 has no
+  boss encounter). Logged at 15:40 and 16:30; no model fixes were needed.
+- **Branch head: MERGE-READY @ 98b31c5fb.** It carries every fix: 098a878d1, 650257eaa, f893ee590 and 6973ffc08.
+- **In progress:** the Vowbound summon passes (the results above; Kesh, Hesk, Kahre and two finishers rendering).
+- **Id range noted:** new Act II tasks from creatures-b use M4-A2P-1850 to 1899.
+- **Kesh** (ch12, her full kit): all six voices read distinct (Ice holds perfectly still, Fire thrusts, Holy lifts,
+  Glimmer opens the palms), plus attack, hit and KO; The Seven is re-running (out of turns). **MERGE-READY @
+  021ce7405: Kesh rises in 2.6 s, like the other six.** Her `rise` was 3.0 s, longer than the summon cinematic's
+  entry hold (choreo.json summon_cinematic.entry.sec 2.6, the hold the other six's 2.6 s rises were built to), so
+  her first action cut its settle. The keys are scaled in proportion. New test in test_creature_vowbound_act2: every
+  Vowbound's rise fits that hold (fails at 3.0 s). Blender creature_kesh 7 identical; Godot vowbound 118/0 (the 1
+  leftover node predates this), creature 160/0; validate_data 0/0.
+- **For battle-presentation: the normal (not first) call cuts every Vowbound's rise in half.** choreo.json
+  vowbound.entry is delay 0.95 s + sec 1.3 s, so the first command comes about 2.25 s after the call, with the 2.6 s
+  rise only half played (it starts as the body appears, at the delay). Acting at once cuts the rise mid-climb in the
+  sweep, for all seven. Either `vowbound.entry.sec` rises to about 2.6 s (each call is then 1.3 s longer), or the
+  normal call should play a shorter rise. If you want a short `rise_quick` clip from me for normal calls, file it as
+  a task (M4-A2P-185x).
+
+## 2026-10-30 18:25: answer to the Lead's 18:2x ("idle since 18:14"): pushed at 18:14, not idle, not blocked
+MERGE-READY @ 6973ffc08: the Lamp Engine lineup spacing (test_battle_lineup green; the Lamp Engine's stand-in yaw is 80°; nothing needed from act1-chapters).
+MERGE-READY @ 021ce7405: Kesh's rise fits the summon hold (found in the Vowbound summon passes).
+MERGE-READY @ 0b8efe499: the branch head, which carries the two above, 098a878d1 (test_avalanche_ram), 650257eaa (boss phase timing) and f893ee590 (the Spar-Wraith's deck KO).
+LEAD-ASK: none blocking. The Act II boss as-played passes are DONE (Ch10–12 and Ch15; Ch13 has no boss encounter), with no model fixes needed (logged 15:40 and 16:30). The Vowbound summon passes are rendering (the last finishers). My 18:05 status above repeats all of this.
+- **Kesh, re-run on 021ce740:** her whole kit plays now, The Seven included. The 2.6 s rise is seen mid-way (she
+  forms bowed from the column). **For battle-presentation:** at the default camera her head is already at the top of
+  the frame, and in The Seven she rises further on the column, so her head and raised arms leave the frame. The
+  vowbound slot's framing needs her 4.2 m (ADR 0204 §7) plus the Seven's lift; this is the strongest case of the
+  slot-before-the-camera note above.
+
+## 2026-10-30 ~19:10: the Lead's 18:45 (the Act I boss feel pass)
+Measured, not only viewed: each Act I boss in its own fight at the default camera (1920x1080). For each clip, the
+farthest any bone moves on screen from the idle's first frame, and its peak speed (px per 0.05 s):
+
+| Boss | body on screen | hit | hit_b | idle | ready | tells (gather, phase) |
+|---|---|---|---|---|---|---|
+| Hullgnaw | 517 px | 54 / v51 | 82 / v69 | 107 / v9 | 76 / v17 | coil 109, phase_break 849 |
+| Drownbell | 460 | 85 / v52 | 93 / v51 | 48 / v4 | 54 / v9 | toll_gather 82, phase_change 88 |
+| Bottle Hermit | 116 | 55 / v27 | 77 / v40 | 13 / v1 | 132 / v1 | attack 175, ready 132 |
+| Spar-Wraith | 317 | 94 / v69 | 54 / v33 | 13 / v1 | 23 / v2 | shroud_sweep 117, phase_drop 98 |
+| Cinder Matron | 382 | 85 / v44 | 117 / v60 | 8 / v1 | 97 / v3 | recrust_gather 125, phase_change 382 |
+| Undertow's Reach | 1016 | **40 / v17** | 60 / v44 | 49 / v4 | 81 / v13 | breach_gather 607, phase_breach 471 |
+
+- Every hit is a fast jolt against a slow idle (5 to 70 times the idle's speed), and every tell moves well past the
+  idle, **except the Reach's `hit`** (and `hit_dark`, made from it). At 17 px per 0.05 s on a body that fills the
+  screen, it barely beat its own ready loop: the shudder ran along the view axis. (Its mirrored hit_b crossed the
+  screen at 44.)
+- **MERGE-READY @ de6c131bf: the Reach's hit throws the hand up and aside off the wall-head**, with a stronger shudder up the
+  limb. Measured again: hit 47 / v35, hit_dark 144 / v36, hit_b 111 / v83. Clip sheet viewed: the hand lifts clear
+  of the wall at 0.24 s. New tools/tests/test_undertows_reach.py (the hand thrown at least 0.55 m; the old hit moved
+  it 0.38 m and fails). Blender creature_undertows_reach 4 identical; Godot boss_seat (the party-lane check) 3/0,
+  creature_bosses 40/0, creature_actor 31/0; tools test_creatures and test_blender_builds OK; validate_data 0/0.
+- Moll (the Inquisitor) is the characters track's actor, so its clips are outside this measure.
+- Stagger and phase tells were all clear: the phase clips move 88 to 849 px. What hides them in play is the
+  phase-moment cut (battle-presentation, traced above), not the clips.
+- **The Vowbound summon passes: COMPLETE** (all seven, every skill once plus the finisher, in the mounted Act II
+  fights). All clips read on their bodies:
+  - **Ilun** (ch10): Brine Lash, Tidal Ward, the Floodnet finisher (the net-wings spread).
+  - **Nhoa** (ch10): Silt Fall, Deep Well, Echo, the Farewell Tide finisher (she lifts, arms raised).
+  - **Kahre** (ch11): Forge Bolt, the Last Strike finisher. Its mid-clip still looks like Forge Bolt's, so I
+    measured both: Last Strike peaks 2.8 m from rest over 2.8 s with two strikes, Forge Bolt 1.5 m over 1.6 s.
+  - **Hesk** (ch11): Knot Light, Cord Lift (`cleanse`), Mending, the Pass Cord finisher, and the guard.
+  - **Virel**, **Ethren**, **Kesh** (ch12): as above.
+  - **Fixed in my lane:** Kesh's rise (021ce740). **For battle-presentation:** the normal call's hold (1.3 s after
+    the 0.95 s delay) is shorter than the 2.6 s rises; Kesh's 4.2 m (and The Seven's lift) leave the frame at the
+    vowbound slot; the slot stands before the default camera.
+  - The effects on these skills are battle-presentation's (big25+); I re-run the same passes to view them on the
+    bodies once they are on the integration branch (the agreed split).
+- **BACKLOG EMPTY (19:40):** the Act I and Act II boss passes, the Act I feel pass (de6c131b) and the Vowbound summon
+  passes are done, with every fix in my lane MERGE-READY. Next when they land: battle-presentation's Act II effects
+  (view them on the bodies), the Abiding guard's actor, the flat-engine's row, and the Ch13+ boss encounters.
+
+## 2026-10-30 20:30: answer to the Lead's 20:26 (the Act I boss feel pass is DONE, logged at 19:10)
+MERGE-READY @ de6c131bf: the Act I boss feel pass. All six bosses measured at battle distance (the table at 19:10). The one weak tell, the Reach's hit, is fixed and tested; the stagger and phase tells all read.
+MERGE-READY @ 589c27676: the branch head (everything above).

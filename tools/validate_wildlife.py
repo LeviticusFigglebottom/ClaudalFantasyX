@@ -31,12 +31,14 @@ KIND_KEYS = {
              "pitch_max_deg", "flap_hz", "flap_s", "glide_s", "glide_dihedral_deg", "amp_rate", "decide_s",
              "perch_chance", "approach_s", "landing_speed_mps", "takeoff_s", "takeoff_lift_m", "perch_s",
              "head_turn_s", "head_yaw_deg", "head_rate", "nod_chance", "nod_hz", "gravity_mps2", "flap_start_chance",
-             "flare_from", "approach_amp", "takeoff_lead_deg", "takeoff_speed_fraction"},
+             "flare_from", "approach_amp", "takeoff_lead_deg", "takeoff_speed_fraction",
+             "flush_radius_m", "flush_delay_s"},  # the party lifts a perched bird (M4 wildlife reactions)
     "crab": {"scale", "flee_radius_m", "safe_radius_m", "flee_speed_mps", "walk_speed_mps", "turn_rate",
              "return_after_s", "shuffle_s", "shuffle_m", "gait_hz", "walk_gait_hz", "amp_rate", "arrive_m"},
     "fish": {"scale", "speed_mps", "dart_speed_mps", "spread_m", "follow_rate", "turn_rate", "wander_arrive_m",
              "wobble_m", "wobble_hz", "startle_radius_m", "startle_s", "swim_hz", "swim_hz_per_mps", "swim_amp",
-             "bottom_clearance_m", "startle_follow_mult", "wobble_y_fraction"},
+             "bottom_clearance_m", "startle_follow_mult", "wobble_y_fraction",
+             "scatter_spread"},  # a startle throws the school apart
     "insect": {"moth", "dragonfly", "firefly"},  # tables: INSECT_KEYS
 }
 # the kingfisher (Ch10, M4-A2P-056) is the gull's flock with its own tuning, meshes and rows

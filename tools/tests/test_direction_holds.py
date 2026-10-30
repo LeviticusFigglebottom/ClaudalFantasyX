@@ -1,6 +1,6 @@
 """docs/kb/audio/act2_direction_holds.json (act1_playthrough.py --holds): every script it names exists and every shot is
 one of that script's `@camera` ids, so a renamed shot (Ch11's L-ids became V00/V10/T00) can't drop out of the gap
-check unseen; and with the holds the staged Act II scenes have no music gap past the one Story has to answer for."""
+check unseen; and with the holds the staged Act II scenes have no music gap."""
 import json
 import re
 import sys
@@ -11,8 +11,8 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools" / "audio"))
 HOLDS = ROOT / "docs/kb/audio/act2_direction_holds.json"
 CAMERA = re.compile(r"^\s*@camera\s+(\S+)", re.M)
-# Story's open question (the live log): is ch14_the_vows' silence after peace_wedding_break meant?
-KNOWN = ("ch14_the_vows",)
+# Scenes whose gap is a question out to another role (none now: ch14_the_vows' low C holds to Asha's "No.").
+KNOWN: tuple[str, ...] = ()
 
 
 class DirectionHoldsTest(unittest.TestCase):

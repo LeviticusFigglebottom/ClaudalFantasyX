@@ -1102,7 +1102,7 @@ def _victory(hero: str, u: float, sk: Skeleton, persona: dict) -> dict:
     s1, c1 = math.sin(ph), math.cos(ph)
     if hero == "kerrid":  # M3-CHR-505: the look back down the line (his block)
         return kerrid_victory(u, sk, persona)
-    if hero in ("moll", "venn"):  # M3-CHR-507: the iron grounded, the long look over the field (his block; Venn's)
+    if hero in ("moll", "venn") or hero.startswith("abiding_"):  # M3-CHR-507: his block (Venn's, the guard's)
         return moll_victory(u, sk, persona)
     if hero == "pell":  # M3-CHR-506: very still, listening to the quiet (his block); never his back turned
         return pell_victory(u, sk, persona)
@@ -4624,6 +4624,26 @@ GRIP_ALWAYS.add("venn")
 IDLE_GROUNDED.add("venn")
 PROP_DOWN["venn"] = dict(PROP_DOWN["moll"])
 
+# M4-A2P-051: Sefir's Abiding guard (act2_ch16.md 5a), three named builds on the same kit, veiled: the halberdiers and
+# the Captain of the Veil fight as Venn does (his keys, the halberd on DEF-spear), the Bulwark casters as Moll does
+# (his keys as they are, the brine-iron on DEF-iron and the shield on the left arm). Each its own persona (their
+# skeletons differ), a little stiller than Moll: sworn guards.
+for _h, _keys, _grip in (("abiding_halberd", _venn_keys, ("Spear", "DEF-spear")),
+                         ("abiding_captain", _venn_keys, ("Spear", "DEF-spear")),
+                         ("abiding_bulwark", _moll_keys, ("Iron", "DEF-iron"))):
+    PERSONA[_h] = dict(PERSONA["moll"], sway=0.25)
+    CLIPS[_h] = list(CLIPS["moll"])
+    BATTLE_HEROES = BATTLE_HEROES + (_h,)
+    FOOT_FLAT[_h] = FOOT_FLAT["moll"]
+    STANCE_DORSI[_h] = STANCE_DORSI["moll"]
+    BATTLE_STRIKER[_h] = dict(BATTLE_STRIKER["moll"])
+    _BATTLE_KEYS[_h] = _keys
+    KO_OWN.add(_h)
+    GRIP[_h] = {"R": ("mesh", *_grip)}
+    GRIP_ALWAYS.add(_h)
+    IDLE_GROUNDED.add(_h)
+    PROP_DOWN[_h] = dict(PROP_DOWN["moll"])
+
 
 # ---------------------------------------------------------------------------------------------
 # Pell (M3-CHR-506, pell.md §1, §10): the wading-bird stand. Plumb from the heels to the shoulders, the long neck
@@ -5040,6 +5060,19 @@ GRIP_ALWAYS.add("pell")
 # M3-CHR-506: the right palm flat on the throat in storm_call (all through) and in cast's call (its 0.3-0.6 hold)
 FLAT_HAND["pell"] = {"storm_call": {"R": (-1.0, 0.0, 2.0, 3.0)}, "cast": {"R": (0.1, 0.28, 0.62, 0.75)}}
 IDLE_GROUNDED.add("pell")
+
+# M4-A2P-053: the Kirru people on Pell's build (assets_src/characters/pell/pell_variant.py, kirru/variants/): his
+# idiom (the neck's S, the staff in the left hand, one movement then stillness) and his own clips, never a fight (no
+# battle contract: the Kirru are a people, never monsters). `back_to_sea` is the farewell-tide's turning away (the
+# back to the party, the head bowed). Each its own persona (their skeletons differ by height); the elder stiller.
+KIRRU_CLIPS = ["idle", "walk", "talk", "go_still", "listen_tilt", "back_to_sea"]
+for _h, _sw in (("kirru_elder", 0.1), ("kirru_adult", 0.15), ("kirru_child", 0.35)):
+    PERSONA[_h] = dict(PERSONA["pell"], sway=_sw)
+    CLIPS[_h] = list(KIRRU_CLIPS)
+    HERO_LENGTHS[_h] = {c: HERO_LENGTHS["pell"][c] for c in KIRRU_CLIPS if c in HERO_LENGTHS["pell"]}
+    GRIP[_h] = dict(GRIP["pell"])
+    GRIP_ALWAYS.add(_h)
+    IDLE_GROUNDED.add(_h)
 
 
 # M3-CHR-05: the story clips go after each hero's own (every hero's block above has set its list by now)

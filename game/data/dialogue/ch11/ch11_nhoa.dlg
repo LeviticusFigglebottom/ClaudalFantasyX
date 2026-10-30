@@ -13,6 +13,9 @@ title: ch11_nhoa
 location: ch11/lowlight
 ---
 @letterbox on
+// M4-CIN-1304 (cinematics): staged from act2_ch11_direction.md (shots and marks in game/data/cutscene/ch11/).
+@mark pell pell_back walk
+@mark asha asha_ledge walk
 @camera N02
 @music lowlight fade=2.0
 @vfx glimmer_bound at=nhoa count=1
@@ -39,7 +42,7 @@ Pell [grief]: She is here. She is not lifted. Do not speak yet. Please. #line:ch
 @anim asha raise_staff
 @music nhoa_bound fade=0.0
 @wait 8.0
-@vfx glimmer_bound at=asha_sleeve count=4
+@vfx glimmer_bound at=asha count=4
 @wait 3.0
 @camera N08
 @anim nhoa turn_head pell

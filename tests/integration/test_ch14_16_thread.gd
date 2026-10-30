@@ -14,6 +14,7 @@ const CHOIR := "res://game/levels/ch16/drowned_choir/drowned_choir.tscn"
 func test_the_wedding_court_to_the_choir() -> void:
 	visit(COURT)
 	assert_eq(Game.state.chapter, 14)
+	Game.set_flag(&"ch14_complete")  # the court's story is test_ch13_thread's (the court is a ch13/ zone)
 	go(&"barge", "ch15/open_sea", "Deck")
 	visit(SEA)
 	assert_eq(Game.state.chapter, 15)

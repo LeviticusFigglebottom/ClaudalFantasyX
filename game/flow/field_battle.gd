@@ -164,12 +164,26 @@ func _show_result() -> void:
 		return
 	if not RETURN_ONLY.has(engine.outcome):
 		return
+	_prepare_return()
 	var keys: Array = RETURN_ONLY[engine.outcome]
 	var title := str(keys[0])
 	if engine.outcome in BattleSpoils.SPOILS_OUTCOMES:
 		title = BattleMenus.victory_title_key(engine)  # "The Inquisitor yields." (M3-C06-02)
 	var choices: Array[Dictionary] = [{"id": CHOICE_RETURN, "label": tr("HUD_RESULT_RETURN"), "enabled": true}]
 	hud.result.show_result(engine.outcome, tr(title), tr(str(keys[1])), hud.result.result_rows, choices)
+
+
+## While the result panel shows, the return's destination starts loading (ResidentLoads.prepare_return; not the
+## resident field, not in a headless run).
+func _prepare_return() -> void:
+	var loads := ResidentLoads.shared()
+	if (
+		loads == null
+		or not is_inside_tree()
+		or (DisplayServer.get_name() == "headless" and not ResidentLoads.run_headless)
+	):
+		return
+	loads.prepare_return(request, SceneRouter.resident_path())
 
 
 func _on_result_choice(choice: StringName) -> void:

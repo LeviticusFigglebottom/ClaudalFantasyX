@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "housing_glass"
+albedo_color = Color(0.749, 0.902, 0.878, 1)
+metallic = 0.0
+roughness = 0.12
+emission_enabled = true
+emission = Color(0.310, 0.702, 0.690, 1)
+emission_energy_multiplier = 0.0

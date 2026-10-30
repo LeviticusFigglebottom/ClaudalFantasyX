@@ -44,6 +44,8 @@ func test_events_play_their_rows() -> void:
 	assert_eq(s.on_event(&"boss_intro", ["ch01_hullgnaw", "TITLE"]), &"sting_boss_hullgnaw", "Hullgnaw has its own")
 	assert_eq(s.on_event(&"boss_intro", ["drownbell", "TITLE"]), &"sting_boss_bell", "the Drownbell has its own")
 	assert_eq(s.on_event(&"line_shown", []), &"", "an event with no row plays nothing")
+	assert_eq(played, [&"sting_tideline", &"sting_bark"] as Array[StringName], "the boss stings wait for their cards")
+	s.advance(_card_delay())
 	assert_eq(
 		played,
 		(
@@ -123,8 +125,10 @@ func test_the_director_listens_and_ducks() -> void:
 	assert_true(EventBus.dialogue_event.is_connected(dir.stings.on_event), "the director hears dialogue_event")
 	dir.stings.player = func(id: StringName) -> void: played.append(id)
 	dir.stings.on_event(&"boss_intro", ["ch01_hullgnaw", "TITLE"])
-	assert_eq(played, [&"sting_boss_hullgnaw"] as Array[StringName], "the boss's own sting")
-	assert_true(dir.ducks.has(&"boss_intro"), "the director's boss_intro duck is on")
+	assert_true(dir.ducks.has(&"boss_intro"), "the director's boss_intro duck is on at once, as the camera moves")
+	assert_eq(played, [] as Array[StringName], "the sting waits for the title card")
+	dir.stings.advance(_card_delay())
+	assert_eq(played, [&"sting_boss_hullgnaw"] as Array[StringName], "the boss's own sting, with the card")
 	assert_true(dir.duck_target_db(&"Music") < 0.0, "and dips the music")
 	dir.advance(10.0)
 	assert_false(dir.ducks.has(&"boss_intro"), "released in advance()")
@@ -135,7 +139,27 @@ func test_the_director_listens_and_ducks() -> void:
 	_done()
 
 
+func test_the_boss_sting_lands_with_the_title_card() -> void:
+	# the Lead's 10-30 19:45 item: BattleBossIntro announces itself as its camera starts to move; its card shows
+	# card_at_sec later (choreo.json), and the sting's hit (at its first frames) lands there
+	var choreo := JSON.parse_string(FileAccess.get_file_as_string("res://game/data/battle/choreo.json")) as Dictionary
+	var card_at := float(((choreo["choreo"] as Dictionary)["boss_intro"] as Dictionary)["card_at_sec"])
+	assert_true(absf(_card_delay() - 0.01 - card_at) < 0.001, "delay_sec follows the card")
+	var s := _listener()
+	s.on_event(&"boss_intro", ["ch10_mangrove_drowner", "TITLE"])
+	s.advance(card_at - 0.05)
+	assert_eq(played, [] as Array[StringName], "not before the card")
+	s.advance(0.1)
+	assert_eq(played, [&"sting_boss_mangrove_drowner"] as Array[StringName], "with it")
+	_done()
+
+
 # --------------------------------------------------------------------------- helpers
+
+
+func _card_delay() -> float:
+	var rows := AudioData.table(AudioData.BATTLE_STINGS)["events"] as Dictionary
+	return float((rows["boss_intro"] as Dictionary).get("delay_sec", 0.0)) + 0.01
 
 
 func _listener() -> StingAudio:

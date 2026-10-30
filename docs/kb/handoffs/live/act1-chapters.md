@@ -1030,6 +1030,144 @@ All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated;
   - The PC re-check of rows 34 and 39.
   - The inherited tool reds named at 13:48.
 
+### The Lead's 16:45 list (10-30)
+- **test_causeway_route in big25:** my fix is in big25 (7f54af722 and b368c93a5 are both ancestors). On a fresh
+  big25 worktree after `--import` it's **5/0**. The red was almost certainly the stale class cache after a merge (the
+  same thing I hit at 13:48 and 14:48), so the gate needs `--import` first.
+- **M4-A2P-114 (the 19 unraised flags): 14 wired, 5 moved to M4-A2P-1200.** Now in review (narrative).
+  - **New triggers** (from the generators): reedhollow `shore`, lowlight `engine` and `sanctum`, keth_pass
+    `terrace`, cloudloom `dais`, sanctum `ledge`, lamp_archive `ledgers` and `roll`.
+  - **New beats:** the Lamp Engine and the Avalanche Ram each play their scene, then the flow's `battle` step. The
+    other beats play their scene.
+  - **New arrive rows** play the return scenes:
+    - ch11_twice (once, by the new `ch11_twice_seen`) and ch11_held_by_you.
+    - ch12_herd_cord, ch12_forty_seven_voices and ch12_down_the_other_side.
+    - ch13_archive_hands (the third visit) and ch13_the_pact.
+  - **Flags:** `ch11_engine_released` and `ch11_twice_seen` are declared in flags.tres (its own commit).
+  - **Threads:** test_ch10..13_thread play each chapter's story in order. ch12 and ch13 have a new in-order test each.
+  - **qa_known `unraised`:** down from 19 to Ch14's 5. Those now point at M4-A2P-1200.
+  - **Staging:** the scenes name shots, cast, marks and VFX anchors the greybox stages lack (100 warnings). One
+    `known` row hands them to M4-A2P-075 (my staging, 070–075), and test_qa_threads is **green**.
+  - **Ch14 (rows 15–19):** filed as **M4-A2P-1200** (combat, mine): `ch14_water_steps`, `ch14_malcor_venn` and Venn's
+    enemy row and sim band, then the court's beats. The five flags also need M3-UI-1242's `"chapter"`.
+- **Ch14–16 mounts and walks:**
+  - test_ch14_16_thread (5/0), lacquer, open_sea, hollowmere, pale_rim (2/0 each).
+  - The Drowned Choir still has no dressing (M4-A2P-046 is `doing`).
+- **Checks:**
+  - ch10 (3/0), ch11 (3/0), ch12 (5/0), ch13 (5/0), zone_map (22/0), test_qa_threads (1/0).
+  - validate_data, taskboard --check, chapter_flow_check, and the flow tool tests (23 OK).
+  - `layout` has one red, test_aspect_layouts (a battle read-panel label at 4:3). It's the same on a clean
+    integration worktree, so it's ui's and inherited.
+- MERGE-READY @ 74accf6fd
+- **BACKLOG (10-30, after 16:45):**
+  - **Mine, next:** M4-A2P-1200 (Ch14's fights) and the Act II staging (070–075).
+  - **Waiting on others:**
+    - env-art-b: the Choir.
+    - M3-BPR-445, M3-UI-1242 and M4-A2P-061.
+    - The PC re-check of rows 34 and 39.
+
+### The Lead's 17:44 FAST-TRACK (10-30): the Act I read-through (act2-plan's M4-A2P-116, 117 @ 9be201224)
+**Id clashes, LEAD-ASK:**
+- Act2-plan's M4-A2P-116 duplicates env-art-b's M4-A2P-116 (the Lowlight arena request), which is already on
+  integration.
+- Their 117 duplicated my Ch14 task. I renumbered mine to **M4-A2P-1200** (e37d74276).
+- The taskboard will flag the 116 pair when act2-plan merges, so one of the two needs a new id.
+
+**Every row, as fixed** (the row's answer, for the review log):
+- **C1:** Hobb's drowned are "Jory Wend. Mag Wend. Anni Lusk". No cast or founder surname, and both are unused
+  anywhere.
+- **C2:** the moorings tie the families to the side the player met: "Noa's uncle, and his wife", "The Ketters. All
+  of them." and "Ama's brothers". Brann, Mae and Dovic are gone.
+- **C3:** the gantry-after bark now has Oruvel's crew coming down to ready their boat, so it isn't gone while Tavi
+  still waits at the moorings. I didn't gate it on `ch07_blessed_moorings`, because that scene is optional.
+- **C4:** the hearth trigger is blocked by `ch08_entered_coilspire`, with `once` and `sets_flag` (the same
+  `ch08_fed_the_beacon` the scene always sets). The beat gates on `ch08_entered_coilspire`. `ch08_fed_the_beacon`
+  is never set early, so Ch8's storm and Ch9's ebbing read it truly.
+- **B1:** Ysolde is `as "The stranger"` on all six lines of The Ink. Kerrid is `as "???"` on his one line before he
+  says his name.
+- **B2:**
+  - A new `hang` glimmer rate (cues.json `vfx_rate`, glimmer.json `cues.rates`, appended): held motes that barely
+    move and don't sink. The Seventh Terrace sighting and the Spar-Wraith way in use it.
+  - The wraith's early `sails_luff_and_fall` is gone, so the sails fall, and the motes go seaward, only at the name
+    board's Canticle.
+- **C5:** Ione's family is Merrow ("Aldo Merrow"). **For story:** act1_ch07.md still says Ione Sabe (lines 105-115,
+  203).
+- **B3:** Pemakar's `ferryman` actor wears Imbe's body (`ferrymaster`), and ch05's arrival takes
+  `name_board_seventh_terrace` out of the bag after `ch05_ferry_comes_in`.
+- **C6:** Kerrid is out of the reserve from Ch8's cut rope to Ch9's road. Ch9's `road_out` puts him back after the
+  scene sets `ch09_kerrid_on_road`. The Ch8 and Ch9 thread asserts follow (the old Ch8 assert encoded the bug).
+- **C7:** "The Drowned Choir. Yes."
+- **C9:** the Act II card is held. The road-out no longer jumps to `ch09_act_card` (the node is kept) while Ch9 hands
+  off to the end card, so the scene ends on the vigil and then "The end of Act I". Restore the jump when Ch9 hands on
+  to Ch10.
+- **B4:** "All those years in there with a hammer." No unseen number.
+- **B5:** "...You're asking about mine." / "Someone should." No "always".
+- **B6:** "a little after eleven", which matches Ch1's 11:10.
+- **B7:** `banter_brass` is blocked by `ch06_sheltered_liss`, and Ashcrown's three stair banters by
+  `ch05_trial_begun`. The generator reads the layout back in, so the keys survive a rebuild.
+- **C8:** `hobb_overheard` and `stillguard_overheard` are `once`.
+- **C10:** a new `ch07_bark_board_after`, neutral to the result, in ch07's `ch07_tavi_withdrew` barks map.
+- **Doc:** ch04.json's doc says it hands on to Ch5 (Harbour).
+
+**M4-A2P-117 (the vendor):**
+- New `brine_shoals_vendor`, "The Ridge-Boat Vendor": items, requires `ch06_camp_made`, six staples between the Ch4
+  purser's and Ch7 trader's tiers.
+- The loc row, the shop row and the trigger repoint are each in their own small commit.
+- **Checks:**
+  - Godot: ch04 (13/0), ch05 (13/0), ch06 (5/0), ch07 (18/0), ch08 (25/0), ch09 (13/0), glimmer (36/0), shop
+    (28/0), test_qa_threads (1/0).
+  - Tools: validate_data, dlgc (`--check` clean), chapter_flow_check, and the dlgc, flow, flag-reach and placeholder
+    tool tests (159 OK).
+  - No screenshots: no shot frames the changed scenes' text.
+- **Note for the QA folder's owner:** `docs/kb/qa/characters/jog_2026-10-30/` has no `.gdignore`, so every
+  `--import` writes six `.jpg.import` files there. I deleted the ones my imports made.
+- MERGE-READY @ c17b7c953
+
+### The Lead's 18:24 list (10-30); id range M4-A2P-1200..1399
+1. **M4-A2P-116, all 17 rows:** they were all fixed at 17:44, not 11 (C1–C10 and B1–B7, plus the Ch4 doc row). Every
+   row's answer is in the 17:44 entry above. MERGE-READY @ c17b7c953 covers them.
+2. **M4-A2P-1500 (env-art-b, the Pale Rim's exit):**
+   - `to_choir` now stands on the sand at x 216 (`RIM_LEN - 4`), about 11 m past ChoirEdge.
+   - The east haze bound moved from x 240.5 to the sand's end (`RIM_LEN + 1`), so there's no 20 m drop into nothing.
+   - test_ch14_16_walkable walks from ChoirEdge to the exit; it and pale_rim are green.
+3. **The three fights audio pre-wired** (music.json `pending_encounters`): all three built and in band (M4-A2P-1200
+   notes):
+   - `ch14_water_steps`, a set piece on Ch8's schema: naive 48.4, role 87.8, smart 100.
+   - `ch14_malcor_venn`, Venn plus the flat-engine Liss alone can break: naive 0.4, role 75, smart 100 at 40 turns.
+     - New engine rule, BattleParts `leaves_with`: a part withdraws once its owner no longer stands. A unit test
+       covers it, and validate_data checks the id.
+   - `ch16_abiding_guard`, the first plus two guards: naive 0.8, role 71, smart 100 at 41 turns.
+   - All at 500 seeds with `--check`, no timeouts.
+   - The scripts start `ch14_water_steps`; the plan's `ch14_hold_the_steps` name is only in audio's map (both map to
+     court_steps).
+   - Shared appends, each in its own commit: ch14.csv, ch16.csv, creature_voices.json (the three people
+     `"silent"`), choreo.json (the two sweeps stage as cast), validate_data.py, flags.tres (`ch14_venn_beaten`).
+4. **M4-A2P-114 flag setters: done, all 19.** Ch14 was the last five: the court flow (the dais, the water-steps, the
+   first ripple and Venn, left standing; the barge gated on `ch14_complete`). test_ch13_thread plays it, and
+   qa_known `"unraised"` is **empty**.
+5. **Ch14–16 mounts:** unchanged. The Drowned Choir's dressing still isn't anywhere (env-art-b's M4-A2P-046 is
+   `doing`).
+- **Ids:** my Ch14 task is renumbered into the range as M4-A2P-1200. M4-A2P-1201 is the effects request.
+- **Checks:**
+  - encounters_resolve (2/0), ch13_thread (3/0), ch14_16 (5/0), pale_rim (2/0), battle_answered (4/0), party_kits
+    (4/0), validate_data, taskboard, chapter_flow_check.
+  - `--filter=battle` (864 run) has five reds, none of them from this work:
+    - test_battle_act1_ability_vfx: the Vowbound and Swell effects, M4-A2P-061 (battle-presentation).
+    - test_battle_act2_ability_vfx: the conduit crawler's (M3-BPR-445) and my 13 new skills (M4-A2P-1201). Effects
+      are battle-presentation's.
+    - test_battle_lineup: `ch11_lamp_engine`'s engine and crawlers sit 2.5 m apart against 2.74 m. It's red on a
+      clean integration worktree too; the model's footprint against lowlight_engine_hall's slots is staging, so it's
+      for battle-presentation.
+    - test_battle_return: the probe exited 127, an environment binary issue.
+  - test_qa_threads: 1/0 with `unraised` empty.
+- MERGE-READY @ 3e62a3256
+- **BACKLOG EMPTY (10-30, after 18:24).** Waiting on others:
+  - env-art-b: the Choir's dressing.
+  - Battle-presentation: M4-A2P-1201, M3-BPR-445, M4-A2P-061, and the Lamp Engine lineup.
+  - Audio: the people's sounds.
+  - ui-menus: M3-UI-1242.
+  - The PC re-check of rows 34 and 39.
+
 ## Exact next step
 **BACKLOG EMPTY (2026-10-30 ~02:00):** the flow and pacing pass is done (`docs/kb/qa/act1_flow_pacing_pass.md`) and the
 Act II chapter drafts are written (`docs/kb/plan/act2/chapters/`, pre-gate). Waiting on:

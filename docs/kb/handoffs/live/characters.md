@@ -527,3 +527,55 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
     sole under the foot), fenn, reed_b, reed_c, scaleman, skipper_sadi (cloth inside a resting forearm), marra (edge
     verts under the kerchief knot), purser (the sleeve edge under the arm).
 - MERGE-READY @ ff1b0544
+
+## 2026-10-30, Act II: M4-A2P-051 done (Venn and Sefir's Abiding guard)
+- **Venn** is merge-ready since 3f0f5d67. **The Abiding guard** (veiled gold lacquer, living sworn guards per Ch16
+  5a):
+  - **abiding_halberd:** Venn's halberd and keys.
+  - **abiding_bulwark:** Moll's brine-iron and shield.
+  - **abiding_captain:** a red veil and sash.
+- **Build:** the veil is the opt-in sg_helm.veil. Each guard has a battle actor, stages and viewed shots.
+- **Checks:** the rig probes pass, with limits pinned only where Moll's own mechanisms show, each with its reason. Moll,
+  the squad, Ivo, the officer, Venn and the guards are identical on all 3 numpy paths. test_stillguard 46 and
+  test_hero_clips 19 pass; Godot battle_actor 5, post_import 21.
+- **Known limits:** the veil reads stiff at a close-up; Venn's parry hand stops short of the haft.
+- LEAD-ASK: abiding_guard.md (the pale lamp-hook bearers) and the newer Ch16 beat sheet (veiled gold lacquer)
+  disagree. I built the beat sheet's version; shall combat and act2-plan drop the sheet's version?
+- MERGE-READY @ eaad9906
+- **Next (Act II queue):** M4-A2P-052 (Liss's father and the crowds), then M4-A2P-053 (the Kirru and the Ullari).
+
+## 2026-10-30, Act II: M4-A2P-052 part 1, Aldous Varrow (the dock-master)
+- Built on the villager build: the family face, line-marks to the shoulders, a held-in grief row, and the push_raft
+  and hold_up_housing clips. 5 shots were viewed; identical on the 3 numpy paths; test_villagers passes.
+- LEAD-ASK: M4-A2P-052's three crowd costume sets (Ansedran, Saltwright, Ullari) go in the crowd generator
+  (assets_src/crowd/**, crowd.json), which ownership.md gives to creatures. Route them there, or move the claim to
+  characters?
+- MERGE-READY @ 088cf7d1
+- **Next:** M4-A2P-053 (the Kirru and the Ullari).
+
+## 2026-10-30, Act II: M4-A2P-053 the Kirru and the Ullari woman
+- **The Kirru:** variants on Pell's build (pell_variant.py, `--variant`; Pell is unchanged byte for byte). The elder,
+  the adult and the child each have their own coat, size, crest and cloth dye, and Pell's clips with `back_to_sea`
+  as the turning away. No battle contract.
+- **The Ullari woman:** on the villager build (layered weaving, a keth cord, tie_knot).
+- **Checks:** all shots viewed; probes OK; identical on 3 paths; the tests pass. The task is in review (combat).
+- **Known limit:** the Kirru faces are Pell's head re-coloured at a close-up.
+- MERGE-READY @ 39b1ed81
+- **Next:** M4-A2P-055 (Sefir in person), M4-A2P-057 (Kesh), and the prop request (the dock-hook, the salt-glass
+  housing, the wedding cord).
+
+## 2026-10-30, Act II: M4-A2P-055 Sefir in person
+- The temptation's tender and sad now read at 85 mm (raised in the data, the sheet and the test). The memory's
+  grief-grey is a material variant (skin_head_grief, via CostumeVariant). The officiant is the Act I model.
+- **Checks:** close-ups viewed; sefir identical on 3 paths; test_sefir, Godot hero_stage 11.
+- LEAD-ASK (crowd sets, M4-A2P-052): act2_tracks gives characters the Act II crowd sets, but the Act II layouts
+  (ch12/quellan, ch13/ansedra, ch17/hollowmere) have no actors yet, and gen_crowd.py reads one ranges.json (the
+  creatures track's). Proposal: once env-art places the crowd stage actors, I add the ansedra and quellan
+  communities (Saltwright exists) in assets_src/crowd/{ansedra,quellan}_ranges.json, with a three-line loader in
+  gen_crowd.py. creatures to OK the loader?
+- MERGE-READY @ dd590bd7
+- **Next:** the hand-prop request (Aldous's dock-hook and salt-glass housing, the wedding cord) to cinematics. Then
+  the Act II queue is done for characters, apart from the crowd sets (blocked as above) and Owa (Act III).
+- **Hand props (Act II):** assets/characters/props/act2/{dock_hook,salt_glass_housing,wedding_cord}.glb. Each
+  origin is the grip, for a BoneAttachment3D. The housing's bound glow is `emission_energy_multiplier` on
+  housing_glass.tres, off by default. The shot was viewed and the job is identical on 3 paths. MERGE-READY @ 1d4f93cb
