@@ -722,3 +722,5 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
   - **Continuity:** CH13_REST now reads "The wedding is tomorrow, at dusk." It had said "at dusk", but the pact the same night says "Tobin's married tomorrow".
   - **Contractions removed:** CH11_SIDE_BENCH, CH12_ON ("Do not look back."), CH13_SIDE_HOUSE, CH13_SIDE_FLAME, and my own CH06_SIDE_TIDELINE.
 - **Checks:** validate_data 0/0; taskboard clean; Godot `objective` 16/0 after `--import`. dlgc, tools unittest and check_drafts were not run: no .dlg, `tools/` or draft change.
+- MERGE-READY Ch6/Ch8 objective text + Act II objective lines @ 6141bf440
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1015; M4-A2P-112 items 3, 5 and 6.
