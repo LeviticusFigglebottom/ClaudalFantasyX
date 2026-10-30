@@ -35,7 +35,7 @@ import numpy as np  # noqa: E402
 import creature_sfx as C  # noqa: E402
 from field_ambience import modal, stick_slip  # noqa: E402
 from synth.dsp import SR, bq_bandpass, bq_lowpass, filt, rng  # noqa: E402
-from synth.mixer import measure, write_ogg  # noqa: E402
+from synth.mixer import measure, normalize_momentary, write_ogg  # noqa: E402
 from synth.water import drip  # noqa: E402
 
 OUT_DIR = os.path.join(ROOT, "assets", "audio", "act2", "sfx", "creatures")
@@ -46,6 +46,7 @@ VARIANTS: dict[str, dict] = {
     "scree_crawler": dict(family="tortoise", size=1.3, pitch=1.1),
     "rim_crawler": dict(family="crab", size=1.1, pitch=0.95, legs=4, spawn=True),
 }
+TP_MAX = -1.8                     # true peak margin under the -1 dBTP rule, Vorbis overshoot included
 COUNTS = {"idle": 1, "attack": 2, "hurt": 2, "death": 1, "move": 2}
 
 
@@ -72,7 +73,7 @@ def snow_grit(g) -> np.ndarray:
     for _ in range(int(g.integers(30, 60))):
         s = int(g.uniform(0, n - 60))
         y[s: s + 40] += filt(g.standard_normal(40), [bq_bandpass(float(g.uniform(1500, 5000)), 1.2)]) * float(g.uniform(0.2, 1.0))
-    return y * np.linspace(1, 0.3, n)
+    return filt(y * np.linspace(1, 0.3, n), [bq_lowpass(4500, 0.7)])    # crunch, not clicks: keeps the peaks down
 
 
 def chalk(g) -> np.ndarray:
@@ -129,6 +130,9 @@ def render(out_dir: str = OUT_DIR, verbose: bool = True) -> dict:
     res = {}
     for name, (fn, tgt) in SFX.items():
         x = C.finish(fn(), tgt)
+        if measure(x)["true_peak_dbtp"] > TP_MAX:          # an inter-sample overshoot: limit lower, keep the loudness
+            for _ in range(4):
+                x = normalize_momentary(x, tgt, ceiling_db=C.CEILING - 1.5)
         write_ogg(os.path.join(out_dir, name + ".ogg"), x, quality=C.QUALITY)
         res[name] = measure(x)
         if verbose:
