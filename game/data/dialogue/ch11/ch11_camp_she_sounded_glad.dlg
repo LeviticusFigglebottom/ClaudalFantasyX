@@ -4,7 +4,7 @@
 title: ch11_camp_she_sounded_glad
 location: ch11/lowlight
 ---
-Asha [guilty]: Pell. I should have stopped. When I saw your face, I should have stopped. #line:ch11_camp_001
+Asha [guilty]: Pell. At the ledge. I didn't know it was her until it was done. #line:ch11_camp_001
 Pell [neutral]: You did not know her name. #line:ch11_camp_002
 Asha [sad]: I do now. Ressa. #line:ch11_camp_003
 Pell [neutral]: Yes. #line:ch11_camp_004
@@ -13,6 +13,5 @@ Pell [neutral]: She was alone down there a long time. Now someone is calling her
 Pell [sad]: I do not know if glad is the right word. It is the word I would want. #line:ch11_camp_007
 Asha [determined]: Then I'll call her by name. Every time. Not the Saint's. Hers. #line:ch11_camp_008
 Pell [neutral]: Good. #line:ch11_camp_009
-Pell [neutral]: You are holding her now, Lady Cantor. Someone should see it. I will. #line:ch11_camp_010
 <<set $ch11_camp_talk = true>>
 ===

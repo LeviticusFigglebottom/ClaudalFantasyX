@@ -2013,3 +2013,41 @@ MERGE-READY @ (this commit) (it includes 314559cfc and b335f0325).
   router does, then compares EventBus connections per signal, registered shrines and root children. Before the fix
   it failed in every zone; now it passes. battle_return 1/0 and scene_router 17/0.
 MERGE-READY @ (this commit). **Take it into the next batch:** big24 and big25 carry the bug.
+
+### Lead FAST-TRACK 10-30 17:24 (cloud-qa row 74): scripted fights resident, destination prewarm, input on a clear screen
+- **Every fight now keeps the field resident** (random or scripted, `BattleRequest.pending()`). The way back
+  re-attaches the zone and calls `on_resident_return()` through it, so the zone **arrives again as a fresh load would**:
+  - ZoneStory and HalunaStory clear the hand-off and re-run their autostart, so a scripted win's scene plays. This also
+    fixes a second live big24/25 bug: after a random fight the story stayed `handed_off`, so `is_free()` was false,
+    which blocked interactions and further encounters.
+  - GreyboxZone re-applies `refresh_states()` / `apply_variant()`, since the win may have set their flags.
+- **The router waits for the zone to be back in the tree.** The battle scene is replaced at the end of a frame, so on
+  the first frame the zone wasn't in yet. Its arrival and its spawn placement had been skipped; random fights only
+  looked right because Rhen came back where he stood.
+- **A fight returning elsewhere** (`return_scene`, or another location) starts that scene's threaded load as the fight
+  begins, so the change after the victory panel finds it in.
+- **Input on a clear screen:** FieldController's device stick and interact wait for `screen_clear()` (SceneRouter's
+  fade at 0). Tests and cutscenes (input_override, interact()) are not gated. Test:
+  `test_the_stick_waits_for_the_fade_to_clear`.
+- **cloud-qa's return_probe** (qa/cloud-pass6 tools/gpu_bench/return_probe.gd, run here untracked; headless):
+
+  | case | black | covered | ready | moved | before (row 74) |
+  |---|---|---|---|---|---|
+  | tideline (scripted, Haluna) | 164 ms | 857 ms | 14.2 s (B02 plays, read through) | 14.3 s | 5.5 s black |
+  | oruvel_scuttlers (scripted) | 53 ms | 732 ms | 732 ms | (placed on AfterScuttlers) | 2.8 s black |
+  | causeway (random) | 58 ms | 748 ms | 748 ms | 834 ms | — |
+  | ch04_ferry (random) | 67 ms | 757 ms | 757 ms | 848 ms | — |
+  | ch06 (random) | 84 ms | 737 ms | 745 ms | 836 ms | — |
+  | drownbell → Haluna → the Ch4 card → the wake | 10.7 s | 4.8 s | in the wake's opening | — | ~4 s to Haluna |
+
+  - "moved" now comes after "covered", so the stick waits for the screen.
+  - Tideline's ready is the post-battle scene playing.
+  - Drownbell's return is a chain of three changes: a different zone (Haluna, prewarmed), then the chapter card,
+    then Ch4's wake. Its black is the card and the wake's own entry, story flow rather than the fight's return. If
+    the Lead wants it shorter, the lever is the card-to-wake change: M3-HER-1167's start-loads-early applies there too.
+- **Checks:** resident_reattach 1/0, battle_return 1/0, scene_router 17/0, zone_story 18/0, haluna_story 2/0,
+  field_controller 6/0, fp_ 30/0, qa_encounters 1/0, ch04_thread 3/0; gdlint and gdformat clean; validate_data 0/0.
+- **Ownership note:** `on_resident_return()` is a small new method in slice-polish's ZoneStory and HalunaStory
+  (game/flow). The resident field needs the stories to arrive again, and the bug (hand-off state kept, arrival
+  skipped) is from my change.
+MERGE-READY @ (this commit).

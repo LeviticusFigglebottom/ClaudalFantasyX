@@ -1188,6 +1188,26 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - R07: the reed bed blocks every side view of the causeway's end, so the two-shot looks along the causeway from
     the east, Kerrid facing the camera (and the gold behind it), Pell's back to it. R08's insert stays.
   - The people still wait on M4-CIN-1305.
+- **Act II Ch11 staged from act2_ch11_direction.md, MERGE-READY @ 200a084d9:**
+  - `game/data/cutscene/ch11/{sunken_vey,lowlight}.json` (V00/V10/T00 = lowlight.md's L01/L03/L05; the binding's
+    N-shots).
+  - Cue edits: the blocking marks, the holds the notes ask for, and Rhen's "Dace Sallow. My father." on his own
+    single (V05_rhen), with alternating singles after it.
+  - The shot rig gains `at_mark`, so a trigger-placed scene (the conduit court) is staged where play stands Rhen.
+  - Viewed (5 pending stills):
+    - V00, the Vey from the water;
+    - the admission on Rhen's single, his lantern beside him;
+    - the engine hall;
+    - the well, where Pell is still missing;
+    - the bench.
+- **Act II Ch12 staged from act2_ch12_direction.md, MERGE-READY @ 200a084d9:**
+  - `game/data/cutscene/ch12/{keth_pass,quellan,cloudloom}.json`. K01/K04 and C02/C03 replace the greybox's ids of
+    another meaning.
+  - Marks the notes name but don't place are set from the shots that frame them.
+  - Quellan's inn had no light: `inn_fire` is a cinematics prop (CutsceneStaging now takes `props`).
+  - The 4 pending stills frame their places on the dressed zones (raycast: the floors match the greybox). They show
+    no people yet: Ch11 and Ch12's actors (Ram, Hesk and Nhoa included) are added to M4-CIN-1305 for the chapters
+    track.
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan

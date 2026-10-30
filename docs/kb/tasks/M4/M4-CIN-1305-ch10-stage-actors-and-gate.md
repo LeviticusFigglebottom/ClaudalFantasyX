@@ -37,6 +37,11 @@ chapter's (layout actors, the zone's host wiring).
 - [ ] Ch11's lamp bench holds its input three times (`hold_steady`, `turn_collar`, `seat_it`): the zone's hold gate
       with those prompts.
 
+- [ ] **Ch12** (added 2026-10-30, from act2_ch12_direction.md): **keth_pass** `asha`, `toma`, `ysolde`, `liss`,
+      `pell`, `kerrid`, `ullari_woman` (the knot), and `avalanche_ram` at the seep pool (creatures-b's Ram); **quellan**
+      `asha`, `ysolde`, `toma` in the inn (Asha on the bench at about (34.6, 0, -7.4)); **cloudloom** `asha`, `ysolde`,
+      `toma`, `rhen` and `hesk` on the dais (creatures-b's Hesk).
+
 ## Notes
 - Cinematics' staging review (M4-C10-01) and M4-A2P-070. The stills wait on these actors.
 

@@ -28,6 +28,7 @@ shader_parameter/tile_m = Vector2(2.5, 2.5)
 shader_parameter/use_barnacles = false
 shader_parameter/use_moss = false
 shader_parameter/use_salt = false
+shader_parameter/uw_caustics = 1.2
 shader_parameter/variation_value = 0.05
 shader_parameter/wet_darken = 0.92
 shader_parameter/wet_flatten = 0

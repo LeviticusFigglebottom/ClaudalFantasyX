@@ -1548,6 +1548,50 @@
       "settle_frames": 30
     },
     {
+      "id": "villager_ullari_woman_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/ullari_woman_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_ullari_woman_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/ullari_woman_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_ullari_woman_face_sad",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/ullari_woman_face_sad.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_ullari_woman_tie_knot",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/ullari_woman_tie_knot.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "villager_tobin_front",
       "pending_baseline": true,
       "scene": "res://game/levels/_tests/characters/villagers/tobin_stage.tscn",
@@ -8271,6 +8315,105 @@
       }
     },
     {
+      "id": "kirru_elder_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_elder_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kirru_elder_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_elder_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kirru_elder_back_to_sea",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_elder_back_to_sea.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kirru_adult_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_adult_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kirru_adult_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_adult_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kirru_adult_back_to_sea",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_adult_back_to_sea.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kirru_child_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_child_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kirru_child_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_child_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kirru_child_back_to_sea",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_child_back_to_sea.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "pell_front",
       "scene": "res://game/levels/_tests/characters/pell/pell_stage.tscn",
       "camera": "Cameras/Front",
@@ -9624,6 +9767,130 @@
           }
         },
         "time_scale": 4.0
+      }
+    },
+    {
+      "id": "npc_haluna_vignette_causeway",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/CausewayHead",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "npc_haluna_vignette_lane_games",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/LaneGames",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "npc_haluna_vignette_lane_mender",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/LaneMender",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "npc_haluna_vignette_dock",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/DockWork",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "npc_haluna_vignette_night_market",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/Market",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "night": true
+          }
+        }
+      }
+    },
+    {
+      "id": "npc_haluna_vignette_night_lane",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/LaneMender",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "night": true
+          }
+        }
       }
     }
   ]

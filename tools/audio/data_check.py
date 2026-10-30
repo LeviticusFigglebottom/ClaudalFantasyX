@@ -152,8 +152,11 @@ def music_errors(music: object, exists, flags: set[str], encounters: set[str],
     battle = music.get("battle") or {}
     if battle.get("default") not in cues:
         errs.append(f"{MUSIC} battle.default: unknown cue {battle.get('default')}")
+    pending = set(battle.get("pending_encounters") or [])
+    for enc in sorted(pending & set(encounters)):
+        errs.append(f"{MUSIC} battle.pending_encounters: {enc} exists now, take it off the list")
     for enc, cid in (battle.get("encounters") or {}).items():
-        if enc not in encounters:
+        if enc not in encounters and enc not in pending:  # pending: a planned fight combat has not written yet
             errs.append(f"{MUSIC} battle.encounters: unknown encounter {enc}")
         if cid not in cues:
             errs.append(f"{MUSIC} battle.encounters.{enc}: unknown cue {cid}")

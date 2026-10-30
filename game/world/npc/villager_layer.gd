@@ -30,6 +30,10 @@ extends Node3D
 ## "#RRGGBB"` draws the villager as one glowing silhouette in that colour (NpcSilhouette; M3-HER-1142: the figure
 ## in Corrow's storm wall); `tuning` is merged over the villager's tuning (the figure never glances or turns to the
 ## party).
+##
+## Day and night (the Lead, 2026-10-30: Haluna's vignettes): a row's `shown` (`day` or `night`; none: always) shows
+## the villager only while the zone's `is_night` (HalunaZone.set_night: the dock at night) is false or true. Hidden, it
+## is stopped and not ticked, as HalunaZone's night_hide stops its own villagers.
 
 const DATA_DIR := "res://game/data/world/npc/zones/"
 const ACTOR_PATH := "res://assets/characters/villagers/%s/%s_actor.tscn"
@@ -48,6 +52,10 @@ const GREYBOX_MODEL := "Model"
 const ZONE_CAST := "Cast"
 ## Where a row's `at` spot is made when the zone has no stand-in for it (a crowd on a greybox that names no actors).
 const CROWD_SPOTS := "CrowdSpots"
+## Row `shown`: only by day, only at night (the zone's `is_night`).
+const SHOWN_DAY := "day"
+const SHOWN_NIGHT := "night"
+const NIGHT_PROPERTY := &"is_night"
 
 ## crowd.json, read once (crowd_data) and its people by id.
 static var _crowd: Dictionary = {}
@@ -65,11 +73,14 @@ static var _crowd_people: Dictionary = {}
 var data: Dictionary = {}
 var villagers: Array[FieldNpc] = []
 var storm := false
+var night := false
 ## FieldNpc -> [[Node3D, Transform3D relative to the villager], ...] (keys are checked with is_instance_valid as
 ## Variants before any cast: see live_villagers)
 var _followers: Dictionary = {}
 var _storm_flag: StringName = &""
 var _built := false
+## FieldNpc -> its row's `shown` (only rows that set one)
+var _shown: Dictionary = {}
 
 
 func _ready() -> void:
@@ -161,6 +172,9 @@ func _add_row(row: Variant, by_id: Dictionary) -> void:
 		if npc != null:
 			villagers.append(npc)
 			by_id[npc.npc_id] = npc
+			var shown := str((row as Dictionary).get("shown", ""))
+			if shown == SHOWN_DAY or shown == SHOWN_NIGHT:
+				_shown[npc] = shown
 
 
 func _finish_build(rows: Array, by_id: Dictionary) -> void:
@@ -171,6 +185,7 @@ func _finish_build(rows: Array, by_id: Dictionary) -> void:
 		if by_id.has(mate):
 			(by_id[StringName(str(row["npc_id"]))] as FieldNpc).partner = by_id[mate] as FieldNpc
 	_check_storm()
+	_apply_shown()
 
 
 ## Adds a layer for `zone_id` under `zone` (after the zone has placed any villagers of its own) and builds it; a zone
@@ -451,11 +466,36 @@ func _check_storm() -> void:
 		set_storm(on)
 
 
-## One frame: the villagers (when the owner drives them), the storm flag and the riders.
+## Night falls (or lifts) here: the `shown` rows' villagers appear or go (called by tick from the zone's `is_night`).
+func set_night(on: bool) -> void:
+	night = on
+	_apply_shown()
+
+
+func _apply_shown() -> void:
+	for key: Variant in _shown.keys():
+		if not is_instance_valid(key):
+			_shown.erase(key)
+			continue
+		var npc := key as FieldNpc
+		var on := (str(_shown[key]) == SHOWN_NIGHT) == night
+		npc.visible = on
+		npc.process_mode = Node.PROCESS_MODE_INHERIT if on else Node.PROCESS_MODE_DISABLED
+
+
+func _check_night() -> void:
+	var v: Variant = _root().get(NIGHT_PROPERTY)
+	if v is bool and bool(v) != night:
+		set_night(bool(v))
+
+
+## One frame: the villagers (when the owner drives them), the storm flag, the night and the riders.
 func tick(delta: float) -> void:
+	_check_night()
 	if not auto_build:
 		for n in live_villagers():
-			n.tick(delta)
+			if n.visible:
+				n.tick(delta)
 	_check_storm()
 	for key: Variant in _followers.keys():
 		if not is_instance_valid(key):
