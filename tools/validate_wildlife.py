@@ -43,8 +43,8 @@ KIND_KEYS = {
 KIND_KEYS["kingfisher"] = KIND_KEYS["gull"] | {"dive_chance", "dive_reach_m", "dive_s", "dive_speed_mps", "dive_hold_s",
                                                "dive_return_s"}  # its plunge (fen_kingfisher.md)
 # the woolback (Ch12, M4-A2P-056): skinned actors in herds (WildlifeHerd), its scene an actor .tscn, no meshes table
-KIND_KEYS["woolback"] = {"scale", "walk_speed_mps", "turn_rate", "graze_s", "look_chance", "look_s", "look_radius_m",
-                         "look_rate", "wander_m", "spacing_m", "arrive_m", "height_m", "bounds_pad_m"}
+KIND_KEYS["woolback"] = {"scale", "walk_speed_mps", "turn_rate", "graze_s", "graze_pace", "look_chance", "look_s",
+                         "look_radius_m", "look_rate", "wander_m", "spacing_m", "arrive_m", "height_m", "bounds_pad_m"}
 SKINNED_KINDS = {"woolback"}
 # the rim ray (Ch16, M4-A2P-056) is the fish shoal with its own tuning, mesh and rows
 KIND_KEYS["ray"] = KIND_KEYS["fish"]

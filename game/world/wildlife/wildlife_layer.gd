@@ -404,6 +404,7 @@ func _place_herd(h: int, vis: int) -> void:
 			if ap.has_animation(a.clip):
 				var first := ap.current_animation == ""
 				ap.play(a.clip)
+				ap.speed_scale = herd.playback_of(a)
 				if first:
 					ap.seek(fmod(float(i) * HERD_PHASE_S + float(h), ap.current_animation_length), true)
 			a.clip_changed = false
