@@ -193,20 +193,25 @@ def kesh_summon(mx: Mixer, g) -> float:
 
 
 # The held light after each binding, in seconds past the sting's own length: its notes (the sting's last colour),
-# and the scene gap it covers (above).
+# and the scene gap it covers (above) plus 6 s, so the direction notes' staged holds (docs/kb/audio/
+# act2_direction_holds.json, act1_playthrough.py --holds) and their unmeasured pauses never outrun it.
 TAIL: dict[str, tuple[float, tuple[str, ...]]] = {
-    "nhoa_bound": (16.0, ("C#5", "F#5", "C#6")),
-    "hesk_bound": (14.0, ("A3", "E4", "C#5")),
-    "ethren_bound": (9.0, ("C3", "G3", "E4")),
-    "kesh_bound": (6.0, ("A2", "E3", "C4")),
+    "nhoa_bound": (22.0, ("C#5", "F#5", "C#6")),
+    "hesk_bound": (20.0, ("A3", "E4", "C#5")),
+    "ethren_bound": (15.0, ("C3", "G3", "E4")),
+    "kesh_bound": (12.0, ("A2", "E3", "C4")),
 }
+# The held pad's velocity: low enough that the tail sits under the loudness gate's relative threshold, so it never
+# moves the sting's -16 LUFS. Kesh's is lower: its low A-minor pad reads louder against a short, peaky sting.
+TAIL_VEL = {"kesh_bound": 0.07}
 
 
 def held_light(mx: Mixer, name: str, at: float) -> None:
     """The binding's light held after the sting: a soft pad on the sting's last colour with one glass ring at its top,
     no attack and no pulse, fading out over the tail."""
     sec, notes = TAIL[name]
-    mx.add("pad", pad_chord([n(p) for p in notes], sec, 0.16, seed=SEED + 900 + len(name), attack=2.0,
+    vel = TAIL_VEL.get(name, 0.16)
+    mx.add("pad", pad_chord([n(p) for p in notes], sec, vel, seed=SEED + 900 + len(name), attack=2.0,
                             release=sec * 0.6), at - 1.5)
     mx.add("glass", _glass(n(notes[-1]) + 12, 0.08, SEED + 950 + len(name), decay=6.0), at + 1.0, pan=0.2)
 
