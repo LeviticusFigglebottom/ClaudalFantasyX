@@ -138,6 +138,34 @@ func test_a_change_loads_the_zone_s_list_and_drops_the_last() -> void:
 	_done()
 
 
+## A field battle keeps the zone's loads, so the change back to the field reads nothing again (the human playtest's
+## seconds of black after a won fight, 2026-10-30).
+func test_a_field_battle_keeps_the_zone_s_loads_for_the_return() -> void:
+	ResidentLoads.run_headless = true
+	var router := Node.new()
+	router.set_script(load("res://tests/fixtures/resident/hold_router.gd"))
+	_add(router)
+	var r := ResidentLoads.install(router)
+	var ch1 := "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn"
+	r.load_scene(ch1)
+	while not r.is_ready():
+		r.poll()
+		OS.delay_msec(5)
+	var zone := r.scene.keys()
+	assert_false(zone.is_empty(), "the zone's resources are in")
+	r.load_scene(SceneSwapProbe._queue_battle(&"ch02_tideline"))
+	for path: String in zone:
+		assert_true(r.scene.has(path), "kept through the battle: %s" % path)
+	while not r.is_ready():
+		r.poll()
+		OS.delay_msec(5)
+	BattleRequest.clear()
+	r.load_scene(ch1)
+	assert_true(r.is_ready(), "the return has nothing to load")
+	assert_false(r.prewarm_pending(), "nor anything to prewarm again")
+	_done()
+
+
 ## A field battle loads its arena and its enemies' actors behind the fade (the PC's ~2 s battle entries).
 func test_a_battle_lists_its_arena_and_its_enemies() -> void:
 	var paths := ResidentLoads.battle_paths(&"ch02_tideline")
