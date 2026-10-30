@@ -59,6 +59,29 @@ func test_a_repeat_is_a_marked_press_then_release() -> void:
 	_done()
 
 
+## A held direction (a key's echo or a pad repeat) stops at a list's end; a fresh press wraps round.
+func test_a_held_direction_stops_at_the_end_and_a_press_wraps() -> void:
+	var page := MenuPage.new()
+	page.size = Vector2(540.0, 200.0)
+	ParityHost.scene_root().add_child(page)
+	var rows: Array[Dictionary] = [{"id": &"a", "label": "A"}, {"id": &"b", "label": "B"}, {"id": &"c", "label": "C"}]
+	page.setup(HudLayout.section(&"commands"), &"test", "", rows)
+	page.set_cursor(2, false)
+	MenuPage.held_probe = func(_delta: int) -> bool: return true
+	assert_false(page.move(1), "held: no wrap past the last row")
+	assert_eq(page.cursor, 2)
+	assert_true(page.move(-1), "held: moving within the list still works")
+	page.set_cursor(0, false)
+	assert_false(page.move(-1), "held: no wrap past the first row")
+	MenuPage.held_probe = func(_delta: int) -> bool: return false
+	assert_true(page.move(-1), "a fresh press wraps")
+	assert_eq(page.cursor, 2)
+	MenuPage.held_probe = Callable()
+	page.get_parent().remove_child(page)
+	page.free()
+	_done()
+
+
 func _dpad(button: JoyButton, down: bool) -> InputEventJoypadButton:
 	var e := InputEventJoypadButton.new()
 	e.button_index = button
