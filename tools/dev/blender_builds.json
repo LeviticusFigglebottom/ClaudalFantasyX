@@ -1697,6 +1697,54 @@
         ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_woman_medium_b", "--bake-dir", "{scratch}/crowd_woman_medium_b_bake"],
         ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_woman_medium_b", "--bake-dir", "{scratch}/crowd_woman_medium_b_bake"]
       ]
+    },
+    {
+      "id": "crowd_kirru_man",
+      "threads": 4,
+      "owner": "character",
+      "_note": "The Kirru crowd (the Lead, 2026-10-30): Pell's build (build_pell as a library) on pell_params.json with kirru_man's overrides (assets_src/crowd/kirru/kirru_bodies.json); its LOD1 ships. Pell's sources are this job's too.",
+      "sources": ["assets_src/crowd/kirru/**", "assets_src/characters/pell/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/crowd/kirru_man/*.glb", "assets/crowd/kirru_man/textures/*.png", "assets/crowd/kirru_man/materials/*.tres", "assets/crowd/kirru_man/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/kirru/build_kirru.py", "--", "--body", "kirru_man", "--bake-dir", "{scratch}/kirru_man_bake"],
+        ["{python}", "assets_src/crowd/kirru/kirru_textures.py", "--body", "kirru_man", "--bake-dir", "{scratch}/kirru_man_bake"]
+      ]
+    },
+    {
+      "id": "crowd_kirru_woman",
+      "threads": 4,
+      "owner": "character",
+      "_note": "The Kirru crowd (the Lead, 2026-10-30): Pell's build (build_pell as a library) on pell_params.json with kirru_woman's overrides (assets_src/crowd/kirru/kirru_bodies.json); its LOD1 ships. Pell's sources are this job's too.",
+      "sources": ["assets_src/crowd/kirru/**", "assets_src/characters/pell/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/crowd/kirru_woman/*.glb", "assets/crowd/kirru_woman/textures/*.png", "assets/crowd/kirru_woman/materials/*.tres", "assets/crowd/kirru_woman/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/kirru/build_kirru.py", "--", "--body", "kirru_woman", "--bake-dir", "{scratch}/kirru_woman_bake"],
+        ["{python}", "assets_src/crowd/kirru/kirru_textures.py", "--body", "kirru_woman", "--bake-dir", "{scratch}/kirru_woman_bake"]
+      ]
+    },
+    {
+      "id": "crowd_kirru_elder_woman",
+      "threads": 4,
+      "owner": "character",
+      "_note": "The Kirru crowd (the Lead, 2026-10-30): Pell's build (build_pell as a library) on pell_params.json with kirru_elder_woman's overrides (assets_src/crowd/kirru/kirru_bodies.json); its LOD1 ships. Pell's sources are this job's too.",
+      "sources": ["assets_src/crowd/kirru/**", "assets_src/characters/pell/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/crowd/kirru_elder_woman/*.glb", "assets/crowd/kirru_elder_woman/textures/*.png", "assets/crowd/kirru_elder_woman/materials/*.tres", "assets/crowd/kirru_elder_woman/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/kirru/build_kirru.py", "--", "--body", "kirru_elder_woman", "--bake-dir", "{scratch}/kirru_elder_woman_bake"],
+        ["{python}", "assets_src/crowd/kirru/kirru_textures.py", "--body", "kirru_elder_woman", "--bake-dir", "{scratch}/kirru_elder_woman_bake"]
+      ]
+    },
+    {
+      "id": "crowd_kirru_youngster",
+      "threads": 4,
+      "owner": "character",
+      "_note": "The Kirru crowd (the Lead, 2026-10-30): Pell's build (build_pell as a library) on pell_params.json with kirru_youngster's overrides (assets_src/crowd/kirru/kirru_bodies.json); its LOD1 ships. Pell's sources are this job's too.",
+      "sources": ["assets_src/crowd/kirru/**", "assets_src/characters/pell/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/crowd/kirru_youngster/*.glb", "assets/crowd/kirru_youngster/textures/*.png", "assets/crowd/kirru_youngster/materials/*.tres", "assets/crowd/kirru_youngster/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/kirru/build_kirru.py", "--", "--body", "kirru_youngster", "--bake-dir", "{scratch}/kirru_youngster_bake"],
+        ["{python}", "assets_src/crowd/kirru/kirru_textures.py", "--body", "kirru_youngster", "--bake-dir", "{scratch}/kirru_youngster_bake"]
+      ]
     }
   ]
 }

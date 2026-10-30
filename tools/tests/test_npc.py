@@ -409,6 +409,55 @@ class SharedClips(unittest.TestCase):
             self.assertIn(needle, errs)
 
 
+class Kirru(unittest.TestCase):
+    """The Kirru crowd bodies (assets_src/crowd/kirru): Pell's params with each body's overrides, costume scaled to
+    its height, the clip library up to date with Pell's clips, every body imported and in Reedhollow."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        sys.path.insert(0, str(ROOT / "assets_src" / "crowd" / "kirru"))
+        import kirru_clips
+        import kirru_params
+
+        cls.kp, cls.kc = kirru_params, kirru_clips
+
+    def test_params_are_pells_with_the_bodys_overrides(self) -> None:
+        pell = json.loads(self.kp.PELL_PARAMS.read_text(encoding="utf-8"))
+        for body, spec in self.kp.bodies()["bodies"].items():
+            p = self.kp.params(body)
+            self.assertEqual(p["height_m"], spec["overrides"]["height_m"], body)
+            self.assertEqual(p["heads_tall"], spec["overrides"].get("heads_tall", pell["heads_tall"]), body)
+            self.assertEqual(set(p), set(pell), f"{body}: no key Pell's build doesn't read")
+            k = p["height_m"] / pell["height_m"]
+            self.assertAlmostEqual(p["_costume"]["mantle_cap_m"], pell["_costume"]["mantle_cap_m"] * k, 5, body)
+            self.assertAlmostEqual(p["_shell"]["shell_m"], pell["_shell"]["shell_m"] * k, 5, body)
+        heights = sorted(self.kp.params(b)["height_m"] for b in self.kp.bodies()["bodies"])
+        self.assertLess(heights[0], 1.8, "a youngster")
+        self.assertTrue(all(2.1 <= h <= 2.4 for h in heights[1:]), "adults in the bible's 2.1-2.4 m")
+
+    def test_the_clip_library_is_pells_and_up_to_date(self) -> None:
+        text = self.kc.build(self.kc.SOURCE.read_text(encoding="utf-8"))
+        self.assertEqual(self.kc.OUT.read_text(encoding="utf-8"), text, "run assets_src/crowd/kirru/kirru_clips.py")
+        self.assertNotIn("pell_skeleton", text)
+        for clip in ("idle", "talk", "walk"):
+            self.assertIn(f'&"{clip}": SubResource', text)
+
+    def test_every_body_is_imported_and_reedhollow_wears_them_all(self) -> None:
+        rules = _load("game/data/import/crowd.json")
+        rows = _load(f"{vn.ZONES_DIR}/ch10_reedhollow.json")["villagers"]
+        worn = {r["body"] for r in rows}
+        for body in self.kp.bodies()["bodies"]:
+            self.assertIn(f"res://assets/crowd/{body}/", rules["assets"])
+            self.assertEqual(rules["animations"]["libraries"][body], "kirru")
+            self.assertTrue((ROOT / vn.CROWD_ACTOR.format(id=body)).exists(), body)
+            self.assertIn(body, worn)
+        clutch = [r["body"] for r in rows if r["npc_id"].startswith("clutch_")]
+        for i in range(len(clutch) - 1):
+            self.assertNotEqual(clutch[i], clutch[i + 1], "neighbours in the clutch differ")
+        for i in range(len(clutch) - 2):
+            self.assertNotEqual(clutch[i], clutch[i + 2], "neighbours in each line differ")
+
+
 class SkinClearance(unittest.TestCase):
     """M3-CRE-662: cloth never reads as skin. One metric (vn.skin_delta_e) for the generator and the validator, a
     floor calibrated on the palette and the crowd's skin range, no silent fallback."""
