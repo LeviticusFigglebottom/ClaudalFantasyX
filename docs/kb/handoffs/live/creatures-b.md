@@ -561,3 +561,12 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   the flat-engine read. **Ethren still reads primitive** (stacked cone robe, tube arms with ball joints, a plate
   halo, a board-like screen): a polish round is running (cloth robe, sleeves and hands, a halo of light, articulated
   screens). M4-CRB-008 is therefore NOT final until it lands.
+- **Kesh pass 2 merged (the cherry-pick of 8397066c):** a visible bodice and stole (satin `robe` slot), runnels and
+  white breaks, a face with lids, brow, lips, 46 carved Choir-stone mouths in bands, a hand-on-heart idle; 19,366
+  triangles. Viewed: much better, still not final (the head reads as a helmet; one teal everywhere, so garment and
+  skin don't separate; the plaques sit in a studded grid). Pass 3 is running. Note for creatures: her agent added
+  `assets/creatures/kesh/` to game/data/import/creatures.json (your file; bookkeeping only).
+- LEAD-ASK: Kesh is the only human-shaped Vowbound, and a procedural creature-kit face tops out below the characters'
+  faces. Could her head and torso start from the MPFB2 base topology (ADR 0021, the characters track's pipeline),
+  built in her own job? Default: no; I keep her on the creature kit and push it (pass 3), and flag the bind-memory
+  close-up (cinematics) as wanting a sculpted head later.
