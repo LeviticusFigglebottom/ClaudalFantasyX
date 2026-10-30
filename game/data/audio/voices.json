@@ -377,6 +377,16 @@
     "householder": {"blips": ["voice_bright"], "pitch": 1.1, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0},
     "kesh": {"blips": ["voice_bright"], "pitch": 0.9, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0},
     "hesper_oan": {"blips": ["voice_low"], "pitch": 0.82, "rate_ms": 70, "jitter": 0.04, "volume_db": 0.0},
-    "ilsabet_rue": {"blips": ["voice_bright"], "pitch": 1.04, "rate_ms": 60, "jitter": 0.05, "volume_db": 0.0}
+    "ilsabet_rue": {"blips": ["voice_bright"], "pitch": 1.04, "rate_ms": 60, "jitter": 0.05, "volume_db": 0.0},
+    "ilun": {"blips": ["voice_bright"], "pitch": 1.12, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0},
+    "kahre": {"blips": ["voice_low"], "pitch": 0.8, "rate_ms": 70, "jitter": 0.04, "volume_db": 0.0},
+    "virel": {"blips": ["voice_bright"], "pitch": 1.05, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0},
+    "hesk": {"blips": ["voice_bright"], "pitch": 0.95, "rate_ms": 60, "jitter": 0.05, "volume_db": 0.0},
+    "nhoa": {"blips": ["voice_low"], "pitch": 0.88, "rate_ms": 65, "jitter": 0.05, "volume_db": 0.0},
+    "ethren": {"blips": ["voice_low"], "pitch": 0.92, "rate_ms": 65, "jitter": 0.04, "volume_db": 0.0},
+    "orin_tesk": {"blips": ["voice_low"], "pitch": 0.84, "rate_ms": 70, "jitter": 0.04, "volume_db": 0.0},
+    "halde_moor": {"blips": ["voice_low"], "pitch": 0.9, "rate_ms": 70, "jitter": 0.04, "volume_db": 0.0},
+    "isse_varan": {"blips": ["voice_bright"], "pitch": 1.06, "rate_ms": 60, "jitter": 0.05, "volume_db": 0.0},
+    "cael_imbrey": {"blips": ["voice_bright"], "pitch": 0.98, "rate_ms": 60, "jitter": 0.05, "volume_db": 0.0}
   }
 }
