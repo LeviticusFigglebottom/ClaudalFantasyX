@@ -416,7 +416,7 @@ func test_the_lamp_engine_opens_its_rings_and_strikes_open() -> void:
 func test_the_avalanche_ram_charges_bellows_and_lies_down() -> void:
 	var r := _actor(RAM)
 	assert_eq(r.current_clip, &"idle")
-	assert_false(r.enter_phase(&"uprooted"), "a boss without phases: its sheet asks for none")
+	assert_false(r.enter_phase(&"uprooted"), "not one of its phases (its own is torn_fleece)")
 	assert_true(r.play_action(&"", &"physical"))
 	assert_eq(r.current_clip, &"attack", "the charge")
 	assert_true(is_equal_approx(r.contact_time(&"attack"), 0.75), "the charge lands at 0.75 s")
@@ -430,9 +430,15 @@ func test_the_avalanche_ram_charges_bellows_and_lies_down() -> void:
 		bones.append_array(["lock%d_a" % k, "lock%d_b" % k])
 	for leg in ["fl", "fr", "bl", "br"]:
 		bones.append_array(["%s_upper" % leg, "%s_lower" % leg, "%s_foot" % leg])
+	# M4-CRB-005: the herd-cord's swing, the shoulder plate that tears, and the boss anchors
+	bones.append_array(["cord", "plate", "vfx_wound", "vfx_core", "vfx_phase"])
 	for b in bones:
 		assert_true(skel.find_bone(b) >= 0, "the rig has %s" % b)
-	assert_eq(skel.get_bone_count(), bones.size(), "spine 5, neck 5, head, jaw, four legs of 3, six lock chains of 2")
+	assert_eq(
+		skel.get_bone_count(),
+		bones.size(),
+		"spine 5, neck 5, head, jaw, four legs of 3, six lock chains of 2, the cord, the plate and three anchors"
+	)
 	var player := r.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
 	for clip: StringName in [&"idle", &"attack", &"cast", &"hit", &"hit_b"]:
 		player.play(clip)

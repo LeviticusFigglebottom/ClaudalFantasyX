@@ -54,3 +54,62 @@ herd-cord `lacquer_red` faded.
 
 Budget ≤ 16k triangles. Rig: a quadruped (spine 5, neck 5, head, jaw, four legs of 3), plus six fleece-lock chains
 of 2 that lag the body.
+
+## As built (M4-CRB-005, the Act II move pass; ADR 0041 §3, ADR 0204 keeps `torn_fleece`)
+
+**Budget:** 15,779 triangles (≤ 16k): the Ram 15,035, `TornShoulder` 264, `ShoulderPlate` 480. 43 bones, 23 clips.
+No new material slot (the plate and the torn shoulder are `fleece`, the seep in the tear is its emission), so no new
+PROVENANCE row.
+
+**Rig.** Added, unweighted: `vfx_wound` (the widest parting on the camera's flank, mid-barrel, `spine2`), `vfx_core`
+(the chest, `spine3`), `vfx_phase` (the shoulder hump where the plate tears, `spine3`); creatures.json `vfx_anchors`
+names the first two. Weighted: `cord` (on `neck1`, the herd-cord's frayed end, so it hangs and swings: every clip keys
+it to turn back most of the neck's pitch and roll on a damped spring, settling on the plain hang at each clip's end)
+and `plate` (on `spine3`, the felted shoulder plate, so `phase_tear` can tear it off).
+
+**Mesh.** `ShoulderPlate`: a felted mat of the coat over the camera-side (−x) shoulder hump, ~0.9 m across, ragged at
+the edge, the coat's furrows and lumps in it, darker where matted, grit and slate chips lodged in it, closed underneath
+so it reads as a slab when it falls. `TornShoulder` under it: raw under-wool with a lip of pale torn fibres and the
+seep's light welling up in a pool and five cracks (the torn phase's weak point). Nothing is ice (ADR 0015).
+
+**Staging.** The clips are authored for the stand-in's `yaw_deg` 60: the battle camera and the party see the −x
+flank (the plate's side), and the head points toward the party, so "away from the party" in the clips is +x.
+
+**Clips** (each starts and ends on its phase's idle first frame, except the intro's start, the KOs' ends and the
+`ready` loops; the legs are solved every frame under the body, so the hooves stay planted unless a track lifts one):
+
+| Clip | Length | Contact | What moves |
+|---|---|---|---|
+| `idle` | 4.0 s loop | — | the neck sways, it chews, the locks swing; the cord hangs |
+| `idle_b` | 1.4 s | — | it lifts its head and shakes it side to side, the locks shivering |
+| `ready` | 1.6 s loop | — | the head dropped; the right fore paws the flags (lifts forward, drags back) |
+| `intro` | 2.6 s | — | it drinks at the seep pool, lifts its head out, turns its neck to the party, stamps once |
+| `charge_gather` | 1.2 s | — | the head drops low, the hindquarters coil (rump down, weight back), a forehoof scrapes once, it trembles |
+| `attack` (the charge) | 1.6 s | 0.75 | 0–0.52: head drops, the right fore stamps; it drives through head low, then back |
+| `cast` (the bellow) | 2.0 s | 0.9 | 0–0.4: chest draws in; 0.4–0.8: the neck rises to full height; 0.9: jaw wide, it calls, the locks shiver |
+| `neck_sweep` | 1.5 s | 0.75 | 0–0.6: the neck swings wide away from the party (+x), low; then sweeps through at chest height |
+| `fleece_shake` | 1.4 s | 0.6 | 0–0.5: it braces low; then a wet-dog shake running from the neck to the rump, the locks flung out |
+| `hit`, `hit_b` | 0.6 s | peak 0.1 | `hit`: it staggers back, the neck whips; `hit_b` (authored): its front lifts, the neck whips the other way, the head rolls |
+| `ko` | 3.8 s | — | it kneels, lies down on its folded legs, lays its head down; the herd-cord last in frame; no thrash |
+| `phase_tear` | 2.2 s | 1.0 | it rears, calling, forehooves up (0.3–0.95); slams them down and the plate tears off its shoulder and falls on its back on the terrace in front of the near forelegs; it lands lower, in the torn stance |
+| `idle_torn` | 4.0 s loop | — | lower (the body down 8 cm, pitched forward), the neck forward, the head lower, breathing harder, the torn shoulder's lock hanging out |
+| `*_torn` | as above | as above | `attack`, `cast`, `charge_gather`, `neck_sweep`, `fleece_shake`, `hit`, `hit_b`, `ready`, `ko` from the torn stance |
+
+The plate, once torn, is hidden (`hide_after`) and its bone keeps it where it fell in every torn clip, so it never
+moves with the body or goes under the floor. `TornShoulder` is shown as the phase starts (`show`), under the plate
+until it tears, so the seep shows the moment the plate goes.
+
+**Clip map for combat** (skills are combat's; creatures.json has no `clip_by_skill` until the skills exist in
+skills.json; the `contact` times are already in the row):
+
+| Skill id (proposed) | Clip | Contact (s) | In `torn_fleece` |
+|---|---|---|---|
+| `ram_charge` | `attack` (after `charge_gather` on the gather turn) | 0.75 | `attack_torn`, 0.75 |
+| `bellow` | `cast` | 0.9 | `cast_torn`, 0.9 |
+| `neck_sweep` | `neck_sweep` | 0.75 | `neck_sweep_torn`, 0.75 |
+| `fleece_shake` | `fleece_shake` | 0.6 | `fleece_shake_torn`, 0.6 |
+| phase `torn_fleece` (40%) | `phase_tear` (`idle_torn`; shows `TornShoulder`, hides `ShoulderPlate` after) | 1.0 (the slam and the tear) | — |
+
+```json
+"clip_by_skill": {"ram_charge": "attack", "bellow": "cast", "neck_sweep": "neck_sweep", "fleece_shake": "fleece_shake"}
+```

@@ -144,9 +144,24 @@
     },
     "avalanche_ram": {
       "scene": "res://game/creatures/avalanche_ram/avalanche_ram_battle.tscn",
-      "contact": {"attack": 0.75, "cast": 0.9},
+      "vfx_anchors": {"core": "vfx_core", "wound": "vfx_wound"},
+      "contact": {"attack": 0.75, "cast": 0.9, "neck_sweep": 0.75, "fleece_shake": 0.6, "phase_tear": 1.0,
+                  "attack_torn": 0.75, "cast_torn": 0.9, "neck_sweep_torn": 0.75, "fleece_shake_torn": 0.6},
+      "loop": ["idle", "ready", "idle_torn", "ready_torn"],
       "ko_fade_sec": 1.2,
       "stand_in": {"yaw_deg": 60.0},
+      "phases": {
+        "torn_fleece": {
+          "clip": "phase_tear",
+          "idle": "idle_torn",
+          "show": ["TornShoulder"],
+          "hide_after": ["ShoulderPlate"],
+          "sec": 0,
+          "clips": {"attack": "attack_torn", "cast": "cast_torn", "charge_gather": "charge_gather_torn",
+                    "neck_sweep": "neck_sweep_torn", "fleece_shake": "fleece_shake_torn", "hit": "hit_torn",
+                    "hit_b": "hit_b_torn", "ready": "ready_torn", "ko": "ko_torn"}
+        }
+      },
       "portrait": {"yaw_deg": 40.0, "pitch_deg": 10.0}
     },
     "wakefin": {

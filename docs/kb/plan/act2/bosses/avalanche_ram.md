@@ -8,10 +8,18 @@ task: M4-CRB-001
 ---
 # The Avalanche Ram (`avalanche_ram`), Ch12 boss: design sheet (draft: pre-gate)
 
-**Built:** mesh, rig and 5 clips (`idle`, `attack`, `cast`, `hit`, `ko`; [art sheet](../../../art/creatures/act2/avalanche_ram.md),
-the camelid head of M3-CRE-635). Choreo has its intro (`boss`, 2.0 s), the charge gather, `charge_side` framing and
-camera pressure. Music `avalanche_ram` exists. **Missing:** the enemy row, skills, the snow field, a clip per skill,
-`intro`, `ready`, `hit_b`, `idle_b`, the anchors, and **the wool swap** below.
+**Built (M4-CRB-005, the move pass):** the model without ice (M4-A2P-059), the anchors, the `cord` bone, and every clip
+in §4–§5 below: `intro`, `idle_b`, `ready`, `charge_gather`, `attack` (the charge), `cast` (the bellow), `neck_sweep`,
+`fleece_shake`, `hit`, `hit_b`, `ko`, the `torn_fleece` phase (`phase_tear`, `idle_torn`, the `_torn` stance clips and
+`ko_torn`), with creatures.json's contacts and phase row ([art sheet, "As built"](../../../art/creatures/act2/avalanche_ram.md)).
+Choreo has its intro (`boss`, 2.0 s), the charge gather, `charge_side` framing and camera pressure. Music
+`avalanche_ram` exists. **Missing (combat's):** the enemy row, the skills and `clip_by_skill` (the map below), the
+snow field.
+
+**Clip map for combat** (ready to paste once the skills are in skills.json; the contacts are in creatures.json):
+`"clip_by_skill": {"ram_charge": "attack", "bellow": "cast", "neck_sweep": "neck_sweep", "fleece_shake": "fleece_shake"}`;
+the enemy's `torn_fleece` phase at 40% HP plays `phase_tear` (contact 1.0, the slam and the tear) and maps every clip
+to its `_torn` version through creatures.json.
 
 **What the fight teaches:** mind the field. Its charge and its bellow bring the snow down off the terrace wall, and the
 snow builds round by round. It is the Ullari's own animal grown too big, and someone's: a frayed herd-cord is still
@@ -69,23 +77,24 @@ where the fleece tears). **Prop:** `cord` bone on `neck_1` so the herd-cord swin
 
 | Skill (id) | Clip | Wind-up → contact (length) | What moves | Target | VFX and camera |
 |---|---|---|---|---|---|
-| intro | `intro` *(proposed)* | — (2.6 s) | it lifts its head from the seep pool, turns its long neck to the party, stamps once | — | `boss`, 2.0 s; `under_the_wall` hint |
+| intro | `intro` (built) | — (2.6 s) | it lifts its head from the seep pool, turns its long neck to the party, stamps once | — | `boss`, 2.0 s; `under_the_wall` hint |
 | idle | `idle`, `idle_b` | — (4.0 s / 1.4 s) | the neck sways, it chews, breath steams; `idle_b` a shake of the head | — | breath VFX (the living animal fogs) |
-| ready | `ready` *(proposed)* | — (1.6 s) | the head drops, a forehoof paws the flags | — | — |
-| `ram_charge` *(proposed, charge)* | `charge_gather` *(proposed)* then `attack` (built) | gather 1.2 s (head low, hindquarters coil); strike 0.0–0.75 s → 0.75 s (1.6 s) | it drives through | one foe and the slot beside it; brings snow (field +1) | choreo gather and `charge_side`; snow off the wall |
-| `bellow` *(proposed)* | `cast` (built, retimed) | 0.0–0.8 s: the neck rises full height → 0.9 s (2.0 s) | it calls | sets or deepens the `snowfall` field | snow sheets down the wall (VFX) |
-| `neck_sweep` *(proposed)* | `neck_sweep` *(proposed)* | 0.0–0.6 s: the neck swings wide away from the party → 0.75 s (1.5 s) | the neck swings through | the front two foes | `boss_sweep` |
-| `fleece_shake` *(proposed)* | `fleece_shake` *(proposed)* | 0.0–0.5 s: it braces, legs wide → 0.6 s (1.4 s) | a whole-body shake | all foes: Darkness (snow in the eyes) | snow and grit puffs, never shards |
-| hit | `hit`, `hit_b` *(hit_b proposed)* | peak 0.1 s | staggers, the neck whips, snow shakes loose | — | — |
-| phase `torn_fleece` *(proposed)* | `phase_tear` *(proposed)* (2.2 s) | — | it rears, a felted plate tears from the shoulder; it lands lower | — | `vfx_phase`, the seep light bright through the tear |
-| KO | `ko_torn` *(proposed)* | — (2.6 s) | it kneels, then lies down; the herd-cord is the last thing in frame | — | no gore, no thrash (pillar 1) |
+| ready | `ready` (built) | — (1.6 s) | the head drops, a forehoof paws the flags | — | — |
+| `ram_charge` *(proposed, charge)* | `charge_gather` then `attack` (built) | gather 1.2 s (head low, hindquarters coil); strike 0.0–0.75 s → 0.75 s (1.6 s) | it drives through | one foe and the slot beside it; brings snow (field +1) | choreo gather and `charge_side`; snow off the wall |
+| `bellow` *(proposed)* | `cast` (built, retimed: 2.0 s) | 0.0–0.8 s: the neck rises full height → 0.9 s (2.0 s) | it calls | sets or deepens the `snowfall` field | snow sheets down the wall (VFX) |
+| `neck_sweep` *(proposed)* | `neck_sweep` (built) | 0.0–0.6 s: the neck swings wide away from the party → 0.75 s (1.5 s) | the neck swings through | the front two foes | `boss_sweep` |
+| `fleece_shake` *(proposed)* | `fleece_shake` (built) | 0.0–0.5 s: it braces low → 0.6 s (1.4 s) | a whole-body shake | all foes: Darkness (snow in the eyes) | snow and grit puffs, never shards |
+| hit | `hit`, `hit_b` (built; `hit_b` authored) | peak 0.1 s | staggers, the neck whips, snow shakes loose | — | — |
+| phase `torn_fleece` *(proposed)* | `phase_tear` (built, 2.2 s) | the slam and the tear at 1.0 s | it rears, a felted plate tears from the shoulder; it lands lower | — | `vfx_phase`, the seep light bright through the tear |
+| KO | `ko`, `ko_torn` (built) | — (3.8 s) | it kneels, then lies down; the herd-cord is the last thing in frame | — | no gore, no thrash (pillar 1) |
 
 ## 5. Phase change *(proposed: the plan names none)*
 
 - **Trigger:** 40% HP.
-- **Clip:** `phase_tear`, ending on `idle_torn` *(proposed)*.
+- **Clip:** `phase_tear`, ending on `idle_torn` (built).
 - **Stance:** head lower, neck forward, the torn shoulder showing the seep. The `clips` map covers `attack`,
-  `charge_gather`, `neck_sweep`, `fleece_shake`, `hit`, `hit_b` and `ready` with `_torn` versions.
+  `charge_gather`, `neck_sweep`, `fleece_shake`, `hit`, `hit_b` and `ready` with `_torn` versions; as built it also
+  maps `cast` and `ko` (`cast_torn`, `ko_torn`), so no clip pops back to the whole fleece's pose (M4-CRB-005).
 - **What the player learns:** it is hurt and charges every other turn, and each charge adds snow. Taking the charge on a
   guard (Toma) and ending the fight before the field stacks matters more now. Hesk is bound after this fight (C3), so
   her cleanse is not part of the answer.

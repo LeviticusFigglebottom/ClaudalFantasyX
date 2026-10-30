@@ -126,6 +126,43 @@ const MANGROVE_DROWNER_PHASE := &"uprooted"
 ## The two snag roots (the break parts): each part's whole and broken nodes.
 const MANGROVE_DROWNER_PARTS: Array[StringName] = [&"SnagA", &"SnagABroken", &"SnagB", &"SnagBBroken"]
 
+## M4-CRB-005, the Avalanche Ram (docs/kb/plan/act2/bosses/avalanche_ram.md): its skills' clips (combat maps the skills
+## to them), the torn_fleece phase's stance clips through its `clips` map, and the KO.
+const AVALANCHE_RAM: StringName = &"avalanche_ram"
+const AVALANCHE_RAM_CLIPS: Array[StringName] = [
+	&"idle",
+	&"idle_b",
+	&"ready",
+	&"intro",
+	&"charge_gather",
+	&"attack",
+	&"cast",
+	&"neck_sweep",
+	&"fleece_shake",
+	&"hit",
+	&"hit_b",
+	&"ko",
+	&"phase_tear",
+	&"idle_torn",
+]
+const AVALANCHE_RAM_PHASE: StringName = &"torn_fleece"
+## The torn stance plays these in place of the whole fleece's (its `clips` map).
+const AVALANCHE_RAM_TORN: Array[StringName] = [
+	&"attack", &"cast", &"charge_gather", &"neck_sweep", &"fleece_shake", &"hit", &"hit_b", &"ready", &"ko"
+]
+## The striking clips (each has a `contact`): the charge, the bellow, the sweep, the shake, and the tear's slam.
+const AVALANCHE_RAM_STRIKES: Array[StringName] = [&"attack", &"cast", &"neck_sweep", &"fleece_shake", &"phase_tear"]
+## Clips that start or end away from their idle's first frame: the intro starts at the seep pool, phase_tear ends on
+## the torn idle's (checked as such), the KOs end lying down, and `ready` is a loop entered by the row's blend.
+const AVALANCHE_RAM_FREE_START: Array[StringName] = [&"intro", &"ready", &"ready_torn"]
+const AVALANCHE_RAM_FREE_END: Array[StringName] = [&"ko", &"ko_torn", &"ready", &"ready_torn"]
+## Clips whose hooves never leave the ground (only the charge, the stamp, the paw and the rear lift one).
+const AVALANCHE_RAM_PLANTED: Array[StringName] = [
+	&"idle", &"idle_b", &"cast", &"neck_sweep", &"fleece_shake", &"hit", &"hit_b", &"idle_torn", &"cast_torn"
+]
+const AVALANCHE_RAM_POSE_TOL_M := 0.01
+const AVALANCHE_RAM_HOOF_TOL_M := 0.02
+
 var made: Array[Node] = []
 var lamp_engine_made: Array[Node] = []
 
@@ -423,3 +460,133 @@ func _mangrove_drowner_weighted_bones(skel: Skeleton3D) -> Dictionary:
 func _mangrove_drowner_bind_bone_name(skel: Skeleton3D, skin: Skin, bind: int) -> String:
 	var b := skin.get_bind_name(bind)
 	return String(b) if b != &"" else skel.get_bone_name(skin.get_bind_bone(bind))
+
+
+func test_avalanche_ram_has_the_full_clip_set_and_its_torn_stance() -> void:
+	var a := _avalanche_ram_actor()
+	for clip in AVALANCHE_RAM_CLIPS:
+		assert_true(a.has_clip(clip), "the Avalanche Ram has %s" % clip)
+	for clip in AVALANCHE_RAM_TORN:
+		assert_true(a.has_clip(StringName("%s_torn" % clip)), "the torn stance has its %s" % clip)
+	before_each()
+
+
+func test_avalanche_ram_intro_fits_the_camera_hold() -> void:
+	var sec := _avalanche_ram_actor().clip_length(&"intro")
+	assert_true(sec >= INTRO_MIN_SEC and sec <= INTRO_MAX_SEC, "the Avalanche Ram's intro is %.2f s" % sec)
+	before_each()
+
+
+func test_avalanche_ram_strikes_wind_up_before_contact() -> void:
+	var a := _avalanche_ram_actor()
+	for phase: StringName in [&"", AVALANCHE_RAM_PHASE]:
+		if phase != &"":
+			assert_true(a.enter_phase(phase, true))
+		for clip in AVALANCHE_RAM_STRIKES:
+			if phase != &"" and clip == &"phase_tear":
+				continue
+			var c := a.contact_time(clip)
+			var played := a.phase_clip(clip)
+			assert_true(
+				c >= WIND_UP_MIN_SEC and c < a.clip_length(played),
+				"%s lands at %.2f s, after its wind-up" % [played, c]
+			)
+	before_each()
+
+
+func test_avalanche_ram_has_its_vfx_anchor_bones_unweighted() -> void:
+	var a := _avalanche_ram_actor()
+	var skel := _wakefin_skeleton(a)
+	for bone in BOSS_ANCHORS:
+		assert_true(skel.find_bone(String(bone)) >= 0, "the Avalanche Ram has the %s bone" % bone)
+	var weighted := _wakefin_weighted_bones(skel)
+	assert_true(weighted.has("spine3"), "its mesh is weighted to its spine (the check is live)")
+	for bone in BOSS_ANCHORS:
+		assert_false(weighted.has(String(bone)), "the Avalanche Ram's %s carries no vertices" % bone)
+	assert_true(weighted.has("cord"), "the herd-cord's frayed end swings on its cord bone")
+	assert_true(weighted.has("plate"), "the felted shoulder plate rides its own bone, so it can tear off")
+	assert_true(a.vfx_anchor(&"core") != Vector3.INF and a.vfx_anchor(&"wound") != Vector3.INF, "anchors resolve")
+	before_each()
+
+
+func test_avalanche_ram_torn_fleece_plays_its_stance_and_tears_the_plate() -> void:
+	var a := _avalanche_ram_actor()
+	var plate := a.find_child("ShoulderPlate", true, false) as Node3D
+	var torn := a.find_child("TornShoulder", true, false) as Node3D
+	assert_true(plate != null and plate.visible, "the fleece is whole before the tear")
+	assert_true(torn != null and not torn.visible, "the torn shoulder waits for its phase")
+	assert_true(a.enter_phase(AVALANCHE_RAM_PHASE, true))
+	for clip in AVALANCHE_RAM_TORN:
+		assert_eq(a.phase_clip(clip), StringName("%s_torn" % clip), "the torn stance's %s" % clip)
+	assert_true(is_equal_approx(a.contact_time(&"attack"), 0.75), "the charge still lands at 0.75 s")
+	assert_false(plate.visible, "the plate tore off and lies hidden")
+	assert_true(torn.visible, "the torn shoulder shows the seep")
+	before_each()
+
+
+func test_avalanche_ram_clips_start_and_end_on_their_idle() -> void:
+	# docs/kb/plan/act2/bosses/README.md, the standard, item 4: nothing pops back to another pose
+	var a := _avalanche_ram_actor()
+	var skel := _wakefin_skeleton(a)
+	var player := a.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	var idle := _avalanche_ram_pose(player, skel, &"idle", 0.0)
+	var idle_torn := _avalanche_ram_pose(player, skel, &"idle_torn", 0.0)
+	for clip: StringName in player.get_animation_list():
+		var torn := String(clip).ends_with("_torn")
+		var length := player.get_animation(clip).length
+		if not AVALANCHE_RAM_FREE_START.has(clip):
+			var off := _avalanche_ram_pose_gap(
+				_avalanche_ram_pose(player, skel, clip, 0.0), idle_torn if torn else idle
+			)
+			assert_true(off < AVALANCHE_RAM_POSE_TOL_M, "%s starts on its idle (%.3f m off)" % [clip, off])
+		if not AVALANCHE_RAM_FREE_END.has(clip):
+			var end_on := idle_torn if torn or clip == &"phase_tear" else idle
+			var off := _avalanche_ram_pose_gap(_avalanche_ram_pose(player, skel, clip, length), end_on)
+			assert_true(off < AVALANCHE_RAM_POSE_TOL_M, "%s ends on its idle (%.3f m off)" % [clip, off])
+	before_each()
+
+
+func test_avalanche_ram_keeps_its_hooves_planted() -> void:
+	var a := _avalanche_ram_actor()
+	var skel := _wakefin_skeleton(a)
+	var player := a.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	for clip in AVALANCHE_RAM_PLANTED:
+		for k in 9:
+			player.play(clip, 0.0)
+			player.seek(player.get_animation(clip).length * k / 8.0, true)
+			for leg in ["fl", "fr", "bl", "br"]:
+				var b := skel.find_bone("%s_foot" % leg)
+				var moved := skel.get_bone_global_pose(b).origin.distance_to(skel.get_bone_global_rest(b).origin)
+				assert_true(
+					moved < AVALANCHE_RAM_HOOF_TOL_M, "%s keeps the %s hoof planted (%.3f m)" % [clip, leg, moved]
+				)
+	before_each()
+
+
+func _avalanche_ram_actor() -> CreatureActor:
+	var row := CreatureActor.row_for(AVALANCHE_RAM)
+	var a := (load(str(row.get("scene", ""))) as PackedScene).instantiate() as CreatureActor
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(a)
+	made.append(a)
+	return a
+
+
+## Every bone's position (model space) at `t` into `clip`, the shoulder plate's left out (it is hidden once torn).
+func _avalanche_ram_pose(player: AnimationPlayer, skel: Skeleton3D, clip: StringName, t: float) -> Dictionary:
+	player.play(clip, 0.0)
+	player.seek(t, true)
+	var out: Dictionary = {}
+	for b in skel.get_bone_count():
+		if skel.get_bone_name(b) != "plate":
+			var g := skel.get_bone_global_pose(b)
+			out[b] = [g.origin, g.origin + g.basis.y * 0.25]  # its head and a point along it (its turn shows)
+	return out
+
+
+func _avalanche_ram_pose_gap(a: Dictionary, b: Dictionary) -> float:
+	var worst := 0.0
+	for k: Variant in a:
+		for i in 2:
+			worst = maxf(worst, (a[k][i] as Vector3).distance_to(b[k][i] as Vector3))
+	return worst
