@@ -87,7 +87,8 @@ the engine stops, far out at sea the storm opens.
 ### I04. The words (optional, E, 2 min)
 - Ysolde and Asha on the steps. Ysolde has the Eighth Verse whole: the words from the Choir stones (Ch16), the tune read
   through the farewell-tide (Ch18), and its place from Ama's question-knot (Ch12). She reads the words aloud, **spoken, not sung** (README rule 3). Asha
-  repeats them once, spoken. *"Never the words and the tune together,"* Ysolde says. *"Not until it's time."* Sets `ch19_words_whole`.
+  repeats them once, spoken. *"Never the words and the tune together,"* Ysolde says. *"Not until it's time."* Then, dry, never a joke (ending_cost_audit §6): *"I came to give you a good death. I would like to give you a long,
+  dull life instead."* Sets `ch19_words_whole`.
 
 ### I05–I06. The Lamp Spire (P, ~28 min)
 - Four tiers up the founders' lamp-tower: Lit Age lamps still burning (bound, steady), lamp-engines, conduits, the

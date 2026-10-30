@@ -77,7 +77,10 @@ lift their own dead the Kirru way, with their backs to the water; Asha stands at
 - Dusk, the shore. Pell teaches Asha the tune, wordless, the way Kirru children learn it: hum, then turn your back,
   then hum again. Held inputs on the turn (the player turns Asha's back). The clutch hums under them.
 - Ysolde writes the melody's shape in her book, no notes, only rises and falls. *"That's the Letting."* (said once).
-- Asha never sings words here (README rule 3). Sets `ch18_learned_farewell_tide`.
+- Asha never sings words here (README rule 3).
+- **The trade** (ending_cost_audit §1): when Pell is done, Asha hums the Velamir lullaby back to him, unasked: her
+  family's song for his people's. It is the only time in the game she hums something just because she wants to, and
+  nobody says it's the last. Rhen hears it from the shore's edge. Sets `ch18_learned_farewell_tide`.
 
 ### K06. The child, older (optional, E, 1.5 min)
 - If `ch10_child_asked`: the Kirru child from Ch10, a year older, asks Asha a second question (act2_ch10 flag table):

@@ -196,7 +196,8 @@ B05 ledger text ~450 (on screen, read), B05 lines ~60, B06 ~40, B07 ~180, B08 ~2
    If the player skipped the supper, his last words were at the pyre.
 2. **Where the Kite's power comes from.** **Default:** bound light, said aloud once (B10). If the Lead prefers the Kite
    on wind and oil until a late refit, cut B10's line and move the moral beat to Ch20's dive rig.
-3. **Tobin's lamp.** **Default:** Liss tries to mend the crack in Ch18 and can't; it goes at H09 with everything else
-   (act2_ch15 flag table). No scene in Ch17 beyond carrying it.
+3. **Tobin's lamp.** **Default:** Liss carries it and tries to mend the crack in Ch18 and can't. At Ch20 U00 she seats
+   it in the Kite's engine (ending_cost_audit §4); it is released at H09 with everything else. No scene in Ch17 beyond
+   carrying it.
 4. **Kerrid's B06 line** is the only Kerrid line in Ch17 apart from B08. Cut if it reads as explaining Dace for him.
 5. **The flotilla's safety.** The Order's patrols (Ch15) are not seen in Ch17. **Default:** a lookout bark only.

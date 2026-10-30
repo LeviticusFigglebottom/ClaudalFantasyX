@@ -14,6 +14,7 @@ story track (claude/act2-plan) at the Lead's request, 2026-10-30.
 | 19 | [act3_ch19.md](act3_ch19.md) | "Iskarra" | `prologue/iskarra_dusk` (full), `ch19/iskarra_spire` | the prologue catches up; the anchor-engine; two of the Abiding; Kerrid's last quiet night |
 | 20 | [act3_ch20.md](act3_ch20.md) | "Undertow" | `ch20/undertow_layers` | six layers, six releases; the Cage |
 | 21 + Ending | [../beats/act3_ending.md](../beats/act3_ending.md) (exists, M1-NAR-05) | "The Heart" | `ch21/heart` | Kesh; Sefir in three phases; the Letting; three goodbyes; the dark sea |
+| — | [ending_cost_audit.md](ending_cost_audit.md) | pillar-6 audit | — | what each companion loses, and whether every scene earns it |
 | — | [act3_threads.md](act3_threads.md) | consistency pass | — | every Act II → Act III thread: flags, companions' arcs, Vowbound, and the mismatches found |
 
 ## The act in one paragraph

@@ -63,7 +63,10 @@ the Cage wait in it, and when it breaks they thank them.
 
 ### U00. Down the eye (C, 2 min)
 - The Kite on the dive rig, sails furled, dropping down the well. Every held light the storm has taken hangs in the walls
-  of water like a night sky turned inside out. Kerrid first off the Kite onto the first floor (ADR 0020: first down the
+  of water like a night sky turned inside out.
+- **Liss spends Tobin's lamp** (ending_cost_audit §4): she stops trying to mend it and seats it in the engine socket;
+  his held light is part of the last charge that takes them down. One line: *"He volunteered. So nobody'd have to be
+  chosen."* Kerrid first off the Kite onto the first floor (ADR 0020: first down the
   stair).
 
 ### U01. Ilun — the Oruvel market (Asha)
@@ -90,8 +93,8 @@ the Cage wait in it, and when it breaks they thank them.
   people's history back, moments before she gives up her machines.*
 
 ### R1. Rest (E, 1.5 min)
-- A landing between floors. The party sits; Liss has the cracked lamp (Tobin's) in her lap and tries the crack once more
-  (ADR 0204 §13: she can't mend it). Nobody speaks. The Vowbound menu has three names left.
+- A landing between floors. The party sits; Liss has the empty padded box in her lap (the lamp went into the Kite at
+  U00). Nobody speaks. The Vowbound menu has three names left.
 
 ### U04. Hesk — a Reefball crowd (Toma)
 - Memory: a Tidecup gallery mid-roar, every held face turned to a float that never surfaces.
