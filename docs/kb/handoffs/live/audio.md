@@ -3,6 +3,20 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ b39dfacb: the Lead's 16:27 item, the Ch12–Ch13 cutscene cues against act2-plan's direction notes** (`act2_ch12_direction.md`, `act2_ch13_direction.md`, on integration since big24; integration merged). Ch15–Ch16 ambience was already done (529a1f3c).
+  - **What the notes change for audio:** time, as with Ch11. The scenes run about 3–5x their scripts' floor (B10–B11 Hesk 0.83 → 4.5 min, B05–B06 Ethren 0.86 → 6.5 min), with long held shots (K06 ≥ 5 s, S02 ≥ 8 s, S05 ≥ 6 s, A01 8 s, B13's rail ≥ 40 s).
+    - Every Ch12–Ch13 scene sits under a looping cue (keth_pass, cloudloom, ansedra, lamp_archive, sanctum_of_the_level) or an intended `@music silence`, except the two bindings.
+    - The notes' "P03: no music cue" is already so; B13's ≥ 40 s rail is under `keth_pass`.
+  - **New tool option:** `act1_playthrough.py --holds docs/kb/audio/act2_direction_holds.json` applies the notes' stated shot holds (Ch11–Ch13, 13 scripts) to the timeline, so a one-shot cue's gap is measured against the staged scene. With them, the only gap in Act II is still `ch14_the_vows` (Story's question).
+  - **Margins:** the binding tails (44c4ae1a) covered the staged scenes, but with only 1–2 s to spare (Hesk 1 s, Nhoa, Ethren and Kesh 2 s), and the notes' unmeasured pauses (Ch12's "2 s after 005", Ch13's 2 s for Ysolde's laugh) could eat that. Each tail is now 6 s longer (Nhoa 22, Hesk 20, Ethren 15, Kesh 12); the scene's next `@music` cross-fades over it.
+    - Kesh's low pad then rose over the loudness gate and the -3 dBFS ceiling held its gain (-17.4 LUFS), so its tail is quieter (`TAIL_VEL`); it's back at -16.1.
+  - **New test:** `tools/tests/test_direction_holds.py` checks that every script and shot in the holds file exists (a renamed shot can't drop out unseen), and that with the holds Act II has no music gap but the known Ch14 one.
+  - **Checks:**
+    - Renders `--determinism` identical; test_audio_loudness, test_audio_data, test_act1_mix_pass and test_direction_holds OK; validate_data 0.
+    - Godot: music_transitions 7/0, creature_vowbound_act2 28/0.
+    - **Skipped:** screenshots, Blender, coverage.
+  - **Next:** act2-plan's Ch14–Ch16 direction notes are on claude/act2-plan, not yet on integration. When they land I'll add their holds to the file and rerun.
+- **BACKLOG EMPTY (after b39dfacb):** waiting on the Ch14–Ch16 direction notes (integration), slice-polish's staging, Story's answer on ch14_the_vows, the people bosses' encounters, and the listening verdict.
 - **MERGE-READY @ 21638070: the Lead's 16:09 item, the jog's footsteps on big24 (efe7fb10) and the victory → field handoff on the resident return** (995b61f1, 21638070; integration merged, c7f22ea1).
   - **Jog footsteps:** the heroes' steps come from the body's `foot_contact`, which fires on the clips' `foot_l_down`/`foot_r_down` markers. hero_clips.py places those on each heel strike from its own plant schedule, so the steps re-time with the jog: Asha, Rhen and Toma's `run` is 0.733 s with the feet 0.367 s apart (164 a minute).
     - Measured on the real Haluna scene and Rhen's body (new `tests/integration/test_footsteps_jog.gd`): a 3.55 m/s jog plays `hero_step_sand_run` every 0.367 s exactly (163.6 a minute, 13 intervals), with no doubled step.
