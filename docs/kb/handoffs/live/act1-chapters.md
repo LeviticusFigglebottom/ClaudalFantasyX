@@ -821,6 +821,19 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Checks: ch13, ch14, layout, field_camera, validate.
 - MERGE-READY @ 57dec16dc
 
+- **BACKLOG EMPTY (10-30, after the Lead's 09:00 and 10:07 lists):**
+  - **Done:** FAST-TRACKs 1–6; the Ch10, Ch11 and Ch12 mounts; rows 39 (fixed) and 34 (fixed; traced for the PC);
+    M3-HER-1154, 1159, 1164; M3-UI-204; M4-A2P-103; M4-A2P-104 (part 2).
+  - **PC-QUEUE:** re-check rows 34 and 39 on this head (the recipe for 34 is above).
+  - **Waiting on others:**
+    - Row 49 (M3-CIN-1251, integration-qa).
+    - Row 58's darkness (env-art and rendering) and its o07 (slice-polish).
+    - The Act II beats (story's scenes).
+    - M4-A2P-019 (Lattice and gear).
+    - M4-A2P-104's ripples (the Ch14 escape scene).
+  - **Not mine (Ch1–Ch3, slice-polish's):** the other `todo` rows addressed to cinematics: M3-HER-1119, 1155, 1156,
+    1160; M3-CHR-543; M3-CIN-1231, 1234; M3-C09-201.
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
