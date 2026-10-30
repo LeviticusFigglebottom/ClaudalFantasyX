@@ -264,6 +264,43 @@ SFX: list[tuple[str, object, float]] = [
     ("current_song_hum", current_song_hum, -24.0), ("kesh_rise", kesh_rise, -21.0),
     ("barge_no_wake", barge_no_wake, -27.0), ("fin_cut", SK.fin_cut, -22.0),
 ]
+
+
+# The beat sheets' named SFX no script calls yet (the Lead's 10-30 13:48 item; act2_ch15.md §6, act2_ch16.md §6):
+#     shoal_hum         Ch15 B06: the held dead's faint hum as they rise off the shoal and drift sideways to Kerrid:
+#                       many faint, near-unison sine voices on one low pitch, beating slowly, and a sideways glass
+#                       shimmer passing left to right (held light drifts sideways; nothing rises into the sky)
+#     choir_wind_chord  Ch16: the wind finding the singers' mouths: an open-vowel chord of stone resonances swelling
+#                       out of a gust and dying back (no melody, no resolution; choir_bowl's mouths, one breath)
+def shoal_hum(g):
+    sec = 6.0
+    x = buf(sec + 0.5)
+    t = _t(_n(sec))
+    env = np.clip(t / 2.0, 0, 1) ** 1.5 * np.clip((sec - t) / 1.8, 0, 1)
+    for k in range(9):
+        f = 110.0 * (1 + float(g.uniform(-0.006, 0.006)))
+        place(x, np.sin(2 * np.pi * f * t + float(g.uniform(0, 6.28))) * env * (0.1 + 0.03 * (k % 3)), 0.0)
+    place(x, 0.25 * np.sin(2 * np.pi * 220.4 * t) * env, 0.0)
+    for k in range(6):                                                    # a sideways glass shimmer
+        place(x, glass_ring(g, float(g.uniform(2600, 3400)), 0.8, 0.12), 1.2 + 0.6 * k)
+    return x
+
+
+def choir_wind_chord(g):
+    sec = 5.0
+    n = _n(sec)
+    t = _t(n)
+    swell = np.sin(np.pi * np.clip(t / sec, 0, 1)) ** 2
+    x = buf(sec + 0.5)
+    for f0, a in ((92.0, 1.0), (123.0, 0.8), (155.0, 0.6), (207.0, 0.45)):
+        band = filt(g.standard_normal(n), [bq_bandpass(f0, 14.0)]) + 0.4 * filt(g.standard_normal(n), [bq_bandpass(f0 * 2.7, 10.0)])
+        place(x, a * band / (np.abs(band).max() + 1e-9) * swell, 0.0)
+    gust = filt(g.standard_normal(n), [bq_lowpass(1200, 0.7), bq_highpass(150, 0.7)])
+    place(x, 0.25 * gust / (np.abs(gust).max() + 1e-9) * swell ** 0.7, 0.0)
+    return x
+
+
+SFX += [("shoal_hum", shoal_hum, -28.0), ("choir_wind_chord", choir_wind_chord, -24.0)]   # appended: seeds stay
 FILES = [f"{name}.ogg" for name, _, _ in SFX]
 
 

@@ -29,6 +29,13 @@ and two Vowbound skills (M4-A2P-024, called by Asha) whose effect is no hit, hea
     cord_lift      Hesk lifts the party's statuses: pale threads drawn up (a rising plucked-cord glissando), each knot's
                    light loosing, and a soft holy bell at the top
 
+and the Lamp Engine's conduit crawlers (Ch11, M4-A2P-022, bosses/lamp_engine.md §4), whose support skills make no
+hit, heal or status:
+
+    crawler_mend   it scuttles to the engine's leg and relights a broken part: quick leg-ticks on metal, a spark
+                   catching (a crackle), and the conduit's bound light humming back up (it rises and holds, never pulses)
+    crawler_tend   it tends the engine: a few unhurried leg-ticks and soft taps on the casing, a small settling hum
+
 The Wakefin's skill ids are the sheet's proposed ones; combat owns them, and the rows wait in battle_sfx.json until they land.
 
 Synthesized here and in tools/audio/synth/ (SPEC §2, §9). Files are assets/audio/act2/sfx/battle/skill_<id>.ogg (mono,
@@ -191,6 +198,42 @@ def cord_lift(g) -> np.ndarray:
 
 
 SKILLS += [("nhoa_echo", nhoa_echo, CAST), ("cord_lift", cord_lift, CAST)]   # appended: earlier seeds stay
+
+
+def _ticks(g, count: int, gap: float, amp: float) -> np.ndarray:
+    x = buf(count * gap + 0.3)
+    for k in range(count):                                                 # leg tips on metal
+        f = float(g.uniform(2600, 3400))
+        place(x, tap(g, [f, f * 1.7, f * 2.9], [0.012, 0.008, 0.004], amp, click=0.6), k * gap * float(g.uniform(0.8, 1.2)))
+    return x
+
+
+def _bound_hum(sec: float, f0: float, rise: float) -> np.ndarray:
+    t = _t(_n(sec))
+    env = np.clip(t / rise, 0, 1) ** 1.5 * np.clip((sec - t) / 0.3, 0, 1)
+    return sum(a * np.sin(2 * np.pi * f0 * k * t) for k, a in ((1, 1.0), (2, 0.45), (3, 0.2))) * env
+
+
+def crawler_mend(g) -> np.ndarray:
+    x = buf(1.8)
+    place(x, _ticks(g, 7, 0.06, 0.6), 0.0)                                 # the scuttle to the leg
+    spark = noise(g, _n(0.25), [bq_highpass(2500, 0.7)]) * (g.random(_n(0.25)) < 0.02)
+    place(x, spark * 1.5, 0.45)                                            # a spark catching
+    place(x, glass_ring(g, 1560.0, 0.6, 0.35), 0.5)
+    place(x, _bound_hum(1.1, 196.0, 0.5) * 0.35, 0.5)                      # the light humming back up
+    return x
+
+
+def crawler_tend(g) -> np.ndarray:
+    x = buf(1.3)
+    place(x, _ticks(g, 4, 0.14, 0.45), 0.0)
+    for k, at in enumerate((0.62, 0.8)):                                   # soft taps on the casing
+        place(x, tap(g, [620.0 + 40 * k, 1450.0, 2600.0], [0.04, 0.02, 0.01], 0.5, click=0.2), at)
+    place(x, _bound_hum(0.6, 196.0, 0.15) * 0.12, 0.65)
+    return x
+
+
+SKILLS += [("crawler_mend", crawler_mend, CAST), ("crawler_tend", crawler_tend, CAST)]   # appended
 PHASES: list[tuple[str, object, float]] = [("close_circle", close_circle, CAST)]
 FILES = [f"skill_{name}.ogg" for name, _, _ in SKILLS] + [f"phase_{name}.ogg" for name, _, _ in PHASES]
 

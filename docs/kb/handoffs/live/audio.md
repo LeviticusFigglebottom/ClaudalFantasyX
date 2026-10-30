@@ -3,6 +3,52 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 529a1f3c: the Lead's 13:48 item (1 of 2), the Ch15–Ch16 ambience loops and arena switching.**
+  - **Gaps found:**
+    - Hollowmere's first visit (`ch17/hollowmere`, Ch15 B10–B12) had no music or ambience row. The beat sheet (act2_ch15.md §6) says "ambience only, no zone loop": it is grief, and Act III's `hollowmere` cue belongs to Ch17.
+    - The Ch15 dawn in fog at the bow (B09) had no bed of its own.
+    - The Ch16 storm set piece (`ch16_holding_the_line`) fought on the moonrise Choir's bed.
+    - Two of the beat sheets' SFX (`shoal_hum`, `choir_wind_chord`) didn't exist.
+  - **New loops** (`act2_ambience.py`, appended so the earlier beds stay byte-identical):
+    - `hollowmere_flotilla`: water among the hulls, two tide-wheels, a pump, gulls, far hammers, low voices; no laughter, no song.
+    - `open_sea_fog`: `ch15/open_sea` swaps to it once B08's `ch15_pell_said_he_knew` is set, through the zone's `night` list.
+    - `choir_storm`: the mouths roaring in a gale, surge and spray.
+  - **Arena switching by encounter:** ambience.json `encounters` is tried before the arena (`AudioData.battle_beds`). `ch16_holding_the_line` plays `choir_storm` over `choir_bowl`, and `ch16_abiding_guard` keeps the Choir at moonrise. The encounter isn't written yet, so it's listed under `pending_encounters` and `data_check` accepts it.
+    - Ch16's random fights (`ch16_rim_*`) have no arena yet (`pale_rim_shallows` is env-art-b's gap), so the field's `pale_rim_shallows` bed carries on under them, which is right.
+    - The wade's footsteps are the `water` surface, already set for pale_rim.
+  - **SFX:** `shoal_hum` (Ch15 B06, the held dead's hum and a sideways glass shimmer) and `choir_wind_chord` (Ch16), as rows in `sfx_cutscene_act2.json`, ready for a script's `@sfx`.
+  - **Checks:**
+    - Renders: the beds at -26.1 LUFS, seams flux ≤ x1.48, `loop=true` in their imports, re-rendered byte-identical. The SFX are `--determinism` identical and the earlier cutscene SFX unchanged.
+    - Data and tools: validate_data 0; the Act I and Act II audits 0; test_audio_data, test_audio_loudness (two target rules added) and test_act1_audio_audit OK.
+    - Godot: arena_ambience 5/0 (two new), battle_audio 22/0, audio_runtime 11/0, field_audio 22/0.
+    - **Skipped:** screenshots, Blender, coverage.
+  - **PC-QUEUE:** the fog swap at the bow, Hollowmere's first visit, the storm set piece.
+- **MERGE-READY @ b436efa1: the Lead's 13:08 item, the Act II battle arenas' ambience and Ch11's cues** (b436efa1). The 12:28 item was already MERGE-READY @ 023c94f1 below.
+  - **Arena beds:** before, a battle had no ambience of its own. The field's beds carried on 3 dB down, and with integration-qa's resident field nothing would have reset them. Now the encounter's arena (encounters.json `arena`) plays ambience.json `arenas` beds in place of the field's, fading over `arena_fade_sec` 1.0. The field's beds come back when the battle's listener leaves (`AudioDirector.set_arena_ambience` / `release_arena_ambience`, owned by its `BattleAudio`). A retry's new listener keeps the beds; an arena with no row keeps the field's.
+    - Five new loops (`act2_ambience.py`, appended so the 14 existing beds stay byte-identical): `arena_fen_roots` (Ch10, the Drowner's mudbank: the fen gone quiet), `arena_engine_hall` (Ch11, the engine's throb near), `arena_seep_terrace` (Ch12), `arena_lagoon_dusk` (Ch14, Malcor Venn on the barge, a far wedding bell) and `arena_court_steps` (Ch14).
+    - `bridal_barge_night` uses `open_sea_night` and `drowned_choir_ring` uses `choir_bowl`: same places.
+    - `data_check` checks every arena id and bed.
+  - **Ch11:** every `@music`, `@sfx` and `@anim` in the Ch11 scripts resolves; the Act II audit shows cutscenes 0. Ch11 has no staging yet on claude/m2-slice. The one silent Ch11 piece was the Lamp Engine's new conduit crawlers (big22): `crawler_mend` (leg-ticks, a spark, the bound light humming back up) and `crawler_tend` now sound (`act2_skill_sfx.py`, appended).
+  - **Checks:**
+    - Renders: all 19 Act II beds rendered, the old 14 unchanged; the 5 arena beds at -26.1 LUFS, seams flux ≤ x1.49, `loop=true` in their imports, re-rendered byte-identical; the crawler skills at -19 and `--determinism` identical.
+    - Data and tools: validate_data 0; the Act I audit 0 and the Act II audit 0 (skills now 0); test_audio_data, test_audio_loudness and test_act1_audio_audit OK.
+    - Godot: arena_ambience 3/0 (new), battle_audio 22/0, audio_runtime 11/0, zone_return 8/0, battle_stings 7/0, field_audio 22/0.
+    - **Skipped:** screenshots (no scene or shader), Blender, coverage (nothing under game/battle or game/progression).
+  - **PC-QUEUE:** the five arena beds under their bosses' cues; the field coming back after a fight.
+- **BACKLOG EMPTY (after b436efa1):** what's left waits on input: Ch11 staging (slice-polish), integration-qa's resident return, the encounter spacing, the people bosses' encounters, and the listening verdict.
+- **MERGE-READY @ 023c94f1: the Lead's 12:28 item, the victory sting into the field over the short return, then the battle-start stinger over the new encounter spacing** (e271faa7, 023c94f1).
+  - **Victory → field:** before, the zone's music came back only through the router's `apply_zone` on the swap, or after 3 s of silence (`zone_return_sec`). With integration-qa's resident field, under 1 s back and no swap, that left a 3 s gap after the sting. Now, once a battle leaves the tree, the zone's cue returns after `battle_return_sec` 0.3 and fades in over `battle_return_fade_sec` 2.0 (mix.json; `AudioDirector._step_zone_return`, `_after_battle`).
+    - It sits under the sting's 2.4 s tail. The sting plays on the Combat bus from the director's own SfxBank, so neither the scene change nor the music clips it.
+    - If a scene or a swap takes the music first, its own cue stands. A defeat keeps the battle in the tree through its result screen.
+    - Tests: `test_zone_return` 8/0 (two new).
+  - **Battle-start stinger:** the tide line rises over 0.5 s and holds for 0.25 s, the router goes black at 1.10 s, and the battle cue enters from about 1.1 s with a 0.3 s fade. The old `sting_tideline` crested at 1.55 s, after the cut and on top of the battle cue's first bars. It is re-rendered to crest with the line at 0.5 s and is about 16 dB down at black, total 1.8 s.
+    - The field music now dips 3 dB under it as the field dims (mix.json duck `encounter`; battle_stings.json `duck_sec` 0.75 = rise + hold). It is released before the black, so the battle cue never enters ducked. A test reads battle_transition.json and `SceneRouter.FADE_SEC` to keep that true.
+    - With 30–45 s spacing, the row's 1000 ms cooldown can't drop a stinger. `BattleRequest` already refuses a second request while one opens (M3-BPR-427).
+    - Tests: `test_battle_stings` 7/0 (one new).
+  - **Checks:** validate_data 0 errors; gdlint and gdformat clean; the `battle_stings` render byte-identical with `--determinism` (the other five stings are unchanged); Godot battle_stings 7/0, battle_audio 22/0, audio_runtime 11/0, zone_return 8/0. **Skipped:** screenshots (no scene or shader touched), Blender, and coverage (no game/battle or game/progression changes).
+  - **Note:** integration-qa's resident return and act1-chapters' spacing haven't landed on integration yet. Both changes are data-driven, so if the return path changes I'll re-check the timings as they land.
+  - **PC-QUEUE:** a victory into the field with the short return (no gap, the sting's tail intact), and two encounters 30 s apart (the crest with the line).
+- **BACKLOG EMPTY (after 023c94f1):** the Lead's 12:28 item is done. What's left waits on input: integration-qa's resident return, the encounter spacing, Ch11+ staging, the people bosses' encounters, and the listening verdict.
 - **MERGE-READY @ 11463e21: the Lead's 11:48 item, the Act I foley detail audit as played** (4284c13d, plus the tests' follow-up).
   - **Footsteps:** every surface has its walk, run, stop and turn, but Ysolde, Kerrid and Liss clinked Rhen's lantern on every other step (gear_default). They now carry their own: Ysolde's lacquer book and ink-guards, Kerrid's anchor-ring, Liss's harness and launcher. There are no separate wet-stone, reed or shell grounds yet: those zones play stone or sand (env-art marks areas).
   - **Interactables:** every one played the menu's soft `ui_interact` only.
