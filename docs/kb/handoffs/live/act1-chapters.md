@@ -430,6 +430,13 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   montage cut; each act break needs its own end-card next stop. No game data touched. QA pass 3 (gpu/act1-qa-3) has no
   new rows yet; M3-CIN-1233 not MERGE-READY yet.
 
+- **MERGE-READY @ fc564326: QA pass 3 row 23, ch01_bell_room** (Lead 10-30 01:50). U03 stood behind Rhen; it now
+  faces him from 3.6 m (shot_check-solved) with the lantern on his shoulder, the listener of his monologue ("to the
+  room, to the lantern, to nobody"). The hinge, 10 m off, carries his look off-frame. SELF-RENDERED: ch01_bell_room
+  (no baseline: Rhen front-on, the lantern in frame) and the scene's still. `--filter=ch01` 21/0.
+  - **For env-art (the Prologue–Ch4 zones):** the bell room's orange haze washes the frame and Rhen's face (the
+    lantern's volume or the room's fog). Please bring it down; the shot is ready for it.
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
