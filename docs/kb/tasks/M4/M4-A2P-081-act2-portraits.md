@@ -21,4 +21,6 @@ Bake portraits for Tobin, Merel, Malcor Venn, Liss's father, the Kirru eldest an
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
 - 2026-10-30 ui-menus: **Kerrid's `guilty` baked** (kerrid.md section 2): portraits.json lists it, the bake is viewed (gaze lowered, distinct from grief), PROVENANCE row, test_hero_portraits::test_kerrid_has_the_guilty_face_for_his_reveal. The Status page's "Unrisen: held since the stair at Corrow" line shows under his name after `ch15_kerrid_revealed` (declared; the reveal's script sets it), test_status_menu, render viewed. The NPC bakes still wait on their models (characters track).
 
+- 2026-10-30 ui-menus: **Warden Malcor Venn's face is baked** from his model (M4-A2P-051, venn.glb on the Stillguard kit): neutral, cold and determined (tools/portraits/portraits.json `venn`, rendered from his `venn_face_cold` stage, whose face poses are Asha's; PROVENANCE rows). The dialogue box shows it for speaker `malcor_venn` (dialogue_portrait.json alias), so his Ch14 decree (ch14_the_vows.dlg, [cold]) reads with his face. test_hero_portraits, test_dialogue_box; the three bakes viewed. Note for characters: on his face Asha's pose weights read faintly, so the three look nearly alike at 256 px; a Venn face-pose table would give the decree its chill. Still waiting: the Abiding guard (no model yet).
+
 ## Review log

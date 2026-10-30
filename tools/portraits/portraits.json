@@ -319,6 +319,16 @@
       "out_dir": "res://assets/ui/portraits/heroes",
       "emotions": ["neutral", "smile", "determined", "worried", "grief"],
       "camera": {}
+    },
+    {
+      "id": "venn",
+      "stage": "res://game/levels/_tests/characters/stillguard/venn_face_cold.tscn",
+      "model": "res://assets/characters/venn/venn.glb",
+      "materials": "res://assets/characters/venn/materials/",
+      "face_poses": "res://game/data/cutscene/asha_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "cold", "determined"],
+      "camera": {}
     }
   ],
   "creatures": [

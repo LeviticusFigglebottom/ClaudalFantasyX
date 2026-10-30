@@ -225,6 +225,10 @@ func test_the_speaker_s_portrait_shows_beside_the_line() -> void:
 	box.show_portrait(&"")
 	assert_eq(box.portrait(), null, "narration: none")
 	assert_eq(DialogueBox.portrait_for(&"inquisitor"), &"moll", "an alias names the character he is")
+	# M4-A2P-081: Warden Malcor Venn reads the Ch14 decree [cold] (ch14_the_vows.dlg) with his own face.
+	assert_eq(DialogueBox.portrait_for(&"malcor_venn"), &"venn")
+	box.show_portrait(&"malcor_venn", &"cold")
+	assert_true(box.portrait() != null and box.portrait().picture().texture != null, "Venn's face, cold")
 	_done()
 
 
