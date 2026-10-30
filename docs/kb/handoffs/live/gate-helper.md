@@ -16,3 +16,7 @@ and reports; it never edits game or test files.
 ## Log
 - 2026-10-30 13:45 UTC: set up (Godot 4.6.3, import done at big23's head, 197 LFS objects pulled). Polling from
   big23 on.
+- big24 @ 797b02cc: lanes B 35 files, 14:18-14:32 UTC (14 min, import included). 33 green, 2 red:
+  test_causeway_route (1 failed: fewer than 2 fights on the 206 m walk after the harrier) and test_resident_loads
+  (1 failed: haluna.tscn's resident list lacks the shopkeeper, smith and innkeeper actors; rerun
+  tools/loading/scene_loads.gd). Result: gate-big24-lanes-b-result.md.
