@@ -34,5 +34,12 @@ end) from the battle camera in the creature's own fight, plus head close-ups; a 
   `toll_gather` 1.6, `flood_surge` 1.0, `undertow_surge` 1.3, `rouse_polyp` 1.2, the slam 0.8); a lower, slumped
   flood stance with flood versions of the slam, the hit and `ready`; and a bigger intro, hit and phase change
   (docs/kb/art/creatures/drownbell.md "Move pass").
+- Spar-wraith: every move big in silhouette, its own clip per skill (`shroud_sweep`, a reworked Spar Stab, deck
+  `lines_taut_deck`, `haul_deck`, `sea_lash_deck`, `ko_deck`), a `sail` bone so the shroud billows and is seen hauled
+  down in `phase_drop` (`hide_after`), every clip from its phase's idle first frame; CreatureActor maps the KO through
+  the phase's `clips`. Sheet: spar_wraith.md "Move pass".
+- Cinder Matron: `slag_pour`, `bank_the_fire`, `recrust_gather`, `recrust` authored; bigger hits that rock her on her
+  hem; `phase_change` hunches and bursts with the arms thrown up; every clip from idle's first frame. Sheet:
+  cinder_matron.md "Move pass".
 
 ## Review log
