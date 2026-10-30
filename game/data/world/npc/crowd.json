@@ -1513,66 +1513,6 @@
         "hair": "#211A16"
       },
       "work": "vigil"
-    },
-    {
-      "id": "haluna_shopkeeper",
-      "zone": "ch02/haluna",
-      "stage_actor": "NPCs/Town/Shopkeeper",
-      "role": "vendor",
-      "island": "haluna",
-      "community": "haluna",
-      "age_band": "adult",
-      "sex": "female",
-      "build": "medium",
-      "body": "crowd_woman_medium_b",
-      "tints": {
-        "cloth_a": "#E1D9C8",
-        "cloth_b": "#656E8E",
-        "cloth_c": "#618FB3",
-        "hair": "#271C15"
-      },
-      "work": "fold",
-      "about": "Keeps the lane's shop: rope, lamp oil, dried fish."
-    },
-    {
-      "id": "haluna_smith",
-      "zone": "ch02/haluna",
-      "stage_actor": "NPCs/Town/Smith",
-      "role": "smith",
-      "island": "haluna",
-      "community": "haluna",
-      "age_band": "adult",
-      "sex": "male",
-      "build": "heavy",
-      "body": "crowd_man_heavy",
-      "tints": {
-        "cloth_a": "#DFD5C2",
-        "cloth_b": "#79A194",
-        "cloth_c": "#6793B5",
-        "hair": "#231B16"
-      },
-      "work": "mend",
-      "about": "Haluna's forge: hooks, cleats and hull nails."
-    },
-    {
-      "id": "haluna_innkeeper",
-      "zone": "ch02/haluna",
-      "stage_actor": "NPCs/Town/Innkeeper",
-      "role": "cook",
-      "island": "haluna",
-      "community": "haluna",
-      "age_band": "elder",
-      "sex": "female",
-      "build": "heavy",
-      "body": "crowd_elder_woman_b",
-      "tints": {
-        "cloth_a": "#E3DACB",
-        "cloth_b": "#747C97",
-        "cloth_c": "#B6583F",
-        "hair": "#79746E"
-      },
-      "work": "fold",
-      "about": "Runs the lane's inn and feeds the fishers off the boats."
     }
   ]
 }

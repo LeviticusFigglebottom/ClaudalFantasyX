@@ -92,19 +92,6 @@
         "c": [["brass", "bronze_patina", 0.0, 0.6], ["salt_glass", "faded_teal_cloth", 0.2, 0.7], ["roof_clay", "timber_weathered", 0.2, 0.6]]
       }
     },
-    "haluna": {
-      "island": "haluna",
-      "about": "Haluna, Asha's fishing village on its crescent beach (bible section 5): the lane's shop, forge and inn keepers, who wore the netmender's, fisher's and vendor's models until now (M2-CHR-100). Sun-bleached cotton, shell dye and net-twine browns. No reach-bands.",
-      "accepts": ["brightwater", "oruvel", "sorrin", "tamsule", "pemakar", "corrow", "saltwright"],
-      "skin": ["#B9876A", "#8A5A3E"],
-      "reach_bands": {"adult": [0, 0], "elder": [0, 0]},
-      "hair": [["hair_black", "hair_dark_brown", 0.0, 0.6]],
-      "cloth": {
-        "a": [["gauze_white", "sand_cloth", 0.1, 0.9], ["bone", "thatch", 0.0, 0.5]],
-        "b": [["faded_teal_cloth", "sand_cloth", 0.0, 0.4], ["timber_weathered", "sand_cloth", 0.1, 0.5], ["indigo_dye", "gauze_white", 0.1, 0.4]],
-        "c": [["roof_clay", "sand_cloth", 0.0, 0.4], ["tortoiseshell", "sand_cloth", 0.2, 0.6], ["sea_blue_cloth", "gauze_white", 0.0, 0.3]]
-      }
-    },
     "order": {
       "island": "order",
       "about": "The Order of the Still Water (bible section 4): tenders, a clerk and a Reed. Their dress is imported: white and marble, a pale-ochre or indigo sash; a temple tender may wear lacquer red.",
@@ -143,8 +130,7 @@
     "lacquerer": {"kits": ["worker_m", "trader_m"], "work": "mend"},
     "cook": {"kits": ["worker_f", "market_f"], "work": "fold"},
     "ferryman_mate": {"kits": ["worker_m", "fisher_m"], "work": "haul"},
-    "brand_girl": {"kits": ["child_f", "wright"], "work": ""},
-    "smith": {"kits": ["worker_m", "trader_m"], "work": "mend"}
+    "brand_girl": {"kits": ["child_f", "wright"], "work": ""}
   },
   "side_cloth": {
     "_about": "Reefball sides' colours for the divers (act1_ch07 section 8: Oruvel's side is oil-black and brass; Sorrin's is its own sea-blue and clay), by community.",

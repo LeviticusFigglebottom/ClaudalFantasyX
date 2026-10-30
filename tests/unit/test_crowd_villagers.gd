@@ -305,9 +305,9 @@ func test_a_borrowed_model_placed_first_gives_way_to_the_rows_own() -> void:
 		npc.add_child(actor)
 		zone.get_node("CutsceneStage/Actors/" + id).add_child(npc)
 		placed.append(npc)
-	var person := _people()["haluna_shopkeeper"] as Dictionary
+	var person := _people()["oruvel_cook"] as Dictionary
 	var rows := [
-		{"npc_id": "shop", "crowd": "haluna_shopkeeper", "attach": "child", "stand_in": "CutsceneStage/Actors/shop"},
+		{"npc_id": "shop", "crowd": "oruvel_cook", "attach": "child", "stand_in": "CutsceneStage/Actors/shop"},
 		{"npc_id": "keep", "actor": "netmender", "attach": "child", "stand_in": "CutsceneStage/Actors/keep"},
 	]
 	var layer := _layer(zone, rows)
