@@ -473,11 +473,46 @@ func apply_volume_settings(settings: UiSettings) -> void:
 		var v := clampf(float(value), 0.0, 1.0)
 		for bus: Variant in rows[key]:
 			set_user_volume(StringName(str(bus)), linear_to_db(v) if v > 0.0 else -80.0)
+	if _mono_setting() != &"":
+		var mono_on: Variant = settings.get_value(_mono_setting())
+		apply_mono(mono_on != null and bool(mono_on))
 
 
 func _on_setting_changed(key: StringName, settings: UiSettings) -> void:
-	if (mix.get("volume_settings", {}) as Dictionary).has(String(key)):
+	if (mix.get("volume_settings", {}) as Dictionary).has(String(key)) or key == _mono_setting():
 		apply_volume_settings(settings)
+
+
+## The accessibility item (the Lead's 10-30 21:25): a player left on Master (a scene or another track's code that never
+## named a bus) is under no slider but the master's. It goes to mix.json `stray_bus` (SFX), so every volume slider
+## reaches every sound. A player whose bus is already set is left alone.
+func route_stray(player: Node) -> void:
+	if StringName(str(player.get(&"bus"))) == &"Master":
+		player.set(&"bus", StringName(str(mix.get("stray_bus", "SFX"))))
+
+
+func _mono_setting() -> StringName:
+	return StringName(str((mix.get("mono", {}) as Dictionary).get("setting", "")))
+
+
+## Folds Master to mono (mix.json mono) while `on`: an AudioEffectStereoEnhance with pan_pullout 0 ahead of the limiter,
+## so (L + R) / 2 reaches both speakers.
+static func apply_mono(on: bool) -> void:
+	var idx := mono_effect_index()
+	if on and idx < 0:
+		var fx := AudioEffectStereoEnhance.new()
+		fx.pan_pullout = 0.0
+		AudioServer.add_bus_effect(0, fx, 0)
+	elif not on and idx >= 0:
+		AudioServer.remove_bus_effect(0, idx)
+
+
+## Master's mono fold, or -1 when stereo.
+static func mono_effect_index() -> int:
+	for i in AudioServer.get_bus_effect_count(0):
+		if AudioServer.get_bus_effect(0, i) is AudioEffectStereoEnhance:
+			return i
+	return -1
 
 
 ## Sets the player's volume for `bus` (dB) and applies it.
@@ -518,6 +553,8 @@ func _apply_bus(bus: StringName) -> void:
 
 
 func _on_node_added(node: Node) -> void:
+	if node is AudioStreamPlayer or node is AudioStreamPlayer2D or node is AudioStreamPlayer3D:
+		_later(route_stray, node)
 	if node is CutsceneSequencer:
 		# its players are routed as they enter (below); its lines tell the box's VoiceAudio who speaks
 		var seq := node as CutsceneSequencer
