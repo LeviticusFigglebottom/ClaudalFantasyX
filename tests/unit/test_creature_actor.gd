@@ -837,7 +837,7 @@ func test_the_gallery_ray_glides_settles_into_its_pool_and_falls_flat() -> void:
 	before_each()
 
 
-func test_the_rime_urchin_clenches_aims_its_spines_and_settles_on_its_ice() -> void:
+func test_the_rime_urchin_clenches_aims_its_spines_and_settles_on_its_mound() -> void:
 	var bones: Array[String] = ["root", "body"]
 	for k in 8:
 		bones.append("sector_%d" % k)

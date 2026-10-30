@@ -43,4 +43,11 @@ Plan sheets: docs/kb/plan/act2/creatures/ridge_lynx.md and scree_crawler.md (bot
   where they stood); art sheets updated.
 - Leg shaping (the plan sheet's note: plain rounded legs) is left for a separate pass.
 
+## Addendum: the rime urchin (Ch11), the Lead 2026-10-30
+ADR 0015's rule carries to Lowlight: nothing frozen. The rime urchin's ice-crusted spines and ice plinth are now
+salt-glass: a pale salt crust on the spines (salt_glass toward bone, no foam_white frost) and a glossy salt-glass mound
+(slot `glass`, which replaces `ice`; materials/ice.tres becomes glass.tres, with its PROVENANCE row moved). The skill
+effect spec (skill_vfx.md `rime_spine`) follows. Audio matches the sound (the audio track's). Viewed:
+creature_rime_urchin. The `rime` ids and the skill's ice element stay the design's.
+
 ## Review log

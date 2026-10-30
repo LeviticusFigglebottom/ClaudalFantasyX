@@ -17,3 +17,12 @@ tube feet `bone`; weak point (the mouth underneath, glimpsed when it rolls) `spa
 0.5 s of 1.1 s); `cast` (the spines all point at the target and frost blooms along them); `hit` (the spines clench;
 peak near 0.1 s); `ko` (the spines droop and it settles, the rime melting). Budget ≤ 9k triangles (the spines are
 the cost). Rig: body, spine-field bones (eight sectors).
+
+## Salt-glass, not ice (the Lead, 2026-10-30; ADR 0015)
+Nothing is frozen in Lowlight (ADR 0015: the cold is the deep's), so, as ADR 0204 §2 did for the Ch12 regulars, the
+urchin has no ice. Its "rime" is a **salt crust** on the spines (`salt_glass` going to a pale salt, `salt_glass`
+toward `bone`, faceted, with no `foam_white` frost). It sits on a **mound of salt-glass** it has grown, glossy and
+clear-green with a bloom of salt on top: material slot `glass`, which replaces `ice`. In the KO it slumps onto the
+mound; in the cast the salt crusts along the turned spines (the effect, M4-A2P-060). The lines above that say rime,
+frost or ice are superseded. The ids (`rime_urchin`, `rime_spine`) and the skill's ice element are the encounter
+data's (design); the name stays.
