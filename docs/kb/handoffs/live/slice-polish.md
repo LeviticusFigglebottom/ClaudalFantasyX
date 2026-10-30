@@ -1030,6 +1030,28 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **Also fixed:** test_slice_shots failed on slice_dock_night_yes since f7a5f332. A story_call shot names no
     scene_id, so its held line is now looked up in every compiled scene.
   - **Skipped:** coverage and Blender (nothing they cover).
+- **ACT II STARTED (ADR 0205; the Lead's 02:26 message): this track is now Act II cinematics.** My Act I rows are all
+  closed: 48 (by the M3-CIN-1233 switch), 58 and 60 (M3-CIN-1235 and 1236 above). The branch stays `claude/m2-slice`;
+  act2_tracks.md proposes the live log `cinematics.md`, and this file carries on until the Lead renames it. Act I
+  FAST-TRACKs still come first.
+  - **M4-C10-01, the Ch10 beat sheet: cinematics' staging review is in its Review log.** The blocking item is the
+    farewell-tide's score. The clutch's turn must land on the held top note, and the player sets it off by
+    letting go, so `farewell_tide` needs a section that can hold plus a tail started on release. Requested from
+    audio as **M4-CIN-1301** (role audio, todo). The other items are framing notes for M4-A2P-070 (T04 from behind the
+    party, so thirty faces come round and Asha is left facing the water) and R02 (one held single on the eldest,
+    with no cut to Kerrid).
+  - **M4-CIN-1302, MERGE-READY @ f14110d05** (review: narrative), the tools Ch10's staging needs, built ahead of the
+    scripts:
+    - `<<event release_input <prompt>>>` (CutsceneHoldGate): time stands still while held and goes on when the player
+      lets go;
+    - `@camera <shot> track=<actor>` (CutsceneTrack): one continuous move with a walking actor, for O02;
+    - `@anim <group> <clip>` (CutsceneGroup): every `<group>_*` actor, each after its own fixed delay, for T04.
+    - `@wait vfx=` is dropped: count= motes persist and can't be read back. O06's hold is timed against stills.
+    - Checks: cutscene 103, release_gate 3, hold_prompt 3, ch09_thread 7, all 0 failed; validate_data, dlgc,
+      taskboard, gdlint and gdformat clean. The sequencer is at 991 lines (cap 1000): new cues go in helpers.
+  - **Next:** M4-A2P-070 (the farewell-tide) and the rest of Ch10's staging, as the story track's scripts land
+    (M4-A2P-001). Until then: Ch10's shots on the greybox from the beat sheet's §7 list (on chapters' layout, so as
+    a request), and the Ebbing-style stills harness for Reedhollow.
 ### PC-QUEUE
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
   emissive reading. Check that its glow and silhouette read on the GPU; if not, it needs a rim light or a grade.
