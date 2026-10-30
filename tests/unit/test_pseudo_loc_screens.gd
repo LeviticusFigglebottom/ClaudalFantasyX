@@ -74,10 +74,14 @@ func before_each() -> void:
 	_saved_state = Game.state
 	_saved_dir = SaveSystem.save_dir
 	SaveSystem.save_dir = TEST_DIR
-	PseudoLoc.enable()
+	# HYMN_PSEUDO_OFF=1 walks the same screens in the source language: what a player at the largest text sees.
+	if OS.get_environment("HYMN_PSEUDO_OFF") == "":
+		PseudoLoc.enable()
 
 
 func test_the_pseudo_locale_is_live() -> void:
+	if OS.get_environment("HYMN_PSEUDO_OFF") != "":
+		return
 	assert_eq(TranslationServer.get_locale(), PseudoLoc.locale())
 	assert_eq(tr("FIELD_MENU_TITLE"), PseudoLoc.pseudo(_english("FIELD_MENU_TITLE")))
 	assert_eq(tr("DLG_CH02_BEACH_004"), PseudoLoc.pseudo(_english("DLG_CH02_BEACH_004")), "dialogue CSVs too")
