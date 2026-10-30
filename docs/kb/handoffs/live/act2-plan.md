@@ -611,3 +611,22 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** validate_data 0/0 · loc tests OK · taskboard clean · Godot `tip` 5/0, `tutorial` 5/0, `codex` 16/0 (after a fresh import).
 - MERGE-READY Act II tutorial pass @ 5e03ea26e
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1008; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act I emotional-beats pass (Lead; pillars 1 and 6)
+- **Read in play order:** the Prologue line; the Ch1 storm (the Rising, Hullgnaw, going under); Haluna's welcome (the beach, Neme's table); the Drownbell (the first verse, the lullaby, the dock at night); the Ch4 wake (the shell set, the keeps, the song, the dark dock); Corrow's drowned (the wall falls, the cut rope, the strand barks, the Ebbing); the road out and the vigil voice-over.
+- **What holds (and why I kept it):**
+  - **Rhen's jokes in danger** ("I'm not scared. I'm busy.") are his defence (rhen_sallow.md), not humour over grief.
+  - **Asha's stool joke at her own wake** is staged as her consoling Neme, whose laugh breaks back into grief: humour carrying sorrow, not undercutting it.
+  - **The Drownbell's light lines** come before the lullaby reveal.
+  - **Liss's "Thirty-one baskets. I counted."** is grief.
+  - **Earned:** "Every night until he didn't.", Marra's "Stair's clear." teaching, Kerrid's "Somebody's still below.", and the closing seven-count voice-over (it pays off the Prologue).
+- **Tightened (two slice lines, one Ch4 emotion):**
+  - **The beach (pillar 1):** straight after "Those are ours.", Asha's "He's nicer than his spear." is now "I'm Asha. And that's Toma.", and "Who is very glad you aren't dead." is now "Who is glad you're here." (tender).
+  - **The dark dock:** "Eat your cake, Rhen." is now tender, not soft_smile. She spares him the answer about Oruvel's held dead.
+- **Staging filed:**
+  - **M4-A2P-1009 → slice-polish:** two 2 s holds on the beach's grief beat.
+  - **M4-A2P-1010 → act1-chapters:** a 3 s hold before Asha's non-answer, eyes on the sea.
+  - The beats' other problems were already filed in the read-through (1000/1001: the dock's "day after tomorrow", Hobb's Sallows, the Act II card before "The end of Act I").
+- **Checks:** dlgc 0/0 · validate_data 0/0 · taskboard clean. Godot `dialogue` 87/0, `haluna_zone` 7/0, `memories` 15/0, `cutscene_sequencer` 22/0. No screenshot shows the changed lines (`slice_beach_standing` holds line 031, which is unchanged).
+- MERGE-READY emotional-beats pass @ 5b401f65a
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1010; M4-A2P-112 items 3, 5 and 6.
