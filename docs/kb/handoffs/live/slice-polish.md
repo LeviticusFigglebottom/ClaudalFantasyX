@@ -1363,6 +1363,23 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
       I'm noting that for story, not editing their drafts.
   - **Capacity offer (ADR 0207 §1):** cinematics can take frames, staging or cutscene tooling for another track by
     request task.
+- **Lead's question: the Haluna add-to-tree split (the human's black-screen report). Status @ this commit:**
+  - **97c591c34 is reverted here.** It deferred Asha's beach pose one frame during a swap.
+    - Probe runs on this head and the earlier one (scene_swap_probe `--to=haluna --resident-loads --warm-resident`,
+      headless): with the deferral, 3 of 19 crashed (signal 11, mid-swap, just after the prewarm finishes); without
+      it, 0 of 16. No symbols, so I can't prove the cause, but a crash on Haluna entry is worse than the ~130 ms it
+      saved.
+  - **Numbers on this head (after big31 moved the villagers off the main thread), without the deferral (6 runs):**
+    - hidden frame 0 is 576–715 ms (median ≈ 600), frame 1 36–93 ms;
+    - instantiate (threaded) ≈ 0.75 s; no hidden frame over 1 s (ADR 0029 met).
+    - With the deferral it was 406–502 ms, with 190–300 ms moved into frame 1.
+  - **These are my measurements with integration-qa's probe, not integration-qa's own.** Please have integration-qa
+    re-run it on the merged head. Their ~1.5 s reading predates big31 and doesn't reproduce here, even before my
+    change.
+  - **Left in frame 0:** mainly the router's place_at camera snap (the director builds its occluder triangles,
+    ~0.35 s). That's router/director code (Systems), already asked as a LEAD-ASK above. Taking it out safely means
+    building the triangle cache on the instantiate thread, not deferring work into the next frames.
+  - Tests after the revert: haluna 66/0; gdlint clean.
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
