@@ -143,6 +143,8 @@ def lowlight() -> dict:
     blocks += walls("Atrium", cx, cz, h, h, 0.0, 4.0, {"w": (-2.5, 2.5), "n": (-2.5, 2.5), "e": (2.0, 6.0)})
     blocks.append(floor("GateStep", -1.5, 0.0, 1.5, 2.5, 0.0))
     blocks.append(box("GateStepBound", -3.25, 1.0, 0.0, 0.5, 2.0, 5.0, color=COL_PARAPET))
+    for side in (-1.0, 1.0):  # the step's sides: walking along the gate must not step off into the water
+        blocks.append(box(f"GateStepBound{'NS'[side > 0]}", -1.75, 1.0, side * 2.75, 3.5, 2.0, 0.5, color=COL_PARAPET))
     blocks.append(box("LampBench", cx - 6.0, 0.45, cz + 7.5, 2.4, 0.9, 1.0, color=COL_CONDUIT))
     blocks.append(floor("HallWay", cx, -14.0, 2.5, 4.5, 0.0))
     for s in (-1.0, 1.0):

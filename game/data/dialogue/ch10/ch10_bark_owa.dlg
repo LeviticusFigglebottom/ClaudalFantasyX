@@ -2,7 +2,7 @@
 title: ch10_bark_owa
 location: ch10/reedhollow
 ---
-<<if $ch10_tide_witnessed>>
+<<if $ch10_farewell_tide_seen>>
     Owa as "The eldest" [neutral]: You kept your backs to the water. Good. The three did not have to see you while they went. #line:ch10_bark_owa_001 #long
 <<else>>
     Owa as "The eldest" [neutral]: At dusk we go to the shore. Stand at the back. Do not sing. You do not know the song. #line:ch10_bark_owa_002

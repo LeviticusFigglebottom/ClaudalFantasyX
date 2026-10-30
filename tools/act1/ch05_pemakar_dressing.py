@@ -386,7 +386,7 @@ def write_plume_night() -> None:
 # preview's night grade takes its ambient from a near-black sky, so the layout's fill colour did nothing; the zone's
 # copy takes a colour ambient (as the day grade does) and the layout's `environment` row carries a moonlit fill.
 NIGHT_SUN = {"pitch_deg": -55.0, "yaw_deg": -20.0, "energy": 0.45, "color": "#5a6c94"}
-NIGHT_FILL = {"ambient_color": "#6c7898", "ambient_energy": 0.6}
+NIGHT_FILL = {"ambient_color": "#6c7898", "ambient_energy": 0.8}  # pass 4: the harbour's foreground still near-black at 0.6
 
 
 def copy_grades() -> None:

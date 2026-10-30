@@ -75,3 +75,10 @@ READER_HELP_ONE,Up and Down: read · Cancel: close
 READER_HANDS_LEFT_FMT,Hands still to find: {n} of {count}
 READER_ALL_FOUND,Every hand is found.
 READER_PANE_FMT,{n} of {count}
+STATUS_MENU_BOUND,Bound
+STATUS_MENU_BOUND_NONE,None yet
+INN_ANSEDRA_GUEST,The High Warden's House
+INN_ANSEDRA_GUEST_DESC,"You are his guests. A room has been made ready for each of you, and nobody will ask you for anything."
+INN_MENU_FREE,No charge
+INN_MENU_PREVIEW_FREE,A night here costs nothing.
+INN_ERR_HERETIC,The door stays shut. The Order keeps no guests outside the Level.

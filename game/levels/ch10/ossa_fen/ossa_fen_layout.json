@@ -9,7 +9,7 @@
  "environment": {
   "background": "#9a9488",
   "ambient_color": "#6f7e8e",
-  "ambient_energy": 0.5
+  "ambient_energy": 0.85
  },
  "block_color": "#4a3c2c",
  "blocks": [

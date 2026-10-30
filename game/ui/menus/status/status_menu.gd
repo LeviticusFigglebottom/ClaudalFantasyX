@@ -280,6 +280,13 @@ func _render_side(sm: Dictionary) -> void:
 	var lines: Array = (_shown["lattice"] as Dictionary)["lines"]
 	for i in lines.size():
 		y = _line(Rect2(r.position.x, y, r.size.x, 0.0), str(lines[i]), &"text", i == lines.size() - 1)
+	# A caller's Vowbound (Act II screens.md section 3), here rather than under Swell: the left column has no room
+	# once all seven heroes are in the list.
+	var bound: Dictionary = _shown.get("bound", {})
+	if bool(bound.get("has", false)):
+		y += HudLayout.num(sec, "section_gap")
+		y = _section_header(Rect2(r.position.x, y, r.size.x, 0.0), tr(StatusMenuModel.BOUND_KEY))
+		_line(Rect2(r.position.x, y, r.size.x, 0.0), str(bound["text"]), &"text", true)
 
 
 ## A section title with the gold rule under it at `r`'s top. Returns the y under it.

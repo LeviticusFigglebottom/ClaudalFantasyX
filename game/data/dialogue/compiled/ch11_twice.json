@@ -12,7 +12,7 @@
     {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "engine_core", "count": 16, "motion": "spiral_up", "rate": "slow"}, "src": 10},
     {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 11},
     {"op": "cue", "cue": "camera", "args": ["T04"], "kwargs": {}, "src": 12},
-    {"op": "if_not", "cond": ["flag", "ch10_drowner_felled"], "to": 8, "src": 13},
+    {"op": "if_not", "cond": ["flag", "ch10_drowner_defeated"], "to": 8, "src": 13},
     {"op": "line", "id": "ch11_twice_001", "key": "DLG_CH11_TWICE_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 14},
     {"op": "goto", "to": 8, "src": 13},
     {"op": "line", "id": "ch11_twice_002", "key": "DLG_CH11_TWICE_002", "speaker": "asha", "emotion": "sad", "voice": "", "src": 16},

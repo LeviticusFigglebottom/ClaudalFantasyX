@@ -77,7 +77,7 @@
     "bell_hood": "accent_bell_hood",
     "none": ""
   },
-  "no_steps": ["gull_harrier", "lantern_eel", "drownbell", "spawn_polyp", "ilun", "virel"],
+  "no_steps": ["gull_harrier", "lantern_eel", "drownbell", "spawn_polyp", "ilun", "virel", "nhoa", "hesk", "ethren", "kesh"],
   "ko": "ko_collapse",
   "enter": {"sfx": "choreo_step", "steps": 2},
   "step_off": {"sfx": "choreo_step", "steps": 3},
@@ -88,7 +88,15 @@
                "kahre": {"call": "kahre_call", "rise": "kahre_rise", "sink": "kahre_sink", "fall": "kahre_sink",
                          "_note": "M3-AUD-857: the hammer on the anvil, the sparks and the thunder (vowbound_sfx.py)"},
                "virel": {"call": "virel_call", "rise": "virel_rise", "sink": "virel_sink", "fall": "virel_sink",
-                         "_note": "M3-AUD-857: the sailcloth filling, the seams' fire, the brass key (vowbound_sfx.py)"}}
+                         "_note": "M3-AUD-857: the sailcloth filling, the seams' fire, the brass key (vowbound_sfx.py)"},
+               "nhoa": {"call": "nhoa_call", "rise": "nhoa_rise", "sink": "nhoa_sink", "fall": "nhoa_sink",
+                         "_note": "M4-AUD-1010: salt-glass beads, a cold rush of air, a wordless Kirru whistle, the bone name-shell's knock over the shared rows (vowbound_sfx.py)"},
+               "hesk": {"call": "hesk_call", "rise": "hesk_rise", "sink": "hesk_sink", "fall": "hesk_sink",
+                         "_note": "M4-AUD-1010: the keth cords singing, cloth-heavy wings, a condor's hiss, a soft holy bell over the shared rows (vowbound_sfx.py)"},
+               "ethren": {"call": "ethren_call", "rise": "ethren_rise", "sink": "ethren_sink", "fall": "ethren_sink",
+                         "_note": "M4-AUD-1010: a held glass harmonic with no attack, lacquer panels, the gold bowl-halo, the ring's dry click over the shared rows (vowbound_sfx.py)"},
+               "kesh": {"call": "kesh_call", "rise": "kesh_stand", "sink": "kesh_sink", "fall": "kesh_sink",
+                         "_note": "M4-AUD-1010: falling water, many mouths humming on A minor, the Lamplighter's brass lamp-key over the shared rows (vowbound_sfx.py)"}}
   },
   "flood": {"sfx": "flood_brace"},
   "reduced_skip": ["contact", "steps"]

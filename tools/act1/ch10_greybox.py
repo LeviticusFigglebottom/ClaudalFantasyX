@@ -41,7 +41,7 @@ COL_BANK = "#4f4a3a"
 COL_REED = "#9a8a62"
 COL_PLATFORM = "#5a4a34"
 SUN = {"pitch_deg": -8.0, "yaw_deg": -85.0, "energy": 0.9, "color": "#fffefa"}  # low in the west (elevation 2 deg)
-ENV = {"background": "#9a9488", "ambient_color": "#6f7e8e", "ambient_energy": 0.5}
+ENV = {"background": "#9a9488", "ambient_color": "#6f7e8e", "ambient_energy": 0.85}  # M4-A2P-0401: 0.5 left the bank black at eye height
 PARTY = ["rhen", "asha", "toma"]
 
 

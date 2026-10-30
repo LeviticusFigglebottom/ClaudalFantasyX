@@ -236,6 +236,7 @@ func play(scene_id: StringName, stage: CutsceneStage) -> bool:
 	if not runner.load_scene(scene_id) or not runner.start():
 		push_error("CutsceneSequencer: cannot start scene '%s'" % scene_id)
 		return false
+	CutsceneStaging.apply(stage)  # M4-CIN-1304: cinematics' own shots and marks for the zone
 	_begin(scene_id, stage)
 	var step := runner.next()
 	while not step.is_end() and not _aborted:

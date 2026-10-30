@@ -35,13 +35,14 @@ def name(v: str) -> str:
 
 def variant_params(v: str) -> dict:
     """The merged table of variant `v`: Moll's bb block, the variant's overrides, `_costume`, `_variant`, `_hair` (its
-    colours over `_hair_shared`, its own seed) and `_skin` (over `_skin_shared`)."""
+    colours over `_hair_shared`, its own seed) and `_skin` (over `_skin_shared`). M4-A2P-051: a named build's own
+    `_costume` keys go over the squad's (Malcor Venn keeps Moll's sash)."""
     t = table()
     var = t["variants"][v] if v in t["variants"] else t["named"][v]
     seed = int(var["_seed"]) if "_seed" in var else ord(v)  # M3-CHR-540: a named build's own seed
     out = dict(copy.deepcopy(t["_shared"]), name=name(v))
     out.update({k: val for k, val in var.items() if not k.startswith("_")})
-    out["_costume"] = copy.deepcopy(t["_costume"])
+    out["_costume"] = dict(copy.deepcopy(t["_costume"]), **var.get("_costume", {}))  # M4-A2P-051: a named override
     out["_variant"] = dict(var["_variant"])
     out["_hair"] = dict(t["_hair_shared"], **var["_hair"])
     out["_skin"] = dict(t["_skin_shared"], seed=seed, **var["_skin"])

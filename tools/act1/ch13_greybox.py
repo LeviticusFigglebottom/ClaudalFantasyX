@@ -154,7 +154,7 @@ def sanctum() -> dict:
         "environment": INTERIOR_ENV,
         "block_color": COL_STONE,
         "blocks": blocks,
-        "spawns": {"Gate": [0.0, 0.0, -2.0, 0.0]},
+        "spawns": {"Gate": [0.0, 0.0, -5.0, 0.0]},  # in from the door: the followers trail inside the vestibule
         "marks": {"ethren": [0.0, 0.0, -42.0, 0.0], "corran": [7.5, 0.0, -42.0, 300.0], "pilgrims": [0.0, 0.0, -19.4, 0.0],
                   "basin_ysolde": [7.5, 0.0, -39.6, 0.0]},  # M4-A2P-013: C4, Ysolde before Corran
         "actors": {},
