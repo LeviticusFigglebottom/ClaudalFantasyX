@@ -622,6 +622,20 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Next: M4-A2P-025, Kesh's element cycling.
 - MERGE-READY @ 33158c10b
 
+- **M4-A2P-025 Kesh's element cycling (combat seat): done, in review.**
+  - BattleCycle: the `cycle` row key. Only this turn's voice is usable, the AI skips the others, and the timeline
+    gives each coming turn its voice as intent; the menu says why.
+  - Kesh's PROVISIONAL Vowbound row: six voices plus The Seven, `ch16_kesh_bound` declared, names in ch16.csv.
+  - Requested the staging and the timeline mark from battle-presentation (M3-BPR-442).
+  - **Fixed my own red:** tools test_battle_vfx_coverage was red on `tide_gather` (the Drowner, pushed earlier). It
+    and `voice_glimmer` are now explained in its INTENDED map, pointing at the requests.
+  - Checks: battle_cycle, battle_engine, timeline, vowbound, swell, boss, set_piece, sim, hud, parts, cover; tools
+    vfx_coverage, vowbound, swell, set_piece, boss, banned, balance_sim, flow; validate, lint and format.
+  - The full tools suite overran its 20-minute timeout on this container, so I ran the battle and flow modules
+    instead.
+  - Next: M4-A2P-019, the Act II loadouts (re-run every Act II suite on its chapter's loadout).
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.

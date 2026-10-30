@@ -127,7 +127,9 @@ func predict(
 		var skipped := timed.has(&"stop") or timed.has(&"sleep")
 		var doom := maxi(int(timed.get(&"doom", 0)), 0)
 		var intent := c.charge_skill if not skipped and int(s["charge_k"]) == 0 else &""
-		out.append(TurnEntry.new(c.id, int(s["t"]), c.team, skipped, bool(s["first_preview"]), doom, intent))
+		# M4-A2P-025: a cycling combatant's coming turns show their element's skill (pillar 4)
+		var shown := intent if intent != &"" or skipped else BattleCycle.skill_at(c, int(s["ahead"]))
+		out.append(TurnEntry.new(c.id, int(s["t"]), c.team, skipped, bool(s["first_preview"]), doom, shown))
 		s["first_preview"] = false
 		s["prior"] = 0
 		var rank := Formulas.DEFAULT_RANK

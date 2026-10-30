@@ -26,7 +26,7 @@ static func choose(engine: BattleEngine, actor: BattleCombatant) -> Dictionary:
 			if option.is_empty():
 				continue
 			var skill_id := StringName(str(option["skill"]))
-			if BattleParts.silenced(engine, actor, skill_id):
+			if BattleParts.silenced(engine, actor, skill_id) or not BattleCycle.allows(actor, skill_id):
 				continue
 			var selector := StringName(str(option.get("target", "random_foe")))
 			var targets := select_targets(engine, actor, selector)

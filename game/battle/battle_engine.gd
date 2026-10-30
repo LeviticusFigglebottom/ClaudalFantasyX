@@ -373,9 +373,11 @@ func perform_row(skill_id: StringName, sk: Dictionary, targets: Array[BattleComb
 func _checked(
 	actor: BattleCombatant, skill_id: StringName, sk: Dictionary, targets: Array[BattleCombatant]
 ) -> ActionResult:
-	if bool(sk.get("magic", false)) and actor.has_status(&"silence"):
-		return ActionResult.failed(actor.id, skill_id, &"silenced")
-	var refused := BossMechanics.refusal(self, sk)
+	var refused := &"silenced" if bool(sk.get("magic", false)) and actor.has_status(&"silence") else &""
+	if refused == &"" and not BattleCycle.allows(actor, skill_id):
+		refused = BattleCycle.FAIL_OUT_OF_CYCLE  # M4-A2P-025: not this turn's element
+	if refused == &"":
+		refused = BossMechanics.refusal(self, sk)
 	if refused != &"":
 		return ActionResult.failed(actor.id, skill_id, refused)
 	var valid := _valid_targets(actor, sk, targets)
@@ -678,6 +680,7 @@ func _turn_ticks(actor: BattleCombatant) -> Array[Dictionary]:
 	changes.append_array(_tick(actor))
 	actor.turns_taken += 1
 	BattleCover.on_turn_end(self, actor)
+	BattleCycle.advance(actor)
 	turn_ended.emit(actor, changes)
 	return changes
 

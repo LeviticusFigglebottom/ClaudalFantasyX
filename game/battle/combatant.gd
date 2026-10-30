@@ -133,6 +133,9 @@ var answered_by: StringName = &""
 var answered_key := ""
 var broken_parts: Array[StringName] = []
 var struck := false
+## M4-A2P-025 (BattleCycle): a "cycle" row's skills, one per element in order, and the one this turn holds.
+var cycle: Array[StringName] = []
+var cycle_index := 0
 ## enemies.json "hp_floor_pct": hits never take it below this share of max HP (the Reach can't fall
 ## before its last phase begins). -1 = none.
 var hp_floor_pct := -1
@@ -174,6 +177,8 @@ static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> Ba
 	c.ambushes = bool(d.get("ambush", false))
 	c.answered_by = StringName(str(d.get("answered_by", "")))
 	c.answered_key = str(d.get("answered_key", ""))
+	for s: Variant in d.get("cycle", []):
+		c.cycle.append(StringName(str(s)))
 	for p: Variant in d.get("parts", []):
 		c.parts.append(StringName(str(p)))
 	c.phases = (d.get("phases", []) as Array).duplicate(true)
