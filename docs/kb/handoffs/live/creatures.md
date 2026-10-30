@@ -1035,3 +1035,4 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - Checks: creature 88/0, tools test_creatures OK, Blender verify identical.
   - Viewed: creature_rime_urchin (its baseline needs re-approval). Portrait re-baked.
   - LEAD-ASK (design's call, not ours): `rime_urchin` absorbs ice in enemies.json, and `rime_spine` has the ice element in skills.json. The name "Rime Urchin" and those ids stay unless design changes them.
+- **MERGE-READY @ f0ba253a.** BACKLOG EMPTY (05:40): your new urchin item is done; everything else is unchanged from 04:40.
