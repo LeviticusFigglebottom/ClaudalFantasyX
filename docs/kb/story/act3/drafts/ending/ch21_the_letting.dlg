@@ -1,0 +1,20 @@
+// DRAFT (Act III, planning only). Ch21 H07 "Sefir, phase 3: the Letting" (P, 5 min). act3_ending.md §2 H07; README
+// rule 3. Asha steps off the battle timeline and SINGS THE EIGHTH VERSE, the first and only time words and tune meet.
+// Her verse is a countdown entry the party protects (Combat). Her voice is the music (`the_letting`, diegetic, an
+// ORIGINAL melody: the first verse's phrase turned upward; the voice decision is SPEC §16 Q4/Q5). The palette rotates
+// from cool held to warm released; the sleeve unravels from the cuff upward over the last 6 s (art asha.md S8), into
+// RISING motes (§0 rule 5). The verse ends on "tash" (let go). The lyric is not written here: Audio owns it.
+title: ch21_the_letting
+location: ch21/heart
+---
+@camera HT13
+@anim asha step_forward
+@music the_letting fade=0.0
+<<event start_battle ch21_sefir_letting>>
+===
+title: ch21_the_letting_sleeve
+---
+// Played by Combat over the countdown's last 6 s.
+@vfx glimmer_lift at=asha_sleeve count=7 motion=spiral_up rate=slow
+@wait 6.0
+===

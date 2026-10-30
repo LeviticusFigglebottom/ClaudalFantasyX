@@ -1,10 +1,12 @@
 ---
 draft: pre-gate
 ---
-# Act III draft scripts: Ch17 and Ch18 (planning only)
+# Act III draft scripts: Ch17 to the Ending (planning only)
 
 **Not wired into the game.** These are draft `.dlg` scripts written from the Act III beat sheets
-([act3_ch17.md](../act3_ch17.md), [act3_ch18.md](../act3_ch18.md)) at the Lead's request, 2026-10-30. Act III
+([act3_ch17.md](../act3_ch17.md), [act3_ch18.md](../act3_ch18.md), [act3_ch19.md](../act3_ch19.md),
+[act3_ch20.md](../act3_ch20.md), [act3_ending.md](../../beats/act3_ending.md)) at the Lead's request, 2026-10-30. The Lead's
+call on length: drafts stay lean; the expansion to the §8 budgets happens when Act III production opens. Act III
 production stays paused (ADR 0203/0205). Nothing under `game/` reads them: dlgc compiles only
 `game/data/dialogue/`, and no flag, loc row, shot, mark or music cue they name has been added to the game.
 
@@ -22,10 +24,14 @@ first node title is the file name; line ids `chNN_<scene>_NNN`; British spelling
    - no line in Dace's voice;
    - no "revenant" before Ch19;
    - no Eighth Verse sung;
-   - every flag is declared in `flags.tres` or in the table below.
+   - every flag is declared in `flags.tres` or in the table below;
+   - light rises only in a Kirru-way lifting, a Vowbound's or Kesh's release, the Letting's sleeve, Sefir's lift, and
+     from H09 on; nothing is held or bound after H09 (act3_ending §0 rules 3, 4, 7);
+   - the no-Dace-voice rule is Ch17's (the ledger); Dace speaks in E2.
+   Speakers the game doesn't have yet are in the table below; the checker adds them to its temporary copy only.
 4. **Banned terms:** `tools/validate_data.py` already scans `docs/kb/story/` and every `.dlg` file.
 
-**Result (2026-10-30):** 27 files, 0 errors, 0 warnings. validate_data 0/0. A planted bad file (a rising mote, a
+**Result (2026-10-30):** 73 files (Ch17 11, Ch18 16, Ch19 7, Ch20 18, Ch21 and the Ending 21), 0 errors, 0 warnings. validate_data 0/0. A planted bad file (a rising mote, a
 letterbox left on, a line for Dace, an undeclared flag) trips all five rules.
 
 ## Files by beat
@@ -52,6 +58,28 @@ letterbox left on, a line for Dace, an undeclared flag) trips all five rules.
 | Ch18 §4 | `ch18/ch18_backs_to_the_water.dlg` | C (optional, flagged) | Haluna lifts its own; a few motes rise, most stay held |
 | Ch18 §4 | `ch18/ch18_revisit_{oruvel,pemakar,tamsule,corrow,quellan,ansedra,hollowmere}.dlg` | E (offered) | one short scene each; Ansedra from the air |
 | Ch18 §5 | `ch18/ch18_heirloom_rhen.dlg` | E (offered) | seven nodes, one per hero |
+| Ch19 I01 | `ch19/ch19_the_kite_comes_down.dlg` | C | nobody says this is where they were |
+| Ch19 I02 | `ch19/ch19_the_vigil.dlg` | P → C | the Prologue's P01/P02, shot for shot; the line verbatim (own id); no rising glimmer (T-07) |
+| Ch19 I03 | `ch19/ch19_the_hitch.dlg` | E | three held inputs; "Somebody should have it."; no farewell |
+| Ch19 I04 | `ch19/ch19_the_words.dlg` | E (optional) | spoken, not sung; **placeholder Lamptongue** (Audio owns the lyric) |
+| Ch19 I07 | `ch19/ch19_the_signatures.dlg` | C | the duty roll's two hands |
+| Ch19 I08 | `ch19/ch19_bark_abiding_wardens.dlg` | fight lines | four nodes by trigger (no mid-battle hook yet) |
+| Ch19 I09–I10 | `ch19/ch19_the_engine_stops.dlg` | C | the hum stops; nothing rises; "There's the stair." |
+| Ch20 U00 | `ch20/ch20_down_the_eye.dlg` | C | Liss seats Tobin's lamp: "He volunteered. So nobody'd have to be chosen." |
+| Ch20 U01–U06 | `ch20/ch20_<vowbound>.dlg`, `ch20/ch20_<vowbound>_release.dlg` | C → P → C | six layers in vowbound.md's order; each keepsake rises last |
+| Ch20 fights | `ch20/ch20_bark_vowbound_fights.dlg` | fight lines | Kahre's "It doesn't hurt, son." verbatim; the Cage's thanks |
+| Ch20 R1, R2 | `ch20/ch20_rest_one.dlg`, `ch20/ch20_rest_two.dlg` | E | no line |
+| Ch20 U07 | `ch20/ch20_the_cage.dlg` | C → P | Toma holds the line |
+| Ch20 U08 | `ch20/ch20_thank_you.dlg` | C | four thank-yous; "She's waiting for you. Both of them are."; the founders stay held |
+| Ch21 H01–H02 | `ending/ch21_the_last_layer.dlg`, `ending/ch21_two_lamps.dlg` | P, C | no goodbye; Kerrid's hand only in Rhen's single |
+| Ch21 H03 | `ending/ch21_kesh.dlg`, `ending/ch21_kesh_release.dlg` | C → P → C | the camera stays on Sefir's face |
+| Ch21 R1 | `ending/ch21_seven_bands.dlg` | E | one optional line each, under 10 words, no goodbyes |
+| Ch21 H04, H06 | `ending/ch21_bark_sefir.dlg` | fight lines | warm, reasonable |
+| Ch21 H05 | `ending/ch21_he_takes_the_heart.dlg` | C | Kerrid off-frame with the two lamps |
+| Ch21 H07 | `ending/ch21_the_letting.dlg` | P | the lyric is Audio's; the sleeve rises over the last 6 s |
+| Ch21 H08 | `ending/ch21_sefir_lets_go.dlg` | C | two lines; his reflection ripples |
+| Ch21 H09 | `ending/ch21_great_unbinding.dlg` | C | six cutaways and the Kite; everything released at once |
+| E1–E7 | `ending/ending_{imra,rest_hands,dace,rest_where_he_stood,kerrid,rest_empty_place,the_kite_comes_down,nothing_comes,the_dark_sea,beach_rite,first_lamp}.dlg` | C/E | one goodbye per scene, a rest between; "Goodbye, Dad."; "Stair's clear." |
 
 ## Decisions made while drafting (for review)
 1. **Shot ids:**
@@ -86,17 +114,72 @@ letterbox left on, a line for Dace, an undeclared flag) trips all five rules.
      side scene; Ch18 revisits (~150 each budgeted) and heirlooms (~80 each).
    - **Lead's call:** grow those to the band, or keep the drafts spare and revise the §8 budgets.
 
+10. **Ch19–Ending shot ids:**
+    - I01–I09 in `prologue` and `ch19/iskarra_spire`; the vigil reuses the Prologue's own P01/P02.
+    - U01–U30 in `ch20/undertow_layers`.
+    - HT01–HT22 in `ch21/heart`: not H-ids, which read as the beat names.
+    - E01–E13 for the Ending, on the Kite deck (`ch18/kite`), the Haluna dock and Oruvel. No collisions.
+11. **The vigil's line** has its own id (`ch19_vigil_001`), and its translator note says it must match
+    `prologue_dead_city_001` word for word.
+12. **Lamptongue placeholders:** `ch19_words_001`/`002` (the Eighth Verse, spoken) and `ch20_fight_006` (the Cage) are
+    built from the glossary's roots and marked `#notr`. Audio owns the lyrics (SPEC §16 Q4/Q5). The Letting's sung text
+    (H07) is not written here.
+13. **Fight lines** (Ch19 I08, the Ch20 fights, Sefir's H04/H06) are bark files with one node per trigger. The game has
+    no mid-battle line hook (only lead-in barks): **a request for Combat**. New encounters:
+    - Ch19: `ch19_abiding_wardens`;
+    - Ch20: `ch20_<vowbound>` ×6 and `ch20_the_cage`;
+    - Ch21: `ch21_kesh`, `ch21_sefir_heart`, `ch21_sefir_letting` (and phase 1, `ch21_sefir_warden`, which the flow
+      starts after R1).
+14. **Release and ending light:**
+    - every release ends on its keepsake rising alone (net-float, hammer, tuning key, keth bundle, name-shell, ring,
+      lamp-key);
+    - the founders stay held after the Cage (rule 2);
+    - after H09 every cue is `glimmer_lift`, with no held or bound light; the sea-glow steps are Rendering's curve, not
+      cues.
+15. **Dace's voice** is heard only in E2 (six short lines; his apology is his, and nobody says the reasons excuse him).
+    **Imra** has two lines. **Kerrid's** E3 lines are the sheet's, verbatim. Rhen's E6 voice-over has two lines (≤ 25
+    words): the second answers the Prologue's "Remember that, later." without rewording it.
+16. **T-08** (the hitch inserts in H02 and E3) and **T-09** (Tobin's lamp dark in E4) are drafted as optional inserts
+    with no line. `ch21_unbound` (H09) is a new flag for the flow.
+
 ## When the Act III gate opens (to wire them)
 - Move each file to `game/data/dialogue/ch17/` and `ch18/`.
 - Declare the flags below in `flags.tres`.
 - Add the staging (the D and K shots, new marks), the music cues, and the flow steps that play each scene.
 - Ask Audio for the new sounds: `sea_flat_lap`, `sails_fill`, `clutch_hum`, `velamir_lullaby_hum`, `shell_into_water`,
-  `names_murmured`.
+  `names_murmured`, `kite_settles`, `rope_slips`, `engine_hum_stops`, `kite_engine_strains`, `kite_touches_floor`,
+  `pell_farewell_tide`, `kite_engines_stop`, `wind_in_sails`, `rope_creak`, `hull_meets_water`, `match_struck`.
+- Add the speakers below to `speakers.json`, with their name rows.
 
 ### Music cues the drafts name (Act III requests; none exist except `farewell_tide`)
 `hollowmere_morning`, `dace_ledger` (stops on the blank page: the stop is the cue), `the_choice` (never resolves),
 `kite_first_lamp`, `kite_theme`, `reedhollow_return`, `farewell_tide` (exists: Ch10's; the sheet asks for a version
-with Asha's hum), `haluna_lifting`, `kite_night`.
+with Asha's hum), `haluna_lifting`, `kite_night`, `kerrid_hitch`, `engine_down`, `the_eye`, `undertow_descent`,
+`memory_oruvel`, `memory_lanternfall`, `memory_coilspire`, `memory_tidecup`, `memory_lowlight`, `memory_ansedra`,
+`release_sting`, `the_cage`, `thank_you`, `heart_approach`, `kesh_first_voice`, `heart_rest`, `sefir_heart`,
+`the_letting`, `unbinding_swell`, `goodbye_imra`, `ending_lift_bed`, `goodbye_dace`, `goodbye_kerrid`, `ending_dock`,
+`credits_suite`, `post_credits_lamp`. `hesper_and_ilsabet` exists (M3-AUD-858) and is the encounter's, not a cue here.
+
+## Speakers to add
+| Id | Display name | Kind |
+|---|---|---|
+| `hesper_oan` | Warden Hesper Oan | speaker |
+| `ilsabet_rue` | Ilsabet Rue | speaker |
+| `ilun` | Ilun | speaker |
+| `kahre` | Kahre | speaker |
+| `virel` | Virel | speaker |
+| `hesk` | Hesk | speaker |
+| `nhoa` | Nhoa | speaker |
+| `ethren` | Ethren | speaker |
+| `orin_tesk` | Orin Tesk | speaker |
+| `halde_moor` | Halde Moor | speaker |
+| `isse_varan` | Isse Varan | speaker |
+| `cael_imbrey` | Cael Imbrey | speaker |
+| `imra` | Imra | speaker |
+| `dace` | Dace | speaker |
+
+The six Vowbound speak as the people they were, through an alias (`Ilun as "Teyo"`, `Kahre as "Daro"`, `Virel as
+"Wenna"`, `Hesk as "Ama"`, `Nhoa as "Ressa"`, `Ethren as "Corran"`).
 
 ## Flags to declare
 | Flag | Set in | Read by |
@@ -124,3 +207,20 @@ with Asha's hum), `haluna_lifting`, `kite_night`.
 | `ch18_heirloom_kerrid` | ch18_heirloom_rhen (node ch18_heirloom_kerrid) | Ch20/21 |
 | `ch18_heirloom_pell` | ch18_heirloom_rhen (node ch18_heirloom_pell) | Ch20/21 |
 | `ch18_complete` | ch18_iskarra | flow |
+| `ch19_started` | ch19_the_kite_comes_down | flow |
+| `ch19_vigil` | ch19_the_vigil | — |
+| `ch19_learned_the_hitch` | ch19_the_hitch | ch21_two_lamps (H02), ending_kerrid (E3) |
+| `ch19_words_whole` | ch19_the_words | H07 (Design's call: §10 Q4) |
+| `ch19_abiding_beaten` | ch19_bark_abiding_wardens (end node; or the encounter's victory_flag) | Ch20, H04 |
+| `ch19_engine_stopped` | ch19_the_engine_stops | Ch20 |
+| `ch19_complete` | ch19_the_engine_stops | flow |
+| `ch20_started` | ch20_down_the_eye | flow |
+| `ch20_ilun_released` | ch20_ilun_release | vowbound.json `released_flag`, the summon menu, codex |
+| `ch20_kahre_released` | ch20_kahre_release | as above |
+| `ch20_virel_released` | ch20_virel_release | as above |
+| `ch20_hesk_released` | ch20_hesk_release | as above |
+| `ch20_nhoa_released` | ch20_nhoa_release | as above |
+| `ch20_ethren_released` | ch20_ethren_release | as above |
+| `ch20_cage_broken` | the Cage encounter's victory_flag (flow) | H01 |
+| `ch20_complete` | ch20_thank_you | flow |
+| `ch21_unbound` | ch21_great_unbinding | the Ending's flow |

@@ -9,15 +9,18 @@ Usage: python3 docs/kb/story/act3/drafts/check_drafts.py
    - the letterbox is off again wherever a node ends with `===` and no jump;
    - glimmer light: glimmer_lift needs motion=spiral_up and may appear only in LIFT_ALLOWED (Act III README rule 1);
      glimmer_held never rises; glimmer_bound is still.
-3. The Act III rules (act3/README.md): no speaker or narration in Dace's voice; "revenant" not before Ch19; no
-   Eighth Verse sung; every flag read or set is declared in game/data/flags.tres or in README.md's "Flags to declare"
-   table.
+3. The Act III rules (act3/README.md, act3_ending §0): no line in Dace's voice in Ch17 (the ledger is read);
+   "revenant" not before Ch19; no Eighth Verse sung before H07; light rises only in a lifting, a release, or after H09,
+   and nothing is held or bound after H09; every flag read or set is declared in game/data/flags.tres or in README.md's
+   "Flags to declare" table. Speakers the game doesn't have yet come from README.md's "Speakers to add" table and are
+   added to the temporary copy only.
 Banned terms are covered by tools/validate_data.py, which already scans docs/kb/story/ and every .dlg file.
 Exit code 1 on any error.
 """
 
 from __future__ import annotations
 
+import json
 import re
 import shutil
 import sys
@@ -29,20 +32,26 @@ ROOT = HERE.parents[4]
 sys.path.insert(0, str(ROOT / "tools"))
 import dlgc  # noqa: E402
 
-LIFT_ALLOWED = {"ch18_backs_to_the_water.dlg"}
+# Where light may rise before H09 (Act III README rule 1): a Kirru-way lifting, each Vowbound's release, Kesh's release,
+# and Sefir's (H08). From H09 on everything rises (act3_ending §0 rules 3, 4, 7) and nothing may be held or bound.
+LIFT_ALLOWED = {"ch18_backs_to_the_water.dlg", "ch21_kesh_release.dlg", "ch21_the_letting.dlg", "ch21_sefir_lets_go.dlg"}
+LIFT_ALLOWED_SUFFIX = "_release.dlg"
+AFTER_H09 = ("ch21_great_unbinding.dlg", "ending_")
+README_SPEAKER = re.compile(r"^\| `([a-z0-9_]+)` \| ([^|]+?) \| speaker \|", re.M)
 FLAG_USE = re.compile(r"\$([a-z0-9_]+)")
 README_FLAG = re.compile(r"^\| `([a-z0-9_]+)` \|", re.M)
 DECLARED = re.compile(r'^"([a-z0-9_]+)":', re.M)
 
 
 def drafts() -> list[Path]:
-    return sorted(HERE.glob("ch*/*.dlg"))
+    return sorted(p for d in ("ch17", "ch18", "ch19", "ch20", "ending") for p in HERE.glob(f"{d}/*.dlg"))
 
 
 def run_dlgc(files: list[Path]) -> tuple[list[str], list[str]]:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         shutil.copytree(ROOT / "game" / "data", root / "game" / "data")
+        add_draft_speakers(root)
         for f in files:
             dest = root / "game" / "data" / "dialogue" / "act3_drafts" / f.parent.name / f.name
             dest.parent.mkdir(parents=True, exist_ok=True)
@@ -50,6 +59,21 @@ def run_dlgc(files: list[Path]) -> tuple[list[str], list[str]]:
         result = dlgc.compile_project(root)
         mine = lambda msg: "act3_drafts" in str(msg)  # noqa: E731
         return [str(e) for e in result.errors if mine(e)], [str(w) for w in result.warnings if mine(w)]
+
+
+def add_draft_speakers(root: Path) -> None:
+    """The speakers the drafts need that the game doesn't have yet (README's table), in the temporary copy only."""
+    rows = README_SPEAKER.findall((HERE / "README.md").read_text(encoding="utf-8"))
+    sp = root / "game" / "data" / "dialogue" / "speakers.json"
+    data = json.loads(sp.read_text(encoding="utf-8"))
+    known = {r["id"] for r in data["speakers"]}
+    csv_rows = ["keys,en"]
+    for sid, name in rows:
+        if sid not in known:
+            data["speakers"].append({"id": sid, "name_key": f"CHAR_{sid.upper()}"})
+            csv_rows.append(f"CHAR_{sid.upper()},{name.strip()}")
+    sp.write_text(json.dumps(data, indent=1), encoding="utf-8")
+    (root / "game" / "data" / "loc" / "zz_act3_drafts.csv").write_text("\n".join(csv_rows) + "\n", encoding="utf-8")
 
 
 def letterbox_errors(path: Path) -> list[str]:
@@ -72,6 +96,10 @@ def letterbox_errors(path: Path) -> list[str]:
     return out
 
 
+def after_h09(path: Path) -> bool:
+    return path.name.startswith(AFTER_H09[1]) or path.name == AFTER_H09[0]
+
+
 def light_errors(path: Path) -> list[str]:
     out = []
     for no, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
@@ -79,8 +107,10 @@ def light_errors(path: Path) -> list[str]:
         if t.startswith("@vfx glimmer_lift"):
             if "motion=spiral_up" not in t:
                 out.append(f"{path.name}:{no}: released light must rise (motion=spiral_up)")
-            if path.name not in LIFT_ALLOWED:
+            if not (path.name in LIFT_ALLOWED or path.name.endswith(LIFT_ALLOWED_SUFFIX) or after_h09(path)):
                 out.append(f"{path.name}:{no}: nothing rises in Act III before H09 except a Kirru-way lifting")
+        elif t.startswith(("@vfx glimmer_held", "@vfx glimmer_bound")) and after_h09(path):
+            out.append(f"{path.name}:{no}: nothing is held or bound after H09; every mote rises (act3_ending §0 rule 7)")
         elif t.startswith("@vfx glimmer_held") and "motion=" in t:
             out.append(f"{path.name}:{no}: held light never rises")
         elif t.startswith("@vfx glimmer_bound") and ("motion=" in t or "drift=" in t):
@@ -94,9 +124,9 @@ def act3_errors(path: Path, flags: set[str]) -> list[str]:
         t = raw.strip()
         if t.startswith("//"):
             continue
-        if re.match(r"^(Dace|Narrator\(dace\))\b", t):
+        if path.parent.name == "ch17" and re.match(r"^(Dace|Narrator\(dace\))\b", t):
             out.append(f"{path.name}:{no}: the ledger is read, never voiced: no line in Dace's voice")
-        if re.search(r"\brevenants?\b", t, re.I):
+        if path.parent.name in ("ch17", "ch18") and re.search(r"\brevenants?\b", t, re.I):
             out.append(f"{path.name}:{no}: 'revenant' is not said before Ch19")
         if re.search(r"\bsings?\b.*\bEighth Verse\b", t):
             out.append(f"{path.name}:{no}: the Eighth Verse is never sung before H07")
