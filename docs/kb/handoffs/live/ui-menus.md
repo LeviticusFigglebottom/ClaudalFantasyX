@@ -1099,3 +1099,27 @@ MERGE-READY @ 4edf33c21: the as-played Act I UI pass.
       battle waits while it is open, so I left it.
     - **Tests:** battle_controller 33/0, timeline 30/0, pseudo_loc_screens 17/0.
 MERGE-READY @ 8132685db: the battle text-size fixes.
+- 2026-10-30 13:10, **the Lead's 12:48 note: the black screen after a won battle.**
+  - **Cause (ResidentLoads, fixed in 8df5fe2b4):** entering the field battle let the zone's own resident loads go.
+    On Return they were read again from disk, and the prewarm feed staged about 950 materials a second time.
+    - **Measured** with the probe's new `--round-trip=<encounter>` option, returning to Brine Shoals after
+      `ch06_flats_crabs` (headless): **4875 ms** zone entry with 614 prewarm frames before the fix, **667 ms** with
+      2 frames after.
+    - **Fix:** a change into the battle scene now keeps the zone's loads, so the return loads nothing and prewarms
+      nothing again.
+    - **Test:** `test_a_field_battle_keeps_the_zone_s_loads_for_the_return` (resident_loads 9/0).
+  - **Each segment after the fix:**
+    - **Victory panel:** it opens 0.6 s after the last blow, with the battle still on screen. Nothing is black.
+    - **Confirm on Return:** `FieldBattle.return_to_field` calls `FlowRouting.go_to` the same frame, with no wait.
+    - **Fade-out:** `SceneRouter.FADE_SEC` 0.35 s.
+    - **Black:** the entry from the cache (about 0.67 s headless), plus `MEASURE_FRAMES` 4 frames. The loading cover
+      holds nothing on this path.
+    - **Fade-in:** 0.35 s.
+    - **Input:** live as the fade lifts. Field input doesn't gate on `SceneRouter.is_busy()`.
+  - **To integration-qa (owner of the SceneRouter return):** my side has no fixed wait left. The black is now the
+    cached entry alone, under 1 s. The fades are the router's 0.35 s each way. If the PC's entry still runs over 1 s,
+    the next cut is in the router or the zone's `_ready`, not in ResidentLoads or the results panel.
+  - **PC-QUEUE:** re-measure the return on the GPU, either with
+    `scene_swap_probe.tscn -- --resident-loads --warm-resident --to=<brine shoals> --round-trip=ch06_flats_crabs`
+    or by hand: win a fight and time from Return until you can walk.
+  - **Tests:** resident_loads 9/0, scene_router 17/0, prewarm 27/0, act1_swap_sweep (tools) OK; lint and format clean.
