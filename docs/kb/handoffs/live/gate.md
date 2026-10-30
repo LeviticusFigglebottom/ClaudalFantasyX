@@ -65,3 +65,14 @@ smoke is clean, and Blender so far is 12/12 identical. The screenshots (67/612 a
 the rest of Blender keep running for the Lead's baseline review; GATE-DONE follows.
 LEAD-ANSWERED (21:07, merged into claude/new-session-mj8c3c @ 96222b30): the human wants to play big17 now. Merge lead/gate-big17 @ 1a986abf into the integration branch ahead of the
 shots? The gate session doesn't touch the integration branch; until then the human can play `lead/gate-big17` directly.
+- 00:45 UTC 10-30: **GATE-PARTIAL big17: shots @ e49c2ecb on `lead/gate-big17-shots`** (based on 1a986abf): the
+  first 372 of 612 shots (187 FAIL = 43 no baseline + 144 drift; 185 PASS, 2 PENDING), their PNGs and contact
+  sheets, so the Lead can start viewing. The rest are still capturing (the `npc_haluna_*` shots take ~9 min each).
+- Blender done: 85 jobs since big14, **78 identical, 7 DIFF, all pre-existing** (their sources and outputs are
+  unchanged since big16): brine_shoals_kit (camp_tent_burned.glb, plus bs_fire_core/outer.tres committed but not
+  produced; env-art-b's M3-RND-1315), and six crowd bodies (crowd_man_heavy, _lean_a, _medium_a, _medium_b,
+  crowd_order_man, crowd_woman_lean_a: head textures, and woman_lean_a's UVs; creatures' M3-CRE-659, the same
+  generator drift test_npc reports).
+- Coverage (report only): `--filter=battle`, 811 tests: game/battle 96.57%, game/progression 51.78% (only the
+  battle-named tests ran, so it can't be held to the 99.93 / 96.52 baseline). `--filter=progression` matched no test
+  file (my filter choice), so it reported nothing.
