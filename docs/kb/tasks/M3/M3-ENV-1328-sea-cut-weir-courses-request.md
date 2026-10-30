@@ -2,8 +2,8 @@
 id: M3-ENV-1328
 title: "The sea-cut weir's courses read as rounded logs and its crest as a flat sheet (GPU QA row 62)"
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art (claude/env-art, 2026-10-30)"
 depends_on: []
 reviewer: environment
 milestone: M3
@@ -29,5 +29,15 @@ The rest is in env-art's kit code, `assets_src/environments/kits/pemakar/pemakar
 - [ ] The crest's stones show through or beside the arriving water.
 - [ ] `sea_cut_weir` is rebuilt (kit manifest and PROVENANCE row unchanged in shape), and env-art-b re-renders P11
       and `ch05_pemakar_weir`.
+
+- 2026-10-30 (env-art): **done.** In `pemakar_harbour.weir()`:
+  - The ogee courses and the crest stones take a tight 0.025 m arris (`WEIR_ARRIS_M`; it was 0.07 and 0.06).
+  - Each course's joints break by a random offset.
+  - The arriving water lies at −0.02, under the crest stones' tops, and stops at their upstream face, so the crest
+    breaks it.
+
+  `sea_cut_weir` rebuilt (4298/368 tris); the Pemakar kit rebuilt in full (34, the rest byte-identical); manifest
+  updated. **Viewed** P11: the crest now reads as a row of stones over the water (it read as one pale slab before),
+  and `ch05_pemakar_weir`. Both shots will drift. Reviewer: environment (env-art-b).
 
 ## Review log

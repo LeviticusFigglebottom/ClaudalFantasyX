@@ -1154,3 +1154,77 @@ BACKLOG EMPTY: everything left in this track's queue waits on another track.
 - **Lacquer Court objective rows:** wait on ch14's thread raising its flags (M4-A2P-014, act1-chapters); then drop the two
   `qa_known.json` "unraised" rows.
 - **Battle return end to end:** M4-UI-212 (integration-qa, plus a PC measurement).
+- 2026-10-30 16:10, **the Lead's 14:28 note: a controller-only pass over Act I's menus** (merged big23 at 63175d0b3).
+  - **Merge:** act1-chapters' Act II objective rows replace my interim ones. Theirs cover every zone beat by beat, so
+    I dropped my 17 `OBJ_*` strings and pointed the Act II objective test at their rows.
+  - **The walk:** `tests/unit/test_input_parity_pad_walk.gd` (3/0) drives the pad alone over:
+    - every field menu page, with a played save: Down, Confirm three deep (equip a piece, use a tonic, the Lattice, the
+      map, Settings), then Cancel out;
+    - every battle command (Attack, Skills, Items, Swell, Swap, Escape), into its page and target, then back;
+    - the battle pause, including Settings and one of its pages;
+    - the save list (with the overwrite question) and the title's load list.
+  - **After every press it fails on:**
+    - an unfilled `{action}`;
+    - a key's name where the pad has its own button;
+    - focus on a Control that isn't on screen;
+    - a menu page with nothing saying how to go back.
+  - **Found and fixed:**
+    1. **Settings never said how to move or go back** (hub and pages, from the field, the title and the pause). A
+       controls line now sits under the help. The Controls page hides it while listening, and the hub's line hides
+       under an open page.
+    2. **The save and load lists ignored the pad.** They take their input before the UiInput autoload, so a pad press
+       left the prompts on the keys and a held D-pad never repeated there. They now let UiInput notice each event
+       first (`UiInput.notice`).
+    3. **The save and load lists never said how to go back.** A controls line now sits at the right of the help row:
+       "Confirm: record · Cancel: close" (load: "continue"), and the question's "Up and Down: choose · Cancel: keep it".
+  - **Not changed, by design:** the battle command menu's help line is the action's cost and turn, and Cancel at its
+    root opens the pause (which says how to go back). The walk exempts only those stops.
+  - **Focus:** no Control kept the focus while hidden. Dead ends: none (with test_input_parity_dead_ends).
+  - **Renders viewed:** settings_hub, settings_accessibility (130%), settings_controls, save_menu, save_menu_overwrite.
+    All five change baselines (the new lines). The Lead re-approves; I wrote no baselines.
+  - **Tests:** pad_walk 3/0, settings 48/0, controls 12/0, graphics_menu 9/0, accessibility 9/0, save 201/0,
+    title_menu 16/0, input_parity_title 2/0, pseudo_loc 26/0, aspect 18/0, objective 16/0, field_menu 37/0,
+    zone_map 22/0, ui_input 4/0; validate_data 0/0; lint and format clean.
+  - **For act1-chapters (seen on big23 itself):** test_qa_threads fails 15 ways on their new Act II objective rows.
+    The ch10–13 threads don't yet raise the beats those rows wait on (`ch10_farewell_tide_seen`, `ch11_nhoa_bound`,
+    `ch12_ram_felled`, `ch13_read_ledgers`, each chapter's `_complete`, and the Lacquer Court's ch14 beats). My
+    merge took their `objectives.json` and threads unchanged. I only renamed the rows in my two qa_known notes.
+MERGE-READY @ 0fda0d8b5: the controller-only pass (Settings and save/load controls lines, the save list's pad notice, the pad walk test).
+- 2026-10-30 17:00, **the Lead's 16:09 note: as-played check of the new battle return** (merged big24 efe7fb10 at ce9c0d6d0).
+  - **Merge:** `objectives.json`, `test_objective_tracker` and `qa_known` take the integration side (act2-plan's
+    M4-A2P-109). The `OBJ_*` strings it keeps are restored, and `strings.csv` is the integration file plus my
+    seven controls lines.
+  - **Found and fixed (8d42e9508):** a resident field stopped following the text size and palette.
+    - **Cause:** big24 keeps the field zone through a random fight. It leaves the tree and comes back without
+      `_ready`, and `UiSettings.follow` stopped for good on `tree_exited`.
+    - **Effect:** after the first random battle, nothing in that zone took a text-size or palette change again: the
+      interact prompt, tip card, area title card, codex notice, objective HUD, hold prompt and dialogue box. That
+      included a change made in the battle pause.
+    - **Fix:** `follow()` now stops while out of the tree and catches up when back.
+    - **Test:** test_ui_settings::test_a_control_out_of_the_tree_catches_up_and_keeps_following fails on the old code
+      and passes now.
+  - **Victory and rewards:** battle_victory rendered at 100% and at 130% (the fixture's `ui_settings`, restored
+    afterwards), both viewed. The rows, XP, "+3 movement" (this game's level-up: Lattice movement), lume and drops
+    fit, and so do the choices. Nothing is cut.
+  - **Pad:** the result choices are covered by test_input_parity_battle (result panel, each device). The A press that
+    picks Return can't fire an interaction on arrival: the field acts on the press event, which the battle consumed.
+  - **Return:** test_battle_return 1/0 (the resident re-attach, under the fade).
+  - **Tests:** ui_settings 12/0, settings 49/0, field_menu 37/0, objective_hud 7/0, interact 13/0, battle_return 1/0,
+    pad_walk 3/0; validate_data 0/0; lint and format clean.
+MERGE-READY @ 8d42e9508: a resident field keeps following the text size and palette; battle-return as-played check.
+- 2026-10-30 17:50, **Act II menus for the content that has landed (big24).**
+  - **Malcor Venn's portrait** (4eabd31f3): baked neutral, cold and determined from his model (M4-A2P-051). The
+    dialogue box shows it for speaker `malcor_venn` (alias), so his Ch14 decree reads with his face.
+  - **Merel, Tobin and Ansedra's clerk** (8b07bcd50): 16 faces, in the emotions their Act II lines use. A new test,
+    test_every_act2_speaker_with_a_model_has_a_portrait, guards the next Act II model to land.
+  - **Viewed:** every bake. Two notes for characters:
+    - Venn's face uses Asha's pose weights, so his three expressions look nearly alike at 256 px. A Venn face-pose
+      table would give the decree its chill.
+    - Tobin's `laugh` reads as a lopsided grimace with the tongue showing.
+  - **Still waiting:**
+    - the Abiding guard's portrait (no model yet);
+    - Venn's bestiary page and the answered-by cursor line (no Venn enemy row, no `answered_key` yet);
+    - the seven-hero formation check (Pell's battle row).
+  - **Tests:** hero_portraits 10/0, dialogue_box 27/0; validate_data 0/0 (PROVENANCE rows); lint and format clean.
+MERGE-READY @ 8b07bcd50: Act II faces (Venn, Merel, Tobin, the clerk) in the dialogue box.
+BACKLOG EMPTY: every remaining item waits on another track (the Abiding guard's model; Venn's enemy row with `answered_key`; Pell's battle row; ch14's thread for the Lacquer Court objectives).

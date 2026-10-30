@@ -1822,7 +1822,7 @@
         40000,
         2500
       ],
-      "bytes": 1150032,
+      "bytes": 1138888,
       "lods": {
         "ossa_fen_ground": 29036,
         "ossa_fen_ground-lod1": 1326
@@ -2064,7 +2064,7 @@
         24000,
         2000
       ],
-      "bytes": 308312,
+      "bytes": 300880,
       "lods": {
         "reedhollow_ground": 8292,
         "reedhollow_ground-lod1": 468

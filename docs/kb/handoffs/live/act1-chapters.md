@@ -944,6 +944,92 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
 - Row 39: on the real GPU, walk Ch9's road from RoadGate to the milestone (Asha and Toma follow) and look at the
   gate's camera with Rhen in it; check Ch4's fights show Toma.
 
+### The Lead's 14:48 list (10-30)
+- **Arenas:** ch11_vey_rays and ch11_vey_urchins now fight in env-art's `sunken_vey_gallery`, and ch16_rim_skates and
+  ch16_rim_crawlers in env-art-b's `pale_rim_shallows`. Both arenas came in with this merge.
+  - `ACT2_NO_ARENA_YET` is now empty, so every Act II encounter names its arena. encounters_resolve is 2/0.
+- **test_causeway_route's fight count:** confirmed it matches the new spacing.
+  - The walk from the Harrier to the islet steps is 206 m. Each fight owes the 15 m grace (the Harrier's too) plus a
+    95–145 m gap, so a straight run meets exactly one random fight.
+  - The test now counts the grace and the floor and expects 1–2. It was 2–3 under the old 67.6–95.1 m gaps. It is
+    renamed `test_the_route_after_the_harrier_meets_one_or_two_fights` and is 5/0.
+- **Ch14–16 mounts:** unchanged since 13:48. The Court, Open Sea, Hollowmere and Pale Rim are mounted in their zone
+  scenes by env-art-b. The Drowned Choir still has no `_dressing.json` (M4-A2P-046 is `doing`), so there's nothing
+  to mount yet.
+- **Ch10–13 as-played walks (headless):** all green after merging integration and re-importing:
+  - The chapter threads and walkable routes: ch10 (3/0), ch11 (3/0), ch12 (4/0), ch13 (4/0).
+  - hero_field_snaps (2/0), qa_field_camera (2/0), zone_map (22/0).
+- **POI stills (15, my cap; all viewed; not baselines):** the picks span all 12 Ch10–13 zones:
+  - ossa_fen: fen_edge, clearing. reedhollow: clutch.
+  - sunken_vey: landing, to_lowlight. lowlight: gate, engine_hall, sanctum.
+  - keth_pass: pass_foot, saddle. quellan: well. cloudloom: dais.
+  - ansedra: moorings. sanctum: gate. lamp_archive: ledgers.
+  - **Good:** the Vey landing and to_lowlight, Lowlight's engine hall and sanctum, the Keth Pass foot, the Quellan
+    well, the Ansedra moorings. The Sanctum gate is dark by design (lit only by the bound light).
+  - **Four bad framings, all from my layouts' `camera_volumes`:**
+    1. lamp_archive `ledgers`: the camera at (0, 2.6, 1.5) looks at (-0.5, 0.8, -8) from inside the door wall; the
+       frame is nearly flat grey.
+    2. cloudloom `dais`: the camera at (4, 11, -15) looks at (0, 6.5, -34); a pillar fills the frame, and the dais is
+       at z -54, 39 m away.
+    3. lowlight `gate`: the camera at (-0.5, 6, 7.5) looks down at (-0.5, 1.2, 0); the frame is mostly the gate wall.
+    4. ossa_fen `clearing`: the camera at (101, 6, -8) is in the mangrove canopy over the Drowner's clearing.
+  - Also, the formation tutorial toast ("Seven Together") shows in two Ch10 stills. That's from the capture rig, not
+    the field.
+  - qa_field_camera only checks Act I spawns, which is why these got through.
+  - **LEAD-ASK:** a second 15-shot budget to move the four cameras in ch10/11/12/13_greybox.py and verify them by
+    render; or put the 24 POIs I didn't render on the full manifest.
+- MERGE-READY @ 7f54af722
+- **BACKLOG EMPTY (10-30, after the 14:48 list) except the LEAD-ASK above.** Waiting on others:
+  - env-art-b: the Drowned Choir's dressing.
+  - M3-BPR-445 and M3-UI-1242.
+  - The PC re-check of rows 34 and 39.
+  - The 7 inherited tool reds, with the owners named at 13:48.
+
+### The Lead's 15:08 relay (10-30): M4-CRE-702, the conduit crawler's enemy row
+- **Already landed:** `conduit_crawler` has been in game/data/battle/enemies.json since fc316eda4 (M4-A2P-022, today),
+  and it's on integration.
+  - It has `name_key` ENEMY_CONDUIT_CRAWLER, `lore_key` LORE_CONDUIT_CRAWLER and `model`
+    `res://game/creatures/conduit_crawler/conduit_crawler_battle.tscn`, the task's three keys.
+  - Stats per lamp_engine.md §4: L10, HP 200, str 9, def 20, mdef 20, agi 12.
+  - Skills: brush_jab, crawler_mend (`restores_part`), crawler_tend. ch11_lamp_engine fields two of them.
+  - **For creatures:** M4-CRE-702 can go to review. The file is only on claude/creatures, so I didn't add a copy here,
+    which would be an add/add conflict.
+- **Acceptance:**
+  - validate_data is clean.
+  - `--filter=battle` has one red, `test_battle_act1_ability_vfx::test_every_act_one_skill_has_its_own_effect`. It
+    wants effects for the four Vowbound Swells (farewell_tide, pass_cord, still_water, the_seven), because it counts
+    every `swell` skill whatever its act.
+  - It's the same on integration (no `effects` on those rows there either), so it isn't from this branch.
+    Battle-presentation is generating them under M4-A2P-061 (`doing`).
+- **The Ch10–13 walks:** done at 14:48 (all green; 15 stills viewed).
+  - The four camera fixes wait on the 14:48 LEAD-ASK for a second shot budget. Moving them unverified would be
+    guessing.
+
+### The Lead's 16:08 approval (10-30): the four Ch10–13 field cameras
+All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated; nothing else in the layouts changed.
+1. **ossa_fen `Clearing`:** the camera now stands on the clearing's east side at (118, 5, 6), looking west over the
+   platform at the way in. Before, it was outside the root ring, in the canopy.
+2. **lowlight:** a new `GateStep` volume (priority 2) covers the step outside the west door. Its camera is inside the
+   atrium at (6, 3.5, 3) and looks out through the door. Before, there was no volume there, so the default orbit
+   hugged the outside of the wall.
+3. **cloudloom `Hall`:** the camera now looks up the aisle from just inside the south wall at (0, 10.5, -22.5) to the
+   dais. Before, it was at z -15, outside the hall and inside the stair's cliff.
+4. **lamp_archive `LedgerBay`:** the camera is now in the aisle inside the door at (2, 3.4, -3), looking at the ledger
+   table. Before, it was at z 1.5, in the door frame.
+- **Viewed:** 4 re-renders of the same POIs (the second budget; 11 shots of it remain). All four now read: the
+  clearing platform, Rhen at the gate with the water beyond, the keth aisle to the dais, the stacks and the ledger
+  table.
+- **Checks:**
+  - Godot: ch10 (3/0), ch11 (3/0), ch12 (4/0), ch13 (4/0), qa_field_camera (2/0), hero_field_snaps (2/0),
+    layout (18/0), zone_map (22/0).
+  - validate_data, and the generator and flow tool tests (46 OK).
+- MERGE-READY @ d19b47b9d
+- **BACKLOG EMPTY (10-30, after 16:08).** Waiting on others:
+  - env-art-b: the Drowned Choir's dressing.
+  - M3-BPR-445, M3-UI-1242 and M4-A2P-061 (the Swell effects).
+  - The PC re-check of rows 34 and 39.
+  - The inherited tool reds named at 13:48.
+
 ## Exact next step
 **BACKLOG EMPTY (2026-10-30 ~02:00):** the flow and pacing pass is done (`docs/kb/qa/act1_flow_pacing_pass.md`) and the
 Act II chapter drafts are written (`docs/kb/plan/act2/chapters/`, pre-gate). Waiting on:

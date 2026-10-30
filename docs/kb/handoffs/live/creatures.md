@@ -1148,3 +1148,50 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - The rerun also refreshed stale lists in Oruvel, Pemakar, Coilspire, Corrow and Corrow night (generated output; nothing hand-edited).
   - Checks: Godot resident_loads 8/0, haluna 65/0.
 - **MERGE-READY @ 9b29d8b3.** The Kirru crowd is done (see above, MERGE-READY @ the 13:08 entry).
+- **Your 14:28 relay:**
+  1. **conduit_crawler:** request task **M4-CRE-702** (role combat, for act1-chapters under M4-A2P-022) asks for its enemies.json row.
+     - The model was already built from the lore and act2_roster: a salt-glass dome on six jointed brass legs (563eda19), with clips, portrait, creatures.json row and review shot. It needs only the row.
+  2. **Crowd behaviour pass @ 14b55254:**
+     - **Idle variety:** each villager idles and works at its own pace (npc.json `idle_playback` [0.88, 1.12], from its id), on top of the existing phase offsets.
+     - **Look-ats:** the existing party glances work for every crowd member. Reedhollow's Kirru now aim from their own eye height (2.05 m, the youngster's 1.45) and keep the Kirru stillness.
+     - **Doorways and edges:** the new **tools/creatures/crowd_spot_audit.gd** (`godot --headless --path . res://tools/creatures/crowd_spot_audit.tscn`) checks every crowd member in all 17 zones against door nodes and marks, and against drops within 0.6 m.
+       - Six moved by row offsets: Pemakar's weir child, the two Bell Galleries divers, Coilspire's tender off `door_liss`, and three in Corrow.
+       - The audit now reports 0 flagged. Corrow's storm figure is exempt: a silhouette over the water by design.
+     - **Baselines:** the idle pace changes the settled pose in every shot with field villagers (crowd_*, villager zone shots and the zone and mood shots that show villagers). **Those baselines need rewriting.** I self-rendered crowd_lineup_a and crowd_market and viewed them; they look right.
+     - Checks: validate_data; tools test_npc 33 OK; Godot crowd 15/0, villager 43/0, npc 10/0, haluna 65/0.
+- **MERGE-READY @ 14b55254.**
+- **BACKLOG EMPTY:** the crowd behaviour pass is done; the conduit crawler waits on M4-CRE-702.
+- **Your 15:08 relay:**
+  - **Baselines:** understood. I write none; the shots session captures them after the merge.
+  - **conduit_crawler is already complete and placeholder-free**, built earlier from the beat sheet, the lore and act2_roster:
+    - an 18-bone rig (body, six legs of two, two arms of two);
+    - the full clip contract (idle, attack, cast for its mend, hit, ko, hit_b, idle_b), feet on the floor in every clip;
+    - 4,608 triangles, with its battle scene (`creature_actor`), creatures.json row, portrait and review shot.
+    - It is ready to wire up the moment M4-CRE-702's enemies.json row lands, using `model`: `res://game/creatures/conduit_crawler/conduit_crawler_battle.tscn`.
+  - **Act II wildlife idle behaviours @ 3a287760:** the fen kingfisher's plunge-dive (the one behaviour its plan sheet listed as not built).
+    - From a perch it drops wings-folded to the water ahead, holds a moment, and beats back to the same perch; gulls never dive.
+    - The other Act II animals already do what their sheets describe: woolbacks graze, look up and amble; fireflies drift and blink; rim rays swim, turn and startle (their sheet: "they never bury"). Hollowmere's gulls and fish are Act I's.
+    - Checks: validate_data; tools test_wildlife 20 OK; Godot wildlife 23/0.
+- **MERGE-READY @ 3a287760.**
+- **BACKLOG EMPTY:** Act II wildlife behaviours are done; the conduit crawler waits only on M4-CRE-702's row.
+- **Your 16:08 relay:**
+  1. **conduit_crawler wired, M4-CRE-702 → review** @ 35bb8972e.
+     - The row (fc316eda4) is on the integration branch, merged here @ efe7fb10d.
+     - creatures.json `clip_by_skill`: `brush_jab` plays attack, `crawler_mend` cast, `crawler_tend` idle_b (it tends and pays the party no mind). Godot creature 159/0.
+     - **Finding for battle-presentation and env-art:** as played, `ch11_lamp_engine` on `lowlight_engine_hall` has a black slab of the arena covering the enemy half of the frame. The engine and both crawlers barely read; only one crawler's dome shows at the edge. The camera or the arena wall needs checking.
+  2. **Act III bestiary (planning, docs only) @ d7509e52b:** docs/kb/art/creatures/act3_roster.md, "Reconciled with the Act III beat sheets".
+     - **Changes and additions:**
+       - Ch17's optional mooring foes: `deep_scuttler` moved up from Ch18, `hull_rasp` new (a hullgnaw variant).
+       - Ch18: no foes inside the changed towns (its rule 3); the Kite's gulls as wildlife.
+       - Ch19: the conduit crawler reused in the Lamp Spire.
+       - Ch20: **held-shape crowds** per memory layer (crowd silhouettes in glimmer_held; the Reefball layer needs 30+).
+       - The Cage sheet amended to four chained **seats** round the well, one combatant with four parts.
+     - Also: a revised order of work, and two questions for the chapter designer.
+  3. **Act II wildlife idle behaviours** @ 517c22705: each woolback grazes at its own pace (`graze_pace`), on top of the kingfisher plunge-dive (earlier today).
+     - With that, every Act II animal does what its sheet describes. Checks: tools test_wildlife OK; Godot wildlife 24/0.
+- **MERGE-READY @ 517c22705.**
+- **BACKLOG EMPTY:** M4-CRE-702 is in review (character); Act III stays planning-only until its gate.
+- **Your 16:27 relay:** both items had already landed. Your message likely crossed with the 16:08 entry above.
+  - **The Act III bestiary list** @ d7509e52b, planning only, no assets. It is in docs/kb/art/creatures/act3_roster.md, section "Reconciled with the Act III beat sheets (2026-10-30)": every creature docs/kb/story/act3/ implies, chapter by chapter (Ch17 to Ch21), with design notes, status against the 10-28 roster, a revised order of work and two questions for the chapter designer.
+  - **The Act II wildlife idle behaviours:** the kingfisher plunge-dive and per-woolback grazing pace, @ 3a287760b (dive) and 517c22705 (pace). Every Act II animal now does what its plan sheet describes.
+- **MERGE-READY @ 517c22705** (unchanged since 16:08). **BACKLOG EMPTY.**

@@ -2,8 +2,8 @@
 id: M4-HER-1166
 title: "Request (act1-chapters, Ch11's layout; env-art for the dressing): Lowlight's gate opening has no floor or bound, so the party walks off the level"
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art (claude/env-art, 2026-10-30)"
 depends_on: []
 milestone: M4
 request-from: qa
@@ -25,5 +25,13 @@ The Vey stays visible either way.
 - [ ] From `Gate`, walking or running in any direction never leaves a floor (`--filter=hero_field_snaps`: no Lowlight
       row; the test's KNOWN entry for it is removed).
 - [ ] `--filter=qa_walk_audit` lowlight_descent stays clean.
+
+- 2026-10-30 (env-art): **fixed by act1-chapters' layout.** `GateStep`, a floor past the threshold, and its
+  `GateStepBound*` bounds close the opening. Checks:
+  - `--filter=hero_field_snaps` 2/0, with Lowlight's rows clean;
+  - a walk probe from every Lowlight spawn in eight directions: 0 falls.
+
+  env-art's edge walls (`edge_walls` in `lowlight_dressing.json`) add a second bound along the deck edges. **For the
+  test's owner:** remove the KNOWN entry `lowlight.tscn:rhen` from `test_hero_field_snaps.gd`. Reviewer: qa.
 
 ## Review log

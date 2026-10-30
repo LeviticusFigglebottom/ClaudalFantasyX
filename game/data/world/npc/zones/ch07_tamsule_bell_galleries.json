@@ -11,6 +11,8 @@
     },
     {
       "npc_id": "tamsule_bell_galleries_oruvel_diver_2",
+      "offset": [0.33, 0.0, 0.0],
+      "_offset_note": "Off a drop or a doorway (the crowd placement audit, tools/creatures/crowd_spot_audit.gd, 2026-10-30).",
       "crowd": "tamsule_bell_galleries_oruvel_diver_2",
       "stand_in": "CutsceneStage/Actors/oruvel_diver_2",
       "attach": "child"
@@ -23,6 +25,8 @@
     },
     {
       "npc_id": "tamsule_bell_galleries_sorrin_diver_2",
+      "offset": [-0.33, 0.0, 0.0],
+      "_offset_note": "Off a drop or a doorway (the crowd placement audit, tools/creatures/crowd_spot_audit.gd, 2026-10-30).",
       "crowd": "tamsule_bell_galleries_sorrin_diver_2",
       "stand_in": "CutsceneStage/Actors/sorrin_diver_2",
       "attach": "child"

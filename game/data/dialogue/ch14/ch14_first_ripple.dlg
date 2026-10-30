@@ -10,6 +10,8 @@
 title: ch14_first_ripple
 location: ch13/ansedra_lacquer_court
 ---
+// The steps were held (B06): set here too, so the flag has a setter in the scene that follows the set piece.
+<<set $ch14_steps_held = true>>
 @letterbox on
 @camera L01
 @music lagoon_escape fade=0.5
@@ -46,7 +48,7 @@ title: ch14_merel_at_the_gate
 @anim rhen take_pole merel
 @wait 1.5
 @camera L07
-@mark merel gate_footing walk
+@mark merel merel_gate walk
 Rhen [afraid]: Merel. Get on. #line:ch14_gate_001
 Merel [determined]: If the gate stays up, they're on you before the mouth. I can drop it. You can't, from there. #line:ch14_gate_002
 Liss [grief]: Merel. #line:ch14_gate_003

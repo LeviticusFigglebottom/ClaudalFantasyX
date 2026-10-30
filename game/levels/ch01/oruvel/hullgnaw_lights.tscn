@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[node name="HullgnawLights" type="Node3D"]
+
+[node name="HullgnawKey" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 2.6, 3.0)
+visible = false
+light_color = Color(0.78, 0.86, 0.92, 1)
+light_energy = 6.0
+omni_range = 9.0
+omni_attenuation = 1.2
+
+[node name="HullgnawRim" type="SpotLight3D" parent="."]
+transform = Transform3D(-0.9806, 0.121, -0.1543, 0, 0.7868, 0.6172, 0.1961, 0.6052, -0.7715, -1, 5.5, -5)
+visible = false
+light_color = Color(0.55, 0.86, 0.84, 1)
+light_energy = 14.0
+spot_range = 14.0
+spot_angle = 30.0

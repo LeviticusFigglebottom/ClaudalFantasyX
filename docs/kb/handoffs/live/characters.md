@@ -504,3 +504,26 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   - The remaining overruns at full figure (elder: the sandal sole under the foot; fenn, garo, gatekeeper, marra,
     purser, ferrymaster, skipper_sadi) read clean in those renders.
 - MERGE-READY @ b344b974 (jog + pass-5 rows; the villager-limit follow-up is next)
+- **Rhen's armpit count (the Lead, 14:28: fix the skinning, don't stiffen the arm).** I tried giving the shirt over
+  the underarm the corrective's weights (helper_bones.armpit_cloth_weights, a per-hero `mix` and `reach`). It trades
+  one failure for another rather than fixing it:
+  - mix 0.8: the count is 44 (pass), but throw_sail reaches 67 mm (limit 62);
+  - mix 0.65: the count is 44, but throw_sail reaches 69 mm;
+  - mix 0.5: the depth is 56 mm, but the count is 46.
+
+  I reverted it, so b344b974 stands: the jog is unchanged with the count at 47 and the per-mesh reason (the right
+  armpit's inner crease under the arm, covered in every jog frame of the sheets). The arm was not stiffened.
+- LEAD-ASK: a proper fix is a shirt underarm gusset (a cloth patch bridging the armhole and the side, weighted to the
+  armpit corrective) in rhen_costume plus a 3-path rebuild, about 2 h. Shall I do it now, or after the villager limit
+  pass?
+- **For integration-qa (the run speed):** per loop of `run`, the root travels 2.6 m (Asha and Rhen) or 2.65 m (Toma)
+  in 0.733 s, two steps, 164 steps a minute, so `speed_mps` is 3.545 / 3.545 / 3.614 in
+  game/data/characters/locomotion.json. The field's run_speed_mps 3.6 plays it at 1.00-1.02x.
+- **Villager limits done (ff1b0544).** villager_costume hides a sleeved arm's skin from -0.35 of the arm, which fixes
+  the shoulder poke-through. All 36 villagers were rebuilt and are identical on all 3 numpy paths; test_villagers
+  passes.
+  - **Original limits restored and passing:** ferrymaster, garo, gatekeeper, reed_d, smith.
+  - **Small raises, each with a per-mesh "covered" reason checked by a render at the worst pose:** elder (the sandal
+    sole under the foot), fenn, reed_b, reed_c, scaleman, skipper_sadi (cloth inside a resting forearm), marra (edge
+    verts under the kerchief knot), purser (the sleeve edge under the arm).
+- MERGE-READY @ ff1b0544
