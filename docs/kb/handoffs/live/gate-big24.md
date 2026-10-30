@@ -34,3 +34,7 @@ Integration base: claude/new-session-mj8c3c @ 8fe3644b (Merge lead/gate-big23).
 validate_data 0/0 · taskboard --check clean · gdlint clean · gdformat clean (1046 files) · no conflict markers.
 
 GATE-BUILT @ 019596bb (merge tip; this log commit sits on top)
+
+## Fast gate
+- Selected: 71 test files (changed tests plus tests naming changed res:// paths or class_names). Lane A (mine) has 36;
+  lane B (GATE-HELPER) has 35, in `gate-big24-lanes-b.txt` @ 797b02cc.
