@@ -69,3 +69,35 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - Checks: validate_data 0/0, taskboard --check clean.
 - Depth check: all seven drafts have the same 11 sections at 5,600–8,700 words. Ch11, Ch12, Ch13 and Ch16 aren't thinner than Ch10, Ch14 and Ch15, so none was expanded.
 - In progress: the consistency pass across the drafts and the six lane-doc sets on the track branches.
+
+### Consistency pass (2026-10-30)
+- MERGE-READY @ 8d430289: `docs/kb/plan/act2_consistency.md`, about 90 rows (names, flags, cast, ADR 0204, facts, drafts against each other), each with an owner.
+  - The act2-plan-owned rows (D1–D7, plus the drafts' side of A3 and P14) are fixed.
+  - `tools/banned_terms.txt` gains `Farplane` (its own commit; case-sensitive, so it doesn't hit `FarPlane` node names).
+  - Checks: validate_data 0/0, taskboard --check clean. Skipped: Godot (docs only).
+- LEAD-ASK: **Route the lane mismatches** (rows in act2_consistency.md by owner):
+  - **chapters** (act1-chapters), 23 rows:
+    - its flags are renamed copies of the drafts' §3 flags, including `act2_complete` against `ch16_act_two_complete`, `ch15_kerrid_revealed` against `ch15_kerrid_told`, and the set-piece ids;
+    - Ch14: Tobin dies after the steps (the draft has him die before them); no Toma lock and no Liss `unavailable`; Liss locked for Venn (ADR 0204 §8 says a lent skill);
+    - Kerrid is inside Reedhollow, walks the city by day, and the pact is staged with Sefir instead of at the moorings;
+    - the Ram's hazard is snow.
+  - **creatures-b**, 13 rows:
+    - the Abiding guard's sheet still allows them to be revenants (ADR 0016: no revenant fought openly before Ch19, so living);
+    - the Wakefin's `sound_dive` is untargetable (ADR 0204 §3: evasion up);
+    - `wakefin_breaching` is unmapped;
+    - Venn boards at 50% before the engine breaks;
+    - the storm is a guard phase (the draft has the `ch16_storm_wakes` set piece);
+    - the Ram's hazard is snow.
+  - **creatures**, 3 rows: `ridge_lynx` and `scree_crawler` still have frost (ADR 0204 §2); `rime_urchin`'s ice-crust base breaks Ch11's no-frost rule.
+  - **ui-menus**, 8 rows:
+    - "Heretics of the Level" should be "Outside the Level";
+    - nine codex unlock flags are never set;
+    - Kerrid's flag should be `ch15_kerrid_told`;
+    - the Ram's hazard is snow.
+  - **audio**, 11 rows:
+    - a new `ysolde_confession` cue (ADR 0204 §12 says reprise `ysolde_theme`);
+    - `kesh_bound`'s element order;
+    - `kerrid_at_sea`'s length (about 7–8 min of scene);
+    - the Ram's hazard is snow.
+  - **env-art-b**, 7 rows: Kerrid at the Sanctum vestibule (he never enters the Sanctum); shot ids reused from the drafts for other frames.
+- BACKLOG EMPTY: the Lead's item is done: ADR 0204 applied, the depth check passed, and the consistency pass is logged with owners. Lane fixes belong to their tracks.
