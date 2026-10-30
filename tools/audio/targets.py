@@ -222,7 +222,7 @@ RULES = [
     ("sfx/harbour_lap.ogg", "momentary", -25.0, 1.0, -1.0, "an Act I cutscene cue"),
 ]
 FILE_LIMIT = 5 * 1024 * 1024        # CLAUDE.md §8: no file over 5 MB
-TOTAL_BUDGET = 73 * 1024 * 1024     # every shipped audio file (ADR 0174: small Act I SFX while LFS is blocked; 0171, 0170)
+TOTAL_BUDGET = 105 * 1024 * 1024    # every shipped audio file (ADR 0175: Act II under assets/audio/act2/; 0174, 0171, 0170)
 
 
 def rule_for(rel: str):
