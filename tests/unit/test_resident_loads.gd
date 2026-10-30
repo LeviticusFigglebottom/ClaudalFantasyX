@@ -166,6 +166,34 @@ func test_the_title_s_early_start_keeps_the_zone_s_prewarm_for_its_change() -> v
 	_done()
 
 
+## The Lead's battle-return work (2026-10-30): while the victory panel shows, the return's destination starts loading
+## when it is a new scene (a scripted fight ending somewhere else: the Drownbell to Haluna); not when the return is
+## the field kept resident through the fight, and not when nothing resolves.
+func test_the_victory_panel_starts_the_return_s_loads() -> void:
+	ResidentLoads.run_headless = true
+	var router := Node.new()
+	router.set_script(load("res://tests/fixtures/resident/hold_router.gd"))
+	_add(router)
+	var r := ResidentLoads.install(router)
+	var haluna := "res://game/levels/ch02/haluna/haluna.tscn"
+	var to_location := BattleRequest.new()
+	to_location.return_location = &"ch02/haluna"
+	assert_eq(ResidentLoads.return_scene_of(to_location), haluna, "return_location's scene")
+	var to_scene := BattleRequest.new()
+	to_scene.return_scene = haluna
+	to_location.return_scene = ""
+	assert_eq(ResidentLoads.return_scene_of(to_scene), haluna, "a return_scene of its own wins")
+	assert_eq(r.prepare_return(to_location, haluna), "", "the resident field comes back by itself: nothing to load")
+	assert_true(r.pending.is_empty())
+	assert_eq(r.prepare_return(BattleRequest.new()), "", "nowhere to go: nothing")
+	assert_eq(r.prepare_return(to_location), haluna)
+	assert_false(r.pending.is_empty(), "Haluna's loads start under the panel")
+	while not r.is_ready():
+		r.poll()
+		OS.delay_msec(5)
+	_done()
+
+
 ## A field battle keeps the zone's loads, so the change back to the field reads nothing again (the human playtest's
 ## seconds of black after a won fight, 2026-10-30).
 func test_a_field_battle_keeps_the_zone_s_loads_for_the_return() -> void:

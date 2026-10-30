@@ -154,6 +154,31 @@ func load_scene(scene_path: String) -> void:
 	_pump()
 
 
+## The scene a won (or escaped) field battle returns to: its own return_scene, else return_location's scene; "" when
+## none resolves. `registry` defaults to LocationRegistry.load_default().
+static func return_scene_of(request: BattleRequest, registry: LocationRegistry = null) -> String:
+	if request == null:
+		return ""
+	if request.return_scene != "":
+		return request.return_scene
+	if request.return_location == &"":
+		return ""
+	var reg := registry if registry != null else LocationRegistry.load_default()
+	return str(reg.resolve(request.return_location).get(LocationRegistry.KEY_SCENE, ""))
+
+
+## The Lead's battle-return work (2026-10-30): while the victory panel stays up (a second or more), the scene the
+## return goes to starts loading, so a scripted fight that ends somewhere new (the Drownbell to Haluna) finds most of
+## it in. Nothing when the return is the field kept resident through the fight (SceneRouter.resident_path()), or
+## when it resolves to nothing. Returns the scene asked for ("" when none).
+func prepare_return(request: BattleRequest, resident_path: String = "", registry: LocationRegistry = null) -> String:
+	var to := return_scene_of(request, registry)
+	if to == "" or to == resident_path:
+		return ""
+	load_scene(to)
+	return to
+
+
 ## A field battle's runtime loads for `encounter`: its arena scene (encounters.json `arena`) and each enemy's actor
 ## scene (BattleStage.stand_in_spec, the battle's own lookup). Missing files are left out.
 static func battle_paths(encounter: StringName) -> PackedStringArray:
