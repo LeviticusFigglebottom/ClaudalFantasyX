@@ -140,6 +140,16 @@ godot_failures (8 files red on 19e7f01c):
 | test_post_import::test_every_glb_import_runs_its_category_script | yes | red | **new** | env-art-b: 40 `assets/environments/kits/haluna/*.glb.import` files (the Act II kit pieces from M4-A2P-043 9b2f4e2f and later: archive_*, sanctum_*, court_*, hm_*, bridal_barge_*…) have an empty `import_script/path` (they want haluna_kit_post_import.gd). slice-polish / env-art: `assets/cutscene/ch01/oruvel_seabed.glb` belongs to no import category. |
 | test_battle_lineup::test_no_encounter_opens_with_overlapping_fighters | yes | red | **new** | creatures-b, act1-chapters: ch11_lamp_engine opens with lamp_engine_1 2.49 and 2.55 m from conduit_crawler_2 and _3; it needs 2.74 m |
 
+### Checks on this branch
+- **Ran:**
+  - validate_data: 0 errors, 0 warnings;
+  - taskboard --check: ok;
+  - gdlint and gdformat on the new probes: clean;
+  - the banned-terms grep over the diff: 0 hits.
+- **Partly ran:** the tools suite (`run_tool_tests.py -j 4`) hit my 15-minute cap at 44 of about 200 units, all 44 green.
+  test_rig_integrity alone is 454 s here. No tools test covers `tools/gpu_bench`.
+- **Skipped:** the screenshot gate. QA renders aren't baselines, and no game code changed.
+
 ### LEAD-ASKs
 - LEAD-ASK: act1_gpu_qa.md isn't on the integration branch, only on gpu/act1-qa-5 and now qa/cloud-pass6, which carries
   the pass-6 notes and rows 74–78. Merge it from here when the PC is back? Its copy has nothing newer.
