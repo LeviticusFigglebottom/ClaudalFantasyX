@@ -442,3 +442,15 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - Godot `qa_threads` 1/0, reporting 19 KNOWN unraised and no failure.
 - MERGE-READY objectives restored @ 86262eb93
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters adds the setters and empties `unraised`), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: the setters for the 19 unraised flags (Lead)
+- **M4-A2P-114** (the one request task to act1-chapters, now rewritten) gives each of the 19 flags a row: zone, trigger, `when` and `steps`. The trigger is an existing arrive row or a new trigger at the objective row's target POI. The rows follow the Act I pattern (ch05.json) and §1's running order. Every scene already sets its flag, so the flow only has to play it.
+- Found while writing it:
+  - Two victory flags must be declared in flags.tres: `ch11_engine_released` and `ch14_venn_beaten`.
+  - Two encounters are missing from encounters.json: `ch14_water_steps` and `ch14_malcor_venn`.
+  - `ch14_started` is already set; it shows as unraised only because the court's rows sit in a `ch13/` zone.
+  - `ch12_herd_cord` is B07 (main), not a side scene: the earlier note was wrong.
+- The Ch14–Ch16 direction notes were already written (MERGE-READY @ 603fb1f36).
+- **Checks** (docs only): validate_data 0/0 · taskboard clean. No Godot run: nothing it tests changed.
+- MERGE-READY setters request @ bb7817771
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.
