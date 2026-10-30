@@ -41,3 +41,18 @@ GATE-BUILT @ 8c47d977
     game/levels/_tests/characters/sefir/sefir_face_poses.json in `sad` and `tender`. characters' dd590bd7 (M4-A2P-055,
     Sefir in person) changed the source without syncing the shipped copy; the same mismatch is on claude/characters
     alone. Branch content. Routed: **characters** (copy the source into the shipped table, as the test asks).
+- Per the Lead (19:45), merged after lanes A and B:
+  - claude/audio @ 590e3ceb
+  - claude/act2-plan @ f69bdcfb
+  - claude/creatures @ 3c681f8d
+  - claude/ui @ b084899d
+  - claude/m2-slice @ c0ef15b4
+  - claude/env-art @ 7d2197e6
+  - claude/characters @ eb04c076
+  - claude/battle-presentation @ 004f4dae
+  These include slice-polish's 5a935953 (A1–A8 Act I story fixes; on claude/m2-slice), audio 3d9476ea, act2-plan's
+  emotional-beats pass, creatures' Oruvel and Pemakar vignettes, and ui's newest. All clean (an import-written
+  test_prop_audio.gd.uid was removed so audio's committed one wins). Checks: validate_data 0/0 · taskboard clean ·
+  dlgc clean · gdlint clean · test_gdignore_imports OK · no new duplicate rows, keys or shot ids.
+  Re-gate: a fresh import plus the 66 test files these merges touch, run by me. characters' newer head doesn't sync
+  Sefir's shipped poses yet (still routed).
