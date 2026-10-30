@@ -24,7 +24,7 @@ sys.path.insert(0, str(ROOT / "tools" / "tests"))
 import validate_wildlife as vw  # noqa: E402
 from test_post_import import read_glb  # noqa: E402
 
-ANIMALS = ("gull", "shore_crab", "shoal_fish", "insect")
+ANIMALS = ("gull", "shore_crab", "shoal_fish", "insect", "kingfisher")
 # Per mesh: small enough to draw dozens through MultiMesh (docs/kb/art/wildlife.md, Budgets).
 MAX_TRIANGLES = 1500
 # An insect is a few pixels on screen (M3-CRE-616): about 300 triangles at most.
@@ -180,7 +180,20 @@ class InsectValidatorTest(unittest.TestCase):
         z = copy.deepcopy(self.zone)
         z["swarms"][2]["count"] = self.budgets["insects"]
         self.assertTrue(any("swarms" in e and "over the budget" in e for e in self.zone_errs(z)))
-        self.assertEqual(self.budgets["draw_calls"], 7, "seven MultiMeshes: gulls x2, crabs, fish, moths, dragonflies, fireflies")
+        self.assertEqual(self.budgets["draw_calls"], 9,
+                         "nine MultiMeshes: gulls x2, kingfishers x2, crabs, fish, moths, dragonflies, fireflies")
+
+    def test_kingfisher_rows_are_flocks_with_their_own_budget(self) -> None:
+        z = copy.deepcopy(self.zone)
+        z["kingfishers"] = [{"id": "k", "center": [0.0, 0.0], "radius_m": 5.0, "altitude_m": [0.5, 1.5], "count": 2,
+                             "perches": [[0.0, 0.4, 0.0, 0.0], [9.0, 0.4, 0.0, 0.0]]}]
+        errs = self.zone_errs(z)
+        self.assertTrue(any("kingfishers[0].perches[1]" in e for e in errs), errs)
+        z["kingfishers"][0]["perches"].pop()
+        z["kingfishers"][0]["count"] = self.budgets["kingfishers"] + 1
+        self.assertTrue(any("kingfishers" in e and "over the budget" in e for e in self.zone_errs(z)))
+        fen = _load(f"{vw.WILDLIFE_DIR}/ch10_ossa_fen.json")
+        self.assertEqual(sum(k["count"] for k in fen["kingfishers"]), self.budgets["kingfishers"])
 
     def test_zone_swarms_as_placed(self) -> None:
         haluna = _load(f"{vw.WILDLIFE_DIR}/ch02_haluna.json")

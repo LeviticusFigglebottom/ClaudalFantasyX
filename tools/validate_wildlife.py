@@ -6,7 +6,8 @@
   culling. The insect kind (M3-CRE-616) keeps its tuning in a `moth`, a `dragonfly` and (Ch10, M4-A2P-056) a
   `firefly` table, one material per mesh.
 * game/data/world/wildlife/<zone>.json (every other file there) and the review stage's data: the `zone` id names
-  the file (ch02/haluna -> ch02_haluna.json) and is a locations.json location; flocks, beaches and shoals are
+  the file (ch02/haluna -> ch02_haluna.json) and is a locations.json location; flocks (and kingfisher flocks, Ch10),
+  beaches and shoals are
   well formed (unique ids, positive counts, perches inside the flock's radius, perched_at_start no more than the
   perches), swarms too (type moth, dragonfly or firefly, perches only on a dragonfly patrol and inside its radius), and the
   zone's totals stay within the budgets.
@@ -38,6 +39,8 @@ KIND_KEYS = {
              "bottom_clearance_m", "startle_follow_mult", "wobble_y_fraction"},
     "insect": {"moth", "dragonfly", "firefly"},  # tables: INSECT_KEYS
 }
+# the kingfisher (Ch10, M4-A2P-056) is the gull's flock with its own tuning, meshes and rows
+KIND_KEYS["kingfisher"] = KIND_KEYS["gull"]
 # The insect kind's tables (WildlifeSwarm): every key, and the ones drawn once per insect from a [lo, hi] range
 # (the rest are read as plain numbers).
 INSECT_KEYS = {
@@ -56,17 +59,19 @@ INSECT_RANGES = {
 }
 INSECT_RANGES["firefly"] = INSECT_RANGES["moth"] | {"blink_s"}
 SWARM_TYPES = set(INSECT_KEYS)
-KIND_MESHES = {"gull": {"flying", "perched"}, "crab": {"body"}, "fish": {"body"}, "insect": {"moth", "dragonfly", "firefly"}}
+KIND_MESHES = {"gull": {"flying", "perched"}, "crab": {"body"}, "fish": {"body"}, "insect": {"moth", "dragonfly", "firefly"},
+               "kingfisher": {"flying", "perched"}}
 KIND_COMMON = {"scene", "meshes", "material", "cast_shadow"}
-BUDGET_KEYS = {"gulls", "crabs", "fish", "insects", "draw_calls", "ms_per_frame"}
+BUDGET_KEYS = {"gulls", "kingfishers", "crabs", "fish", "insects", "draw_calls", "ms_per_frame"}
 # zone row tables -> (budget key, required keys, optional keys)
 ROWS = {
     "flocks": ("gulls", {"id", "center", "radius_m", "altitude_m", "count", "perches"}, {"perched_at_start"}),
+    "kingfishers": ("kingfishers", {"id", "center", "radius_m", "altitude_m", "count", "perches"}, {"perched_at_start"}),
     "beaches": ("crabs", {"id", "center", "half_extents", "count"}, {"yaw_deg", "y"}),
     "shoals": ("fish", {"id", "center", "radius_m", "count"}, {"scale", "spread_m"}),
     "swarms": ("insects", {"id", "type", "center", "radius_m", "count"}, {"perches"}),
 }
-ZONE_KEYS = {"zone", "ground", "flocks", "beaches", "shoals", "swarms"}
+ZONE_KEYS = {"zone", "ground", "flocks", "kingfishers", "beaches", "shoals", "swarms"}
 
 
 def _num(v: object) -> bool:
@@ -229,7 +234,7 @@ def zone_errors(doc: object, where: str, budgets: dict, location_ids: set[str] |
 
 def _row_errors(table: str, row: dict, w: str) -> list[str]:
     errs: list[str] = []
-    if table == "flocks":
+    if table in ("flocks", "kingfishers"):
         if not _vec(row["center"], 2):
             return [f"{w}.center: must be [x, z]"]
         r = row["radius_m"]

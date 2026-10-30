@@ -237,3 +237,17 @@ animals (ossa_fen.md), and the glow is sun_gold mixed 30% toward palm_green, war
 - **Placed:** ch10_ossa_fen.json, four swarms of six beside the root-walks; review shots
   `wildlife_zone_ossa_fen_walk0` and `wildlife_zone_ossa_fen_pocket` (zone_wildlife.gd now keeps a zone's own
   layer, as GreyboxZone builds one from the wildlife file, instead of adding a second).
+
+## Act II: fen kingfishers (Ch10 Ossa Fen, M4-A2P-056, 2026-10-30)
+`assets/wildlife/kingfisher/kingfisher.glb` (assets_src/wildlife/kingfisher/build_kingfisher.py) follows the gull's
+recipe: two meshes (`kingfisher_flying`, `kingfisher_perched`), one `plumage` slot, the flap and head-turn masks.
+Its shape is its own: stocky, a big head and a long black dagger bill, a stub tail, short rounded wings with a 0.26 m
+span. It is tannin brown above, with a blue-green flash on the wings and rump (sea_blue_cloth toward palm_green,
+never a glimmer teal, never emissive) and a pale rust breast. Never a heron, an egret or an otter: those shapes are
+the Kirru.
+- **Motion:** WildlifeGullFlock, unchanged, driven by the `kingfisher` kind (the gull's keys): fast and low on 11 Hz
+  bursts with brief glides, a tight orbit within altitude_m 0.6–1.6 over the water, long perches, quick head turns.
+- **Zone rows:** `kingfishers` (the flock schema), with their own budget (`kingfishers` 6) and two MultiMeshes
+  (`draw_calls` 9 is the most a layer can now have).
+- **Placed:** ch10_ossa_fen.json, three pairs perching on the root-walk rails (the perch points follow each rail's
+  yawed line, facing the water). Review shot `wildlife_zone_ossa_fen_rail0`.

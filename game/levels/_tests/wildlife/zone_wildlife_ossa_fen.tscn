@@ -16,3 +16,7 @@ fov = 45.0
 [node name="Pocket" type="Camera3D" parent="Cameras"]
 transform = Transform3D(-0.894427, -0.0594672, 0.443242, 0, 0.99112, 0.132973, -0.447214, 0.118934, -0.886484, 66.5, 1.5, -26.5)
 fov = 45.0
+
+[node name="Rail0" type="Camera3D" parent="Cameras"]
+transform = Transform3D(-0.692532, 0.136275, -0.708399, 0, 0.981995, 0.188906, 0.721387, 0.130824, -0.680063, 5.2, 0.95, 2)
+fov = 40.0

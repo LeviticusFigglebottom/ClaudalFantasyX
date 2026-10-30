@@ -3,19 +3,21 @@ extends Node3D
 ## Ambient, non-combat wildlife for a zone (M3-CRE-611, docs/kb/art/wildlife.md): gulls wheeling and settling on
 ## perches, shore crabs that scuttle off when the player comes near, fish shoals in the shallows, and (M3-CRE-616)
 ## insects: moths round the lamps, dragonflies patrolling over water and paddies, fireflies over the fen at dusk
-## (Ch10, M4-A2P-056). A zone adds one
+## (Ch10, M4-A2P-056), and kingfishers (the gull's flock, its own meshes) over the fen. A zone adds one
 ## WildlifeLayer node (at the zone's origin) with `zone_id` set to its location id; the placement is
 ## game/data/world/wildlife/<zone id with / as _>.json, the kinds and budgets wildlife.json.
 ##
-## Cheap by construction: at most seven MultiMeshes for the whole layer (gulls flying, gulls perched, crabs, fish,
-## moths, dragonflies, fireflies; the motion is the wildlife shader's, driven per instance from here), no Skeleton3D, no
-## AnimationPlayer, no physics bodies (wildlife never blocks the player). A group (a flock, a beach, a shoal, a
-## swarm) pauses while its bounds are off
-## screen and hides past the cull distance. Deterministic: every animal's choices come from a seed made from the
-## zone id, and the motion from the frame deltas only.
+## Cheap by construction: at most nine MultiMeshes for the whole layer (gulls and kingfishers flying and perched,
+## crabs, fish, moths, dragonflies, fireflies; the motion is the wildlife shader's, driven per instance from here),
+## no Skeleton3D, no AnimationPlayer, no physics bodies (wildlife never blocks the player). A group (a flock, a
+## beach, a shoal, a swarm) pauses while its bounds are off screen and hides past the cull distance.
+## Deterministic: every animal's choices come from a seed made from the zone id, and the motion from the frame
+## deltas only.
 
 const GULLS_FLYING := &"gull_flying"
 const GULLS_PERCHED := &"gull_perched"
+const KINGFISHERS_FLYING := &"kingfisher_flying"
+const KINGFISHERS_PERCHED := &"kingfisher_perched"
 const CRABS := &"crab"
 const FISH := &"fish"
 const MOTHS := &"moth"
@@ -45,6 +47,8 @@ var kinds: Dictionary = {}
 var zone: Dictionary = {}
 var budgets: Dictionary = {}
 var flocks: Array[WildlifeGullFlock] = []
+## Kingfishers (Ch10, M4-A2P-056): the gull's flock, its own kind table, rows and meshes.
+var kingfishers: Array[WildlifeGullFlock] = []
 var beaches: Array[WildlifeCrabBeach] = []
 var shoals: Array[WildlifeShoal] = []
 var swarms: Array[WildlifeSwarm] = []
@@ -98,6 +102,11 @@ func build() -> void:
 		var n := _take(row, left, "gulls")
 		left -= n
 		flocks.append(WildlifeGullFlock.new(row, k["gull"], _group_seed("gull", row), n))
+	left = int(budgets.get("kingfishers", 0))
+	for row: Dictionary in zone.get("kingfishers", []):
+		var n := _take(row, left, "kingfishers")
+		left -= n
+		kingfishers.append(WildlifeGullFlock.new(row, k["kingfisher"], _group_seed("kingfisher", row), n))
 	left = int(budgets.get("crabs", 0))
 	for row: Dictionary in zone.get("beaches", []):
 		var n := _take(row, left, "crabs")
@@ -116,6 +125,9 @@ func build() -> void:
 	var gulls := gull_count()
 	buffers[GULLS_FLYING] = WildlifeBuffer.new(gulls)
 	buffers[GULLS_PERCHED] = WildlifeBuffer.new(gulls)
+	var kfs := kingfisher_count()
+	buffers[KINGFISHERS_FLYING] = WildlifeBuffer.new(kfs)
+	buffers[KINGFISHERS_PERCHED] = WildlifeBuffer.new(kfs)
 	buffers[CRABS] = WildlifeBuffer.new(crab_count())
 	buffers[FISH] = WildlifeBuffer.new(fish_count())
 	buffers[MOTHS] = WildlifeBuffer.new(insect_count(WildlifeSwarm.TYPE_MOTH))
@@ -123,6 +135,9 @@ func build() -> void:
 	buffers[FIREFLIES] = WildlifeBuffer.new(insect_count(WildlifeSwarm.TYPE_FIREFLY))
 	_make_multimesh(GULLS_FLYING, k["gull"], "flying", _union(flocks))
 	_make_multimesh(GULLS_PERCHED, k["gull"], "perched", _union(flocks))
+	if k.has("kingfisher"):
+		_make_multimesh(KINGFISHERS_FLYING, k["kingfisher"], "flying", _union(kingfishers))
+		_make_multimesh(KINGFISHERS_PERCHED, k["kingfisher"], "perched", _union(kingfishers))
 	_make_multimesh(CRABS, k["crab"], "body", _union(beaches))
 	_make_multimesh(FISH, k["fish"], "body", _union(shoals))
 	if k.has("insect"):
@@ -186,6 +201,13 @@ func gull_count() -> int:
 	return n
 
 
+func kingfisher_count() -> int:
+	var n := 0
+	for f in kingfishers:
+		n += f.count()
+	return n
+
+
 func crab_count() -> int:
 	var n := 0
 	for b in beaches:
@@ -233,8 +255,6 @@ func step(delta: float, player: Vector3, has_player: bool, camera: Camera3D = nu
 	active_groups = 0
 	paused_groups = 0
 	hidden_groups = 0
-	var flying: WildlifeBuffer = buffers.get(GULLS_FLYING)
-	var perched: WildlifeBuffer = buffers.get(GULLS_PERCHED)
 	var crabs: WildlifeBuffer = buffers.get(CRABS)
 	var fish: WildlifeBuffer = buffers.get(FISH)
 	# the insects' MultiMesh per swarm type, and each type's next instance
@@ -243,24 +263,9 @@ func step(delta: float, player: Vector3, has_player: bool, camera: Camera3D = nu
 	}
 	var insect_base := {MOTHS: 0, DRAGONFLIES: 0, FIREFLIES: 0}
 	var dirty := {}
-	var g := 0
+	var g := _step_flocks(flocks, GULLS_FLYING, GULLS_PERCHED, 0, delta, camera, dirty)
+	g = _step_flocks(kingfishers, KINGFISHERS_FLYING, KINGFISHERS_PERCHED, g, delta, camera, dirty)
 	var base := 0
-	for f in flocks:
-		var vis := _visibility(f.bounds, camera)
-		if vis == VIS_ACTIVE:
-			f.step(delta)
-		if _changed(g, vis):
-			if vis == VIS_HIDDEN:
-				for i in f.count():
-					flying.hide(base + i)
-					perched.hide(base + i)
-			else:
-				f.write(flying, perched, base)
-			dirty[GULLS_FLYING] = true
-			dirty[GULLS_PERCHED] = true
-		base += f.count()
-		g += 1
-	base = 0
 	for b in beaches:
 		var vis := _visibility(b.bounds, camera)
 		if vis == VIS_ACTIVE:
@@ -292,6 +297,38 @@ func step(delta: float, player: Vector3, has_player: bool, camera: Camera3D = nu
 		g += 1
 	_upload(dirty)
 	last_step_ms = float(Time.get_ticks_usec() - t0) / USEC_PER_MS
+
+
+## Steps flocks (gulls or kingfishers) into their flying and perched MultiMeshes, groups numbered from g; returns
+## the next group number.
+func _step_flocks(
+	list: Array[WildlifeGullFlock],
+	fly_key: StringName,
+	perch_key: StringName,
+	g: int,
+	delta: float,
+	camera: Camera3D,
+	dirty: Dictionary
+) -> int:
+	var flying: WildlifeBuffer = buffers.get(fly_key)
+	var perched: WildlifeBuffer = buffers.get(perch_key)
+	var base := 0
+	for f in list:
+		var vis := _visibility(f.bounds, camera)
+		if vis == VIS_ACTIVE:
+			f.step(delta)
+		if _changed(g, vis):
+			if vis == VIS_HIDDEN:
+				for i in f.count():
+					flying.hide(base + i)
+					perched.hide(base + i)
+			else:
+				f.write(flying, perched, base)
+			dirty[fly_key] = true
+			dirty[perch_key] = true
+		base += f.count()
+		g += 1
+	return g
 
 
 ## Whether group g must be rewritten: always while active, else only when its visibility changed.

@@ -227,11 +227,13 @@ func test_the_layer_reads_each_zone_file_within_budget() -> void:
 		var zone_id := StringName(str(data["zone"]))
 		assert_eq(WildlifeConfig.zone_path(zone_id), ZONE_DIR + f, "%s is named after its zone id" % f)
 		var layer := _layer("", zone_id)
-		var want := {"flocks": 0, "beaches": 0, "shoals": 0, "swarms": 0}
+		var want := {"flocks": 0, "kingfishers": 0, "beaches": 0, "shoals": 0, "swarms": 0}
 		for key: String in want:
 			for row: Dictionary in data.get(key, []):
 				want[key] += int(row["count"])
 		assert_eq(layer.gull_count(), want["flocks"], "%s gulls" % f)
+		assert_eq(layer.kingfisher_count(), want["kingfishers"], "%s kingfishers" % f)
+		assert_true(layer.kingfisher_count() <= int(budgets["kingfishers"]), "%s kingfisher budget" % f)
 		assert_eq(layer.crab_count(), want["beaches"], "%s crabs" % f)
 		assert_eq(layer.fish_count(), want["shoals"], "%s fish" % f)
 		assert_eq(layer.insect_count(), want["swarms"], "%s insects" % f)
@@ -496,3 +498,32 @@ func test_a_firefly_swarm_draws_in_its_own_multimesh() -> void:
 	assert_eq((layer.buffers[WildlifeLayer.MOTHS] as WildlifeBuffer).data[14], WildlifeBuffer.MODE_FLUTTER, "moths not")
 	layer.free()
 	DirAccess.remove_absolute(path)
+
+
+func test_fen_kingfishers_fly_low_and_sit_on_the_rails() -> void:
+	var layer := _layer("", &"ch10/ossa_fen")
+	var data := WildlifeConfig.load_json(ZONE_DIR + "ch10_ossa_fen.json")
+	assert_eq(layer.kingfisher_count(), 6, "three pairs")
+	assert_eq(layer.gull_count(), 0, "and no gulls inland")
+	for key: StringName in [WildlifeLayer.KINGFISHERS_FLYING, WildlifeLayer.KINGFISHERS_PERCHED]:
+		var mmi := layer.multimeshes[key] as MultiMeshInstance3D
+		assert_true(mmi != null and mmi.multimesh.mesh != null, "%s has its own mesh" % key)
+		var mat := mmi.material_override as ShaderMaterial
+		assert_true(
+			mat != null and mat.resource_path.contains("/kingfisher/"), "%s wears the kingfisher's plumage" % key
+		)
+	var top := -INF
+	var perched_seen := false
+	for f in 60 * 60:
+		layer.step(DT, Vector3.ZERO, false)
+		for k in layer.kingfishers.size():
+			var row: Dictionary = (data["kingfishers"] as Array)[k]
+			var alt: Array = row["altitude_m"]
+			var flock := layer.kingfishers[k]
+			for b in flock.gulls:
+				top = maxf(top, b.pos.y)
+				assert_true(b.pos.y <= float(alt[1]) + float(_kinds["kinds"]["kingfisher"]["undulate_m"]) + EPS, "low")
+		perched_seen = perched_seen or (layer.kingfishers[0].perched_count() > 0)
+	assert_true(perched_seen, "they sit on the rails")
+	assert_true(top < 2.5, "never higher than a person (%.2f m)" % top)
+	layer.free()

@@ -4182,6 +4182,22 @@
       }
     },
     {
+      "id": "wildlife_zone_ossa_fen_rail0",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_ossa_fen.tscn",
+      "camera": "Cameras/Rail0",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
       "id": "wildlife_zone_underway_crown",
       "scene": "res://game/levels/_tests/wildlife/zone_wildlife_oruvel_underway.tscn",
       "camera": "Cameras/Crown",

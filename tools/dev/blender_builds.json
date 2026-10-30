@@ -701,6 +701,16 @@
       ]
     },
     {
+      "id": "wildlife_kingfisher",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/kingfisher/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/kingfisher/*.glb", "assets/wildlife/kingfisher/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/kingfisher/build_kingfisher.py", "--", "--out", "assets/wildlife/kingfisher/kingfisher.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "kingfisher"]
+      ]
+    },
+    {
       "id": "wildlife_shore_crab",
       "owner": "character",
       "sources": ["assets_src/wildlife/shore_crab/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
