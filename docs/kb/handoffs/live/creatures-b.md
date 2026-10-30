@@ -705,3 +705,23 @@ What the Act II fights still need from others: enemy rows and encounters (combat
 - **BACKLOG EMPTY (11:10):** the Act II bosses and Vowbound are all at real-model quality. Row 64's cause and its two
   fixes are measured and handed to battle-presentation, with nothing on my rigs to prewarm. Venn's stand-in waits on
   claude/characters' merge; the Abiding guard's waits on its actor.
+
+## 2026-10-30 ~13:15: big22 red and the Act I as-played pass
+- **MERGE-READY @ 098a878d1: big22's red test_avalanche_ram fixed.** The test still asserted the Ram had no
+  `clip_by_skill` (from before combat's skills existed); it now checks each mapped skill is in skills.json and each
+  mapped clip is in the GLB (live: a missing clip fails it). tools.tests.test_avalanche_ram + test_wakefin 7/0.
+- **As-played pass, in progress.** The Act I boss fights are played on the real stage with the encounter sweep (a
+  scratch copy that also stills each clip of the boss and Vowbound mid-way, and steps the boss's HP down so every phase
+  is crossed in play).
+  - Reviewed: the Drownbell (flood, KO), Hullgnaw, the Hermit and Ilun, the Reach, and the Inquisitor with Virel. My
+    models show no clipping, pops or missing hit reactions. Ilun, Kahre and Virel each rise, act, are hit and leave
+    cleanly.
+  - **Found and fixed (650257eaa, MERGE-READY once its battle run is green, below):** no boss phase clip was ever seen.
+    `phase_changed` comes from `_end_turn`, right after `action_resolved` starts the blow; BattleActorMotion entered
+    the phase at once and the blow's hit reaction then replaced the phase clip (Hullgnaw's phase_break, the
+    Drownbell's phase_change; Hullgnaw's ribs vanished mid-flinch on the hide_after timer). It now waits for the
+    blow's sequence via `BattleChoreo.after_sequence`, as the phase camera moment does. Review request for creatures,
+    who own the file: M3-CRB-016.
+  - **For battle-presentation (camera, not models):** (1) in undertows_reach, a Vowbound called during the Climb's
+    entry cut rises off screen (the camera is on CameraHints/along_the_walk while Kahre's rise plays); (2) the
+    Spar-Wraith reads as a small dark shape in the rigging at the fight's rest frame (the M3-CRB-011 note).
