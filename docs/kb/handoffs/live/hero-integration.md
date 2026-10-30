@@ -2062,3 +2062,15 @@ MERGE-READY @ (this commit).
     settles on NemeDoor at 9.8 m.
   - **21 (Haluna beach start), real time:** 0 of 121 samples out of frame; settles on beach_shallows at 7.5 m.
   - Unchanged from big23 and big25: **all six are fixed on the headless checks.** The PC confirms by hand.
+
+### The Act I smoke run on big28 (c646c3a8), a clean worktree with a fresh profile; the Lead 10-30 19:25
+- `act1_gate_check.py --only 2` (each suite alone, its own XDG_DATA_HOME): **PASS, 0 SCRIPT ERRORs.**
+  - qa_threads 1/0: every chapter thread start to end, save and load at every shrine;
+  - qa_encounters 1/0: every Act I fight entered, won and left;
+  - fp_ 30/0: title → New Game → Prologue → the slice → Ch3;
+  - save_ 153/0;
+  - **act1_route 3/0:** New Game → Ch1 → the slice → Ch4 → Ch9's end card (with the credits) → the title, with the
+    taps.
+- **No soft-lock or stuck transition.** The logs have no timeout, no stuck story and no held reveal. The only
+  "softlock" text is Ch14's flag docs (Act II, M4-A2P-118).
+- (A big27 run was stopped part-way when big28 landed; its threads, encounters and fp_ were clean too.)
