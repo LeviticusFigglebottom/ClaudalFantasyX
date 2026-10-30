@@ -1242,3 +1242,31 @@ BACKLOG EMPTY: every remaining item waits on another track (the Abiding guard's 
     130% were viewed, the pad covers the result choices, and the fix for the resident field following the text size
     is in.
 MERGE-READY @ 430bd0471: battle floats stay on screen (big25's 4:3 Read red).
+- 2026-10-30 19:05, **M3-HER-1167 (integration-qa's request, the Lead's top priority): the first zone loads while the
+  title shows** (082ab9166).
+  - **What:** the title calls `ResidentLoads.load_scene` (no hold) for the zone its highlighted choice enters.
+    - **New Game:** `locations.json` `new_game`, which on the Act I route is the prologue (157 loads), not
+      Haluna.
+    - **Continue:** the newest record's location, read with `slot_info` without loading it.
+    - The loads queue behind the hero bodies. Moving between New Game and Continue switches the zone.
+    - When the change starts, the same request loads nothing twice and keeps the queued prewarm, so the pipelines
+      still compile under the cover.
+  - **Measured** (headless lavapipe; `scene_swap_probe --resident-loads --warm-resident`, plus the new
+    `--warm-scene` for the early start):
+
+    | Zone | Start | Entry | Swap held | Worst hidden frame |
+    |---|---|---|---|---|
+    | Haluna | at the change | 4.9 s | 414 frames | 708 ms |
+    | Haluna | early | 3.1–3.3 s | 158 frames | 796–928 ms |
+    | Prologue | at the change | 1.78 s | 71 frames | 374 ms |
+    | Prologue | early | 1.00 s | 72 frames | 120 ms |
+
+  - **Haluna's remaining hold** is the prewarm staging its ~280 materials under the cover, plus 0.83–0.95 s to
+    instantiate. That is pipeline compile, which loads can't absorb. Pre-compiling on the title would hitch the
+    title, so I left it.
+  - **To integration-qa:** please re-measure on the PC with `--warm-scene`, and log the split (acceptance item 2).
+    Not done here: the prologue starting Ch1's loads (`oruvel_underway`, 102) while it plays. That's the prologue
+    scene's (cinematics') to call, `ResidentLoads.shared().load_scene(next)`. I'd take it if handed over.
+  - **Tests:** resident_loads 10/0 (new: the early start keeps the prewarm), title_menu 17/0 (new: each choice's
+    first zone), input_parity_title 2/0, scene_router 17/0, pad_walk 3/0; lint and format clean.
+MERGE-READY @ 082ab9166: M3-HER-1167, the title starts the first zone's loads.
