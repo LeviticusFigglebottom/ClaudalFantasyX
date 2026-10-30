@@ -25,5 +25,7 @@ From `ch14_declared_heretics`: Order shops refuse with a line, Order shrines go 
   - test_save_shrine::test_an_order_shrine_goes_dark_for_heretics.
   - Next: Order shops refuse, the heretic subtitle and slot tag, shrine travel greying (needs `order` on locations.json shrine rows), and the seven-hero check once Pell has a battle row.
   - Zone authors set `order = true` on the Order's shrines (Ansedra, the Order temples).
+- 2026-10-30 ui-menus: **Order shops refuse** (`order` on shops.json rows, SHOP_ERR_HERETIC), the **heretic subtitle** on the field menu and the **Heretics tag** on a heretic save's slot, all viewed.
+- 2026-10-30 ui-menus: **shrine travel** greys a dark Order shrine with "Dark: the Order's shrine" and refuses the trip (`order: true` on a locations.json shrine row; LocationRegistry.shrine_is_order, ShrineNetwork.is_dark). test_shrine_network, test_shrine_travel; render viewed. Zone authors mark the Order's network shrines `order: true` in locations.json as Act II's shrines land. Still to do: the map's hollow shrine glyph, and the seven-hero formation check once Pell has a battle row.
 
 ## Review log
