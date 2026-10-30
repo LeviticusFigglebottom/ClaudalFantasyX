@@ -1367,3 +1367,9 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - its shot also differs from the baseline by the earlier leg rework (563eda19e): the shots session recaptures.
   - Combat: **M5-A3P-1849** requests the enemies.json rows and encounters for all eight Act III regulars.
 - **MERGE-READY @ a1d431c1a.** Next: M5-A3P-1808, the kite gulls (claimed).
+- **M5-A3P-1808 the Kite's gulls** (Ch18 K02), at review:
+  - WildlifeGullFlock's `follow` (a node path): the flock flies in that node's space, and the layer sets its frame
+    each step (drawing, flush, culling and draw bounds all follow); validated and tested (Godot wildlife 29/0);
+  - the row `kite_wake` on review stage `kite_gulls.json` (the Kite has no zone yet: its scene adds the row with
+    `follow` set to its Kite node, moving before the layer); new shot `wildlife_kite_gulls` (viewed).
+- **MERGE-READY @ e3ba147b7.**
