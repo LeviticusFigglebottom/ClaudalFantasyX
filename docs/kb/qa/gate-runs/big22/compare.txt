@@ -1,4 +1,4 @@
-# big22: 622 shots: 335 PASS, 168 DRIFT (0 size mismatch), 119 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big22: 687 shots: 335 PASS, 168 DRIFT (0 size mismatch), 184 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 PASS boot_title rmse 0.00000 (limit 0.00400)
 NO-BASELINE slice_end_card (pending_baseline)
 PASS lighting_probe rmse 0.00000 (limit 0.00800)
@@ -615,9 +615,74 @@ NO-BASELINE crowd_zone_tamsule
 NO-BASELINE crowd_zone_corrow_night
 NO-BASELINE crowd_zone_corrow
 NO-BASELINE crowd_zone_oruvel
+NO-BASELINE crowd_zone_bell_galleries
 NO-BASELINE crowd_lineup_back
+NO-BASELINE field_hud_over_haluna
 NO-BASELINE field_hud_over_oruvel
+NO-BASELINE field_hud_over_tamsule
 NO-BASELINE field_hud_over_corrow_night
+NO-BASELINE ebbing_n11
 NO-BASELINE ebbing_n08
+NO-BASELINE crowd_zone_brightwater_ferry
 NO-BASELINE crowd_zone_ashcrown
+NO-BASELINE field_hud_over_pemakar
 NO-BASELINE field_hud_over_ashcrown
+NO-BASELINE field_hud_over_brine_shoals
+NO-BASELINE field_hud_over_coilspire
+NO-BASELINE field_hud_over_haluna_wake
+NO-BASELINE pell_front
+NO-BASELINE pell_back
+NO-BASELINE pell_three_quarter
+NO-BASELINE pell_profile
+NO-BASELINE pell_face
+NO-BASELINE pell_face_stylized
+NO-BASELINE pell_face_surprised
+NO-BASELINE pell_face_grief
+NO-BASELINE pell_silhouette_lineup
+NO-BASELINE pell_clip_storm_call
+NO-BASELINE pell_clip_walk
+NO-BASELINE pell_battle_idle
+NO-BASELINE pell_battle_attack
+NO-BASELINE pell_storm_ch8
+NO-BASELINE creature_oil_slug_battle
+NO-BASELINE npc_corrow_storm_figure
+NO-BASELINE npc_corrow_storm_figure_near
+NO-BASELINE slice_verse_s08 (pending_baseline)
+NO-BASELINE flow_chapter_card_ch04_voice (pending_baseline)
+NO-BASELINE flow_chapter_card_ch04 (pending_baseline)
+NO-BASELINE ch13_ansedra_arrival
+NO-BASELINE ch13_ansedra_moorings
+NO-BASELINE ch13_ansedra_causeway
+NO-BASELINE ch13_ansedra_mirror
+NO-BASELINE ch13_ansedra_sefir_house
+NO-BASELINE ch13_ansedra_corran_house
+NO-BASELINE ch13_sanctum_gate
+NO-BASELINE ch13_sanctum_basin
+NO-BASELINE ch13_sanctum_vault
+NO-BASELINE ch13_archive_door
+NO-BASELINE ch13_archive_aisle
+NO-BASELINE ch13_archive_table
+NO-BASELINE ch13_archive_roll
+NO-BASELINE ch14_court_entry
+NO-BASELINE ch14_court_ceremony
+NO-BASELINE ch14_court_steps
+NO-BASELINE ch14_court_gate
+NO-BASELINE ch14_ansedra_ripple
+NO-BASELINE battle_arena_lacquer_court_steps
+NO-BASELINE document_reader_three (pending_baseline)
+NO-BASELINE document_reader_one (pending_baseline)
+NO-BASELINE ch15_hollowmere_arrival
+NO-BASELINE ch15_hollowmere_dock
+NO-BASELINE ch15_hollowmere_lanes
+NO-BASELINE ch15_hollowmere_pyre
+NO-BASELINE ch15_hollowmere_supper
+NO-BASELINE ch15_sea_deck
+NO-BASELINE ch15_sea_bier
+NO-BASELINE ch15_sea_wide
+NO-BASELINE ch16_rim_ship
+NO-BASELINE ch16_rim_wade
+NO-BASELINE ch16_rim_cairns
+NO-BASELINE battle_boss_intro_drowner
+NO-BASELINE battle_boss_intro_lamp_engine
+NO-BASELINE battle_boss_intro_ram
+NO-BASELINE battle_boss_intro_wakefin
