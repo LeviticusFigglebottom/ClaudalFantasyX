@@ -293,18 +293,28 @@ func theme_for(base: Theme) -> Theme:
 
 
 ## Gives `root` this palette and text size now (theme_for over its own theme, or the Hymn theme
-## when it sets none) and again on every later change, until it leaves the tree. Every menu
+## when it sets none) and again on every later change while it is in the tree. Every menu
 ## outside battle calls it in _ready (M2-UI-09); BattleHud has its own apply_settings().
+## Out of the tree it stops listening; back in, it catches up and listens again. A field zone kept resident through a
+## random fight (SceneRouter.keep_field_resident) comes back without _ready, so its prompts must not stop following
+## (the Lead's battle-return check, 2026-10-30: a text size set in the battle pause never reached the field again).
 func follow(root: Control) -> void:
 	apply_to(root)
 	var on_change := func(_key: StringName) -> void:
 		if is_instance_valid(root):
 			apply_to(root)
 	changed.connect(on_change)
-	var stop := func() -> void:
-		if changed.is_connected(on_change):
-			changed.disconnect(on_change)
-	root.tree_exited.connect(stop, CONNECT_ONE_SHOT)
+	root.tree_exited.connect(
+		func() -> void:
+			if changed.is_connected(on_change):
+				changed.disconnect(on_change)
+	)
+	root.tree_entered.connect(
+		func() -> void:
+			apply_to(root)
+			if not changed.is_connected(on_change):
+				changed.connect(on_change)
+	)
 
 
 ## Sets `root`'s theme for the current palette and text size once.

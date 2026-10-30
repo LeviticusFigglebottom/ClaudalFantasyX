@@ -162,7 +162,9 @@ def ossa_fen() -> dict:
         "camera_volumes": follow_volumes("Walk", FEN_ROUTE) + follow_volumes("Pocket", list(FEN_POCKET))
         + follow_volumes("Exit", list(FEN_EXIT))
         + [{"id": "Clearing", "mode": "pan_follow", "at": [112.0, 1.5, 0.0], "size": [18.0, 4.0, 18.0],
-            "pos": [101.05, 5.98, -7.97], "look_at": [112.0, 0.8, 0.0], "fov": 55, "priority": 2}],
+            # the camera stands in the clearing's east side, back to the Drowner's water, and looks west over the platform
+            # at the way in (the POI stills, 10-30: from outside the root ring it sat in the mangrove canopy)
+            "pos": [118.0, 5.0, 6.0], "look_at": [106.0, 0.8, 0.0], "fov": 55, "priority": 2}],
         "triggers": [{"id": "clearing", "activation": "touch", "at": [96.0, 0.0, 0.5], "size": [2.0, 0, WALK_W],
                       "requires_flag": "ch10_started", "blocked_by_flag": "ch10_drowner_defeated",
                       "payload": {"beat": "drowner"}, "yaw": 0.0},  # M4-A2P-010: the Drowner's clearing

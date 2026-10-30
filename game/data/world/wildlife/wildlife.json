@@ -81,11 +81,12 @@
       "takeoff_speed_fraction": 0.6
     },
     "woolback": {
-      "_doc": "Ch12, M4-A2P-056 (docs/kb/plan/act2/creatures/woolback.md): grazing herds of skinned actors (WildlifeHerd; scene is the actor, which draws the model at 0.3, build_woolback.py WOOLBACK_SCALE). Each grazes graze_s, then looks round (look_chance, for look_s: the look clip's length) or ambles wander_m to a new spot at walk_speed_mps (the walk clip's own: WALK_SPEED x the scale, so the planted hooves stay put), turning at turn_rate, keeping spacing_m from the others; a player within look_radius_m makes a grazing one look up (look_rate a second). height_m and bounds_pad_m size the herd's culling box.",
+      "_doc": "Ch12, M4-A2P-056 (docs/kb/plan/act2/creatures/woolback.md): grazing herds of skinned actors (WildlifeHerd; scene is the actor, which draws the model at 0.3, build_woolback.py WOOLBACK_SCALE). Each grazes graze_s (at its own graze_pace, the graze clip's playback, so the herd chews out of pace), then looks round (look_chance, for look_s: the look clip's length) or ambles wander_m to a new spot at walk_speed_mps (the walk clip's own: WALK_SPEED x the scale, so the planted hooves stay put), turning at turn_rate, keeping spacing_m from the others; a player within look_radius_m makes a grazing one look up (look_rate a second). height_m and bounds_pad_m size the herd's culling box.",
       "scene": "res://game/creatures/woolback/woolback_actor.tscn",
       "scale": [0.94, 1.06],
       "walk_speed_mps": 0.208,
       "turn_rate": 1.6,
+      "graze_pace": [0.88, 1.12],
       "graze_s": [7.0, 16.0],
       "look_chance": 0.35,
       "look_s": 3.2,

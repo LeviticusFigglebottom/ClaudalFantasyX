@@ -216,6 +216,10 @@ def lowlight() -> dict:
         "camera_volumes": [
             {"id": "Atrium", "mode": "pan_follow", "at": [cx, 1.5, cz], "size": [2 * h, 4.0, 2 * h],
              "pos": [r3(cx + h - 1.5), 5.0, r3(cz + h - 1.5)], "look_at": [cx, 0.5, cz], "fov": 55, "priority": 1},
+            # the gate step outside the west door: seen from inside the atrium through the door (the POI stills, 10-30:
+            # with no volume the hub orbit hugged the outside of the atrium wall)
+            {"id": "GateStep", "mode": "pan_follow", "at": [-1.5, 1.5, 0.0], "size": [3.5, 4.0, 5.0],
+             "pos": [6.0, 3.5, 3.0], "look_at": [-1.5, 0.8, 0.0], "fov": 50, "priority": 2},
             {"id": "Hall", "mode": "pan_follow", "at": [hx, 1.5, r3(hz + 3.0)], "size": [2 * hh, 4.0, r3(2 * hh + 10.0)],
              "pos": [11.88, 5.0, -13.61], "look_at": [hx, 1.0, hz], "fov": 55, "priority": 1},
             {"id": "Flight1", "mode": "pan_follow", "at": [28.0, -2.0, 4.0], "size": [18.0, 6.0, 3.5],
