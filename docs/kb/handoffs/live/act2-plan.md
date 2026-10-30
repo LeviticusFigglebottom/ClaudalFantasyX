@@ -45,3 +45,4 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 8. M4-A2P-100 is `todo` now, integration-qa's.
 
 **Next (the Lead's assignment):** draft beat sheets, marked `draft: pre-gate`, docs only: Ch10, then Ch14, then Ch15.
+- MERGE-READY @ f6f406fa: `docs/kb/story/beats/act2_ch10.md` (draft: pre-gate; M4-C10-01's sheet, not yet reviewed). Checks: validate_data 0/0 (banned terms over docs/kb/story), taskboard --check clean. Skipped: dlgc (no .dlg), Godot (docs only).
