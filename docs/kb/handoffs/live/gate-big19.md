@@ -104,3 +104,12 @@ GATE-FAST-DONE big19 @ 5993e490 (03:17 UTC). The blocking checks:
     claude/m2-slice alone, routed to m2-slice. Not blocking.
 - Not run in the fast gate (non-blocking, next): the full Godot suite (incl. test_qa_threads and the water-publisher
   order question from big18), Blender for the jobs touched since lead/gate-big18, and the 254 shots (resuming now).
+
+### After the merge (the Lead merged big19 into claude/new-session-mj8c3c @ 2f544938, 03:24 UTC)
+- Shots, non-blocking, published in batches to `lead/gate-big19-shots` (`docs/kb/qa/gate-runs/big19/`):
+  - 03:36 PARTIAL 101 of 254 (392108015): 53 PASS, 48 drift, 0 new. The largest drifts, noted but not judged:
+    oruvel_o17_pen_split (a greyer, heavier storm sky, rmse 0.164); creature_hullgnaw (now comes up through a
+    deck breach, creatures-b's M3-CRB-013); creature_oil_slug (a brighter sheen and rim, GPU QA row 40).
+- Blender since lead/gate-big18 (122 jobs) is running; the full suite follows the shots. Then the rolling cadence:
+  big20 about 90 min after the merge, or sooner once 3 or more tracks post new MERGE-READY lines, with one log per
+  batch (`gate-big20.md`).
