@@ -36,3 +36,22 @@ GATE-BUILT @ 3a1ad626
 ## Fast gate
 - Selected: 43 test files (plus test_villager_routines and test_qa_capsules, to re-check routed reds).
 - Lane A (mine): 22; lane B (GATE-HELPER): 21, in `gate-big31-lanes-b.txt` @ 6a695535.
+
+## Results so far
+- Lane A (mine, 22 files): 21 green. **test_villager_routines is green** (creatures' 2be4ee1f fixed big29's routed red).
+  - test_qa_capsules 3/1: unchanged (act1-chapters' new Ch14/Ch16 foes have no bodies). Still routed: **act1-chapters**.
+- Lane B (GATE-HELPER, 21 files @ 6a695535, arrived 21:14): all green.
+
+## Mid-batch (the Lead, 21:25): M3-HER-1168 and others, merged after lane A finished
+  - claude/creatures @ e0b9afb5
+  - claude/act1-chapters @ df9183f9
+  - claude/creatures-b @ 3fa26392
+  - claude/audio @ 61de113f
+  - claude/ui @ f88dcab9
+  - claude/env-art @ 6e00a323
+- creatures @ e0b9afb5 carries **445d5888 M3-HER-1168**: VillagerLayer loads its actors on worker threads under the fade, so
+  Haluna's held reveal drops from 1.85 s to 0.2 s. act1-chapters' 6047d9d2 (the Act II balance pass) is in.
+- All clean. Checks: validate_data 0/0 · taskboard clean · dlgc clean · gdlint and gdformat clean (1064) · gdignore OK ·
+  no new duplicate PROVENANCE rows.
+- Re-gate on a fresh import: the 28 test files these merges touch, plus every villager/crowd/haluna/scene_router/resident_loads
+  test (the Lead's list) and test_qa_capsules.
