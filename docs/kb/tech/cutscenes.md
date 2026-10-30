@@ -163,7 +163,8 @@ The other kind of gate ends by letting go (act2_ch10.md B09: the player who held
 
 - **`@camera <shot> track=<actor>`** plays a copy of the shot that keeps its offset to the actor as it moves: one continuous move from one authored frame (act2_ch10.md O02, the camera going on with the line while Pell stops). `CutsceneTrack` (`game/cutscene/cutscene_track.gd`) moves the copy's position and look_at by the actor's movement each frame; the director evaluates a fixed shot from those every frame. It ends itself once the director is on any other shot. The authored shot is never changed.
 - **`@anim <group> <clip>`**, when the stage has no actor of that id, plays on every actor named `<group>_*`, each after its own fixed delay of up to `sequencer.json` `group_spread_sec` (`CutsceneGroup`). Thirty Kirru turn as many people, not one copy (T04). The delays come from each name, mixed so that `clutch_01` and `clutch_02` don't land together, and are the same on every run.
-- Tests: `test_cutscene_sequencer.gd` (`test_a_tracked_shot_moves_with_its_actor`, `test_a_group_anim_plays_on_every_member_each_in_its_own_time`).
+- **`@vfx glimmer_lift at=<place> release=<sec>`** (M4-CIN-1303) spawns nothing: the held (or bound) light already at that place lets go over `sec` seconds (`GlimmerField.release`: held cyan to lift gold, rising, the change spreading out from the place). For act2_ch10.md B05 (the snagged lights hang, then rise) and T03 (the gathered dead climb toward the cloud gap). With nothing held there it warns.
+- Tests: `test_cutscene_sequencer.gd` (`test_a_tracked_shot_moves_with_its_actor`, `test_a_group_anim_plays_on_every_member_each_in_its_own_time`, `test_a_release_lets_the_held_light_already_there_go`).
 
 ## Motion (M2-FP-29)
 The human's playtest said cutscene turns snapped and walks started and stopped at full speed. `CutsceneMotion` (game/cutscene/cutscene_motion.gd) shapes both, using the tunings in `sequencer.json`:

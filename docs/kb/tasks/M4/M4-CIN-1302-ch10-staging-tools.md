@@ -23,6 +23,8 @@ them ahead of the Ch10 scripts (ADR 0205: Act II starts per track once its Act I
       is timed against rendered stills of the real field instead (M4-A2P-070's staging).
 - [x] **Group anims** (B09 T04): `@anim <group> <clip>` on every stage actor in a group, each with its own small
       offset, so thirty Kirru turn as many people, not one copy.
+- [x] **Release a held light** (B05, T03; M4-CIN-1303): `@vfx glimmer_lift at=<place> release=<sec>` lets the field
+      already at that place go (cyan to gold, rising) instead of spawning another.
 
 ## Review log
 - 2026-10-30 cinematics: built and tested; cutscene 103, release_gate 3, hold_prompt 3, ch09_thread 7, all 0 failed.

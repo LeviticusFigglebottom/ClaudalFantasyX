@@ -1052,6 +1052,16 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **Next:** M4-A2P-070 (the farewell-tide) and the rest of Ch10's staging, as the story track's scripts land
     (M4-A2P-001). Until then: Ch10's shots on the greybox from the beat sheet's §7 list (on chapters' layout, so as
     a request), and the Ebbing-style stills harness for Reedhollow.
+- **MERGE-READY @ 0c9738f5d** (supersedes the two MERGE-READY lines above for this branch):
+  - **A fix to M3-CIN-1236:** the new reverse was `S07R`, which failed test_dialogue_vs_scenes (cameras use
+    haluna.md shot ids or a stage variant of one). It is `S07_reverse` now; dialogue 85 and first_verse 3 pass.
+    It was never on integration.
+  - **M4-CIN-1303:** `@vfx glimmer_lift at=<place> release=<sec>` lets the held light already at a place go,
+    rising and turning gold, for B05 and T03. cutscene_sequencer 22, cutscene_directives 2, cutscene_vfx 4,
+    glimmer 36, all 0 failed.
+  - **For env-art (haluna.md §5, the art doc):** S07's row still says "Rhen and Toma are soft shoulders at the
+    left and right frame edges (they speak from there)". That framing was row 60. Please update the row to the
+    pulled-back over-the-shoulder plus S07_reverse.
 ### PC-QUEUE
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
   emissive reading. Check that its glow and silhouette read on the GPU; if not, it needs a rim light or a grade.
