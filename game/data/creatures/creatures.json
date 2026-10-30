@@ -317,6 +317,17 @@
                   "voice_ice": 0.9, "voice_holy": 0.8, "voice_glimmer": 0.9},
       "stand_in": {"yaw_deg": -90.0, "height": 4.2, "radius": 0.8}
     },
+    "kesh_held": {
+      "scene": "res://game/creatures/kesh/kesh_held_battle.tscn",
+      "ko": "release",
+      "clip_by_skill": {"voice_water": "voice_water", "voice_lightning": "voice_lightning", "voice_fire": "voice_fire",
+                        "voice_ice": "voice_ice", "voice_holy": "voice_holy", "voice_glimmer": "voice_glimmer",
+                        "the_seven": "special"},
+      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.8, "voice_water": 0.9, "voice_lightning": 0.7, "voice_fire": 0.8,
+                  "voice_ice": 0.9, "voice_holy": 0.8, "voice_glimmer": 0.9},
+      "phases": {"release": {"clip": "release", "hold": true}},
+      "stand_in": {"yaw_deg": 90.0, "height": 4.2, "radius": 0.8}
+    },
     "ilun_held": {
       "scene": "res://game/creatures/ilun/ilun_held_battle.tscn",
       "ko": "release",

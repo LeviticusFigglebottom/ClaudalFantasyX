@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/creatures/creature_actor.gd" id="1_actor"]
+[ext_resource type="PackedScene" uid="uid://d2r2u1i7rfj56" path="res://assets/creatures/kesh/kesh.glb" id="2_model"]
+
+[node name="KeshHeld" type="Node3D"]
+script = ExtResource("1_actor")
+creature_id = &"kesh_held"
+material_dir = "res://assets/creatures/kesh/materials_held"
+metadata/hymn_battle_actor = true
+
+[node name="Model" parent="." instance=ExtResource("2_model")]
