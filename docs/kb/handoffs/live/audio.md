@@ -3,6 +3,19 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 023c94f1: the Lead's 12:28 item, the victory sting into the field over the short return, then the battle-start stinger over the new encounter spacing** (e271faa7, 023c94f1).
+  - **Victory → field:** before, the zone's music came back only through the router's `apply_zone` on the swap, or after 3 s of silence (`zone_return_sec`). With integration-qa's resident field, under 1 s back and no swap, that left a 3 s gap after the sting. Now, once a battle leaves the tree, the zone's cue returns after `battle_return_sec` 0.3 and fades in over `battle_return_fade_sec` 2.0 (mix.json; `AudioDirector._step_zone_return`, `_after_battle`).
+    - It sits under the sting's 2.4 s tail. The sting plays on the Combat bus from the director's own SfxBank, so neither the scene change nor the music clips it.
+    - If a scene or a swap takes the music first, its own cue stands. A defeat keeps the battle in the tree through its result screen.
+    - Tests: `test_zone_return` 8/0 (two new).
+  - **Battle-start stinger:** the tide line rises over 0.5 s and holds for 0.25 s, the router goes black at 1.10 s, and the battle cue enters from about 1.1 s with a 0.3 s fade. The old `sting_tideline` crested at 1.55 s, after the cut and on top of the battle cue's first bars. It is re-rendered to crest with the line at 0.5 s and is about 16 dB down at black, total 1.8 s.
+    - The field music now dips 3 dB under it as the field dims (mix.json duck `encounter`; battle_stings.json `duck_sec` 0.75 = rise + hold). It is released before the black, so the battle cue never enters ducked. A test reads battle_transition.json and `SceneRouter.FADE_SEC` to keep that true.
+    - With 30–45 s spacing, the row's 1000 ms cooldown can't drop a stinger. `BattleRequest` already refuses a second request while one opens (M3-BPR-427).
+    - Tests: `test_battle_stings` 7/0 (one new).
+  - **Checks:** validate_data 0 errors; gdlint and gdformat clean; the `battle_stings` render byte-identical with `--determinism` (the other five stings are unchanged); Godot battle_stings 7/0, battle_audio 22/0, audio_runtime 11/0, zone_return 8/0. **Skipped:** screenshots (no scene or shader touched), Blender, and coverage (no game/battle or game/progression changes).
+  - **Note:** integration-qa's resident return and act1-chapters' spacing haven't landed on integration yet. Both changes are data-driven, so if the return path changes I'll re-check the timings as they land.
+  - **PC-QUEUE:** a victory into the field with the short return (no gap, the sting's tail intact), and two encounters 30 s apart (the crest with the line).
+- **BACKLOG EMPTY (after 023c94f1):** the Lead's 12:28 item is done. What's left waits on input: integration-qa's resident return, the encounter spacing, Ch11+ staging, the people bosses' encounters, and the listening verdict.
 - **MERGE-READY @ 11463e21: the Lead's 11:48 item, the Act I foley detail audit as played** (4284c13d, plus the tests' follow-up).
   - **Footsteps:** every surface has its walk, run, stop and turn, but Ysolde, Kerrid and Liss clinked Rhen's lantern on every other step (gear_default). They now carry their own: Ysolde's lacquer book and ink-guards, Kerrid's anchor-ring, Liss's harness and launcher. There are no separate wet-stone, reed or shell grounds yet: those zones play stone or sand (env-art marks areas).
   - **Interactables:** every one played the menu's soft `ui_interact` only.
