@@ -127,9 +127,11 @@ def thunder(g) -> np.ndarray:
 
 
 # Bus gains from measured bus loudness (render(stats=...)["bus_lufs"]), for these levels relative to the string
-# (0 LU): the rain's hiss -1, the runoff -6, the drops -7, the thunder -13 (over the whole loop). The string is sparse,
-# so its notes stand well over this (about 6-8 LU momentary over the rain).
-GAINS = {"string": 0.0, "hiss": -33.7, "runoff": -29.5, "drops": 4.3, "thunder": -29.3}
+# (0 LU): the rain's hiss -8, the runoff -8, the drops -12, the thunder -13 (over the whole loop). The string is sparse,
+# so its notes stand well over this. M3-AUD-864: the hiss was -1 and the runoff -6: the Act I listening report found
+# the cue the harshest and most static of the score (presence 14 dB over the set's median, 74% of its 3 s windows
+# near-copies), the rain's broadband hiss and the drops' stone ticks (2.5-6 kHz, about nine a second) filling the band over the string. The rain now sits under the counting.
+GAINS = {"string": 0.0, "hiss": -40.7, "runoff": -31.5, "drops": -0.7, "thunder": -29.3}
 
 
 def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None) -> dict:

@@ -12,6 +12,7 @@ const SECTION_HALUNA := &"haluna"
 const SECTION_FIRST_VERSE := &"first_verse"
 const SECTION_SHELL_SHRINE := &"shell_shrine"
 const SECTION_PARTY := &"party"
+const SECTION_CHAPTER_CARD := &"chapter_card"
 
 
 ## One block of the file ({} with an error when the file or the block is missing).

@@ -185,9 +185,10 @@ def zone_errors(doc: object, where: str, budgets: dict, location_ids: set[str] |
         if zone not in location_ids:
             errs.append(f"{where}.zone: {zone!r} is not a locations.json location")
     ground = doc.get("ground")
-    if ground is not None and not (isinstance(ground, dict) and isinstance(ground.get("node"), str)
-                                   and isinstance(ground.get("method"), str)):
-        errs.append(f"{where}.ground: needs node (a path from the zone root) and method")
+    physics = isinstance(ground, dict) and ground.get("physics") is True and set(ground) == {"physics"}
+    if ground is not None and not physics and not (isinstance(ground, dict) and isinstance(ground.get("node"), str)
+                                                   and isinstance(ground.get("method"), str)):
+        errs.append(f"{where}.ground: needs node (a path from the zone root) and method, or physics: true alone")
     for table, (budget, required, optional) in ROWS.items():
         rows = doc.get(table, [])
         if not isinstance(rows, list):

@@ -2,8 +2,8 @@
 id: M3-HER-1158
 title: "FAST-TRACK: BattleResultPanel's count tween writes into freed rows (930 'Trying to cast a freed object' per fight in a real-frame run)"
 role: ui
-status: todo
-owner_session: ""
+status: review
+owner_session: "ui (claude/ui, 503b99839)"
 reviewer: qa
 depends_on: []
 milestone: M3
@@ -38,8 +38,8 @@ func _set_count(value: float, c: Dictionary) -> void:
 ```
 
 ## Acceptance criteria
-- [ ] A re-shown result panel kills the previous open tween; `_set_count` checks the label before casting.
-- [ ] `godot --headless --path . res://tools/dev/battle_entry_probe.tscn -- --chapters=3` logs no
+- [x] A re-shown result panel kills the previous open tween; `_set_count` checks the label before casting.
+- [x] `godot --headless --path . res://tools/dev/battle_entry_probe.tscn -- --chapters=3` logs no
       battle_result_panel error.
 
 ## Notes
@@ -49,3 +49,8 @@ tween callback with no is_instance_valid at all); a lint for "a tween_method bou
 would need the call graph.
 
 ## Review log
+- 2026-10-29 integration-qa (the filer): fixed by ui in 503b99839 ("a count-up never writes into freed rows", act1_gpu_qa
+  row 33): `_set_count` returns when the row's label is gone, and test_battle_result_motion covers it. It's in big17.
+  Moved to review. Verified on lead/gate-big17: `open()` kills the previous open tween (lines 83-84),
+  `_set_count` checks the label, and `battle_entry_probe -- --chapters=3` logs 0 battle_result_panel errors (big15:
+  ~930). Reviewer: ui, to close.

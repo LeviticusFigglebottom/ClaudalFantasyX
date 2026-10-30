@@ -360,6 +360,49 @@
     "age": 0.25,
     "stubble": 0.55
    }
+  },
+  "officer": {
+   "_doc": "The Stillguard officer at Liss's hoist (act1_ch08.md, ch08_cut_rope.dlg: two hatchet blows and the rope goes slack). An older, leaner sergeant of the Corrow garrison, about 48, grey stubble; helmed, the shield on his left arm, no spear: the hatchet is the scene's prop in his right fist (DEF-hand.R).",
+   "height_m": 1.84,
+   "heads_tall": 7.6,
+   "shoulder_width_heads": 1.82,
+   "chest_width_heads": 1.42,
+   "chest_depth_heads": 1.0,
+   "waist_width_heads": 1.26,
+   "head_width_ratio": 0.6,
+   "neck_width_ratio": 0.56,
+   "muscle": 0.62,
+   "mass": 0.18,
+   "skin_hex": "#9C6A4E",
+   "jaw_width": 1.02,
+   "chin_size": 1.08,
+   "cheekbone_width": 1.08,
+   "cheekbone_height": 0.004,
+   "nose_bridge_width": 0.96,
+   "nose_tip_projection": 1.06,
+   "brow_ridge": 1.2,
+   "lip_fullness": 0.62,
+   "lip_lower_fullness": 0.6,
+   "mouth_corner_lift": -0.0006,
+   "eye_tilt_deg": 0.0,
+   "donor_mix_african": 0.25,
+   "donor_mix_asian": 0.35,
+   "donor_mix_caucasian": 0.4,
+   "_seed": 541,
+   "_variant": {
+    "hair": "shaved",
+    "helm": true,
+    "weathered": true,
+    "spear": false
+   },
+   "_hair": {
+    "colour": "#5A554F",
+    "underpaint": "#4E4943"
+   },
+   "_skin": {
+    "age": 0.55,
+    "stubble": 0.6
+   }
   }
  }
 }

@@ -253,6 +253,8 @@ func play(effect_id: StringName, target: StringName, aim := Vector3.ZERO) -> GPU
 	if str(def.get("kind", "")) == KIND_FLASH:
 		_flash(effect_id, def)
 		return null
+	if not is_inside_tree():
+		return null  # a hit resolved as the battle leaves the tree (ui-menus' error sweep, 10-29): nothing to place
 	return play_at(effect_id, anchor(target, str(def.get("at", "chest"))), aim)
 
 
@@ -262,7 +264,7 @@ func play(effect_id: StringName, target: StringName, aim := Vector3.ZERO) -> GPU
 ## Returns the first layer's emitter.
 func play_at(effect_id: StringName, at: Vector3, aim := Vector3.ZERO) -> GPUParticles3D:
 	var def := (data.get("effects", {}) as Dictionary).get(String(effect_id), {}) as Dictionary
-	if str(def.get("kind", "")) != KIND_PARTICLES:
+	if str(def.get("kind", "")) != KIND_PARTICLES or not is_inside_tree():
 		return null
 	var first: GPUParticles3D = null
 	var layers: Array = def.get("layers", [{}])
@@ -320,11 +322,15 @@ func _is_down(target: StringName) -> bool:
 ## A fighter's point at `at` (an anchor_heights key: feet, rim, chest, hood, head). A set piece's entry with no
 ## fighter (the Climb) anchors on its arena mark (entry_mark); anything else not on the stage, this node's position.
 func anchor(target: StringName, at: String) -> Vector3:
+	if not is_inside_tree():
+		return Vector3.ZERO  # off the tree there are no global positions to read (ui-menus' error sweep, 10-29)
 	var frac := float((data.get("anchor_heights", {}) as Dictionary).get(at, 0.5))
 	if _ctl == null or not _ctl.stage.has_fighter(target):
 		var mark := entry_mark(target)
 		return mark + Vector3.UP * ENTRY_HEIGHT_M * frac if mark != Vector3.INF else global_position
 	var f := _ctl.stage.stand_in(target)
+	if not f.is_inside_tree():
+		return global_position
 	var spec := BattleStage.stand_in_spec(target)
 	var height := float(spec.get("height", 1.7))
 	# M3-BPR-420: a flier stands at its hover (the gulls, the squall wings): its hit lands on it, not on the sand below.
@@ -347,7 +353,7 @@ func _half_depth(target: StringName, f: FighterStandIn) -> float:
 		var first := true
 		for n in f.actor().find_children("*", "MeshInstance3D", true, false):
 			var mi := n as MeshInstance3D
-			if mi.mesh != null and mi.is_visible_in_tree():
+			if mi.mesh != null and mi.is_inside_tree() and mi.is_visible_in_tree():
 				var b := mi.global_transform * mi.get_aabb()
 				box = b if first else box.merge(b)
 				first = false
@@ -366,7 +372,7 @@ func entry_mark(target: StringName) -> Vector3:
 		return Vector3.INF
 	for mark: String in ["StairHead_%s", "EntryMarker_%s"]:
 		var n := arena.get_node_or_null(NodePath(mark % c.entry_role)) as Node3D
-		if n != null:
+		if n != null and n.is_inside_tree():
 			return n.global_position
 	return Vector3.INF
 

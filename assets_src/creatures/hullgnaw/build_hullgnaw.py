@@ -12,6 +12,10 @@ timbers (adzed faces, treenail holes, iron spikes bleeding rust, splintered salt
 stubs of hull planking still nailed across them; they are their own mesh, `Ribs`, which the `breaking` phase throws
 off. The head is a skull: brow ridges over pinpoint eyes, nostril pits, gill slits, and a lower jaw too wide for it,
 lipped, set with irregular nail teeth. Where it leaves the water, a frayed collar of weed and foam-wet skin.
+
+M3-CRB-013 (the move pass): it is fought on the raft's deck, so it comes up through a breach it smashed there (dark
+water, broken boards prised up, foam and weed; on its own root bone, `breach`), and the intro, the KO and the falling
+frames go through that hole. Each skill has its own clip (Gnaw `attack`, `rib_lash`, `thrash`, `coil`).
 """
 
 from __future__ import annotations
@@ -94,6 +98,16 @@ def curve_at(u: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
 S_RIB = np.array([float(s_of_u(u)) for u in RIBS])
 S_GAP = 0.5 * (S_RIB[:-1] + S_RIB[1:])
+
+# M3-CRB-013: it is fought on the raft's deck (y 0), not in open water, so it comes up through a breach it smashed in
+# the planks: a disc of dark water a few mm over the deck, ringed by broken boards (run along the deck's planks, model
+# x) and foam. The body crosses the deck at the rest arch's waterline; everything of it under the deck stays inside
+# BREACH_R of that point (tools/tests/test_creatures.py measures it), so the intro and the KO go through the hole.
+_I_UP = int(np.argmax(_DC[:, 1] > 1.0))  # the rising part of the arch, where y is single valued
+S_WATER = float(np.interp(0.0, _DC[:_I_UP, 1], _DS[:_I_UP]))  # arclength of the rest waterline
+BREACH_C = np.array([0.0, 0.0, float(np.interp(0.0, _DC[:_I_UP, 1], _DC[:_I_UP, 2]))])
+BREACH_R = 1.12  # the hole's radius (the frames' broken ends reach about 1.1 m off the spine)
+BREACH_Y = 0.004  # the water's height over the deck
 
 
 def g(x, w):
@@ -228,6 +242,9 @@ def build_rig() -> tuple[ck.Rig, np.ndarray]:
     rig.add("vfx_core", cc, cc + np.array([0.0, 0.25, 0.0]), "spine4")
     cp, _t, dp = curve_at(RIBS[2])
     rig.add("vfx_phase", cp, cp + dp * 0.25, f"spine{int(RIBS[2] * N_SPINE)}")
+    # M3-CRB-013: the breach it burst up through, a root of its own so it stays on the deck while the body rises and
+    # sinks through it (the intro, the KO); also the anchor for a splash
+    rig.add("breach", BREACH_C, BREACH_C + np.array([0.0, 0.3, 0.0]))
     return rig, joints
 
 
@@ -469,23 +486,128 @@ def waterline_collar(mesh: ck.Mesh, bd: dict) -> None:
     col = ck.mix(PAL["lacquer_black"], PAL["foliage_shadow"], (0.4 + 0.5 * row)[:, None])
     col = ck.mix(col, PAL["foam_white"] * 0.8, (0.4 * foam * (row > 0.2))[:, None])
     ck.finish(mesh, P, T, "carapace", col, bd["skin"], wet=1.0, cavity=0.2 + 0.4 * row)
-    for k in range(9):
-        ang = 2.0 * math.pi * k / 9 + rng.uniform(-0.25, 0.25)
-        ring = rings[1]
-        j = int(round(ang / (2.0 * math.pi) * na)) % na
-        p0 = ring[j]
-        dirn = np.array([math.cos(ang) * 0.9, 0.0, math.sin(ang)])
-        dirn /= np.linalg.norm(dirn)
-        reach = rng.uniform(0.25, 0.6)
+
+
+def breach_radius(phi):
+    """The hole's ragged radius at angle phi round BREACH_C (0 is +x, pi/2 is +z): torn further toward the party,
+    where the fourth frame's long broken arm comes through."""
+    phi = np.asarray(phi, dtype=np.float64)
+    r = BREACH_R * (1.0 + 0.035 * np.sin(3.0 * phi + 0.7) + 0.03 * noise1(phi * 2.2, SEED + 91).reshape(phi.shape))
+    return r + 0.22 * g(phi - math.pi / 2, 0.62)
+
+
+def breach(mesh: ck.Mesh, rig: ck.Rig) -> None:
+    """M3-CRB-013: the hole it smashed up through the deck. Dark water a few mm over the planks, lighter and broken by
+    foam round the body and under the rim; the deck's boards (they run along x) snapped across the hole, their broken
+    ends prised up (it came up from below) or bent down into the water, splintered pale; weed thrown up over them."""
+    rng = np.random.default_rng(SEED + 90)
+    bone = rig.rigid("breach")
+    cx, cz = float(BREACH_C[0]), float(BREACH_C[2])
+    # the water: a polar grid out under the boards' broken ends
+    na = 36
+    phi = np.arange(na) * 2.0 * math.pi / na
+    rr = np.array([0.0, 0.2, 0.38, 0.5, 0.62, 0.76, 0.88, 0.97, 1.04])
+    edge = breach_radius(phi) + 0.06
+    P = np.array([(cx + r * e * math.cos(p), 0.0, cz + r * e * math.sin(p)) for r in rr for p, e in zip(phi, edge)])
+    rad = np.hypot(P[:, 0] - cx, P[:, 2] - cz)
+    churn = ck.fbm(P * np.array([4.5, 1.0, 4.5]), SEED + 92)
+    rim = ck.smoothstep(0.8, 0.97, rad / edge[np.arange(len(P)) % na])  # under the broken deck's edge
+    foam = np.clip(ck.smoothstep(0.42, 0.5, rad) * ck.smoothstep(0.7, 0.56, rad) * ck.smoothstep(-0.05, 0.3, churn),
+                   0, 1)
+    P[:, 1] = BREACH_Y + 0.008 * foam * ck.smoothstep(0.1, 0.5, churn + 0.4)
+    T = []
+    for q in range(na):  # the centre fan, then the rings
+        T.append((0, q + na, (q + 1) % na + na))
+    T += [tuple(int(v) + na for v in tri) for tri in ck.grid_tris(len(rr) - 1, na, True)]
+    T = orient(P, np.asarray(T, dtype=np.int64), np.array([cx, -1.0, cz]))
+    # dark: a well of water under the deck, a little teal stirred up round the body, black under the broken edge
+    stir = ck.smoothstep(0.3, 0.55, rad) * ck.smoothstep(0.95, 0.65, rad / edge[np.arange(len(P)) % na])
+    col = ck.mix(PAL["abyss_navy"] * 0.45, PAL["deep_teal_shadow"] * 0.6, (stir * (0.6 + 0.4 * churn))[:, None])
+    col = ck.mix(col, PAL["lacquer_black"] * 0.6, rim[:, None])
+    col = ck.mix(col, PAL["foam_white"] * 0.72, (0.8 * foam)[:, None])
+    ck.finish(mesh, P, T, "carapace", col, bone, wet=np.clip(0.55 - 0.3 * rim + 0.2 * foam, 0.0, 1.0),
+              cavity=np.clip(0.45 + 0.5 * rim - 0.4 * foam, 0.0, 1.0))
+    # the boards: one per plank strip on each side of the hole, from the deck to its broken end
+    wid = 0.22
+    n_strips = int(2.0 * BREACH_R / wid) + 1
+    for k in range(n_strips):
+        dz = (k + 0.5) * wid - n_strips * wid / 2.0
+        for side in (-1.0, 1.0):
+            ang = math.atan2(dz, side * max(BREACH_R ** 2 - dz * dz, 0.04) ** 0.5)
+            r_edge = float(breach_radius(ang))
+            if abs(dz) > r_edge - 0.05:
+                continue
+            hx = (r_edge * r_edge - dz * dz) ** 0.5
+            x_in = cx + side * hx  # where the board leaves the deck
+            kind = rng.random()  # prised up (it came from below), bent down into the water, or snapped off nearly flat
+            if kind < 0.1:
+                continue  # gone altogether
+            down = kind > 0.72
+            tilt = math.radians(-rng.uniform(20.0, 42.0) if down else
+                                rng.uniform(1.0, 7.0) if kind < 0.35 else rng.uniform(10.0, 36.0))
+            lift = rng.uniform(0.08, 0.32) * (0.75 if down else 1.0)
+            flat = rng.uniform(0.1, 0.18)
+            w = wid * rng.uniform(0.8, 0.92)
+            z0 = cz + dz + rng.uniform(-0.01, 0.01)
+            inward = np.array([-side, 0.0, 0.0])
+            dirn = inward * math.cos(tilt) + np.array([0.0, math.sin(tilt), 0.0])
+            yaw = rng.uniform(-0.12, 0.12)  # a broken board is never quite square
+            dirn = ck.rot_y(math.degrees(yaw)) @ dirn
+            if down:  # it bends at the hole's edge across its whole width, so no corner of it dips under the planks
+                far = min(abs(dz) + w / 2.0 + 0.012, r_edge - 0.02)
+                x_in = cx + side * ((r_edge * r_edge - far * far) ** 0.5 - 0.06)
+            hinge = np.array([x_in, 0.0, z0])
+            # the centreline's bottom (y), and thickness, along the board: a wedge out of the deck, then the board
+            path = [(hinge + side * np.array([flat, 0.0, 0.0]), 0.001, 0.006),
+                    (hinge + side * np.array([flat * 0.45, 0.0, 0.0]), 0.002, 0.02),
+                    (hinge, 0.004, 0.032), (hinge + dirn * lift * 0.55, 0.0, 0.034), (hinge + dirn * lift, 0.0, 0.034)]
+            e_w = np.cross(np.array([0.0, 1.0, 0.0]), dirn)
+            e_w /= np.linalg.norm(e_w)
+            up_l = np.cross(dirn, e_w)
+            up_l *= np.sign(up_l[1])
+            rings = []
+            for q, (c, y0, th) in enumerate(path):
+                up = np.array([0.0, 1.0, 0.0]) if q < 3 else up_l
+                base = c + np.array([0.0, y0, 0.0])
+                rings.append(np.array([base + up * th + e_w * w / 2, base + up * th - e_w * w / 2,
+                                       base - e_w * w / 2, base + e_w * w / 2]))
+            end = rings[-1].mean(axis=0)
+            rings += splinter_rings(end, dirn, rings[-1], rng, 0.8, (0.2, 0.7))
+            Pb, Tb, _c = loft(rings, cap_start=rings[0].mean(axis=0) + side * np.array([0.004, 0.0, 0.0]),
+                              cap_end=end + dirn * 0.06)
+            nr = len(rings)
+            top = np.concatenate([np.tile([1.0, 1.0, 0.0, 0.0], nr), [0.5, 0.5]])
+            brk = np.concatenate([np.repeat([0.0, 0.0, 0.0, 0.0, 0.3, 0.8, 1.0], 4), [0.0, 1.0]])
+            grain = ck.smoothstep(-0.3, 0.3, ck.fbm(Pb * np.array([2.0, 20.0, 20.0]), SEED + 93 + k))
+            colb = ck.mix(PAL["timber_weathered"] * 0.62, ck.mix(PAL["timber_weathered"], PAL["laterite"], 0.2) * 0.95,
+                          (0.35 + 0.4 * grain)[:, None])
+            colb = ck.mix(colb, PAL["lacquer_black"] * 1.4, (0.75 * (1.0 - top))[:, None])  # the wet underside
+            colb = ck.mix(colb, PAL["bone"] * 0.85, (0.85 * brk)[:, None])
+            ck.finish(mesh, Pb, Tb, "rib", colb, bone, wet=np.clip(0.3 + 0.6 * (1.0 - top) + 0.3 * down, 0.0, 1.0),
+                      cavity=0.2 + 0.2 * (1.0 - grain), flat=True)
+            for _ in range(int(rng.integers(1, 3))):
+                b0 = end + np.array([0.0, 0.0, rng.uniform(-w, w) * 0.35])
+                d = dirn + rng.normal(0.0, 0.3, 3)
+                Ps, Ts = nail(b0, d, rng.uniform(0.07, 0.15), rng.uniform(0.008, 0.014), np.array([0.0, 1.0, 0.0]),
+                              rng.uniform(-0.4, 0.4))
+                ck.finish(mesh, Ps, Ts, "rib", PAL["bone"] * rng.uniform(0.72, 0.9), bone, wet=0.2, cavity=0.2,
+                          flat=True)
+    # weed thrown up with it: fronds floating on the water and draped over the broken boards
+    for k in range(8):
+        ang = 2.0 * math.pi * k / 8 + rng.uniform(-0.25, 0.25)
+        dirn = np.array([math.cos(ang), 0.0, math.sin(ang)])
         side = np.cross(dirn, [0.0, 1.0, 0.0])
-        pts = [p0, p0 + dirn * 0.12 + np.array([0, -0.12, 0])]
-        for q in range(1, 5):
-            w = math.sin(q * 1.4 + k) * 0.06
-            pts.append(np.array([p0[0], 0.015, p0[2]]) + dirn * (0.15 + reach * q / 4) + side * w)
+        r0 = rng.uniform(0.5, 0.62)
+        reach = rng.uniform(0.3, 0.55)
+        pts = []
+        for q in range(6):
+            r = r0 + reach * q / 5
+            y = BREACH_Y + 0.006 if r < float(breach_radius(ang)) - 0.04 else 0.045
+            pts.append(np.array([cx, y, cz]) + dirn * r + side * 0.05 * math.sin(q * 1.4 + k))
         sp = ck.bezier(pts, 7)
-        Pw, Tw = ck.tube(sp, np.linspace(0.055, 0.015, 7), 4, squash=0.2, up_hint=(0.0, 1.0, 0.0))
+        Pw, Tw = ck.tube(sp, np.linspace(0.05, 0.015, 7), 4, squash=0.2, up_hint=(0.0, 1.0, 0.0))
         colw = ck.mix(PAL["foliage_shadow"], PAL["saltgrass"] * 0.55, np.linspace(0.1, 0.6, len(Pw))[:, None])
-        ck.finish(mesh, Pw, Tw, "rib", colw, bd["skin"], wet=1.0, cavity=0.3)
+        ck.finish(mesh, Pw, Tw, "rib", colw, bone, wet=1.0, cavity=0.3)
 
 
 def head(mesh: ck.Mesh, rig: ck.Rig, joints: np.ndarray) -> None:
@@ -860,75 +982,360 @@ def idle_clip() -> ck.Clip:
     return idle
 
 
-def build_clips() -> list[ck.Clip]:
-    sp = [f"spine{i}" for i in range(N_SPINE)]
+SP = [f"spine{i}" for i in range(N_SPINE)]
+RB = [f"rib{k}" for k in range(len(RIBS))]
+
+# M3-CRB-013: the spine chain measured for the clips. Every spine bone turns about x only in the arch's plane, so a
+# bone's world angle (from up toward +z) is the sum of its chain's rx: a pose is written as each bone's change of
+# world angle and turned into local rx by local_rx().
+_JOINTS = spine_curve(N_SPINE + 1)
+_BD = np.diff(_JOINTS, axis=0)
+_BL = np.linalg.norm(_BD, axis=1)
+_BTH = np.degrees(np.arctan2(_BD[:, 2], _BD[:, 1]))
+_BS = np.array([float(s_of_u(i / N_SPINE)) for i in range(N_SPINE + 1)])
+_DTH = np.degrees(np.arctan2(_DT[:, 2], _DT[:, 1]))
+S_HIDDEN = float(_BS[-1]) + 1.3  # the waterline this far along the chain: the whole body and head are under
+
+
+def tangent_deg(p):
+    """The rest arch's tangent (degrees from up toward +z) at arclength p; straight on down past its end."""
+    return np.interp(np.clip(p, 0.0, LENGTH), _DS, _DTH)
+
+
+def local_rx(delta) -> np.ndarray:
+    return np.diff(np.concatenate([[0.0], np.asarray(delta, dtype=np.float64)]))
+
+
+def _waterline_y(delta: np.ndarray, sc: float) -> float:
+    th = np.radians(_BTH + delta)
+    y = _JOINTS[0, 1] + np.concatenate([[0.0], np.cumsum(_BL * np.cos(th))])
+    if sc >= _BS[-1]:
+        return float(y[-1] + (sc - _BS[-1]) * math.cos(th[-1]))
+    j = max(int(np.searchsorted(_BS, sc, side="right")) - 1, 0)
+    f = (sc - _BS[j]) / (_BS[j + 1] - _BS[j])
+    return float(y[j] + f * (y[j + 1] - y[j]))
+
+
+_Y_REST = _waterline_y(np.zeros(N_SPINE), S_WATER)
+
+
+def emerge(sc: float) -> tuple[np.ndarray, float]:
+    """The body run out of the breach along its own rest path (as an eel leaves a hole: what is out follows where the
+    head went), with the chain's arclength `sc` at the waterline: (local rx per spine bone, root y). At S_WATER it is
+    the rest pose; at S_HIDDEN all of it is under, standing straight down from the hole."""
+    mid = 0.5 * (_BS[:-1] + _BS[1:])
+    delta = tangent_deg(mid - sc + S_WATER) - tangent_deg(mid)
+    return local_rx(delta), -(_waterline_y(delta, sc) - _Y_REST)
+
+
+def axis_rot(axis, deg: float) -> np.ndarray:
+    a = np.asarray(axis, dtype=np.float64)
+    a = a / np.linalg.norm(a)
+    th = math.radians(deg)
+    K = np.array([[0.0, -a[2], a[1]], [a[2], 0.0, -a[0]], [-a[1], a[0], 0.0]])
+    return np.eye(3) + math.sin(th) * K + (1.0 - math.cos(th)) * K @ K
+
+
+def euler_of(R: np.ndarray) -> tuple[float, float, float]:
+    """The kit's (rx, ry, rz) degrees of a rotation (it applies x, then y, then z about fixed axes)."""
+    b = math.asin(max(-1.0, min(1.0, -R[2, 0])))
+    return (math.degrees(math.atan2(R[2, 1], R[2, 2])), math.degrees(b), math.degrees(math.atan2(R[1, 0], R[0, 0])))
+
+
+_RIB_T = [curve_at(u)[1] for u in RIBS]
+
+
+def rib_rot(k: int, spin: float, rx: float = 0.0) -> tuple[float, float, float]:
+    """A frame turned `spin` degrees round the body (about the spine's tangent at it: it never cuts into the body),
+    then tipped rx along it."""
+    return euler_of(ck.rot_x(rx) @ axis_rot(_RIB_T[k], spin))
+
+
+def idle0() -> dict:
+    idle = idle_clip()
+    return {b: (np.asarray(idle.sample(b, 0.0)[0]), np.asarray(idle.sample(b, 0.0)[1])) for b in idle.keys}
+
+
+def body_key(c: ck.Clip, t: float, delta=None, ry=None, rz=None, jaw=None, root_y=None, spins=None, rib_rx=None,
+             rib_loc=None) -> None:
+    """Keys a pose made of deltas: `delta` each spine bone's change of world angle (rx), `ry`/`rz` local yaw and lean
+    per spine bone, the jaw's opening, the root's lift, and each frame's spin round the body (and tip, and offset)."""
+    rx = local_rx(delta if delta is not None else np.zeros(N_SPINE))
+    ry = np.zeros(N_SPINE) if ry is None else np.asarray(ry, dtype=np.float64)
+    rz = np.zeros(N_SPINE) if rz is None else np.asarray(rz, dtype=np.float64)
+    for i, b in enumerate(SP):
+        c.key(b, t, (rx[i], ry[i], rz[i]))
+    if jaw is not None:
+        c.key("jaw", t, (jaw, 0.0, 0.0))
+    if root_y is not None:
+        c.key("root", t, (0.0, 0.0, 0.0), (0.0, root_y, 0.0))
+    if spins is not None:
+        for k, b in enumerate(RB):
+            loc = (0.0, 0.0, 0.0) if rib_loc is None else tuple(rib_loc[k])
+            c.key(b, t, rib_rot(k, spins[k], 0.0 if rib_rx is None else rib_rx[k]), loc)
+
+
+def ramp(lo: float, hi: float, n: int = N_SPINE) -> np.ndarray:
+    return np.linspace(lo, hi, n)
+
+
+ALT = np.array([-1.0, 1.0, -1.0, 1.0, -1.0])  # alternate frames turn opposite ways
+
+
+def strike(name: str, length: float, poses: list) -> ck.Clip:
+    """A one-shot from idle's first frame back to it: `poses` are (t, body_key kwargs) between the two."""
+    d = ck.Clip("_" + name, length)
+    body_key(d, 0.0, jaw=0.0, root_y=0.0, spins=np.zeros(5))
+    for t, kw in poses:
+        body_key(d, t, **kw)
+    body_key(d, length, jaw=0.0, root_y=0.0, spins=np.zeros(5))
+    return ck.in_pose(d, name, idle0())
+
+
+NECK = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.5, 0.75, 1.0, 1.0])
+
+
+def arch(lean: float, neck: float, head: float = 0.0) -> np.ndarray:
+    """A pose as spine deltas: the whole arch leant (+ toward the party, about its base), the neck raised (-) or
+    dropped (+) about the crown, the head pitched (- up). The snout targets below were solved against idle's first
+    frame (its snout sits 1.25 m up, 2.41 m out)."""
+    return lean * np.ones(N_SPINE) + neck * NECK + np.r_[np.zeros(N_SPINE - 1), head]
+
+
+def gnaw_clip() -> ck.Clip:
+    """Gnaw (`attack`): it coils back through its frames, the snout drawn 0.55 m back and 0.4 m up and the head cocked
+    at the party, jaw gaping (the telegraph, 0.15-0.64 s); then it lunges level, the arch leaning in and the neck
+    straightening so the snout runs 0.85 m out at the height it started, and the jaw snaps shut at contact (0.8 s); it
+    overshoots and settles on idle's first frame."""
+    return strike("attack", 1.5, [
+        (0.2, dict(delta=arch(-4.5, 7.0, -6.0), jaw=14.0, spins=ALT * 3.0)),
+        (0.55, dict(delta=arch(-10.5, 18.0, -18.0), rz=ramp(0.0, 1.5), jaw=38.0, spins=ALT * 5.0)),
+        (0.64, dict(delta=arch(-11.5, 20.0, -20.0), rz=ramp(0.0, 1.5), jaw=44.0, spins=ALT * 6.0)),
+        (0.8, dict(delta=arch(14.0, -26.0, -4.0), jaw=-1.0, spins=-ALT * 4.0)),
+        (0.92, dict(delta=arch(17.5, -33.0, -4.0), jaw=3.0, spins=-ALT * 6.0)),
+        (1.15, dict(delta=arch(1.5, -3.0), jaw=6.0, spins=ALT * 2.0)),
+    ])
+
+
+def rib_lash_clip() -> ck.Clip:
+    """Rib Lash: it winds its body away from the camera's flank, frames clenched (the telegraph, 0.15-0.6 s), then
+    whips across toward the party and the camera, head sweeping low, and the frames swing round the body after it
+    like flails (contact 0.8 s: the body's sweep; the frames peak a beat later), and comes back to idle."""
+    away, across = ramp(3.0, 1.0), ramp(-4.5, -1.5)
+    return strike("rib_lash", 1.7, [
+        (0.25, dict(delta=ramp(-1.0, -5.0), ry=away * 0.6, rz=ramp(-1.5, -0.5), jaw=6.0, spins=ALT * 6.0)),
+        (0.6, dict(delta=ramp(-2.0, -9.0), ry=away, rz=ramp(-3.0, -1.0), jaw=10.0, root_y=0.04, spins=ALT * 12.0)),
+        (0.8, dict(delta=ramp(3.0, 1.0), ry=across * 0.6, rz=ramp(3.0, 1.0), jaw=18.0, root_y=-0.02,
+                   spins=-ALT * 18.0)),
+        (0.95, dict(delta=ramp(3.5, 2.0), ry=across, rz=ramp(3.5, 1.2), jaw=8.0, root_y=-0.03, spins=-ALT * 30.0)),
+        (1.2, dict(delta=ramp(1.0, 0.0), ry=across * 0.25, rz=ramp(1.0, 0.3), jaw=4.0, spins=ALT * 8.0)),
+    ])
+
+
+THRASH_SLAM = (19.0, -15.0)  # the slam's lean and neck: the snout comes down 0.84 m, the jaw stops over the planks
+
+
+def thrash_clip() -> ck.Clip:
+    """Thrash (the `breaking` phase, frames gone): it whips side to side across the deck, rears up (0.8-1.2 s) and
+    slams its head down on the party, stopping above the planks (contact 1.25 s), rebounds and settles."""
+    def whip(side: float) -> np.ndarray:
+        return side * np.array([3.0, 3.0, 3.0, 2.5, 2.5, 2.0, 2.0, 1.5, 1.5, 1.0])
+    return strike("thrash", 1.9, [
+        (0.18, dict(delta=ramp(-1.0, -4.0), ry=whip(1.0) * 0.8, rz=ramp(-3.0, -1.0), jaw=20.0, root_y=0.03)),
+        (0.42, dict(delta=ramp(0.0, -2.0), ry=whip(-1.0), rz=ramp(4.0, 1.5), jaw=30.0, root_y=0.0)),
+        (0.66, dict(delta=ramp(-1.0, -4.0), ry=whip(1.0) * 0.9, rz=ramp(-3.5, -1.2), jaw=24.0, root_y=0.03)),
+        (0.85, dict(delta=arch(-8.0, 10.0, -10.0), ry=whip(-0.3), jaw=30.0, root_y=0.04)),
+        (1.08, dict(delta=arch(-13.5, 17.0, -20.0), jaw=42.0, root_y=0.06)),
+        (1.25, dict(delta=arch(THRASH_SLAM[0], THRASH_SLAM[1], 6.0), jaw=6.0)),
+        (1.38, dict(delta=arch(10.0, -7.0), jaw=14.0)),
+        (1.6, dict(delta=arch(1.0, -1.0), jaw=6.0)),
+    ])
+
+
+def coil_clip() -> ck.Clip:
+    """Coil (gnaw_coil, a self buff): it sinks a little into the breach and winds down tight, the arch drawn in,
+    the head tucked, the jaw shut, the frames wrung round it; holds in two slow tightening breaths (the buff, about 1.0
+    s), then lets go back to idle."""
+    # the jaw -4.5: idle's first frame holds it 5 degrees open
+    tight = dict(delta=np.array([-3.0, -5.0, -6.0, -5.0, -3.0, 0.0, 4.0, 8.0, 11.0, 13.0]), jaw=-4.5)
+    return strike("coil", 2.2, [
+        (0.55, dict(tight, root_y=-0.16, spins=ALT * 10.0)),
+        (0.95, dict(tight, delta=tight["delta"] * 1.15, root_y=-0.21, spins=ALT * 13.0)),
+        (1.3, dict(tight, root_y=-0.18, spins=ALT * 11.0)),
+        (1.65, dict(tight, delta=tight["delta"] * 1.2, root_y=-0.22, spins=ALT * 14.0)),
+    ])
+
+
+def idle_b_clip() -> ck.Clip:
+    """The fidget: it lifts its head, works its jaw open and snaps it shut, and shakes its head once."""
+    return strike("idle_b", 1.5, [
+        (0.35, dict(delta=ramp(0.0, -5.0), jaw=18.0)),
+        (0.55, dict(delta=ramp(0.0, -6.0), jaw=-0.5)),
+        (0.75, dict(delta=ramp(0.0, -4.0), rz=np.r_[np.zeros(6), [1.5, 2.0, 2.5, 3.0]], jaw=2.0)),
+        (0.95, dict(delta=ramp(0.0, -2.0), rz=np.r_[np.zeros(6), [-1.5, -2.0, -2.5, -3.0]], jaw=3.0)),
+    ])
+
+
+def _frames(length: float) -> list[float]:
+    return [min(f / ck.FPS, length) for f in range(int(round(length * ck.FPS)) + 1)]
+
+
+def _apply_emerge(c: ck.Clip, extra: ck.Clip, sc_of_t, wobble_of_t=None) -> None:
+    """Keys the spine and the root at every baked frame: the emergence at sc_of_t(t) plus `extra`'s pose."""
+    for t in _frames(c.length):
+        rx, ry0 = emerge(sc_of_t(t))
+        mid = 0.5 * (_BS[:-1] + _BS[1:])
+        out = np.clip((mid - sc_of_t(t)) / 0.6 + 0.5, 0.0, 1.0)  # how far each bone is out of the water
+        for i, b in enumerate(SP):
+            r, _l = extra.sample(b, t)
+            wob = 0.0 if wobble_of_t is None else wobble_of_t(t, i) * out[i]
+            c.key(b, t, (rx[i] + r[0], r[1], r[2] + wob))
+        _r, l = extra.sample("root", t)
+        c.key("root", t, (0.0, 0.0, 0.0), (0.0, ry0 + l[1], 0.0))
+
+
+def intro_clip() -> ck.Clip:
+    """It bursts up out of the breach and runs its body out along its own arch, the head first, straight up, then
+    over and down toward the party (0-1.2 s), rears roaring with the jaw wide (1.55 s) and settles on idle's first
+    frame (2.6 s)."""
+    te, length = 1.2, 2.6
+    p0 = idle0()
+    intro = ck.Clip("intro", length)
+    extra = ck.Clip("_intro", length)
+    body_key(extra, 0.0, root_y=0.0)
+    body_key(extra, te, root_y=0.0)
+    body_key(extra, 1.55, delta=ramp(-2.0, -16.0), jaw=None, root_y=0.12)
+    body_key(extra, 1.95, delta=ramp(-1.0, -9.0), root_y=0.07)
+    for b in SP + ["root"]:
+        r, loc = p0[b]
+        extra.key(b, length, tuple(r), tuple(loc))
+
+    def sc(t: float) -> float:
+        x = min(t / te, 1.0)
+        return S_HIDDEN + (S_WATER - S_HIDDEN) * (1.0 - (1.0 - x) ** 1.8)
+
+    _apply_emerge(intro, extra, sc, lambda t, i: 3.0 * math.sin(t * 7.0 - i * 0.8) * max(1.0 - t / te, 0.0))
+    for t, jaw in ((0.0, 0.0), (0.45, 6.0), (te, 30.0), (1.55, 46.0), (1.95, 36.0)):
+        intro.key("jaw", t, (jaw, 0.0, 0.0))
+    intro.key("jaw", length, tuple(p0["jaw"][0]))
+    for k, b in enumerate(RB):
+        for t, s in ((0.0, 0.0), (0.7, 1.0), (1.2, -1.0), (1.6, 0.8), (1.95, -0.4)):
+            intro.key(b, t, rib_rot(k, ALT[k] * 7.0 * s, 1.5 * s))
+        intro.key(b, length, tuple(p0[b][0]))
+    return intro
+
+
+def ko_clip() -> ck.Clip:
+    """Its death throe (it rears, jaw gaping, shuddering, 0-0.75 s), then it slides back down into the breach along its
+    own arch, the head last (0.75-2.3 s)."""
+    length, t0, t1 = 2.4, 0.75, 2.3
+    p0 = idle0()
+    ko = ck.Clip("ko", length)
+    extra = ck.Clip("_ko", length)
+    for b in SP + ["root"]:
+        r, loc = p0[b]
+        extra.key(b, 0.0, tuple(r), tuple(loc))
+    shudder = np.array([1.0, -1.0] * 5)
+    body_key(extra, 0.45, delta=ramp(-2.0, -14.0), rz=shudder * 1.5, root_y=0.1)
+    body_key(extra, 0.6, delta=ramp(-1.5, -12.0), rz=-shudder * 1.5, root_y=0.08)
+    body_key(extra, t0, delta=ramp(0.0, 4.0), root_y=0.0)
+    body_key(extra, 1.4, root_y=0.0)
+
+    def sc(t: float) -> float:
+        x = min(max((t - t0) / (t1 - t0), 0.0), 1.0)
+        return S_WATER + (S_HIDDEN - S_WATER) * x ** 1.7
+
+    _apply_emerge(ko, extra, sc)
+    for t, jaw in ((0.0, float(p0["jaw"][0][0])), (0.45, 44.0), (0.75, 30.0), (1.6, 22.0), (length, 18.0)):
+        ko.key("jaw", t, (jaw, 0.0, 0.0))
+    for k, b in enumerate(RB):
+        ko.key(b, 0.0, tuple(p0[b][0]))
+        for t, s in ((0.45, 1.0), (0.6, -1.0), (0.9, 0.5), (length, 0.0)):
+            ko.key(b, t, rib_rot(k, ALT[k] * 6.0 * s))
+    return ko
+
+
+def _rest_pose_mats(rig: ck.Rig, pose: dict) -> dict:
+    """{bone: skinning matrix} for `pose` ({bone: (rot, loc)}), built as the kit's export builds them."""
+    import grounding  # noqa: PLC0415
+
+    mats: dict = {}
+    for b in rig.bones:
+        rot, loc = pose.get(b.name, ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)))
+        M = grounding._local(b.head, rot, loc)
+        mats[b.name] = M if b.parent is None else mats[b.parent] @ M
+    return mats
+
+
+def _path_point(p: float) -> np.ndarray:
+    if p >= 0.0:
+        return np.array([np.interp(p, _DS, _DC[:, i]) for i in range(3)])
+    return _DC[0] + p * _DT[0]
+
+
+def phase_break_clip(rig: ck.Rig) -> ck.Clip:
+    """`breaking` (50% HP): it thrashes, the frames wrench round the body and burst loose (0.35-0.5 s), then slide down
+    its arch one after another, the lowest first, and go under through the breach (all under by 1.8 s), before
+    `hide_after` hides them; the body comes back to idle's first frame."""
+    length = 1.9
+    d = ck.Clip("_phase_break", length)
+    body_key(d, 0.0, jaw=0.0, root_y=0.0)
+    for t, s, jaw in ((0.35, 1.0, 34.0), (0.6, 0.7, 28.0), (0.9, -0.5, 20.0), (1.25, 0.25, 12.0)):
+        sway = np.array([3.0 if i % 2 else -3.0 for i in range(N_SPINE)]) * s
+        body_key(d, t, delta=ramp(-3.0, -12.0) * abs(s), rz=sway, jaw=jaw, root_y=0.05 * abs(s))
+    body_key(d, length, jaw=0.0, root_y=0.0)
+    brk = ck.in_pose(d, "phase_break", {b: v for b, v in idle0().items() if not b.startswith("rib")})
+    heads = {b.name: np.asarray(b.head) for b in rig.bones}
+    parent = {b.name: b.parent for b in rig.bones}
+    for t in _frames(length):
+        pose = {b: tuple(tuple(float(v) for v in x) for x in brk.sample(b, t)) for b in SP + ["root"]}
+        mats = _rest_pose_mats(rig, pose)
+        for k, b in enumerate(RB):
+            start, dur = 0.5 + 0.09 * k, 0.75 + 0.1 * k
+            f = min(max((t - start) / dur, 0.0), 1.0) ** 1.7
+            creak = 6.0 * math.sin(t * 22.0 + k) * min(t / 0.35, 1.0) if t < 0.5 else 0.0
+            spin = ALT[k] * (creak + 20.0 * float(ck.smoothstep(0.35, 0.5, t)) + 70.0 * f)
+            p = S_RIB[k] - (S_RIB[k] + 1.9) * f
+            Rw = ck.rot_x(float(tangent_deg(p) - tangent_deg(S_RIB[k]))) @ axis_rot(_RIB_T[k], spin)
+            Mw = np.eye(4)
+            Mw[:3, :3] = Rw
+            Mw[:3, 3] = _path_point(p) - Rw @ heads[b]
+            L = np.linalg.inv(mats[parent[b]]) @ Mw
+            Rl = L[:3, :3]
+            loc = L[:3, 3] - heads[b] + Rl @ heads[b]
+            brk.key(b, t, euler_of(Rl), tuple(loc))
+    return brk
+
+
+def build_clips(rig: ck.Rig) -> list[ck.Clip]:
     idle = idle_clip()
 
     # ready: coiled back a little inside the frames, jaw ajar, breathing fast; a loop
     ready = ck.Clip("ready", 2.0, loop=True)
     ready.wave("root", amp_loc=(0.0, 0.025, 0.0), cycles=2, base_loc=(0.0, 0.05, 0.0))
-    for i, b in enumerate(sp):
+    for i, b in enumerate(SP):
         w = (i + 1) / N_SPINE
         ready.wave(b, amp_rot=(1.2, 0.0, 0.8), cycles=2, phase=-i * 0.4, base_rot=(-3.5 * w, 0.0, 0.0))
     ready.wave("jaw", amp_rot=(3.0, 0.0, 0.0), base_rot=(13.0, 0.0, 0.0), cycles=4)
     for k in range(len(RIBS)):
         ready.wave(f"rib{k}", amp_rot=(1.2, 0.0, 1.8), cycles=2, phase=-k * 0.4 - 1.0)
 
-    # intro: it rears up out of the water to its full height, jaw wide, the frames creaking, then settles to idle
-    intro = ck.Clip("intro", 2.6)
-    for t, rise, rear, jaw in ((0.0, -1.7, 7.0, 0.0), (0.55, -0.9, 2.0, 6.0), (1.15, 0.18, -9.0, 30.0),
-                               (1.5, 0.22, -10.0, 44.0), (1.95, 0.12, -6.0, 38.0)):
-        intro.key("root", t, (0.0, 0.0, 0.0), (0.0, rise, -0.15 * min(rise, 0.0)))
-        for i, b in enumerate(sp):
-            w = (i + 1) / N_SPINE
-            intro.key(b, t, (rear * w + (1.5 * math.sin(t * 9.0 + i) if t > 0.4 else 0.0), 0.0,
-                             2.0 * math.sin(t * 5.0 - i * 0.6)))
-        intro.key("jaw", t, (jaw, 0.0, 0.0))
-    for k in range(len(RIBS)):
-        side = 1.0 if k % 2 else -1.0
-        for t, s in ((0.0, 0.0), (0.7, 1.0), (1.2, -1.0), (1.6, 0.8), (1.95, -0.4)):
-            intro.key(f"rib{k}", t, (1.5 * s, 0.0, 5.0 * s * side))
-    for b, ks in idle.keys.items():  # end on idle's first frame
-        r, loc = idle.sample(b, 0.0)
-        intro.key(b, 2.6, tuple(r), tuple(loc))
-
-    attack = ck.Clip("attack", 1.5)
-    for t, back, jaw in ((0.0, 0, 0), (0.6, -1, 28), (0.8, 1.3, 4), (1.0, 0.8, 0), (1.5, 0, 0)):
-        for i, b in enumerate(sp):
-            w = (i + 1) / N_SPINE
-            attack.key(b, t, (7.0 * back * w, 0.0, 0.0))
-        attack.key("jaw", t, (jaw, 0, 0))
-
+    # cast (no skill of its own plays it now: gnaw_coil plays `coil`): the frames spread like a trap opening, a breath
     cast = ck.Clip("cast", 1.6)
     for t, s in ((0.0, 0.0), (0.6, 1.0), (1.1, 1.0), (1.6, 0.0)):
         for k in range(len(RIBS)):
             cast.key(f"rib{k}", t, (0.0, 0.0, (9.0 if k % 2 else -9.0) * s), (0.0, 0.05 * s, 0.0))
-        for i, b in enumerate(sp):
+        for i, b in enumerate(SP):
             cast.key(b, t, (-2.5 * s * (i + 1) / N_SPINE, 0, 0))
         cast.key("jaw", t, (18 * s, 0, 0))
 
     hit = ck.Clip("hit", 0.5)
     for t, s in ((0.0, 0.0), (0.1, 1.0), (0.5, 0.0)):
-        for i, b in enumerate(sp):
-            hit.key(b, t, (-3.0 * s, 0, 2.0 * s * (1 if i % 2 else -1)))
+        for i, b in enumerate(SP):
+            hit.key(b, t, (-1.8 * s, 0, 2.0 * s * (1 if i % 2 else -1)))
 
-    ko = ck.Clip("ko", 2.4)  # it slides back down between the planks; a frame goes under last
-    for t, drop, tilt in ((0.0, 0.0, 0.0), (0.6, 0.3, -6.0), (1.4, 1.6, -14.0), (2.0, 2.6, -18.0), (2.4, 3.0, -18.0)):
-        ko.key("root", t, (tilt, 0, 0), (0, -drop, -0.4 * drop / 3.0))
-    for i, b in enumerate(sp):
-        ko.key(b, 0.0)
-        ko.key(b, 1.2, (4.0 * (i + 1) / N_SPINE, 0, 0))
-        ko.key(b, 2.4, (6.0 * (i + 1) / N_SPINE, 0, 0))
-    # `breaking` (m2-slice act1_ch01, 50% HP): it thrashes and the ship's frames burst off and fall into the water
-    brk = ck.Clip("phase_break", 1.8)
-    for t, s, fall in ((0.0, 0.0, 0.0), (0.35, 1.0, 0.0), (0.6, 0.6, 0.25), (1.2, 0.2, 0.8), (1.8, 0.0, 1.0)):
-        for i, b in enumerate(sp):
-            brk.key(b, t, (-4.0 * s * (i + 1) / N_SPINE, 0, (3.0 if i % 2 else -3.0) * s))
-        for k in range(len(RIBS)):
-            side = 1.0 if k % 2 else -1.0
-            brk.key(f"rib{k}", t, (25.0 * fall, 0.0, side * 70.0 * fall),
-                    (side * 0.9 * fall, 0.35 * s - 3.0 * fall * fall, 0.2 * fall))
-    return [idle, ready, intro, attack, cast, hit, ko, brk]
+    return [idle, ready, intro_clip(), gnaw_clip(), rib_lash_clip(), thrash_clip(), coil_clip(), cast, hit, ko_clip(),
+            phase_break_clip(rig), idle_b_clip()]
 
 
 def build(rig: ck.Rig, joints: np.ndarray) -> tuple[ck.Mesh, ck.Mesh]:
@@ -938,6 +1345,7 @@ def build(rig: ck.Rig, joints: np.ndarray) -> tuple[ck.Mesh, ck.Mesh]:
     barnacles(mesh, bd)
     waterline_collar(mesh, bd)
     head(mesh, rig, joints)
+    breach(mesh, rig)
     frames = ck.Mesh("Ribs")  # its own node: the `breaking` phase lets the frames fall, then hides them
     ribs(frames, rig, bd)
     return mesh, frames
@@ -950,7 +1358,7 @@ def main() -> None:
     args = ap.parse_args(argv)
     rig, joints = build_rig()
     mesh, frames = build(rig, joints)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extra_meshes=[frames],
+    info = ck.export_creature(mesh, rig, build_clips(rig), args.out, extra_meshes=[frames],
                               extras={"hymn_creature": "hullgnaw"})
     print(f"hullgnaw: {info} (body {mesh.triangle_count}, frames {frames.triangle_count})")
 

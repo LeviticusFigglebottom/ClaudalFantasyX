@@ -7,7 +7,7 @@ Tasks live in docs/kb/tasks/<milestone>/<id>-<slug>.md with YAML-ish frontmatter
 
 Usage:
   python3 tools/taskboard.py            # board summary grouped by status
-  python3 tools/taskboard.py --check    # exit 1 on malformed tasks or unknown dependencies
+  python3 tools/taskboard.py --check    # exit 1 on malformed tasks, unknown dependencies or a duplicate id
   python3 tools/taskboard.py --role combat
 Stale rule: a 'doing' task whose file has had no commit for more than 48h is flagged STALE.
 """
@@ -86,12 +86,24 @@ def load_all() -> tuple[list[dict[str, object]], list[str]]:
             if not any(line.strip().startswith("-") for line in log.splitlines()):
                 problems.append(f"{rel}: 'done' requires a Review log entry (SPEC §11.6)")
         tasks.append(t)
+    problems += duplicate_ids(tasks)
     ids = {t.get("id") for t in tasks}
     for t in tasks:
         for dep in t.get("depends_on") or []:
             if dep not in ids:
                 problems.append(f"{t['id']}: depends on unknown task '{dep}'")
     return tasks, problems
+
+
+def duplicate_ids(tasks: list[dict[str, object]]) -> list[str]:
+    """One problem per id that two or more task files carry (a claim, a dependency or a review would hit either)."""
+    files: dict[str, list[str]] = {}
+    for t in tasks:
+        path = t.get("_path")
+        rel = str(path.relative_to(ROOT)) if isinstance(path, Path) and path.is_relative_to(ROOT) else str(path)
+        files.setdefault(str(t.get("id")), []).append(rel)
+    return [f"{tid}: duplicate id in {len(fs)} files: {', '.join(sorted(fs))}"
+            for tid, fs in sorted(files.items()) if len(fs) > 1]
 
 
 def main() -> int:

@@ -51,6 +51,11 @@
         ]},
         "dawn": {"when": {"set": ["ch06_camp_made"], "unset": ["ch06_done"]}, "steps": [
           {"place": "Channel"},
+          {"zone": "place_actor", "args": ["asha", "channel_asha"]},
+          {"zone": "place_actor", "args": ["toma", "channel_toma"]},
+          {"zone": "place_actor", "args": ["ysolde", "channel_ysolde"]},
+          {"zone": "place_actor", "args": ["kerrid", "channel_kerrid"]},
+          {"zone": "place_actor", "args": ["liss", "channel_liss"]},
           {"play": "ch06_channel_dawn"},
           {"set": "ch06_done"},
           {"go": {"location": "ch07/tamsule", "spawn": "RiverMouth"}}

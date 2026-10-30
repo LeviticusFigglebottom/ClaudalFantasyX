@@ -5,6 +5,8 @@ extends Node
 ## hint (choreo.json camera.moments.entry `hints` by the entry's role: ward -> CameraHints/the_stair_head), the camera
 ## eases to that hint once the action has played, holds, and comes home (BattleCameraDirector.play_moment: none
 ## under reduced motion or instant pacing; the next turn waits). Listens only.
+## M3-BPR-406: a role listed in `skills` cuts only on those skills (the Kirru: Pell sounding Storm-Call, not the
+## withdrawal itself, which reads best on the home frame), and a role in `once` cuts on its first such turn only.
 
 var choreo: BattleChoreo
 var engine: BattleEngine
@@ -34,6 +36,11 @@ static func attached(sequencer: BattleChoreo, battle: BattleEngine) -> BattleEnt
 func _on_contact(result: ActionResult) -> void:
 	var c := engine.find(result.actor_id)
 	if c == null or c.entry_role == &"" or choreo._ctl.stage.has_fighter(c.id):
+		return
+	var only := (cfg.get("skills", {}) as Dictionary).get(String(c.entry_role), []) as Array
+	if not only.is_empty() and not only.has(String(result.skill_id)):
+		return
+	if (cfg.get("once", []) as Array).has(String(c.entry_role)) and cut_for.has(c.id):
 		return
 	var pose := hint_pose(c.entry_role)
 	if not pose.is_empty():

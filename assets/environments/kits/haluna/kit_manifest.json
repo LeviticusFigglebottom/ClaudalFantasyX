@@ -123,17 +123,6 @@
         "banyan_hero-lod1": 7351
       }
     },
-    "banyan_placeholder": {
-      "budget": [
-        60000,
-        10000
-      ],
-      "bytes": 3375764,
-      "lods": {
-        "banyan_placeholder": 54651,
-        "banyan_placeholder-lod1": 7351
-      }
-    },
     "basket_set": {
       "budget": [
         3600,
@@ -693,6 +682,17 @@
       "lods": {
         "ink_kit": 187,
         "ink_kit-lod1": 12
+      }
+    },
+    "inn_hearth": {
+      "budget": [
+        3000,
+        400
+      ],
+      "bytes": 110072,
+      "lods": {
+        "inn_hearth": 1720,
+        "inn_hearth-lod1": 330
       }
     },
     "iskarra_arcade_sunk": {
@@ -1964,6 +1964,17 @@
         "timber_stilt_post-lod1": 15
       }
     },
+    "travel_bundle": {
+      "budget": [
+        2400,
+        200
+      ],
+      "bytes": 36428,
+      "lods": {
+        "travel_bundle": 648,
+        "travel_bundle-lod1": 36
+      }
+    },
     "vey_arcade_bay": {
       "budget": [
         12000,
@@ -2097,17 +2108,6 @@
       "lods": {
         "well_shaft": 5702,
         "well_shaft-lod1": 760
-      }
-    },
-    "windbreak_placeholder": {
-      "budget": [
-        6500,
-        1000
-      ],
-      "bytes": 443264,
-      "lods": {
-        "windbreak_placeholder": 5785,
-        "windbreak_placeholder-lod1": 430
       }
     },
     "windbreak_tree": {

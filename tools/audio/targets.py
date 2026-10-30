@@ -119,6 +119,35 @@ RULES = [
     ("sfx/cutscene/cs_feed_fire_*.ogg", "momentary", -23.0, 1.0, -2.0, "cutscene foley"),
     ("sfx/cutscene/cs_trim_wicks_*.ogg", "momentary", -26.0, 1.0, -2.0, "cutscene foley"),
     ("sfx/cutscene/cs_pole_water_*.ogg", "momentary", -23.0, 1.0, -2.0, "cutscene foley"),
+    # M3-AUD-864 (assets_src/sfx/act1_cutscene_foley.py, Git LFS): Act I's cutscene clips that played nothing
+    ("sfx/cutscene/cs_door_heavy_*.ogg", "momentary", -22.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_paper_*.ogg", "momentary", -27.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_scratch_*.ogg", "momentary", -28.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_ink_cap_*.ogg", "momentary", -29.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_leather_roll_*.ogg", "momentary", -26.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_brush_*.ogg", "momentary", -31.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_crockery_*.ogg", "momentary", -24.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_housing_*.ogg", "momentary", -23.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_timber_*.ogg", "momentary", -24.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_rope_haul_*.ogg", "momentary", -23.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_clip_*.ogg", "momentary", -25.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_key_strain_*.ogg", "momentary", -22.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_key_*.ogg", "momentary", -26.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_spear_*.ogg", "momentary", -25.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_beacon_*.ogg", "momentary", -19.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_brand_heat_*.ogg", "momentary", -23.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_sail_throw_*.ogg", "momentary", -21.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_sand_press_*.ogg", "momentary", -28.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_tin_*.ogg", "momentary", -27.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_scissors_*.ogg", "momentary", -28.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_leaf_water_*.ogg", "momentary", -30.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_cloth_grab_*.ogg", "momentary", -24.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_collide_*.ogg", "momentary", -21.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_slip_*.ogg", "momentary", -23.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_crawl_*.ogg", "momentary", -27.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_shallows_*.ogg", "momentary", -25.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_slag_unfold_*.ogg", "momentary", -20.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_shell_tap_*.ogg", "momentary", -30.0, 1.0, -2.0, "cutscene foley"),
     # M3-AUD-825 (assets_src/sfx/ashcrown_sfx.py): the strike trial's world SFX; the stud tick repeats, so it is quieter
     ("sfx/ashcrown/ash_stud_*.ogg", "momentary", -24.0, 1.0, -1.0, "a stud going dark (repeats)"),
     ("sfx/ashcrown/*.ogg", "momentary", -18.0, 1.0, -1.0, "the Ashcrown trial's world SFX"),
@@ -193,7 +222,7 @@ RULES = [
     ("sfx/harbour_lap.ogg", "momentary", -25.0, 1.0, -1.0, "an Act I cutscene cue"),
 ]
 FILE_LIMIT = 5 * 1024 * 1024        # CLAUDE.md §8: no file over 5 MB
-TOTAL_BUDGET = 72 * 1024 * 1024     # every shipped audio file (ADR 0171: Act I complete; ADR 0170 before)
+TOTAL_BUDGET = 73 * 1024 * 1024     # every shipped audio file (ADR 0174: small Act I SFX while LFS is blocked; 0171, 0170)
 
 
 def rule_for(rel: str):

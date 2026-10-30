@@ -47,3 +47,5 @@ Ch5's Ashcrown temple, Ch8's Coilspire temple and Ch7's Bell galleries have no m
   C/C#) on purpose; Coilspire's flute goes to E6.
 
 ## Review log
+- 2026-10-29 integration-qa (qa, reviewer): not reviewable yet. Its one criterion (loops, music.json rows, loop
+  tests, listening notes, PROVENANCE) is unticked. Tick it, with the evidence, and it'll be reviewed with the rest.

@@ -1590,17 +1590,18 @@ def build_attack() -> ck.Clip:
     lashes forward and down onto the target at the contact, the body thrown after it."""
     c = ck.Clip("attack", ATTACK_SEC)
     neck = FORE[-3:]
-    rear = {n: axis_angle(E_N, -6.0) for n in neck}
-    rear["head"] = axis_angle(E_N, -12.0)
-    lash = {n: axis_angle(E_N, 7.0) for n in neck}
-    lash["head"] = axis_angle(E_N, 18.0)
+    # (M3-CRB-013: about twice the reach it had, so the strike reads at battle distance)
+    rear = {n: axis_angle(E_N, -11.0) for n in neck}
+    rear["head"] = axis_angle(E_N, -22.0)
+    lash = {n: axis_angle(E_N, 12.0) for n in neck}
+    lash["head"] = axis_angle(E_N, 30.0)
     follow = {n: axis_angle(E_N, 2.0) for n in neck}
     aft_rear = {n: local_rot(bend=-0.8, twist=5.0, bone=n) for n in AFT}
     aft_lash = {n: local_rot(bend=1.0, twist=-6.0, bone=n) for n in AFT}
     return keyed(c, [(0.0, {}, (0, 0, 0), (0, 0, 0), 0.0),
-                     (0.3, compose(rear, aft_rear), (0, 0.04, -0.02), (0, 0, 0), 12.0),
-                     (ATTACK_CONTACT, compose(lash, aft_lash), (0, -0.04, 0.16), (0, 0, 0), -14.0),
-                     (0.75, compose(follow, {n: local_rot(twist=6.0, bone=n) for n in AFT}), (0, 0, 0.05), (0, 0, 0),
+                     (0.3, compose(rear, aft_rear), (0, 0.1, -0.14), (0, 0, 0), 12.0),
+                     (ATTACK_CONTACT, compose(lash, aft_lash), (0, -0.06, 0.45), (0, 0, 0), -14.0),
+                     (0.75, compose(follow, {n: local_rot(twist=6.0, bone=n) for n in AFT}), (0, 0, 0.15), (0, 0, 0),
                       12.0),
                      (ATTACK_SEC, {}, (0, 0, 0), (0, 0, 0), 0.0)])
 
@@ -1609,13 +1610,13 @@ def build_cast() -> ck.Clip:
     """Kite Flare: a gust through the whole kite (the panels turn and flare), the head rears, then three quick jabs
     of the head (the fast multi-hit fire), the first on the contact."""
     c = ck.Clip("cast", CAST_SEC)
-    flare = {n: local_rot(twist=12.0 * (1 if CHAIN_POS[n] % 2 else -1), bone=n) for n in SPINE_BONES}
+    flare = {n: local_rot(twist=18.0 * (1 if CHAIN_POS[n] % 2 else -1), bone=n) for n in SPINE_BONES}
     flare = compose(flare, {n: axis_angle(E_N, -1.5) for n in FORE[-3:]})
     flare["head"] = flare["head"] @ axis_angle(E_N, -10.0)
 
     def jab(k: float) -> dict:
-        out = compose(flare, {n: axis_angle(E_N, 4.5 * k) for n in FORE[-3:]})
-        out["head"] = out["head"] @ axis_angle(E_N, 22.0 * k)
+        out = compose(flare, {n: axis_angle(E_N, 7.5 * k) for n in FORE[-3:]})
+        out["head"] = out["head"] @ axis_angle(E_N, 30.0 * k)
         return out
 
     return keyed(c, [(0.0, {}, (0, 0, 0), (0, 0, 0), 0.0), (0.35, flare, (0, 0.06, -0.03), (0, 0, 0), 24.0),
@@ -1631,11 +1632,11 @@ def build_hit() -> ck.Clip:
     """Struck: the body jolts back, the head snaps up and back, the panels twist, the tail is whipped; the peak at
     HIT_PEAK."""
     c = ck.Clip("hit", HIT_SEC)
-    struck = compose({n: local_rot(bend=-2.5, twist=6.0, bone=n) for n in FORE},
-                     {n: local_rot(bend=1.5, twist=-6.0, bone=n) for n in AFT})
-    struck["head"] = local_rot(bend=-14.0, twist=6.0, bone="head")
+    struck = compose({n: local_rot(bend=-4.0, twist=9.0, bone=n) for n in FORE},
+                     {n: local_rot(bend=2.5, twist=-9.0, bone=n) for n in AFT})
+    struck["head"] = local_rot(bend=-22.0, twist=8.0, bone="head")
     back = compose({n: local_rot(bend=0.8, twist=-4.0, bone=n) for n in SPINE_BONES})
-    return keyed(c, [(0.0, {}, (0, 0, 0), (0, 0, 0), 0.0), (HIT_PEAK, struck, (0, 0.05, -0.04), (0, 0, 0), -24.0),
+    return keyed(c, [(0.0, {}, (0, 0, 0), (0, 0, 0), 0.0), (HIT_PEAK, struck, (0, 0.1, -0.22), (0, 0, 0), -24.0),
                      (0.28, back, (0, 0.0, 0.02), (0, 0, 0), 10.0), (HIT_SEC, {}, (0, 0, 0), (0, 0, 0), 0.0)])
 
 
