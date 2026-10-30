@@ -205,6 +205,13 @@ ch01_wickfry, ch01_oil_slug, ch01_shaft_limpet and ch01_scuttlers.
   - Default if no answer: battle-presentation writes PROVISIONAL rows (model, arena, phases from creatures.json, and
     stats copied from the Act II boss curve with a `_note`) so the presentation can be built and viewed. The combat
     seat then owns the numbers.
+- **Act II boss intros (c3e45bb0), SELF-RENDERED and viewed:** battle_boss_intro_drowner, _lamp_engine, _ram and
+  _wakefin, on the PROVISIONAL encounters.
+  - The Drowner, the Lamp Engine and the Ram take their hero shots under their cards.
+  - The Wakefin's did not: no low lens was clear of the barge, and the fitted fallback framed its mostly-submerged
+    bounds from 17 m behind the hull, so it was not in shot. Its row now takes `camera.shots.boss_over_rail` (hero
+    and fit off): the fin above the card, with the rail leading to it.
+  - New baselines for the gate: those four shots (never written by this track).
 - **The Act I encounter sweep (the Lead's 23:10)**, so far:
   - Done: ch02_tideline clean (arena, impacts, framing). The Drownbell's 8 stills were viewed and are clean after
     the hit-core and float fixes.
