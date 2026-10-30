@@ -31,3 +31,13 @@ GATE-BUILT @ 8c47d977
 ## Fast gate
 - Selected: 44 test files.
 - Lane A (mine): 22; lane B (GATE-HELPER): 22, in `gate-big29-lanes-b.txt` @ 43af4e0c.
+
+## Fast-gate results
+- Import check clean · boot 0 ERROR lines · log check 0.
+- Lane A (mine, 22 files): all green.
+- Lane B (GATE-HELPER, 22 files @ 43af4e0c, arrived 19:34): 21 green.
+  - **test_cutscene_face_per_actor** 2/1 (`test_his_shipped_pose_table_is_characters`): the shipped
+    game/data/cutscene/sefir_face_poses.json differs from characters' source
+    game/levels/_tests/characters/sefir/sefir_face_poses.json in `sad` and `tender`. characters' dd590bd7 (M4-A2P-055,
+    Sefir in person) changed the source without syncing the shipped copy; the same mismatch is on claude/characters
+    alone. Branch content. Routed: **characters** (copy the source into the shipped table, as the test asks).
