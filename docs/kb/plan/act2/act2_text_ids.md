@@ -5,7 +5,9 @@ chapter's csv. Where a **data** row is someone else's, the id is given here so t
 an id here and in the csv together, or tell the story track.
 
 ## Objective lines: done, data included
-`game/data/flow/objectives.json` gets 42 Act II rows. 29 are main lines and 13 are `side` errands. The text is `OBJ_CH1N_*`.
+`game/data/flow/objectives.json` gets 13 Act II `side` errand rows, with text `OBJ_CH1N_SIDE_*`. **The main path is integration's**
+zone-level rows (8287ca8b3). The story track's 30 beat-level main rows were dropped at the big22 merge and are kept in
+git history (1a3aa7b9a) for a later pass.
 They use the story flags the scripts set, plus the flow's own arrival and victory flags (`ch10_drowner_defeated`,
 `ch14_steps_held`). Every target is an existing `zone_maps.json` POI; Ch15's Hollowmere is `ch17/hollowmere`.
 - **chapters (act1-chapters):** the greybox flows set only the arrival flags. The scripts set the others when they

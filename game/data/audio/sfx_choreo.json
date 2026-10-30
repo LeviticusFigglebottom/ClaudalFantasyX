@@ -389,6 +389,114 @@
       "voices": 1,
       "volume_db": 0.0,
       "_note": "M3-AUD-857: Virel's layer (vowbound_sfx.py)"
+    },
+    "nhoa_rise": {
+      "files": [
+        "res://assets/audio/sfx/choreo/nhoa_rise.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Nhoa's layer (vowbound_sfx.py)"
+    },
+    "nhoa_call": {
+      "files": [
+        "res://assets/audio/sfx/choreo/nhoa_call.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Nhoa's layer (vowbound_sfx.py)"
+    },
+    "nhoa_sink": {
+      "files": [
+        "res://assets/audio/sfx/choreo/nhoa_sink.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Nhoa's layer (vowbound_sfx.py)"
+    },
+    "hesk_rise": {
+      "files": [
+        "res://assets/audio/sfx/choreo/hesk_rise.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Hesk's layer (vowbound_sfx.py)"
+    },
+    "hesk_call": {
+      "files": [
+        "res://assets/audio/sfx/choreo/hesk_call.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Hesk's layer (vowbound_sfx.py)"
+    },
+    "hesk_sink": {
+      "files": [
+        "res://assets/audio/sfx/choreo/hesk_sink.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Hesk's layer (vowbound_sfx.py)"
+    },
+    "ethren_rise": {
+      "files": [
+        "res://assets/audio/sfx/choreo/ethren_rise.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Ethren's layer (vowbound_sfx.py)"
+    },
+    "ethren_call": {
+      "files": [
+        "res://assets/audio/sfx/choreo/ethren_call.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Ethren's layer (vowbound_sfx.py)"
+    },
+    "ethren_sink": {
+      "files": [
+        "res://assets/audio/sfx/choreo/ethren_sink.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Ethren's layer (vowbound_sfx.py)"
+    },
+    "kesh_stand": {
+      "files": [
+        "res://assets/audio/sfx/choreo/kesh_stand.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Kesh's layer (vowbound_sfx.py)"
+    },
+    "kesh_call": {
+      "files": [
+        "res://assets/audio/sfx/choreo/kesh_call.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Kesh's layer (vowbound_sfx.py)"
+    },
+    "kesh_sink": {
+      "files": [
+        "res://assets/audio/sfx/choreo/kesh_sink.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Kesh's layer (vowbound_sfx.py)"
     }
   }
 }

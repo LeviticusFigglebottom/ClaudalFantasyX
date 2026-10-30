@@ -235,6 +235,11 @@ JOBS = [
      "sfx"),
     ("assets_src/sfx/act2_boss_stings.py", "assets/audio/act2/sfx/battle",
      _source_files("assets_src/sfx/act2_boss_stings.py"), "sfx"),
+    ("assets_src/sfx/act2_ability_sfx.py", "assets/audio/act2/sfx/battle",
+     _source_files("assets_src/sfx/act2_ability_sfx.py"), "sfx"),
+    ("assets_src/sfx/act2_cutscene_sfx.py", "assets/audio/sfx",
+     _source_files("assets_src/sfx/act2_cutscene_sfx.py"), "sfx"),
+    ("assets_src/sfx/act2_ui_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/act2_ui_sfx.py"), "sfx"),
     # M4-A2P-090 (ADR 0175): Act II scene cues, plain git under assets/audio/act2/music/
     ("assets_src/music/act2/farewell_tide.py", "assets/audio/act2/music", ["farewell_tide.ogg"], "music"),
     ("assets_src/music/act2/peace_wedding_break.py", "assets/audio/act2/music", ["peace_wedding_break.ogg"], "music"),
@@ -243,6 +248,7 @@ JOBS = [
     ("assets_src/music/act2/hollowmere_answers.py", "assets/audio/act2/music", ["hollowmere_answers.ogg"], "music"),
     ("assets_src/music/act2/sefir_go_home.py", "assets/audio/act2/music", ["sefir_go_home.ogg"], "music"),
     ("assets_src/music/act2/act2_break.py", "assets/audio/act2/music", ["act2_break.ogg"], "music"),
+    ("assets_src/music/act2/kesh_memory.py", "assets/audio/act2/music", ["kesh_memory.ogg"], "music"),
     # M4-A2P-092 (ADR 0175): the people bosses' stems
     ("assets_src/music/act2/malcor_venn.py", "assets/audio/act2/music",
      [f"malcor_venn_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),

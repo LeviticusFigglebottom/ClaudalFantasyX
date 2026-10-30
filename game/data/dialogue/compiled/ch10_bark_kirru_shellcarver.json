@@ -7,9 +7,9 @@
   "ch10_bark_kirru_shellcarver": {
    "headers": {"location": "ch10/reedhollow"},
    "ops": [
-    {"op": "line", "id": "ch10_bark_carver_001", "key": "DLG_CH10_BARK_CARVER_001", "speaker": "kirru", "emotion": "neutral", "voice": "", "src": 5, "name_key": "DLG_NAME_KIRRU_SHELL_CARVER"},
+    {"op": "line", "id": "ch10_bark_carver_001", "key": "DLG_CH10_BARK_CARVER_001", "speaker": "kirru", "emotion": "neutral", "voice": "", "src": 5, "name_key": "DLG_NAME_KIRRU_NAME_CARVER"},
     {"op": "if_not", "cond": ["flag", "ch10_heard_ressa"], "to": 4, "src": 6},
-    {"op": "line", "id": "ch10_bark_carver_002", "key": "DLG_CH10_BARK_CARVER_002", "speaker": "kirru", "emotion": "sad", "voice": "", "src": 7, "name_key": "DLG_NAME_KIRRU_SHELL_CARVER"},
+    {"op": "line", "id": "ch10_bark_carver_002", "key": "DLG_CH10_BARK_CARVER_002", "speaker": "kirru", "emotion": "sad", "voice": "", "src": 7, "name_key": "DLG_NAME_KIRRU_NAME_CARVER"},
     {"op": "goto", "to": 4, "src": 6}
    ]
   }

@@ -18,9 +18,6 @@ ENEMY_CONDUIT_CRAWLER,Conduit Crawler
 LORE_CONDUIT_CRAWLER,"A Lit Age machine for keeping the light-conduits clean: a glass dome on six brass feet, with a dim, steady light inside. It mends whatever it was told is broken. Nobody has told it anything new in a very long time."
 ENEMY_LAMP_ENGINE,Lamp Engine
 LORE_LAMP_ENGINE,"A ringed tower of lamps standing knee-deep in Lowlight's flooded hall, built in the Lit Age to keep the temple bright. Every lamp burns steady and none of them flickers. Its crawlers keep it whole, whatever that costs the lamps."
-OBJ_CH11_TO_LOWLIGHT,Cross the drowned galleries to Lowlight.
-OBJ_CH11_DOWN,Go down through the engine hall to the sanctum.
-OBJ_CH11_OUT,"Climb back up to the light. The road goes on, into the Heights."
 OBJ_CH11_SIDE_ALTAR,The keeper's altar lamp has to go up a step.
 OBJ_CH11_SIDE_BENCH,"There's a broken lamp on the bench, and Liss beside it."
 TUT_LAMP_ENGINE_CRAWLERS,The crawlers mend what you break. Stop them first.
@@ -30,3 +27,7 @@ EQUIP_ASHA_CONDUIT_STAFF,Conduit Lantern-Staff
 EQUIP_ASHA_CONDUIT_STAFF_DESC,A lantern-staff set with a Lit Age globe. The globe is empty. She would not carry it otherwise.
 EQUIP_LISS_LOWLIGHT_SLEEVE,Gallery Work-Sleeve
 EQUIP_LISS_LOWLIGHT_SLEEVE_DESC,Brass mesh cut from a drowned trim-arm and fitted to the wrist. It still smells of old oil.
+SKILL_BRUSH_JAB,Brush Jab
+SKILL_CRAWLER_MEND,Mend
+SKILL_CRAWLER_TEND,Tend
+PART_LAMP_ENGINE_LAMPS,The lamps

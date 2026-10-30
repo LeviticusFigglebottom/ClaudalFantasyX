@@ -48,6 +48,10 @@ const JOIN_KEY := "ITEMS_MENU_LIST_JOIN"
 ## A line under a hero's name and level once a story flag is set ({hero: [flag, loc key]}): Kerrid after his reveal
 ## at sea (docs/kb/plan/act2/ui/kerrid.md section 3). No stat, gauge or colour changes with it.
 const NOTES := {&"kerrid": [&"ch15_kerrid_revealed", "STATUS_MENU_KERRID_UNRISEN"]}
+## The Vowbound a hero calls (docs/kb/plan/act2/ui/screens.md section 3): vowbound.json rows whose `caller` is the
+## hero, bound once their `bound_flag` is set, in data (bind) order.
+const BOUND_KEY := "STATUS_MENU_BOUND"
+const BOUND_NONE_KEY := "STATUS_MENU_BOUND_NONE"
 const SLOT_KEYS := {ItemDB.SLOT_WEAPON: "STATUS_MENU_WEAPON", ItemDB.SLOT_ARMOR: "STATUS_MENU_ARMOR"}
 
 var sheet: PartySheet
@@ -86,7 +90,7 @@ func hero_rows() -> Array[Dictionary]:
 ## Everything the page shows for `cid` ({} for an unknown hero):
 ##   name, level_text, note ("" or the NOTES line), hp, max_hp, mp, max_mp, hp_text, mp_text, fallen,
 ##   stats: [{id, label, total, base, lattice, gear}] (VITAL_STATS then STATS),
-##   gear: [{slot, slot_label, name, abilities}], swell: {has, points, max, mode, text},
+##   gear: [{slot, slot_label, name, abilities}], swell: {has, points, max, mode, text}, bound: {has, text},
 ##   lattice: {on_board, movement, woken, skills, lines: [String]}, statuses: [String].
 func page(cid: StringName) -> Dictionary:
 	var c := sheet.combatant(cid)
@@ -107,6 +111,7 @@ func page(cid: StringName) -> Dictionary:
 		"stats": stat_rows(cid),
 		"gear": gear_rows(cid),
 		"swell": swell_of(cid),
+		"bound": bound_of(cid),
 		"lattice": lattice_of(cid),
 		"statuses": status_names(c),
 		"status_descs": status_descs(c),
@@ -119,6 +124,23 @@ func note_of(cid: StringName) -> String:
 	if note.is_empty() or not bool(sheet.state.flags.get(note[0], false)):
 		return ""
 	return _tr(str(note[1]))
+
+
+## {has, text}: whether the hero calls any Vowbound, and the ones bound so far ("None yet" before the first).
+func bound_of(cid: StringName) -> Dictionary:
+	var names: Array[String] = []
+	var calls := false
+	for row: Variant in BattleVowbound.load_config():
+		var d := row as Dictionary
+		if d == null or StringName(str(d.get("caller", ""))) != cid:
+			continue
+		calls = true
+		var flag := str(d.get("bound_flag", ""))
+		if flag != "" and bool(sheet.state.flags.get(flag, false)):
+			names.append(_tr(str(d.get("name_key", ""))))
+	if not calls:
+		return {"has": false, "text": ""}
+	return {"has": true, "text": _tr(JOIN_KEY).join(names) if not names.is_empty() else _tr(BOUND_NONE_KEY)}
 
 
 ## Each stat as total = base + Lattice + gear (VITAL_STATS, then STATS).

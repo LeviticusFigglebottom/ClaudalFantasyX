@@ -253,11 +253,13 @@ flags = {
 "tut_seven_seen": "Tutorial seen-flag (ui-menus, Act II, M4): the tip that three of the seven fight and four wait (Formation) has been shown.",
 "ch14_declared_heretics": "Ch14 (Act II): the Conclave has sprung the wedding trap and declared the party heretics (C2). Order shrines go dark and Order shops refuse from here on (ui-menus, M4-A2P-082). The Ch14 flow sets it.",
 "ch15_kerrid_revealed": "Ch15 (Act II): Kerrid has told the party at sea that he is unrisen, held since the stair at Corrow. His Status page shows the Unrisen line from here on (ui-menus, docs/kb/plan/act2/ui/kerrid.md); the reveal's script sets it.",
+"ch10_drowner_felled": "Ch10 B04: the Mangrove Drowner is felled and its snagged lights rose (set by the flow on the battle's win; act2_ch10.md; read in Ch11).",
 "ch10_found_scrape_mark": "Ch10 B02 (optional): the party found the clutch's standing marks on a root in the fen's side pocket (act2_ch10.md; read in Ch12).",
 "ch10_pell_kept_out": "Ch10 B06: Owa kept Pell, a scraped Kirru, out of Reedhollow (act2_ch10.md; read in Ch18).",
 "ch10_heard_ressa": "Ch10 B07 (optional bark): a Kirru told Rhen that Pell is Ressa's brother and watched her go (act2_ch10.md; B11's line).",
 "ch10_child_asked": "Ch10 B08 (side scene): a Kirru child asked Asha why humans make their dead swim (act2_ch10.md; read in Ch18).",
 "ch10_asha_answered_child": "Ch10 B08 (side scene choice): Asha answered the Kirru child (act2_ch10.md; read in Ch16's refusal).",
+"ch10_tide_witnessed": "Ch10 B09: the party watched the Kirru farewell-tide and the motes lift (act2_ch10.md; read in Ch11, Ch16, Ch18).",
 "ch10_asha_asked_pell": "Ch10 B11: Asha asked Pell why the dead would want to go down, and he answered (act2_ch10.md; read in Ch16).",
 "ch10_complete": "Ch10 B11 (end): the party leaves Ossa Fen; the flow hands off to Ch11 (act2_ch10.md).",
 "ch11_rhen_admitted": "Ch11 B03: at the conduit court Rhen admitted to Liss that he is Dace Sallow's son (act2_ch11.md; read in Ch13, Ch15, Ch17).",
@@ -291,6 +293,7 @@ flags = {
 "ch14_merel_taken": "Ch14 B08: Merel dropped the water-gate behind the barge and was taken by her father's Stillguard (act2_ch14.md; read in Ch18).",
 "ch14_complete": "Ch14 B10 (end): the bridal barge drifts out of the lagoon mouth; the flow hands off to Ch15 (act2_ch14.md).",
 "ch15_sat_with_liss": "Ch15 B02 (optional): Rhen sat with Liss at Tobin's bier on the barge (act2_ch15.md; read in B14).",
+"ch15_kerrid_told": "Ch15 B07: Kerrid told the party, by his own word, that he died holding the Fisher Stair at Corrow in 1001 (the Act II reveal; act2_ch15.md; read from here on).",
 "ch15_pell_said_he_knew": "Ch15 B08: Pell said he had known what Kerrid was from the first day (act2_ch15.md; read in Ch20).",
 "ch15_hollowmere_answered": "Ch15 B09: Liss sang a current-song into the fog and Hollowmere answered (act2_ch15.md; read in Ch17).",
 "ch15_liss_told_father": "Ch15 B10: Liss told her father, the dock-master, that Tobin is dead (act2_ch15.md; read in Ch17).",
@@ -335,5 +338,6 @@ flags = {
 "codex_aldous_varrow_read": "Codex (story track Act II set, game/data/lore/codex.json): the entry 'aldous_varrow' has been opened in the Codex (clears its New marker).",
 "codex_kesh_read": "Codex (story track Act II set, game/data/lore/codex.json): the entry 'kesh' has been opened in the Codex (clears its New marker).",
 "codex_kerrid_stair_read": "Codex (story track Act II set, game/data/lore/codex.json): the entry 'kerrid_stair' has been opened in the Codex (clears its New marker).",
+"codex_outside_the_level_read": "Codex (story track Act II set, game/data/lore/codex.json): the entry 'outside_the_level' has been opened in the Codex (clears its New marker).",
 "codex_the_hush_read": "Codex (story track Act II set, game/data/lore/codex.json): the entry 'the_hush' has been opened in the Codex (clears its New marker)."
 }

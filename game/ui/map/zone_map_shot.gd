@@ -38,7 +38,13 @@ const VIEWS := {
 		"flags": [&"ch01_started", &"ch01_saw_bell_room", &"ch01_wickfry_won"],
 	},
 	&"keth_pass": {"zone": &"ch12/keth_pass", "at": Vector3(0.0, 0.0, 3.0), "yaw": 0.0, "flags": [&"ch12_started"]},
-	&"lowlight": {"zone": &"ch11/lowlight", "at": Vector3(2.0, 0.0, 0.0), "yaw": -PI * 0.5, "flags": [&"ch11_started"]},
+	&"lowlight":
+	{
+		"zone": &"ch11/lowlight",
+		"at": Vector3(2.0, 0.0, 0.0),
+		"yaw": -PI * 0.5,
+		"flags": [&"ch11_started", &"ch11_reached_lowlight"]
+	},
 	&"ansedra": {"zone": &"ch13/ansedra", "at": Vector3(0.0, 0.0, 12.0), "yaw": 0.0, "flags": [&"ch13_started"]},
 }
 

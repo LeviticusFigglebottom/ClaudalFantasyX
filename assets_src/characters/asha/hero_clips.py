@@ -1102,7 +1102,7 @@ def _victory(hero: str, u: float, sk: Skeleton, persona: dict) -> dict:
     s1, c1 = math.sin(ph), math.cos(ph)
     if hero == "kerrid":  # M3-CHR-505: the look back down the line (his block)
         return kerrid_victory(u, sk, persona)
-    if hero == "moll":  # M3-CHR-507: the iron grounded, the long look over the field (his block)
+    if hero in ("moll", "venn"):  # M3-CHR-507: the iron grounded, the long look over the field (his block; Venn's)
         return moll_victory(u, sk, persona)
     if hero == "pell":  # M3-CHR-506: very still, listening to the quiet (his block); never his back turned
         return pell_victory(u, sk, persona)
@@ -4577,6 +4577,47 @@ FOOT_FLAT["officer"] = FOOT_FLAT["moll"]
 KO_LEGS["officer"] = dict(KO_LEGS["toma"])
 FLAT_HAND["officer"] = {c: {"R": (-1.0, 0.0, 2.0, 3.0)} for c in ("idle", "walk", "hatchet_blow")}
 HAND_SHAPE["officer"] = {"R": "fist"}
+
+# M4-A2P-051: Warden Malcor Venn (act2_ch14.md B09), a named build on the squad's kit (stillguard_variants.json
+# `named.venn`) in Moll's idiom: Moll's persona, clips and battle contract (`inquisitor`: an officer's economy, the
+# weapon kept upright at his right like a standard; his `ko` is the yield, which B09's scripted end needs: "he is driven
+# back", not killed). The halberd stands where Moll's iron does (the M2-CHR-515 grip on DEF-spear, grounded in the
+# idle); he carries no shield, so the shield arm's carry hangs empty. A little stiller than Moll.
+VENN_PARRY_SPINE = {"DEF-spine.001": (8.0, -10.0, 0.0), "DEF-spine.002": (6.0, -4.0, 0.0),
+                    "DEF-spine.003": (4.0, 0.0, 0.0), "DEF-spine.006": (-6.0, 10.0, 0.0)}  # the guard's lean and turn
+VENN_PARRY_CROUCH = 0.08  # m: the knees' give in the parry
+VENN_ARMS = ("DEF-upper_arm.R", "DEF-forearm.R", "DEF-hand.R", "DEF-upper_arm.L", "DEF-forearm.L", "DEF-hand.L")
+
+
+def venn_parry(sk: Skeleton, persona: dict) -> dict:
+    """B09's parry stance (he has no shield): standing, the halberd upright before him with both hands on the haft,
+    the left over the right (the arms of Moll's yield, which hold his weapon so), the shoulders turned into it."""
+    p = {b: v for b, v in planted(sk, _moll_shared(persona)).items() if b not in VENN_ARMS}
+    y = moll_yield(sk, persona)
+    p.update({b: y[b] for b in VENN_ARMS})
+    return add(add(p, _legs(sk, persona, VENN_PARRY_CROUCH)), VENN_PARRY_SPINE)
+
+
+def _venn_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
+    """Moll's keys (an officer's economy), but his `defend` is the two-handed parry (venn_parry), not a shield guard."""
+    if clip == "defend":
+        guard = _minus(venn_parry(sk, persona), base)
+        return [(0.0, {}), (0.5, guard), (0.8, _scale(guard, 0.9)), (1.0, {})]
+    return _moll_keys(clip, sk, persona, base)
+
+
+PERSONA["venn"] = dict(PERSONA["moll"], sway=0.3)
+CLIPS["venn"] = list(CLIPS["moll"])
+BATTLE_HEROES = BATTLE_HEROES + ("venn",)
+FOOT_FLAT["venn"] = FOOT_FLAT["moll"]
+STANCE_DORSI["venn"] = STANCE_DORSI["moll"]
+BATTLE_STRIKER["venn"] = dict(BATTLE_STRIKER["moll"])
+_BATTLE_KEYS["venn"] = _venn_keys
+KO_OWN.add("venn")
+GRIP["venn"] = {"R": ("mesh", "Spear", "DEF-spear")}
+GRIP_ALWAYS.add("venn")
+IDLE_GROUNDED.add("venn")
+PROP_DOWN["venn"] = dict(PROP_DOWN["moll"])
 
 
 # ---------------------------------------------------------------------------------------------
