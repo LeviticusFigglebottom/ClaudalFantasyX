@@ -1899,3 +1899,11 @@ MERGE-READY @ (this commit).
   (19 zones), qa_walk_audit 1/0, field_controller 5/0, hero_field 30/0, qa_party 3/0, fp_ 30/0, qa_encounters 1/0,
   save_ 153/0; gdlint and gdformat clean over game and tests; validate_data 0/0.
 MERGE-READY @ (this commit).
+- **MERGE-READY @ 99989c2bc** (for big24): the battle-return resident field (1,737 → 389 ms black on the causeway)
+  and the FieldShore water guard, with their tests.
+- **Jog speed (the Lead, 10-30 14:28): no pre-slowing.**
+  - When characters push the jog clip, I set the field run speed **in data** from the clip's own travel (root travel
+    per loop, else stride × cadence, as HeroClipGait measures it), within 2.3–3.6 m/s, so the feet plant.
+  - Then max_playback_scale comes back down and test_qa_walk_audit's foot-slide check confirms it.
+- **Next:** re-measure Haluna's cold entry and the battle return (`scene_swap_probe --encounter --return`) once big24
+  merges; the Act II items as before.
