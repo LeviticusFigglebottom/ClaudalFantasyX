@@ -540,3 +540,6 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   hold_the_hour -> stop 0.9; lacquer_screen -> ward 0.8; still_water -> special 1.45. Checks: Blender identical;
   tools OK; Godot creature 131/0, vowbound 107/0 (test_creature_vowbound_act2 holds Nhoa, Hesk, Ethren).
 - **In progress:** M4-A2P-057 Kesh (new model), M4-CRB-009 the flat-engine part (worktree agents).
+- LEAD-ASK: M4-A2P-058 (Act II creatures' own VFX) had no owner. Default taken: creatures-b does the four bosses'
+  ambient VFX in their own scenes (game/creatures/<id>/), creatures does the regulars'; battle-skill VFX stay
+  battle-presentation's. Its title's "the Ram's ... ice" is void under ADR 0015.
