@@ -1217,3 +1217,8 @@ SELF-RENDERED @ 1a51d418: ch15_hollowmere_dock, ch15_hollowmere_arrival, ch15_se
 - **Checks:** gdlint and gdformat OK. Godot `--filter` ambient_life 2, zone_kit_dressing 10 and pemakar 10 pass. test_pemakar_kit and validate_data OK.
 - **MERGE-READY @ b0bfb31e.**
 SELF-RENDERED @ 4cd6ed12: ch05_pemakar_harbour, _crown and _weir with the lamp fade, compared against the beauty-pass renders, all viewed.
+
+### Act III opens (Lead 21:56, ADR 0207): M5-A3P-1500, Ch17's dry-dock and Dace's hull
+- The perf check is done (above). My queue is empty, so under ADR 0207 I'm starting Act III in my lane. **CLAIM (Lead, please record on integration):** M5-A3P-1500, Ch17 Hollowmere's dry-dock berths and Dace's hull. Ownership row appended. Hollowmere's kit module and dressing are already mine; the Ch17 layout and marks stay the Act III chapters' track's.
+- **The reading:** one hull serves Ch15, Ch17 and Ch18's Kite. The stern third is decked, with a hatch down to the cabin (ledger, chart wall, tool rack, bunk). The engine bay forward of it holds an empty lift-engine bed. The bow stays bare ribs, as Ch15 sees it. The keel gets a brass shoe, and the mast carries one kite wing half-rigged. Four berths stand in a row, Dace's last, with Tobin's post at the first. Spelled out in the task file, for the story track to overrule in review.
+- **Next:** revise `dace_hull_frame` in hollowmere.py, add `hm_drydock_berth`, rebuild both, then dress and render.
