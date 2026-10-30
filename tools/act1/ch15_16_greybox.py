@@ -184,10 +184,24 @@ def pale_rim() -> dict:
         "environment": {"background": "#f2f2ee", "ambient_color": "#d8dee4", "ambient_energy": 0.9},
         "block_color": COL_SAND,
         "blocks": blocks,
-        "spawns": {"Rim": [-24.0, 0.0, 0.0, 270.0]},
+        # M4-A2P-016: ChoirEdge, where the montage (C2) sets the party down, ~25 m short of to_choir
+        "spawns": {"Rim": [-24.0, 0.0, 0.0, 270.0], "ChoirEdge": [RIM_LEN - 15.0, 0.0, 0.0, 270.0]},
         "marks": {"choir_edge": [RIM_LEN, 0.0, 0.0, 270.0]},
         "actors": {},
-        "shots": {"P01": {"pos": [-22.0, 1.8, 3.0], "look_at": [120.0, 1.0, 0.0], "fov": 40}},
+        "shots": {"P01": {"pos": [-22.0, 1.8, 3.0], "look_at": [120.0, 1.0, 0.0], "fov": 40},
+                  # M4-A2P-016 (docs/kb/plan/act2/chapters/ch16.md §4): C2's montage, three times of day (the grade
+                  # changes, not the place): side-on wide by a cairn; low ahead, looking back down the line; high
+                  # behind, Kerrid last, the line going on into the white
+                  "P02": {"pos": [45.0, 1.4, 14.0], "look_at": [38.0, 1.0, 0.0], "fov": 40},
+                  "P03": {"pos": [80.0, 0.6, 2.0], "look_at": [60.0, 1.2, 0.0], "fov": 35},
+                  "P04": {"pos": [90.0, 4.0, -10.0], "look_at": [110.0, 1.0, 0.0], "fov": 45}},
+        # M4-A2P-016: the Rim by the ship, then the wade in 60 m runs (the field is the walked legs either side of the
+        # montage cut); the camera trails the line and a little south, so the cairns pass across the frame
+        "camera_volumes": [{"id": "Rim", "mode": "pan_follow", "at": [-22.0, 1.5, 0.0], "size": [16.0, 4.0, 30.0],
+                            "pos": [-12.0, 4.0, 12.0], "look_at": [-24.0, 1.0, 0.0], "fov": 50, "priority": 2}]
+        + [{"id": f"Wade{k}", "mode": "pan_follow", "at": [r3(x0 + 30.0), 1.5, 0.0], "size": [60.0, 4.0, 60.0],
+            "pos": [r3(x0 - 6.0), 4.5, 8.0], "look_at": [r3(x0 + 30.0), 0.8, 0.0], "fov": 50, "priority": 1}
+           for k, x0 in enumerate((-30.0, 30.0, 90.0, 150.0, 210.0 - 30.0))],
         "triggers": [{"id": "to_choir", "activation": "touch", "at": [RIM_LEN + 10.0, 0.0, 0.0], "size": [2.0, 0, 20.0],
                       "payload": {"beat": "to_choir"}, "yaw": 0.0}],
         # M4-C16-03: the rim's random fights (act2_roster.md Ch16); none in the Drowned Choir
@@ -227,9 +241,30 @@ def drowned_choir() -> dict:
         "blocks": blocks,
         "spawns": {"Approach": [0.0, 0.0, CHOIR_R + 1.0, 0.0]},
         "marks": {"kesh": [0.0, 0.0, -CHOIR_R + 6.0, 180.0], "sefir": [5.0, 0.0, -CHOIR_R + 9.0, 210.0],
-                  "kerrid_line": [0.0, 0.0, 6.0, 0.0]},
+                  "kerrid_line": [0.0, 0.0, 6.0, 0.0],
+                  # M4-A2P-016: the party at the ring's heart facing Kesh's place (C4-C6); Kerrid a step behind Asha
+                  "ring_rhen": [0.0, 0.0, -6.0, 0.0], "ring_asha": [-1.5, 0.0, -5.6, 0.0],
+                  "ring_toma": [-3.0, 0.0, -5.0, 0.0], "ring_ysolde": [1.5, 0.0, -5.6, 0.0],
+                  "ring_liss": [3.0, 0.0, -5.0, 0.0], "ring_kerrid": [-1.8, 0.0, -3.6, 0.0],
+                  "sefir_ring": [5.0, 0.0, -CHOIR_R + 9.0, 210.0]},
         "actors": {},
-        "shots": {"D01": {"pos": [0.0, 2.0, CHOIR_R - 4.0], "look_at": [0.0, 5.0, -CHOIR_R], "fov": 55}},
+        "shots": {"D01": {"pos": [0.0, 2.0, CHOIR_R - 4.0], "look_at": [0.0, 5.0, -CHOIR_R], "fov": 55},
+                  # M4-A2P-016: C4 Kesh's point of view a thousand years ago (the memory grade), from her place down
+                  # the ring; C5 Sefir across the ring, the stones behind him; C6 the three refusals in singles
+                  # (D04 Asha, D06 Ysolde, D07 Kerrid), each from Sefir's side; C8 the storm waking over the ring,
+                  # low behind Kerrid holding the line
+                  "D02": {"pos": [0.0, 1.7, -20.5], "look_at": [0.0, 1.4, 0.0], "fov": 50},
+                  "D03": {"pos": [1.0, 1.7, -9.0], "look_at": [5.0, 1.6, -17.0], "fov": 40},
+                  "D04": {"pos": [0.2, 1.7, -8.4], "look_at": [-1.5, 1.6, -5.6], "fov": 40},
+                  "D06": {"pos": [3.0, 1.7, -8.6], "look_at": [1.5, 1.6, -5.6], "fov": 40},
+                  "D07": {"pos": [0.0, 1.9, -7.0], "look_at": [-1.8, 1.8, -3.6], "fov": 40},
+                  "D05": {"pos": [1.5, 1.2, 10.0], "look_at": [0.0, 8.0, -CHOIR_R], "fov": 60}},
+        # M4-A2P-016: the way in, then the bowl's floor (the ring itself is cutscene-only)
+        "camera_volumes": [
+            {"id": "Approach", "mode": "pan_follow", "at": [0.0, 1.5, CHOIR_R + 1.0], "size": [8.0, 4.0, 10.0],
+             "pos": [0.0, 4.0, CHOIR_R + 7.0], "look_at": [0.0, 1.5, CHOIR_R - 10.0], "fov": 50, "priority": 2},
+            {"id": "Bowl", "mode": "pan_follow", "at": [0.0, 1.5, 0.0], "size": [48.0, 4.0, 48.0],
+             "pos": [0.0, 8.0, CHOIR_R + 4.0], "look_at": [0.0, 0.5, -4.0], "fov": 50, "priority": 1}],
         "triggers": [],
     }
 

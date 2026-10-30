@@ -570,6 +570,14 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Next: Ch16's cameras.
 - MERGE-READY @ c41414a99
 
+- **Ch16 cameras (M4-A2P-016, claimed):**
+  - Added P02–P04 and D02–D07 (viewed), the `ChoirEdge` spawn, the `ring_*` marks, and the Rim, Wade, Approach and
+    Bowl volumes.
+  - field_camera, ch14_16 and layout are green.
+  - Every Act II chapter (Ch10–Ch16) now has its scene shots and field cameras on the greybox.
+  - Next: the Act II triggers and beats that need no story text (story's scenes gate the rest).
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.

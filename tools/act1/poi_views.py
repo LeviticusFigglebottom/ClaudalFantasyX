@@ -39,6 +39,7 @@ RIGS = {
     "ch13/lamp_archive": "ch13_lamp_archive_shots",
     "ch13/ansedra_lacquer_court": "ch14_lacquer_court_shots",  # M4-A2P-014
     "ch15/open_sea": "ch15_open_sea_shots", "ch17/hollowmere": "ch15_hollowmere_shots",  # M4-A2P-015
+    "ch16/pale_rim": "ch16_pale_rim_shots", "ch16/drowned_choir": "ch16_drowned_choir_shots",  # M4-A2P-016
 }
 RIG_DIR = "game/levels/_tests/act1_zones"
 PREVIEW = ROOT / RIG_DIR / "_preview"
