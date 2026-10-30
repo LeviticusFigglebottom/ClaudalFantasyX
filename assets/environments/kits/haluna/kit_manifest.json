@@ -664,13 +664,13 @@
     },
     "dace_hull_frame": {
       "budget": [
-        12000,
-        800
+        24000,
+        1600
       ],
-      "bytes": 216052,
+      "bytes": 292608,
       "lods": {
-        "dace_hull_frame": 3538,
-        "dace_hull_frame-lod1": 608
+        "dace_hull_frame": 4648,
+        "dace_hull_frame-lod1": 850
       }
     },
     "dock_haluna": {
