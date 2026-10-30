@@ -937,20 +937,42 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     (test-only), 4/0.
   - On the merged tree: cutscene_directives 2, cutscene_grade 3, cutscene_sequencer 18, first_verse 3, fp_ 30,
     haluna 65, prologue 8, ch01 20, all 0 failed.
-- **M3-CIN-1233, the M2 review switch flipped (the Lead's 23:31 order, ADR 0042), in progress:**
-  - first_playable.json: `prologue.next_location/next_spawn` → `ch01/oruvel_underway`/`Drop`;
-    `end_card.next_location/next_spawn` → `ch04/haluna_wake`/`NemeDoor`; both `_next_note`s updated.
-  - **Ch9's ending → the title:** Ch9 shows the same end card, so `end_card.final_flag` = `ch09_act_one_complete`
-    (Ch9's last scene sets it); with it set, accept returns to the title.
-  - The slice's card said "Confirm to return to the title" while it now goes on: when it carries on, the prompt is
-    `FLOW_END_CARD_PROMPT_CONTINUE` ("Confirm to continue"; appended to strings.csv).
-  - Tests moved to the route: test_fp_prologue, test_fp_thread, test_ch01_thread (its override dropped),
-    test_fp_end_card; the new **test_act1_route** walks New Game → prologue → Ch1, the end card → Ch4, and Act I's end
-    → the title.
-  - Still to come: the fp_/_thread runs on the final files, the hand-off stills, MERGE-READY.
-- LEAD-ASK: the slice's end card now plays mid-Act I and still reads "End of the first playable" with the slice credits
-  (CREDITS_SLICE). Keep it as the B12 beat, or should B11 go straight on into Ch4 with a chapter transition, or the
-  card get a mid-game title? My default: keep the card as is (your order) with only the prompt made honest.
+- **M3-CIN-1233, the M2 review switch flipped (the Lead's 23:31 order and 23:52 answer, ADR 0041/0042). MERGE-READY @
+  the branch head, for big19; act1-chapters reviews.** New Game plays Act I as one path:
+  - **New Game → Prologue → Ch1:** `prologue.next_location/next_spawn` = `ch01/oruvel_underway`/`Drop`.
+  - **The slice's end → Ch4's chapter card → Ch4:** B11's `haluna.night_end_scene` is now `game/flow/chapter_card.tscn`
+    (ChapterCard). It is UI's ActCard on black, with no credits and no demo card:
+    - B12's voice-over first, as a caption ("I said yes to a girl…", now the bridge into Ch4);
+    - then "Chapter 4" over the gold rule, then "The Pilgrim's Wake" (`CHAPTER_CARD_CH04_*`);
+    - then `ch04/haluna_wake` at `NemeDoor`.
+  - **Ch9's end → credits → the title:** the end card is Act I's ending only. Its next_location is empty, it has no
+    voice-over, its title is "The end of Act One", and CREDITS_SLICE's line now reads as Act One's.
+  - Both `_next_note`s record the flip.
+  - **For ui-menus (your ActCard, additive):** `show_titled(label_key, title_key)` (show_act uses it), and captions
+    word-wrap. B12's sentence ran off both edges.
+  - **For act1-chapters:** Ch9's "Act II: The Truth" is still a box line standing in for the card
+    (ch09_the_road_out's `ch09_act_card` node). `<<event act_card 2>>` or the new `#card` tag (M2-FP-121) would make it
+    UI's card. Ch4's "Pemakar. Dusk." is a card over the terraces, which ActCard (on black) doesn't fit.
+  - **Tests:**
+    - **new test_act1_route:** New Game → prologue → Ch1; B11 → the chapter card → Ch4; Ch9's end → credits → title;
+      every hand-off resolves in the registry;
+    - test_fp_prologue, test_fp_thread, test_ch01_thread, test_haluna_night and test_fp_end_card follow the route.
+  - **Also fixed:** CutsceneGrade's once-per-grade warning failed test_qa_threads; it is print_verbose now (the guard's
+    known list tracks those grades).
+  - **SELF-RENDERED (viewed; new pending stills):**
+    - flow_chapter_card_ch04_voice: the voice-over, three centred lines;
+    - flow_chapter_card_ch04: "Chapter 4" / "The Pilgrim's Wake";
+    - slice_end_card: "The end of Act One" with the roll and "Confirm to return to the title".
+    - slice_end_card_voice is dropped: the card has no voice-over now.
+  - **Checks:** act1_route 3, end_card 5, haluna_night 9, fp_ 30, act_card 7, zone_story 15, _thread 40 (on the
+    re-run: fp_thread 2 and qa_threads 1), cutscene_grade 3, all 0 failed. validate_data 0/0, dlgc, gdlint and gdformat
+    clean. No duplicate loc keys.
+  - **Skipped:** coverage and Blender (nothing they cover).
+- LEAD-ANSWERED (23:52: no demo card mid-game; the chapter card into Ch4; the credits at Act I's end; done above):
+  the slice's end card mid-Act I.
+- **M2-FP-121 (Ch1's "One month earlier." as UI's card on black), MERGE-READY:** a `#card` line is ActCard's caption.
+  A card before the first fade-in no longer stops a scene starting black. cutscene 98, ch01 20, dialogue 85,
+  cutscene_sequencer 19, all 0 failed (mutation-checked).
 ### PC-QUEUE
 - New Game → the beach: 15 s of black before the fade on lavapipe (the load and prewarm at a fixed 30 fps). Measure it on
   the GPU against ADR 0042's ≤ 1 s hidden-frames target.
