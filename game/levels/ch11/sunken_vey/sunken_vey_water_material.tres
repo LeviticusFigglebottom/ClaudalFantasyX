@@ -19,3 +19,4 @@ shader_parameter/roughness_far = 0.04
 shader_parameter/use_caustics = false
 shader_parameter/use_ssr = true
 shader_parameter/use_sss = false
+shader_parameter/detail_strength = 0.05

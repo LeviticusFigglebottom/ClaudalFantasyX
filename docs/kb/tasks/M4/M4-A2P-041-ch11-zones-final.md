@@ -20,4 +20,11 @@ Place the built kit (M3-ENV-716, 735) per lowlight.md §5: galleries, the condui
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2 Ch11.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
 
+- 2026-10-30 (env-art): **built**, `tools/act2/ch11_lowlight_dressing.py`. The walks and rooms are built from the
+  greybox (`vey_zones.py`, `lowlight_zones.py`). Around them stand the kit's arcades, columns, figs, the housing (the
+  mark), the bench and the well-shaft. Ch11's grey-noon grade and still water. env-art's previews
+  (`game/levels/_tests/ch11_zones/`) were viewed at twenty cameras. Tests: `tools/tests/test_ch11_lowlight_dressing.py`.
+  The mount, and the open choices (the well's mouth, wading, underwater), are chapters' (M4-A2P-0411). The Engine's
+  field look is creatures' `lamp_engine`.
+
 ## Review log

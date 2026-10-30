@@ -22,7 +22,6 @@ script = ExtResource("4_water")
 publishes_water_level = true
 wave_set = ExtResource("5_waves")
 material = ExtResource("6_mat")
-amplitude_scale = 1.0
 
 [node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
 script = ExtResource("3_tide")

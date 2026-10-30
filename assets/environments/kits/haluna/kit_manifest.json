@@ -1080,6 +1080,28 @@
         "lit_terrace_wall-lod1": 44
       }
     },
+    "lowlight_atrium": {
+      "budget": [
+        90000,
+        6000
+      ],
+      "bytes": 1674640,
+      "lods": {
+        "lowlight_atrium": 21524,
+        "lowlight_atrium-lod1": 980
+      }
+    },
+    "lowlight_hall": {
+      "budget": [
+        70000,
+        5000
+      ],
+      "bytes": 1280824,
+      "lods": {
+        "lowlight_hall": 14964,
+        "lowlight_hall-lod1": 264
+      }
+    },
     "lowlight_lamp_bench": {
       "budget": [
         2500,
@@ -1122,6 +1144,17 @@
       "lods": {
         "lowlight_sanctum": 4024,
         "lowlight_sanctum-lod1": 288
+      }
+    },
+    "lowlight_well": {
+      "budget": [
+        90000,
+        6000
+      ],
+      "bytes": 2019028,
+      "lods": {
+        "lowlight_well": 29556,
+        "lowlight_well-lod1": 3128
       }
     },
     "mangrove_dead": {
@@ -1940,6 +1973,50 @@
       "lods": {
         "strangler_fig": 6388,
         "strangler_fig-lod1": 552
+      }
+    },
+    "sunken_vey_court": {
+      "budget": [
+        90000,
+        6000
+      ],
+      "bytes": 742144,
+      "lods": {
+        "sunken_vey_court": 8856,
+        "sunken_vey_court-lod1": 204
+      }
+    },
+    "sunken_vey_ground": {
+      "budget": [
+        40000,
+        2500
+      ],
+      "bytes": 1129664,
+      "lods": {
+        "sunken_vey_ground": 18564,
+        "sunken_vey_ground-lod1": 640
+      }
+    },
+    "sunken_vey_walks_e": {
+      "budget": [
+        90000,
+        6000
+      ],
+      "bytes": 737128,
+      "lods": {
+        "sunken_vey_walks_e": 10420,
+        "sunken_vey_walks_e-lod1": 252
+      }
+    },
+    "sunken_vey_walks_w": {
+      "budget": [
+        90000,
+        6000
+      ],
+      "bytes": 716116,
+      "lods": {
+        "sunken_vey_walks_w": 9404,
+        "sunken_vey_walks_w-lod1": 180
       }
     },
     "tide_debris": {
