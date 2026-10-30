@@ -79,7 +79,7 @@ PANELS = {"f": (0.0, 0.52, 0.86, 0.2, 22), "l": (82.0, 0.44, 0.70, 0.22, 18),
 PANEL_TOP = 1.84
 PANEL_OFF = 0.045  # off the column
 PANEL_FLARE = 0.13  # extra flare at the hem
-PANEL_ROWS, PANEL_COLS = 22, 8
+PANEL_ROWS, PANEL_COLS = 18, 8
 PANEL_THICK = 0.02
 ROBE_Y = (PANEL_TOP, 1.25, 0.66)  # the robe chains' joints (the hem is the last)
 
@@ -297,15 +297,23 @@ def streaks(P: np.ndarray, seed: int) -> np.ndarray:
     return np.clip(0.5 + 0.9 * ck.fbm(q, seed, 3), 0.0, 1.0)
 
 
+def flow_bands(P: np.ndarray, seed: int) -> np.ndarray:
+    """Streaming bands: water running down her in sinuous vertical bands (0 .. 1), meandering as they fall."""
+    th = np.arctan2(P[:, 0], P[:, 2])
+    wob = 0.9 * ck.fbm(np.column_stack([np.cos(th) * 2.0, P[:, 1] * 0.8, np.sin(th) * 2.0]), seed, 2)
+    return ck.smoothstep(0.35, 0.95, np.sin(9.0 * th + 1.8 * np.sin(1.4 * P[:, 1]) + 2.5 * wob))
+
+
 def water_colour(P: np.ndarray, thin: np.ndarray | float = 0.0, seed: int = 1) -> np.ndarray:
-    """Standing seawater: the rim's deep water over deep_teal_shadow (deeper toward the column's foot), toward
-    turquoise at the thin edges and in running streaks, darker round the heart (so its light reads as deep inside),
-    and breaking white at the very foot."""
+    """Standing seawater: dense deep_teal_shadow under the rim's deep water (deeper toward the column's foot), lit by
+    streaming bands and running streaks toward turquoise, paler at the thin edges, darker round the heart (so its
+    light reads as deep inside), and breaking white at the very foot. (The light rim is the shader's fresnel.)"""
     thin = np.broadcast_to(np.asarray(thin, dtype=np.float64), (len(P),))
     st = streaks(P, SEED + seed)
-    c = ck.mix(PAL["deep_teal_shadow"], PAL["rim_deep"], (0.38 + 0.3 * st)[:, None])
+    c = ck.mix(PAL["deep_teal_shadow"], PAL["rim_deep"], (0.3 + 0.25 * st)[:, None])
     c = ck.mix(c, PAL["deep_teal_shadow"], (0.35 * ck.smoothstep(2.4, 0.2, P[:, 1]))[:, None])
-    c = ck.mix(c, PAL["turquoise_shallow"], (0.45 * thin + 0.4 * ck.smoothstep(0.55, 0.85, st))[:, None])
+    c = ck.mix(c, PAL["turquoise_shallow"], (0.4 * flow_bands(P, SEED + seed + 50))[:, None])
+    c = ck.mix(c, PAL["turquoise_shallow"], (0.45 * thin + 0.3 * ck.smoothstep(0.6, 0.85, st))[:, None])
     c = ck.mix(c, PAL["deep_teal_shadow"], (0.25 * heart_glow(P))[:, None])
     c = ck.mix(c, PAL["foam_white"], (0.6 * ck.smoothstep(0.1, 0.0, P[:, 1]))[:, None])
     return c
@@ -334,86 +342,272 @@ def body_mesh() -> tuple[np.ndarray, np.ndarray]:
     return P, T
 
 
-NECKLINE = (3.2, 0.15)  # the bodice's neckline: its height at the back and the shoulders, and how far it scoops in front
+def neckline_y(theta) -> np.ndarray:
+    """The bodice's top edge round her (bearing in radians, 0 to the front): across the collarbones, scooped a little
+    at the front, cut down to the armholes at the sides."""
+    th = np.asarray(theta, dtype=np.float64)
+    side = np.abs(np.angle(np.exp(1j * th)))
+    return 3.22 - 0.07 * np.exp(-(th / 0.45) ** 2) - 0.24 * np.exp(-((side - math.pi / 2) / 0.38) ** 2)
 
 
-def bodice(P: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """The robe carried up her body as a bodice of the same deeper water to a scooped neckline (colour only): its mask,
-    and the neckline's edge, where the water runs paler."""
-    th = np.arctan2(P[:, 0], P[:, 2])
-    neck_y = NECKLINE[0] - NECKLINE[1] * np.clip(np.cos(th), 0.0, 1.0) ** 2
-    y = P[:, 1]
-    mask = ck.smoothstep(neck_y + 0.04, neck_y - 0.04, y) * ck.smoothstep(WAIST_Y - 0.1, WAIST_Y, y)
-    edge = np.exp(-((y - (neck_y - 0.03)) / 0.04) ** 2) * (y > WAIST_Y)
-    return mask, edge
+BODICE_BOTTOM = 1.83  # under the girdle: the bodice's hem meets the robe there
+BODICE_OFF = 0.016  # off the body (fitted)
+BODICE_ROWS = 15
 
 
 def body(mesh: ck.Mesh, rig: ck.Rig) -> None:
+    """The column, the torso and the neck, one surface; where the bodice covers it, it is left out."""
     P, T = body_mesh()
+    c = P[T].mean(axis=1)
+    th = np.arctan2(c[:, 0], c[:, 2] - 0.0)
+    hidden = (c[:, 1] > BODICE_BOTTOM + 0.04) & (c[:, 1] < neckline_y(th) - 0.06)
+    T = T[~hidden]
+    used = np.unique(T)
+    remap = -np.ones(len(P), dtype=np.int64)
+    remap[used] = np.arange(len(used))
+    N = ck.weld_normals(P, ck.vertex_normals(P, T))
     col = water_colour(P, 0.0, 1)
-    mask, edge = bodice(P)
-    col = ck.mix(col, PAL["deep_teal_shadow"], (ROBE_TONE * mask)[:, None])
-    col = ck.mix(col, PAL["turquoise_shallow"], (0.4 * edge)[:, None])
-    em = water_emission(P)
+    before = mesh.triangle_count
+    ck.finish(mesh, P[used], remap[T], "water", col[used], body_skin(rig), wet=1.0, emission=water_emission(P)[used],
+              N=N[used])
+    count("water", mesh, before)
+
+
+def body_point(theta, y, off: float = 0.0) -> tuple[np.ndarray, np.ndarray]:
+    """A point on the body's surface at bearing theta and height y (arrays), pushed `off` out along its outward normal
+    (horizontal), and that normal."""
+    th = np.asarray(theta, dtype=np.float64)
+    y = np.asarray(y, dtype=np.float64)
+    hx, hz, zo = section(y)
+    f = fold(th, y)
+    x = hx * np.sin(th) * f
+    z = hz * np.cos(th) * f + zo
+    z = z + chest(x, y, z)
+    nrm = np.column_stack([np.sin(th) / np.maximum(hx, 1e-3), np.zeros_like(th), np.cos(th) / np.maximum(hz, 1e-3)])
+    nrm /= np.linalg.norm(nrm, axis=1, keepdims=True)
+    P = np.column_stack([x, y, z]) + nrm * np.asarray(off, dtype=np.float64).reshape(-1, 1)
+    return P, nrm
+
+
+def heart_pool(P: np.ndarray) -> np.ndarray:
+    """The heart's light where it shows through the bodice: a soft pool over the heart, under her hand."""
+    d = np.linalg.norm((P - HEART) * (1.0, 0.8, 1.0), axis=1)
+    return np.exp(-(d / HEART_POOL_R) ** 2)
+
+
+HEART_POOL_R = 0.18  # the pool's radius on the bodice
+HEART_POOL_PEAK = 0.6
+
+
+def gathers(a: np.ndarray, t: np.ndarray) -> np.ndarray:
+    """The bodice's soft gathers under the bust (out from the body, metres): vertical folds on the front, fading up."""
+    return 0.013 * np.sin(14.0 * a) * (1.0 - t) ** 1.2 * np.clip(np.cos(a), 0.0, 1.0)
+
+
+def bodice(mesh: ck.Mesh, rig: ck.Rig) -> None:
+    """A fitted bodice of the robe's deeper water from the girdle to the collarbones, softly gathered under the bust,
+    its top edge bound with a cord of Choir-stone beads; the heart's light shows through it."""
+    segs = BODY_SEGS
+    a = np.arange(segs) * (2.0 * math.pi / segs)
+    top = neckline_y(a)
+    rows = []
+    for k in range(BODICE_ROWS):
+        t = k / (BODICE_ROWS - 1)
+        y = BODICE_BOTTOM + (top - BODICE_BOTTOM) * t
+        gather = gathers(a, np.full(segs, t))
+        off = BODICE_OFF + 0.006 * ck.smoothstep(0.85, 1.0, t) + gather
+        Q, _ = body_point(a, y, off)
+        rows.append(Q)
+    P = np.vstack(rows)
+    T = ck.grid_tris(BODICE_ROWS, segs, True)
+    centres = np.column_stack([np.zeros(len(P)), P[:, 1], np.full(len(P), 0.02)])
+    T = orient(P, T, centres[T].mean(axis=1))
+    N = ck.weld_normals(P, ck.vertex_normals(P, T))
+    t_v = np.repeat(np.linspace(0.0, 1.0, BODICE_ROWS), segs)
+    a = np.tile(a, BODICE_ROWS)
+    col = water_colour(P, 0.0, 7)
+    col = ck.mix(col, PAL["deep_teal_shadow"], (ROBE_TONE + 0.1) * np.ones((len(P), 1)))
+    col = ck.mix(col, PAL["rim_deep"], (0.45 * ck.smoothstep(0.003, 0.012, gathers(a, t_v)))[:, None])  # the gathers' crests
+    col = ck.mix(col, PAL["abyss_navy"], 0.3)  # a garment of the deepest water: darker than her skin
+    col = ck.mix(col, PAL["abyss_navy"], (0.3 * ck.smoothstep(0.8, 1.0, t_v))[:, None])  # darkest at the cord
+    em = WATER_GLOW * 0.7 + HEART_POOL_PEAK * heart_pool(P)
     skin = body_skin(rig)
-    heart = heart_glow(P[T].mean(axis=1)) > 0.3  # the heart's triangles take the `inner` slot (the same shading)
-    for slot, sel in (("water", ~heart), ("inner", heart)):
+    heart = heart_pool(P[T].mean(axis=1)) > 0.3  # the heart's light through the bodice: the `inner` slot
+    for slot, sel in (("robe", ~heart), ("inner", heart)):
         Ts = T[sel]
         used = np.unique(Ts)
         remap = -np.ones(len(P), dtype=np.int64)
         remap[used] = np.arange(len(used))
-        N = ck.weld_normals(P, ck.vertex_normals(P, T))
         before = mesh.triangle_count
         ck.finish(mesh, P[used], remap[Ts], slot, col[used], skin, wet=1.0, emission=em[used], N=N[used])
-        count(slot, mesh, before)
+        count("bodice", mesh, before)
+    # the cord along the top edge (a closed loop round the neckline and the armholes)
+    n_c = 54
+    ac = np.linspace(0.0, 2.0 * math.pi, n_c + 1)
+    loop, _ = body_point(ac, neckline_y(ac), BODICE_OFF + 0.018)
+    rad = 0.017 + 0.007 * np.abs(np.sin(ac * 27.0))
+    Pc, Tc = ck.tube(loop, rad, 4, cap_start=False, cap_end=False)
+    rng = np.random.default_rng(SEED + 20)
+    colc = ck.mix(PAL["cold_blue_stone"], PAL["salt_glass"], rng.uniform(0.5, 0.75, len(Pc))[:, None])
+    before = mesh.triangle_count
+    ck.finish(mesh, Pc, Tc, "mouths", colc, skin, wet=0.5, cavity=0.25)
+    count("cord", mesh, before)
+
+
+STOLE_X = (0.2, 0.155)  # the stole's strips: their centres' x at the collarbone and at the girdle
+STOLE_W = 0.16
+STOLE_OFF = 0.042  # over the bodice
+
+
+def bearing_at(xs: np.ndarray, y: float) -> np.ndarray:
+    """The front bearing at which the body's surface (at height y) passes through x = xs."""
+    hx = float(section(y)[0])
+    return np.arcsin(np.clip(np.asarray(xs) / hx, -0.98, 0.98))
+
+
+def stole_strip(sd: float) -> tuple[np.ndarray, np.ndarray, int]:
+    """One strip of the stole (sd +1 left, -1 right): down her back from under the hair, over the shoulder, and down
+    her front to the girdle. Returns its grid (rows down the strip, 5 across) and t along it per row."""
+    cols = np.linspace(-0.5, 0.5, 5) * STOLE_W
+    rows, ts = [], []
+    back_y = np.linspace(3.02, 3.2, 4)
+    for y in back_y:  # the back: hanging down from the shoulder
+        xs = sd * STOLE_X[0] + cols
+        th = math.pi * np.sign(xs) - bearing_at(xs, y)
+        Q, _ = body_point(th, np.full(len(xs), y), STOLE_OFF)
+        rows.append(Q)
+    for phi in np.linspace(math.pi * 0.86, math.pi * 0.14, 6):  # over the shoulder
+        xs = sd * STOLE_X[0] + cols
+        rows.append(np.column_stack([xs, np.full(len(xs), 3.23 + 0.13 * math.sin(phi)),
+                                     np.full(len(xs), 0.17 * math.cos(phi))]))
+    for y in np.linspace(3.18, GIRDLE_Y + 0.03, 16):  # the front, down to the girdle
+        t = (3.18 - y) / (3.18 - GIRDLE_Y)
+        xs = sd * (STOLE_X[0] + (STOLE_X[1] - STOLE_X[0]) * t) + cols
+        Q, _ = body_point(bearing_at(xs, y), np.full(len(xs), y), STOLE_OFF + 0.006 * math.sin(7.0 * t))
+        rows.append(Q)
+    return np.vstack(rows), len(rows)
+
+
+def stole(mesh: ck.Mesh, rig: ck.Rig, mouths: list) -> None:
+    """A Cantor's stole of the deepest water over the bodice, its long edges running pale and its ends breaking white,
+    a small carved mouth of Choir stone at each end."""
+    skin = body_skin(rig)
+    before = mesh.triangle_count
+    for sd in (1.0, -1.0):
+        P, n_rows = stole_strip(sd)
+        T = ck.grid_tris(n_rows, 5, False)
+        T = orient(P, T, np.column_stack([np.zeros(len(T)), P[T].mean(axis=1)[:, 1], np.full(len(T), 0.02)]))
+        N = ck.weld_normals(P, ck.vertex_normals(P, T))
+        across = np.tile(np.abs(np.linspace(-1.0, 1.0, 5)), n_rows)
+        along = np.repeat(np.linspace(0.0, 1.0, n_rows), 5)
+        col = ck.mix(ck.mix(water_colour(P, 0.0, 8), PAL["deep_teal_shadow"], 0.72), PAL["abyss_navy"], 0.25)
+        col = ck.mix(col, PAL["salt_glass"], (0.6 * ck.smoothstep(0.6, 0.95, across))[:, None])  # its pale edges
+        col = ck.mix(col, PAL["foam_white"], (0.7 * ck.smoothstep(0.93, 1.0, along))[:, None])
+        ck.finish(mesh, P, T, "robe", col, skin, wet=1.0, emission=WATER_GLOW * 0.6, N=N)
+        k = (n_rows - 3) * 5 + 2  # the end's mouth, just over the hem
+        down = P[k + 5] - P[k - 5]
+        J, W = skin(P[k][None])
+        mouths.append((P[k] + N[k] * 0.004, N[k], down, 0.2, 0.0, J[0], W[0]))
+    count("stole", mesh, before)
 
 
 # ---------------------------------------------------------------------------------------------
 # The head: bare, a woman's face, patient and tired; the hair falls from it
 # ---------------------------------------------------------------------------------------------
+def _spacing(t: np.ndarray, w: np.ndarray) -> np.ndarray:
+    """Positions 0 .. 1 for the grid t whose steps go as the density w (smaller w: closer rows)."""
+    c = np.concatenate([[0.0], np.cumsum(0.5 * (w[1:] + w[:-1]) * np.diff(t))])
+    return c / c[-1]
+
+
+HEAD_RINGS, HEAD_SEGS = 30, 40
+
+
+def head_grid() -> tuple[np.ndarray, np.ndarray]:
+    """A unit sphere (poles on y, the face toward +z) whose rows and columns crowd onto the face."""
+    t = np.linspace(0.0, 1.0, HEAD_RINGS + 1)
+    polar = math.pi * _spacing(t, 1.0 - 0.5 * np.exp(-((t - 0.6) / 0.22) ** 2))
+    ta = np.linspace(0.0, 1.0, HEAD_SEGS + 1)
+    d = np.minimum(ta, 1.0 - ta)
+    az = 2.0 * math.pi * _spacing(ta, 1.0 - 0.55 * np.exp(-(d / 0.15) ** 2))[:-1]
+    P = np.vstack([np.column_stack([np.sin(p) * np.sin(az), np.full(HEAD_SEGS, math.cos(p)), np.sin(p) * np.cos(az)])
+                   for p in polar])
+    return P, ck.grid_tris(HEAD_RINGS + 1, HEAD_SEGS, True)
+
+
+def _g(dx, dy, wx: float, wy: float):
+    return np.exp(-(dx / wx) ** 2 - (dy / wy) ** 2)
+
+
 def head_mesh() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    P, T = ck.ellipsoid((0.0, 0.0, 0.0), (1.0, 1.0, 1.0), 26, 36)
-    u = P.copy()
-    front = ck.smoothstep(0.05, 0.55, u[:, 2])
+    """Her head: a woman's face, calm and grieving, the eyes closed under heavy lids, the inner ends of the brows a
+    little raised, the mouth's corners a little down. Features are carved into a unit sphere (x across, y up, z
+    toward the face) and scaled to HEAD_R."""
+    u, T = head_grid()
     x, y, z = u[:, 0].copy(), u[:, 1].copy(), u[:, 2].copy()
+    front = ck.smoothstep(0.05, 0.55, z)
     jaw = ck.smoothstep(-0.05, -0.95, y)
-    x *= 1.0 - 0.2 * jaw
+    x *= 1.0 - 0.11 * jaw
     z = np.where(z > 0, z * (1.0 - 0.12 * jaw), z * (1.0 - 0.25 * jaw))
     z = np.where((z < 0) & (y > -0.3), z * 1.1, z)  # the back of the skull
-    z = np.where(z > 0.3, z - 0.05 * (z - 0.3), z)  # the face's plane
-    nose_t = ck.smoothstep(0.12, -0.33, y) * ck.smoothstep(-0.46, -0.33, y)
-    z += front * 0.24 * nose_t ** 1.3 * np.exp(-(x / 0.16) ** 2)
-    sockets = sum(np.exp(-((x - sx) / 0.2) ** 2 - ((y - 0.06) / 0.11) ** 2) for sx in (0.37, -0.37))
-    z -= front * 0.15 * sockets
-    z += front * 0.05 * np.exp(-((y - 0.2) / 0.07) ** 2) * ck.smoothstep(0.62, 0.2, np.abs(x))  # the brow
-    z += front * 0.045 * np.exp(-((y + 0.56) / 0.07) ** 2) * np.exp(-(x / 0.25) ** 2)  # the lips
-    z += front * 0.03 * np.exp(-((y + 0.84) / 0.08) ** 2) * np.exp(-(x / 0.3) ** 2)  # the chin
-    cheeks = sum(np.exp(-((x - sx) / 0.2) ** 2 - ((y + 0.2) / 0.15) ** 2) for sx in (0.45, -0.45))
-    z += front * 0.025 * cheeks
-    lids = sum(np.exp(-((x - sx) / 0.15) ** 2 - ((y - 0.05) / 0.075) ** 2) for sx in (0.36, -0.36))
-    z += front * 0.07 * lids
+    z = np.where(z > 0.3, z - 0.06 * (z - 0.3), z)  # the face's plane
+    d = np.zeros_like(z)
+    cav = np.zeros_like(z)
+    for sx in (0.36, -0.36):
+        dx = x - sx
+        d -= 0.13 * _g(dx, y - 0.08, 0.22, 0.13)  # the socket
+        d += 0.085 * _g(dx, y - 0.05, 0.15, 0.085)  # the closed lid over the eye
+        lash = 0.0 - 0.05 * (dx / 0.15) ** 2  # the closed lids' line, curving down
+        g = np.exp(-((y - lash) / 0.035) ** 2) * np.exp(-(dx / 0.16) ** 2)
+        d -= 0.016 * g
+        cav = np.maximum(cav, 0.9 * g)
+        crease = 0.13 - 0.03 * (dx / 0.15) ** 2
+        g = np.exp(-((y - crease) / 0.035) ** 2) * np.exp(-(dx / 0.16) ** 2)
+        d -= 0.01 * g
+        cav = np.maximum(cav, 0.45 * g)
+        d += 0.07 * _g(x - sx * 1.3, y + 0.08, 0.18, 0.12)  # the cheekbone
+        d -= 0.035 * _g(x - sx * 1.15, y + 0.42, 0.14, 0.14)  # under it
+        d += 0.05 * _g(x - sx * 0.3, y + 0.33, 0.06, 0.05)  # the nostril's wing
+        cav = np.maximum(cav, 0.7 * _g(x - sx * 0.2, y + 0.37, 0.035, 0.03))
+        d += 0.012 * _g(x - sx * 0.08, y + 0.43, 0.02, 0.06)  # the philtrum's ridges
+    brow_y = 0.235 + 0.035 * ck.smoothstep(0.35, 0.05, np.abs(x))  # grief lifts the brows' inner ends
+    d += 0.075 * np.exp(-((y - brow_y) / 0.07) ** 2) * ck.smoothstep(0.62, 0.15, np.abs(x))
+    nose_h = (0.03 + 0.25 * ck.smoothstep(0.15, -0.3, y)) * ck.smoothstep(-0.42, -0.32, y) * ck.smoothstep(0.32, 0.18, y)
+    d += nose_h * np.exp(-(x / (0.085 + 0.06 * ck.smoothstep(0.0, -0.3, y))) ** 2)
+    d += 0.03 * _g(x, y + 0.3, 0.08, 0.06)  # the nose's tip
+    d += 0.06 * _g(x, y + 0.5, 0.27, 0.05)  # the upper lip
+    d += 0.07 * _g(x, y + 0.635, 0.22, 0.055)  # the lower lip
+    line = -0.565 - 0.035 * (x / 0.26) ** 2  # the mouth closed, its corners a little down
+    g = np.exp(-((y - line) / 0.035) ** 2) * np.exp(-(x / 0.27) ** 4)
+    d -= 0.018 * g
+    cav = np.maximum(cav, 0.8 * g)
+    d -= 0.012 * _g(x, y + 0.74, 0.18, 0.03)
+    d += 0.06 * _g(x, y + 0.86, 0.2, 0.09)  # the chin
+    z = z + front * d
+    cav = cav * front
     # the hair over the crown and the back: a little proud of the skull
-    hairline = ck.smoothstep(0.32, 0.5, y + 0.5 * ck.smoothstep(0.55, 0.1, u[:, 2]))
-    hair = np.maximum(hairline, ck.smoothstep(0.1, -0.25, u[:, 2]) * ck.smoothstep(-0.7, -0.2, y))
-    r = 1.0 + 0.05 * hair
+    uz = u[:, 2]
+    hairline = ck.smoothstep(0.34, 0.46, u[:, 1] + 0.45 * ck.smoothstep(0.55, 0.05, uz))  # the forehead, the temples
+    ears = ck.smoothstep(0.7, 0.86, np.abs(u[:, 0])) * ck.smoothstep(-0.45, -0.2, u[:, 1]) * ck.smoothstep(0.6, 0.3, uz)
+    hair = np.maximum(np.maximum(hairline, ears), ck.smoothstep(0.1, -0.25, uz) * ck.smoothstep(-0.7, -0.2, u[:, 1]))
+    r = 1.0 + 0.06 * hair
     Q = np.column_stack([x * r, y * r, z * r]) * HEAD_R + HEAD_C
-    cav = np.clip(0.9 * sockets + 0.6 * np.exp(-((y + 0.52) / 0.03) ** 2) * np.exp(-(x / 0.2) ** 2) * front, 0, 1)
-    T = T[:, ::-1]
     T = orient(Q, T, np.tile(HEAD_C, (len(T), 1)))
-    return Q, T, hair, cav * front
+    return Q, T, hair, cav
 
 
 def head(mesh: ck.Mesh, rig: ck.Rig) -> None:
     P, T, hair, cav = head_mesh()
-    col = water_colour(P, 0.1, 2)
-    hair_col = ck.mix(PAL["rim_deep"], PAL["turquoise_shallow"], (0.3 + 0.35 * streaks(P * 3.0, SEED + 9))[:, None])
+    col = water_colour(P, 0.35, 2)  # her face: the palest, clearest water on her
+    hair_col = ck.mix(PAL["deep_teal_shadow"], PAL["rim_deep"], (0.3 + 0.35 * streaks(P * 3.0, SEED + 9))[:, None])
+    hair_col = ck.mix(hair_col, PAL["abyss_navy"], 0.15)  # the hair as dark as its fall, so it frames the face
     col = ck.mix(col, hair_col, hair[:, None])
-    col = ck.mix(col, PAL["deep_teal_shadow"], (0.25 * cav)[:, None])
+    col = ck.mix(col, PAL["deep_teal_shadow"], (0.45 * cav)[:, None])
     neck_w = ck.smoothstep(3.62, 3.5, P[:, 1])
     i_n, i_h = rig.index("neck"), rig.index("head")
     J = np.column_stack([np.full(len(P), i_h), np.full(len(P), i_n)])
     W = np.column_stack([1.0 - neck_w, neck_w])
-    em = WATER_GLOW * (1.0 - cav)  # no light in her eyes: she is a person, not a spirit
+    em = WATER_GLOW * 1.6 * (1.0 - cav) * (1.0 - hair)  # the face holds her light; none in the eyes or the hair
     before = mesh.triangle_count
     ck.finish(mesh, P, T, "water", col, fixed(J, W), wet=1.0, cavity=cav, emission=em)
     count("head", mesh, before)
@@ -425,15 +619,21 @@ def hair_path(side: float, rng: np.random.Generator, out: float = 0.0, n: int = 
     the sheet."""
     bx = math.sin(math.radians(80.0 * side))
     bz = math.cos(math.radians(80.0 * side))
-    start = HEAD_C + HEAD_R * np.array([bx * 0.3, 0.93, 0.2 - 0.22 * bz]) * 0.99
-    crown = HEAD_C + HEAD_R * np.array([bx * 0.78, 0.6, -bz * 0.62 + 0.12 * abs(bx)]) * (1.04 + out * 3.0)
-    over = HEAD_C + HEAD_R * np.array([bx * 1.07, 0.12, -bz * 0.99 + 0.14 * abs(bx)]) * (1.0 + out * 3.0)
+    phi = math.radians(78.0 * side)  # round the face from the forehead's middle to the ear
+    line = np.array([math.sin(phi) * 0.9, 0.5 - 0.55 * abs(side), math.cos(phi) * 0.86 - 0.5 * abs(side)])
+    start = HEAD_C + HEAD_R * line / np.linalg.norm(line) * 1.035  # the hairline, framing the face, lying flat
+    back = np.array([bx * 1.0, 0.12, -bz * 0.99 + 0.14 * abs(bx)])
+    mid_u = (line / np.linalg.norm(line) + back / np.linalg.norm(back)) * 0.5 + np.array([0.0, 0.45 * (1 - abs(side)), 0.0])
+    crown = HEAD_C + HEAD_R * mid_u / np.linalg.norm(mid_u) * (1.08 + out * 2.0)
+    over = HEAD_C + HEAD_R * back * (1.07 + out * 3.0)
     x_end = side * 0.46 + float(rng.uniform(-0.02, 0.02))
     y_end = float(rng.uniform(1.92, 2.2)) - 0.14 * (1.0 - abs(side))
     nape = np.array([side * 0.27, 3.4, -0.26 - 0.05 * (1.0 - abs(side)) - out])
     mid = np.array([side * 0.37, 2.9, -0.38 - out])
     low = np.array([x_end * 0.96, 2.4, -0.42 - out])
     end = np.array([x_end, y_end, -0.44 - 0.03 * abs(side) - out])
+    if out > 0.0:  # a loose strand rises from behind the crown, not from the hairline
+        return spline([crown, over, nape, mid, low, end], n)
     return spline([start, crown, over, nape, mid, low, end], n)
 
 
@@ -441,7 +641,7 @@ def hair_path(side: float, rng: np.random.Generator, out: float = 0.0, n: int = 
 HAIR_COLS = 15  # across the sheet
 HAIR_ROWS = 20  # down it
 HAIR_THICK = 0.035
-N_STRANDS = 5  # loose strands over the sheet
+N_STRANDS = 3  # loose strands over the sheet
 
 
 def hair_skin(rig: ck.Rig, P: np.ndarray, side: np.ndarray):
@@ -473,7 +673,7 @@ def hair(mesh: ck.Mesh, rig: ck.Rig) -> None:
     for j in range(HAIR_COLS):
         side = (j / (HAIR_COLS - 1) - 0.5) * 2.0
         paths.append((hair_path(side, rng, n=HAIR_ROWS), side))
-    P = np.vstack([pth for pth, _ in paths])  # col-major: col j's rows
+    P = np.vstack([pth + np.gradient(pth, axis=0) * 0.0 for pth, _ in paths])  # col-major: col j's rows
     side = np.repeat([sd for _, sd in paths], HAIR_ROWS)
     t = np.tile(np.linspace(0.0, 1.0, HAIR_ROWS), HAIR_COLS)
     grid = P.reshape(HAIR_COLS, HAIR_ROWS, 3).transpose(1, 0, 2).reshape(-1, 3)  # row-major for grid_tris
@@ -483,11 +683,14 @@ def hair(mesh: ck.Mesh, rig: ck.Rig) -> None:
     inside = np.column_stack([np.zeros(len(T)), grid[T].mean(axis=1)[:, 1], np.zeros(len(T))]) + (0.0, 0.0, 0.05)
     T = orient(grid, T, inside)
     N = ck.weld_normals(grid, ck.vertex_normals(grid, T))
+    strand = np.tile((np.arange(HAIR_COLS) % 2) * 1.0 + rng.uniform(-0.3, 0.3, HAIR_COLS), HAIR_ROWS)
+    grid = grid + N * (0.012 * strand * ck.smoothstep(0.0, 0.12, t_g))[:, None]  # the strands, side by side
+    N = ck.weld_normals(grid, ck.vertex_normals(grid, T))
     shade = np.repeat(rng.uniform(0.0, 1.0, HAIR_COLS)[None], HAIR_ROWS, axis=0).reshape(-1)
-    shade = np.clip(shade * 0.6 + 0.4 * streaks(grid * 2.0, SEED + 14), 0.0, 1.0)
+    shade = np.clip(shade * 0.75 + 0.25 * streaks(grid * 2.0, SEED + 14), 0.0, 1.0)  # strand by strand
     col = hair_colour(grid, t_g, shade)
     J, W = hair_skin(rig, grid, side_g)
-    em = WATER_GLOW * (1.0 - t_g)
+    em = np.zeros(len(grid))  # no light in the hair: the face is the brightest of her head
     before = mesh.triangle_count
     ck.finish(mesh, grid, T, "hair", col, fixed(J, W), wet=1.0, emission=em, N=N)
     Pi = grid - N * HAIR_THICK  # the inner face, against her back
@@ -504,20 +707,27 @@ def hair(mesh: ck.Mesh, rig: ck.Rig) -> None:
         ring_t = np.minimum(np.arange(len(Ps)) // 6, n - 1) / (n - 1)
         Js, Ws = hair_skin(rig, Ps, np.full(len(Ps), sd))
         ck.finish(mesh, Ps, Ts, "hair", hair_colour(Ps, ring_t, np.full(len(Ps), 0.8)), fixed(Js, Ws), wet=1.0,
-                  emission=WATER_GLOW * (1.0 - ring_t))
+                  emission=0.0)
     count("hair", mesh, before)
 
 
 # ---------------------------------------------------------------------------------------------
 # Arms and open hands
 # ---------------------------------------------------------------------------------------------
-def arm(mesh: ck.Mesh, rig: ck.Rig, s: float, tag: str) -> None:
+ARM_SEGS = 10
+
+
+def arm_geometry(s: float) -> tuple[np.ndarray, np.ndarray]:
     p = mirror(ARM, s)
     start = np.array([0.3 * s, 3.1, -0.03])
     path = spline([start, p[0], p[1], p[2] + (p[2] - p[1]) * 0.1], 24)
     t = np.linspace(0.0, 1.0, len(path))
     rad = np.interp(t, [0.0, 0.12, 0.3, 0.5, 0.62, 1.0], [0.115, 0.125, 0.11, 0.09, 0.092, 0.05])
-    P, T = ck.tube(path, rad, 12, cap_start=False, cap_end=False)
+    return path, rad
+
+
+def arm_skin(rig: ck.Rig, s: float, tag: str):
+    p = mirror(ARM, s)
     chain = rig.chain([f"upper_{tag}", f"fore_{tag}"], p[:3])
     i_clav = rig.index(f"clav_{tag}")
 
@@ -531,11 +741,74 @@ def arm(mesh: ck.Mesh, rig: ck.Rig, s: float, tag: str) -> None:
         W[near] = np.column_stack([1.0 - w[near], w[near]])
         return J, W
 
-    ring_t = np.minimum(np.arange(len(P)) // 12, len(path) - 1) / (len(path) - 1)
+    return skin
+
+
+def arm(mesh: ck.Mesh, rig: ck.Rig, s: float, tag: str) -> None:
+    path, rad = arm_geometry(s)
+    P, T = ck.tube(path, rad, ARM_SEGS, cap_start=False, cap_end=False)
+    ring_t = np.minimum(np.arange(len(P)) // ARM_SEGS, len(path) - 1) / (len(path) - 1)
     before = mesh.triangle_count
-    ck.finish(mesh, P, T, "water", water_colour(P, 0.4 * ring_t, 3), skin, wet=1.0,
+    ck.finish(mesh, P, T, "water", water_colour(P, 0.4 * ring_t, 3), arm_skin(rig, s, tag), wet=1.0,
               emission=water_emission(P))
     count("arm", mesh, before)
+
+
+RUNNEL_R = (0.017, 0.007)  # a runnel's half width at its head and its tail
+
+
+def runnel(mesh: ck.Mesh, path: np.ndarray, out: np.ndarray, skin, seed: int) -> None:
+    """A runnel: a flattened stream of water laid on the surface along `path` (`out` its outward normals), paler
+    than the body and breaking white at its tail."""
+    n = len(path)
+    t = np.linspace(0.0, 1.0, n)
+    tan = np.gradient(path, axis=0)
+    side = np.cross(tan[0], out[0])
+    P, T = ck.tube(path, RUNNEL_R[0] + (RUNNEL_R[1] - RUNNEL_R[0]) * t, 5, cap_start=True, cap_end=True,
+                   up_hint=tuple(side / max(np.linalg.norm(side), 1e-9)), squash=0.45)
+    ring_t = np.r_[np.minimum(np.arange(n * 5) // 5, n - 1) / (n - 1), 0.0, 1.0]
+    col = ck.mix(water_colour(P, 0.5, seed), PAL["turquoise_shallow"], 0.55)
+    col = ck.mix(col, PAL["foam_white"], (0.75 * ck.smoothstep(0.7, 1.0, ring_t))[:, None])
+    ck.finish(mesh, P, T, "water", col, skin, wet=1.0, emission=RUNNEL_GLOW * (1.0 - 0.5 * ring_t))
+
+
+RUNNEL_GLOW = 0.16  # a runnel catches more of her light than the still water under it
+
+
+ARM_RUNNELS = ((0.15, 0.52, 0.0), (0.6, 0.66, 0.5), (-0.55, 0.45, -0.4))  # (bearing off the outside, end, spiral)
+CHEST_RUNNELS = ((0.035, 2.55), (-0.04, 2.38), (0.33, 2.62), (-0.32, 2.5))  # (x, the tail's height)
+
+
+def runnels(mesh: ck.Mesh, rig: ck.Rig) -> None:
+    """Water running down over the shoulders and the arms, and down the bodice from the neckline."""
+    before = mesh.triangle_count
+    for s, tag in ((1.0, "l"), (-1.0, "r")):
+        path, rad = arm_geometry(s)
+        tan, nrm, bin_ = ck.frames_along(path)
+        skin = arm_skin(rig, s, tag)
+        for off, end, spiral in ARM_RUNNELS:
+            ts = np.linspace(0.05, end, 11)
+            pts, outs = [], []
+            for tt in ts:
+                i = min(int(tt * (len(path) - 1)), len(path) - 2)
+                f = tt * (len(path) - 1) - i
+                c = path[i] * (1 - f) + path[i + 1] * f
+                r = rad[i] * (1 - f) + rad[i + 1] * f
+                outer = np.array([s, 0.0, 0.25]) - tan[i] * float(np.dot((s, 0.0, 0.25), tan[i]))
+                phi0 = math.atan2(float(np.dot(outer, bin_[i])), float(np.dot(outer, nrm[i])))
+                phi = phi0 + s * (off + spiral * (tt - 0.05))
+                o = math.cos(phi) * nrm[i] + math.sin(phi) * bin_[i]
+                pts.append(c + o * (r + 0.004))
+                outs.append(o)
+            runnel(mesh, np.array(pts), np.array(outs), skin, 21)
+    skin = body_skin(rig)
+    for x, y_end in CHEST_RUNNELS:
+        th0 = float(bearing_at(np.array([x]), 2.9)[0])
+        ys = np.linspace(float(neckline_y(np.array([th0]))[0]) - 0.03, y_end, 10)
+        th = th0 + 0.03 * np.sin(np.linspace(0.0, 3.0, 10) + x * 10.0)
+        pts, outs = body_point(th, ys, BODICE_OFF + 0.008)
+        runnel(mesh, pts, outs, skin, 22)
+    count("runnels", mesh, before)
 
 
 def hand_frame(s: float) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
@@ -570,10 +843,12 @@ def hand(mesh: ck.Mesh, rig: ck.Rig, s: float, tag: str) -> None:
         d = u + vs * splay
         d /= np.linalg.norm(d)
         p0 = base + vs * dv
-        path = ck.bezier([p0 - d * 0.03, p0 + d * length * 0.5 + n * 0.012, p0 + d * length + n * 0.03], 7)
+        path = ck.bezier([p0 - d * 0.03, p0 + d * length * 0.5 + n * 0.018, p0 + d * length * 0.92 + n * 0.055], 7)
         t = np.linspace(0.0, 1.0, len(path))
-        P, T = ck.tube(path, 0.024 - 0.011 * t, 6, cap_start=False, cap_end=True, up_hint=tuple(n))
-        ck.finish(mesh, P, T, "water", water_colour(P, 0.75, 4), bone, wet=1.0, emission=WATER_GLOW)
+        P, T = ck.tube(path, 0.024 - 0.011 * t, 5, cap_start=False, cap_end=True, up_hint=tuple(n))
+        tip = np.r_[np.minimum(np.arange(len(path) * 5) // 5, len(path) - 1) / (len(path) - 1), 1.0]
+        col = ck.mix(water_colour(P, 0.75, 4), PAL["foam_white"], (0.6 * ck.smoothstep(0.6, 1.0, tip))[:, None])
+        ck.finish(mesh, P, T, "water", col, bone, wet=1.0, emission=WATER_GLOW)
     # the thumb, from the heel of the palm toward the front
     t0 = w + u * 0.08 - vs * 0.065 + n * 0.025
     d = u * 0.85 - vs * 0.45 + n * 0.3
@@ -588,7 +863,7 @@ def hand(mesh: ck.Mesh, rig: ck.Rig, s: float, tag: str) -> None:
 # ---------------------------------------------------------------------------------------------
 # The robe: four panels of darker water from the girdle, the stole, the girdle of Choir stone
 # ---------------------------------------------------------------------------------------------
-ROBE_TONE = 0.4  # how far the robe's water leans to deep_teal_shadow (a garment of deeper water)
+ROBE_TONE = 0.55  # how far the robe's water leans to deep_teal_shadow (a garment of deeper water)
 
 
 def panel_surface(tag: str) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
@@ -635,50 +910,53 @@ def panels(mesh: ck.Mesh, rig: ck.Rig, mouths: list) -> None:
         skin = rig.chain([f"robe_{tag}{k}" for k in range(3)], robe_points(tag))
         edge = np.maximum(ck.smoothstep(0.7, 1.0, np.abs(st[:, 1])), ck.smoothstep(0.9, 1.0, st[:, 0]))
         col = robe_colour(P, edge)
+        col = ck.mix(col, PAL["foam_white"], (0.55 * ck.smoothstep(0.9, 1.0, st[:, 0]))[:, None])  # the hem breaks white
         em = WATER_GLOW * 0.7 * np.ones(len(P))
         before = mesh.triangle_count
-        ck.finish(mesh, P, T, "water", col, skin, wet=1.0, emission=em, N=N)
+        ck.finish(mesh, P, T, "robe", col, skin, wet=1.0, emission=em, N=N)
         Pi = P - N * PANEL_THICK  # the inner face (seen when the robe swings out)
-        ck.finish(mesh, Pi, ck.flip(T), "water", ck.mix(col, PAL["deep_teal_shadow"], 0.5), skin, wet=1.0,
+        ck.finish(mesh, Pi, ck.flip(T), "robe", ck.mix(col, PAL["deep_teal_shadow"], 0.5), skin, wet=1.0,
                   emission=em * 0.5, N=-N)
         count("robe", mesh, before)
-        # the mouths: scattered (seeded dart throwing, never closer than MOUTH_GAP), larger toward the hem
+        # the mouths: carved plaques in flowing vertical bands down the panel, larger toward the hem
         length = PANEL_TOP - hem
-        placed: list[tuple[float, float, float]] = []
-        tries = 0
-        while len(placed) < n_mouths and tries < 4000:
-            tries += 1
-            t = float(rng.uniform(0.06, 0.93))
-            s = float(rng.uniform(-0.72, 0.72))
-            size = 0.1 + 0.08 * t + float(rng.uniform(-0.015, 0.015))
-            wm = (w0 + (w1 - w0) * t ** 1.2) * 0.5
-            if any(math.hypot((t - t2) * length, (s - s2) * wm) < MOUTH_GAP * (size + z2) / 0.3
-                   for t2, s2, z2 in placed):
-                continue
-            placed.append((t, s, size))
-        for t, s, size in placed:
-            i_t = t * (PANEL_ROWS - 1)
-            i_s = (s + 1.0) * 0.5 * (PANEL_COLS - 1)
-            r0, c0 = int(i_t), int(i_s)
-            ft, fs = i_t - r0, i_s - c0
-            idx = lambda rr, cc: min(rr, PANEL_ROWS - 1) * PANEL_COLS + min(cc, PANEL_COLS - 1)  # noqa: E731
-            p = ((1 - ft) * (1 - fs) * P[idx(r0, c0)] + (1 - ft) * fs * P[idx(r0, c0 + 1)]
-                 + ft * (1 - fs) * P[idx(r0 + 1, c0)] + ft * fs * P[idx(r0 + 1, c0 + 1)])
-            nn = N[idx(int(round(i_t)), int(round(i_s)))]
-            down = P[idx(r0 + 1, c0)] - P[idx(r0, c0)]
-            roll = math.radians(float(rng.uniform(-12.0, 12.0)))
-            J, W = skin(p[None])
-            mouths.append((p, nn, down, size, roll, J[0], W[0]))
+        for b, s0 in enumerate(MOUTH_BANDS[tag]):
+            ph = float(rng.uniform(0.0, 2.0 * math.pi))
+            t = 0.05 + float(rng.uniform(0.0, 0.04))
+            while True:
+                size = PLAQUE_SIZE[0] + (PLAQUE_SIZE[1] - PLAQUE_SIZE[0]) * t + float(rng.uniform(-0.02, 0.02))
+                tc = t + 0.5 * size / length
+                if tc > 0.9:
+                    break
+                sc = s0 + 0.12 * math.sin(2.4 * math.pi * tc + ph)
+                slope = 0.12 * 2.4 * math.pi * math.cos(2.4 * math.pi * tc + ph)  # ds/dt: the band's lean
+                wm = (w0 + (w1 - w0) * tc ** 1.2) * 0.5
+                roll = math.atan2(slope * wm, length) + math.radians(float(rng.uniform(-7.0, 7.0)))
+                i_t = tc * (PANEL_ROWS - 1)
+                i_s = (sc + 1.0) * 0.5 * (PANEL_COLS - 1)
+                r0, c0 = int(i_t), int(i_s)
+                ft, fs = i_t - r0, i_s - c0
+                idx = lambda rr, cc: min(rr, PANEL_ROWS - 1) * PANEL_COLS + min(cc, PANEL_COLS - 1)  # noqa: E731
+                p = ((1 - ft) * (1 - fs) * P[idx(r0, c0)] + (1 - ft) * fs * P[idx(r0, c0 + 1)]
+                     + ft * (1 - fs) * P[idx(r0 + 1, c0)] + ft * fs * P[idx(r0 + 1, c0 + 1)])
+                nn = N[idx(int(round(i_t)), int(round(i_s)))]
+                down = P[idx(r0 + 1, c0)] - P[idx(r0, c0)]
+                J, W = skin(p[None])
+                mouths.append((p, nn, down, size, roll, J[0], W[0]))
+                t += (size + PLAQUE_GAP) / length
 
 
-MOUTH_GAP = 0.17  # the least gap between two mouths' centres (scaled by their sizes)
+# the mouths' bands per panel (s across the panel, -1 .. 1) and the plaques' height at the girdle and at the hem
+MOUTH_BANDS = {"f": (-0.42, 0.4), "l": (-0.35, 0.38), "r": (-0.38, 0.35), "b": (-0.55, 0.0, 0.55)}
+PLAQUE_SIZE = (0.22, 0.32)
+PLAQUE_GAP = 0.035
 
 
 def girdle(mesh: ck.Mesh, rig: ck.Rig) -> None:
     a = np.linspace(0.0, 360.0, 49)
     loop = np.array([girdle_point(d) for d in a])
     rad = 0.026 + 0.012 * np.abs(np.sin(np.radians(a) * 12.0))  # 24 beads
-    P, T = ck.tube(loop, rad, 5, cap_start=False, cap_end=False)
+    P, T = ck.tube(loop, rad, 4, cap_start=False, cap_end=False)
     rng = np.random.default_rng(SEED + 10)
     col = ck.mix(PAL["cold_blue_stone"], PAL["salt_glass"], rng.uniform(0.1, 0.35, len(P))[:, None])
     before = mesh.triangle_count
@@ -686,51 +964,74 @@ def girdle(mesh: ck.Mesh, rig: ck.Rig) -> None:
     count("girdle", mesh, before)
 
 
-MOUTH_PTS = 12  # points round each ring of a mouth
+MOUTH_PTS = 10  # points round each ring of a plaque and its mouth
+PLAQUE_H = 0.032  # the plaque's thickness off the robe
 
 
-def mouth_rings(p, nn, down, size, roll) -> tuple[np.ndarray, np.ndarray]:
-    """A mouth's rings, outer to inner (the robe's surface, the lips' crest, the lips' inner edge), and its hollow's
-    centre: an open "o", a little taller than wide, the lower lip fuller, a soft dip in the upper lip's middle."""
+def plaque_rings(p, nn, down, size, roll, rng: np.random.Generator) -> tuple[np.ndarray, np.ndarray]:
+    """A carved mouth on a plaque of Choir stone, rings outer to inner: the plaque's foot on the robe, its top edge,
+    the mouth's outer edge on its face, the lips' crest, their inner edge, the throat; and the throat's floor. The
+    plaque's outline is irregular (worn); the mouth is a singer's, open, the lower lip fuller, the upper with a soft
+    dip, the corners pinched, a little crooked."""
     n = nn / np.linalg.norm(nn)
     d = down - n * float(np.dot(down, n))
     d /= max(np.linalg.norm(d), 1e-9)
     side = np.cross(n, d)
     d, side = math.cos(roll) * d + math.sin(roll) * side, -math.sin(roll) * d + math.cos(roll) * side
-    a = np.arange(MOUTH_PTS) * (2.0 * math.pi / MOUTH_PTS) + math.pi / MOUTH_PTS
-    w, h = size * 0.46, size * 0.42
-    lower = np.clip(np.sin(a), 0.0, 1.0)  # +d is down: the lower lip
-    upper = np.clip(-np.sin(a), 0.0, 1.0)
-    crest = size * (0.07 + 0.07 * np.abs(np.sin(a)) + 0.04 * lower) - size * 0.05 * upper * np.exp(-(np.cos(a) / 0.3) ** 2)
-    rings = []
-    pinch = 1.0 - 0.45 * np.cos(a) ** 4  # the corners of the mouth pinch in
-    for scale, lift in ((1.45, np.full(MOUTH_PTS, 0.003)), (1.08, crest), (0.74, crest * 0.35)):
-        hy = np.sin(a) * h * scale * (pinch if scale < 1.4 else 1.0)
-        rings.append(p + np.outer(lift, n) + np.outer(np.cos(a) * w * scale, side) + np.outer(hy, d))
-    return np.vstack(rings), p + n * 0.002  # the opening's floor, just over the robe (lit from within)
+    m = MOUTH_PTS
+    a = np.arange(m) * (2.0 * math.pi / m) + math.pi / m
+    ca, sa = np.cos(a), np.sin(a)
+    sq = lambda v: np.sign(v) * np.abs(v) ** 0.6  # noqa: E731 (a squarish, worn tablet)
+    jit = 1.0 + rng.uniform(-0.09, 0.09, m)
+    ox, oy = sq(ca) * size * 0.36 * jit, sq(sa) * size * 0.5 * jit
+    wide = float(rng.uniform(0.0, 1.0))  # some sing "o", some "ah"
+    w, h = size * (0.17 + 0.06 * wide), size * (0.22 - 0.04 * wide)
+    cy = -size * 0.04  # the mouth sits a little low on its plaque
+    crook = float(rng.uniform(-0.12, 0.12))  # one corner a little higher
+    lower = np.clip(sa, 0.0, 1.0)  # +d is down
+    upper = np.clip(-sa, 0.0, 1.0)
+    pinch = 1.0 - 0.4 * ca ** 4
+    crest = size * (0.035 + 0.03 * np.abs(sa) + 0.025 * lower) - size * 0.025 * upper * np.exp(-(ca / 0.3) ** 2)
+
+    def ring(rx, ry, lift, dy=0.0):
+        yy = ry + dy + crook * rx
+        return p + np.outer(lift, n) + np.outer(rx, side) + np.outer(yy, d)
+
+    rings = [ring(ox, oy, np.full(m, 0.004)), ring(ox * 0.9, oy * 0.92, np.full(m, PLAQUE_H)),
+             ring(ca * w * 1.25, sa * h * 1.25, np.full(m, PLAQUE_H), cy),
+             ring(ca * w, sa * h * pinch, PLAQUE_H + crest, cy),
+             ring(ca * w * 0.72, sa * h * 0.66 * pinch, np.full(m, PLAQUE_H - 0.004), cy),
+             ring(ca * w * 0.45, sa * h * 0.38 * pinch, np.full(m, PLAQUE_H - 0.02), cy)]
+    floor = p + n * (PLAQUE_H - 0.026) + d * cy
+    return np.vstack(rings), floor
 
 
 def mouths_mesh(mesh: ck.Mesh, mouths: list) -> None:
-    """Each mouth: worn stone lips swelling out of the robe's water round a recessed hollow that holds a little of her
-    light (the robe's colour at the outer ring, so the stone rises out of the water instead of sitting on it)."""
+    """Each mouth: a worn plaque of Choir stone set into the robe's water, a singer's open mouth carved in it, the
+    lips pale and worn smooth, the opening dark and lit faintly from within."""
     rng = np.random.default_rng(SEED + 11)
     m = MOUTH_PTS
-    bands = ck.grid_tris(3, m, True)
-    fan = np.array([(3 * m, 2 * m + i, 2 * m + (i + 1) % m) for i in range(m)])
+    bands = ck.grid_tris(6, m, True)
+    fan = np.array([(6 * m, 5 * m + i, 5 * m + (i + 1) % m) for i in range(m)])
     T0 = np.vstack([bands, fan])
     before = mesh.triangle_count
     for p, nn, down, size, roll, J, W in mouths:
-        rings, c = mouth_rings(p, nn, down, size, roll)
-        P = np.vstack([rings, c[None]])
+        rings, floor = plaque_rings(p, nn, down, size, roll, rng)
+        P = np.vstack([rings, floor[None]])
         n = nn / np.linalg.norm(nn)
         T = orient(P, T0, np.tile(p - n * 0.5, (len(T0), 1)))
-        stone = ck.mix(PAL["cold_blue_stone"], PAL["salt_glass"], float(rng.uniform(0.4, 0.65)))
-        col = np.vstack([robe_colour(rings[:m], np.zeros(m)), np.tile(stone, (m, 1)),
-                         np.tile(ck.mix(stone, PAL["abyss_navy"], 0.3), (m, 1)), PAL["abyss_navy"][None]])
-        em = np.r_[np.zeros(2 * m), np.full(m, MOUTH_GLOW * 0.45), MOUTH_GLOW]
-        cav = np.r_[np.full(m, 0.15), np.zeros(m), np.full(m, 0.4), 0.8]
-        ck.finish(mesh, P, T, "mouths", col, fixed(np.tile(J, (len(P), 1)), np.tile(W, (len(P), 1))),
-                  wet=np.r_[np.full(m, 1.0), np.full(2 * m + 1, 0.2)], cavity=cav, emission=em)
+        stone = ck.mix(ck.mix(PAL["cold_blue_stone"], PAL["deep_teal_shadow"], 0.35), PAL["salt_glass"],
+                       float(rng.uniform(0.05, 0.2)))
+        worn = rng.uniform(-0.06, 0.06, (m, 1))
+        col = np.vstack([ck.mix(stone, PAL["abyss_navy"], 0.25) + worn, stone + worn,
+                         ck.mix(stone, PAL["salt_glass"], 0.2) + worn, np.tile(ck.mix(stone, PAL["salt_glass"], 0.5), (m, 1)),
+                         np.tile(ck.mix(stone, PAL["abyss_navy"], 0.5), (m, 1)), np.tile(PAL["abyss_navy"], (m, 1)),
+                         PAL["abyss_navy"][None]])
+        col = np.clip(col, 0.0, 1.0)
+        em = np.r_[np.zeros(4 * m), np.full(m, MOUTH_GLOW * 0.25), np.full(m, MOUTH_GLOW * 0.6), MOUTH_GLOW]
+        cav = np.r_[np.full(m, 0.5), np.full(m, 0.1), np.zeros(m), np.zeros(m), np.full(m, 0.5), np.full(m, 0.8), 0.9]
+        ck.finish(mesh, P, T, "mouths", col, fixed(np.tile(J, (len(P), 1)), np.tile(W, (len(P), 1))), wet=0.25,
+                  cavity=cav, emission=em)
     PARTS["mouth_count"] = len(mouths)
     count("mouths", mesh, before)
 
@@ -804,6 +1105,9 @@ def build_mesh(rig: ck.Rig) -> ck.Mesh:
         arm(mesh, rig, s, tag)
         hand(mesh, rig, s, tag)
     mouths: list = []
+    bodice(mesh, rig)
+    stole(mesh, rig, mouths)
+    runnels(mesh, rig)
     panels(mesh, rig, mouths)
     mouths_mesh(mesh, mouths)
     girdle(mesh, rig)
@@ -909,11 +1213,24 @@ def merge(*poses: dict) -> dict:
     return out
 
 
+BASE: dict = {}  # idle's first frame ({bone: (rot, loc)}), filled by build_clips before any other clip is built
+
+
 def keyp(c: ck.Clip, t: float, pose: dict) -> None:
-    """Keys every bone at t: as `pose` gives it, else at rest."""
+    """Keys every bone at t: as `pose` gives it, else as idle's first frame holds it (so every clip starts from, and
+    the one-shots return to, where the idle starts; a pose that names a bone sets it outright)."""
     for b in BONES:
-        rot, loc = pose.get(b, (Z3, Z3))
-        c.key(b, t, rot, loc)
+        rot, loc = pose.get(b, BASE.get(b, (Z3, Z3)))
+        c.key(b, t, tuple(rot), tuple(loc))
+
+
+def over_base(pose: dict) -> dict:
+    """`pose` added to idle's first frame (for a recoil or a breath that keeps her stance)."""
+    out = {}
+    for b, (rot, loc) in pose.items():
+        br, bl = BASE.get(b, (Z3, Z3))
+        out[b] = (tuple(np.add(br, rot)), tuple(np.add(bl, loc)))
+    return out
 
 
 IDLE_SEC = 4.0
@@ -940,34 +1257,45 @@ REST: dict = {}
 SUNK = 1.3  # how far she sinks into the column, folded (rise's start, dismiss's end)
 FOLDED = merge(body_pose(spine=(22.0, 18.0, 14.0), neck=14.0, head=18.0, lift=-0.35, sink=SUNK),
                arms(clav=(0.0, 0.0, -6.0), upper=(-48.0, -30.0, -6.0), fore=(-70.0, -20.0, 0.0), hand=(0.0, 0.0, -8.0)),
-               robes(out=(30.0, 24.0, 18.0)), hair_pose(back=(44.0, 22.0, 10.0)))  # the hair hangs from the bowed head
+               robes(out=(30.0, 24.0, 18.0)), hair_pose(back=(-55.0, -27.0, -11.0)))  # the hair hangs from the bowed head
+
+
+HEART_HAND = ((-44.3, -6.7, 16.4), (-94.0, -82.8, 0.0), (46.6, -2.2, -35.1))  # the left palm flat over her heart
+LOW_HAND = ((-6.0, 0.0, -7.0), (-18.0, 0.0, 0.0), (0.0, 8.0, 0.0))  # the right hand low and loose, a little forward
 
 
 def build_idle() -> ck.Clip:
-    """The column sways as one; the hair falls and falls (its chains sway, lagging down them); she breathes; her
-    face turned three-quarters to the camera (the base the other clips are played from)."""
+    """She stands with her left palm over her heart, the right hand low and loose, her weight a little to one side
+    (the column leans, the spine answers), her head tilted and turned three-quarters to the camera, eyes closed. The
+    column sways as one, the hair sheet falls and falls (its chains sway, lagging down them), she breathes. This is the
+    base every other clip is played from."""
     c = ck.Clip("idle", IDLE_SEC, loop=True)
     c.wave("root", cycles=1)
     for k, ph in enumerate((0.0, -0.5, -1.0)):
-        c.wave(f"column_{k}", amp_rot=(0.5, 0.0, 0.7), cycles=1, phase=ph)
-    c.wave("spine_0", amp_rot=(0.6, 0.0, -0.3), cycles=1, phase=-1.4)
-    c.wave("spine_1", amp_rot=(-1.0, 2.0, 0.0), cycles=1, phase=0.5, base_rot=(0.0, 7.0, 0.0))  # the breath
-    c.wave("spine_2", amp_rot=(-1.2, 2.0, 0.0), cycles=1, phase=0.4, base_rot=(0.0, 7.0, 0.0))
-    c.wave("neck", amp_rot=(0.8, 1.0, 0.0), cycles=1, phase=-0.3, base_rot=(2.0, 7.0, 0.0))
-    c.wave("head", amp_rot=(-1.2, 1.5, 0.8), cycles=1, phase=-0.9, base_rot=(4.0, 15.0, -3.0))
+        c.wave(f"column_{k}", amp_rot=(0.5, 0.0, 0.8), cycles=1, phase=ph, base_rot=(0.0, 0.0, -0.8))
+    c.wave("spine_0", amp_rot=(0.6, 0.0, -0.4), cycles=1, phase=-1.4, base_rot=(1.0, 0.0, 1.5))
+    c.wave("spine_1", amp_rot=(-1.2, 1.5, 0.0), cycles=1, phase=0.5, base_rot=(1.5, 7.0, 1.0))  # the breath
+    c.wave("spine_2", amp_rot=(-1.4, 1.5, 0.0), cycles=1, phase=0.4, base_rot=(1.0, 7.0, 0.0))
+    c.wave("neck", amp_rot=(0.8, 1.0, 0.6), cycles=1, phase=-0.3, base_rot=(4.0, 7.0, -3.0))
+    c.wave("head", amp_rot=(-1.2, 1.5, 1.0), cycles=1, phase=-0.9, base_rot=(7.0, 15.0, -8.0))  # tilted, grieving
     for tag, s in (("l", 1.0), ("r", -1.0)):
         ph = 0.0 if s > 0 else 2.2
         for k in range(3):
-            c.wave(f"hair_{tag}{k}", amp_rot=(2.0 + 1.0 * k, 0.0, s * (1.0 + 0.5 * k)), cycles=1, phase=ph - 0.8 * k)
+            c.wave(f"hair_{tag}{k}", amp_rot=(3.5 + 2.0 * k, 0.0, s * (2.0 + 1.0 * k)), cycles=1, phase=ph - 0.8 * k)
         c.wave(f"clav_{tag}", amp_rot=(0.0, 0.0, 0.8 * s), cycles=1, phase=0.4)
-        c.wave(f"upper_{tag}", amp_rot=(2.5, 0.0, 1.5 * s), cycles=1, phase=ph)
-        c.wave(f"fore_{tag}", amp_rot=(-3.0, 0.0, 0.0), cycles=1, phase=ph - 0.6)
-        c.wave(f"hand_{tag}", amp_rot=(0.0, 4.0 * s, 3.0 * s), cycles=1, phase=ph - 1.2)
+    m = (1.0, 1.0, 1.0)
+    for bone, rot, amp in (("upper_l", HEART_HAND[0], (1.2, 0.0, 1.0)), ("fore_l", HEART_HAND[1], (-1.2, 0.0, 0.0)),
+                           ("hand_l", HEART_HAND[2], (0.0, 1.5, 1.5))):
+        c.wave(bone, amp_rot=amp, cycles=1, phase=0.3, base_rot=tuple(np.multiply(rot, m)))
+    r = (1.0, -1.0, -1.0)
+    for bone, rot, amp in (("upper_r", LOW_HAND[0], (2.5, 0.0, -1.5)), ("fore_r", LOW_HAND[1], (-3.0, 0.0, 0.0)),
+                           ("hand_r", LOW_HAND[2], (0.0, -4.0, -3.0))):
+        c.wave(bone, amp_rot=amp, cycles=1, phase=2.2, base_rot=tuple(np.multiply(rot, r)))
     for tag, ph in (("f", 0.0), ("l", 1.6), ("b", 3.2), ("r", 4.8)):
         o = bearing(PANELS[tag][0])
         for k in range(3):
-            r = swing(o, 1.0 + 0.6 * k)
-            c.wave(f"robe_{tag}{k}", amp_rot=r, cycles=1, phase=ph - 0.7 * k)
+            rr = swing(o, 1.2 + 0.8 * k)
+            c.wave(f"robe_{tag}{k}", amp_rot=rr, cycles=1, phase=ph - 0.7 * k)
     for k in range(2):
         c.wave(f"key_{k}", amp_rot=(1.5, 0.0, 1.0), cycles=1, phase=-1.0 - 0.6 * k)
     return c
@@ -977,10 +1305,11 @@ def build_idle_b() -> ck.Clip:
     """A breath with her eyes closed: the head bows a little and the chest rises, held, then lets go."""
     c = ck.Clip("idle_b", IDLE_B_SEC)
     breath = merge(body_pose(spine=(0.0, -2.0, -3.0), neck=4.0, head=9.0, lift=0.03),
-                   arms(clav=(0.0, 0.0, 2.0), upper=(0.0, 0.0, 2.0)), hair_pose(back=(-2.0, -1.0, 0.0)))
+                   {"clav_l": ((0.0, 0.0, 2.0), Z3), "clav_r": ((0.0, 0.0, -2.0), Z3)},
+                   hair_pose(back=(-2.0, -1.0, 0.0)))
     keyp(c, 0.0, REST)
-    keyp(c, 0.55, breath)
-    keyp(c, 0.95, breath)
+    keyp(c, 0.55, over_base(breath))
+    keyp(c, 0.95, over_base(breath))
     keyp(c, IDLE_B_SEC, REST)
     return c
 
@@ -1048,8 +1377,8 @@ def hit_pose(k: float, side: float) -> dict:
 def build_hit(name: str = "hit", side: float = 1.0, amp: float = 1.0) -> ck.Clip:
     c = ck.Clip(name, HIT_SEC)
     keyp(c, 0.0, REST)
-    keyp(c, HIT_PEAK, hit_pose(amp, side))
-    keyp(c, 0.26, hit_pose(-0.3 * amp, side))
+    keyp(c, HIT_PEAK, over_base(hit_pose(amp, side)))
+    keyp(c, 0.26, over_base(hit_pose(-0.3 * amp, side)))
     keyp(c, HIT_SEC, REST)
     return c
 
@@ -1076,7 +1405,7 @@ def build_ko() -> ck.Clip:
     c = ck.Clip("ko", KO_SEC)
     down = merge(body_pose(spine=(10.0, 8.0, 8.0), neck=12.0, head=22.0, lift=-0.3, sink=KO_SINK),
                  arms(clav=(0.0, 0.0, -4.0), upper=(-40.0, -10.0, 14.0), fore=(-30.0, -10.0, 0.0), hand=(10.0, 0, 0)),
-                 robes(out=(26.0, 20.0, 14.0)), hair_pose(back=(34.0, 18.0, 8.0)))
+                 robes(out=(26.0, 20.0, 14.0)), hair_pose(back=(-40.0, -20.0, -8.0)))
     keyp(c, 0.0, REST)
     keyp(c, 0.18, hit_pose(0.6, 1.0))
     keyp(c, 1.2, merge(down, body_pose(spine=(8.0, 6.0, 6.0), neck=8.0, head=14.0, lift=-0.22, sink=KO_SINK * 0.8)))
@@ -1106,7 +1435,7 @@ def build_rise() -> ck.Clip:
                        robes(out=(26.0, 14.0, 8.0))))
     keyp(c, 2.2, merge(body_pose(spine=(6.0, 8.0, 8.0), neck=16.0, head=20.0, sink=0.05),
                        arms(upper=(-20.0, -10.0, 4.0), fore=(-30.0, 0.0, 0.0)), robes(out=(6.0, 4.0, 2.0)),
-                       hair_pose(back=(30.0, 16.0, 8.0))))
+                       hair_pose(back=(-30.0, -15.0, -6.0))))
     keyp(c, 2.65, merge(body_pose(neck=4.0, head=6.0), arms(upper=(-6.0, 0.0, 6.0), fore=(-10.0, 0.0, 0.0))))
     keyp(c, RISE_SEC, REST)
     return c
@@ -1148,7 +1477,8 @@ def build_special() -> ck.Clip:
 
 
 # ---- the element shift: her free action at turn start ---------------------------------------------
-STILL = merge(body_pose(spine=(0.0, -1.0, -2.0), head=-2.0, lift=0.03), arms(clav=(0.0, 0.0, 2.0)))
+STILL = merge(body_pose(spine=(0.0, -1.0, -2.0), head=-2.0, lift=0.03),
+              {"clav_l": ((0.0, 0.0, 2.0), Z3), "clav_r": ((0.0, 0.0, -2.0), Z3)})
 
 
 def ripple(c: ck.Clip, start: float, accent: dict, amp: float = 1.0, slow: float = 1.0) -> None:
@@ -1211,7 +1541,7 @@ def build_voice_water() -> ck.Clip:
     c = ck.Clip("voice_water", L)
     scoop = merge(body_pose(spine=(8.0, 10.0, 8.0), neck=6.0, head=8.0, lift=-0.12),
                   arms(upper=(-14.0, -14.0, -6.0), fore=(-30.0, -10.0, 0.0), hand=(0.0, 40.0, 0.0)),
-                  robes(out=(3.0, 2.0, 1.0)), hair_pose(back=(16.0, 10.0, 4.0)))
+                  robes(out=(3.0, 2.0, 1.0)), hair_pose(back=(-15.0, -8.0, -3.0)))
     lifted = merge(body_pose(spine=(-2.0, -4.0, -5.0), head=-6.0, lift=0.08),
                    arms(upper=(-44.0, -22.0, 0.0), fore=(-88.0, -16.0, 0.0), hand=(0.0, 40.0, 0.0)),
                    robes(out=(-2.0, -1.0, 0.0)), hair_pose(back=(6.0, 4.0, 2.0)))
@@ -1288,7 +1618,7 @@ def build_voice_ice() -> ck.Clip:
                  arms(upper=(-34.0, -4.0, 26.0), fore=(-10.0, 0.0, 0.0), hand=(40.0, 0.0, -10.0)),
                  robes(out=(6.0, 5.0, 4.0)), hair_pose())
     keyp(c, 0.0, REST)
-    keyp(c, ICE_STILL[0], still)
+    keyp(c, ICE_STILL[0] - 0.05, still)  # settled a baked frame early, so she is still from ICE_STILL[0] on
     keyp(c, ICE_STILL[1], still)
     keyp(c, C, merge(still, arms(upper=(-31.0, -7.0, 12.0), fore=(-34.0, 0.0, 0.0), hand=(34.0, 0.0, -2.0))))
     keyp(c, 1.25, down)
@@ -1336,20 +1666,22 @@ def build_voice_glimmer() -> ck.Clip:
 
 
 def idle_first(idle: ck.Clip) -> dict:
-    """Idle's first frame as a pose: every other clip is authored from rest and played from it (ck.in_pose)."""
+    """Idle's first frame as a pose ({bone: (rot, loc)})."""
     return {b: tuple(np.asarray(v, float) for v in idle.sample(b, 0.0)) for b in idle.keys}
 
 
 def build_clips() -> list[ck.Clip]:
+    """The idle first; its first frame becomes BASE, which every other clip is keyed from (keyp, over_base)."""
     idle = build_idle()
-    start = idle_first(idle)
-    authored = [build_idle_b(), build_ready(), build_rise(), build_dismiss(), build_attack(), build_cast(),
-                build_hit(), build_hit("hit_b", -1.0, ck.HIT_B["amp"]), build_defend(), build_ko(), build_victory(),
-                build_special(), build_shift()]
-    authored += [build_shift(e) for e in ELEMENTS]
-    authored += [build_voice_water(), build_voice_lightning(), build_voice_fire(), build_voice_ice(),
-                 build_voice_holy(), build_voice_glimmer()]
-    return [idle] + [ck.in_pose(c, c.name, start) for c in authored]
+    BASE.clear()
+    BASE.update(idle_first(idle))
+    clips = [idle, build_idle_b(), build_ready(), build_rise(), build_dismiss(), build_attack(), build_cast(),
+             build_hit(), build_hit("hit_b", -1.0, ck.HIT_B["amp"]), build_defend(), build_ko(), build_victory(),
+             build_special(), build_shift()]
+    clips += [build_shift(e) for e in ELEMENTS]
+    clips += [build_voice_water(), build_voice_lightning(), build_voice_fire(), build_voice_ice(),
+              build_voice_holy(), build_voice_glimmer()]
+    return clips
 
 
 # ---------------------------------------------------------------------------------------------

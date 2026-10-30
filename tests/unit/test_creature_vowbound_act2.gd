@@ -876,9 +876,10 @@ func _kesh_skeleton(a: Node) -> Skeleton3D:
 
 
 ## Poses the actor's model at `sec` into `clip` (clamped to just before its end) and returns its skeleton.
+## No blend from whatever played before (her idle holds a hand at her heart), so the pose is the clip's own.
 func _kesh_pose(a: CreatureActor, clip: StringName, sec: float) -> Skeleton3D:
 	var player := a.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
-	player.play(clip)
+	player.play(clip, 0.0)
 	player.seek(minf(sec, player.get_animation(clip).length - KESH_END_SEC), true)
 	return _kesh_skeleton(a)
 
