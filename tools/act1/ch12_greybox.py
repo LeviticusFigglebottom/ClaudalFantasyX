@@ -91,6 +91,24 @@ def landing(lid: str, cx: float, y: float, cz: float, hx: float, hz: float, gaps
 
 # --- Keth Pass --------------------------------------------------------------------------------------------------------
 
+def climb_volumes(prefix: str, runs: list[tuple[tuple[float, float, float], tuple[float, float, float]]],
+                  back_m: float = 5.0, up_m: float = 4.5) -> list[dict]:
+    """M4-A2P-012: a pan-follow volume per flight (the hub orbit sees the cliff on the inside turn): the camera stands
+    back_m behind the flight's foot, up_m over it, and looks up the flight to its middle."""
+    out = []
+    for i, (a, b) in enumerate(runs):
+        dx, dz = b[0] - a[0], b[2] - a[2]
+        n = math.hypot(dx, dz)
+        ux, uz = dx / n, dz / n
+        out.append({"id": f"{prefix}{i}", "mode": "pan_follow",
+                    "at": [r3((a[0] + b[0]) / 2), r3((a[1] + b[1]) / 2 + 1.5), r3((a[2] + b[2]) / 2)],
+                    "size": [r3(abs(dx) + FLIGHT_W + 1.0), r3(abs(b[1] - a[1]) + 4.0), r3(abs(dz) + FLIGHT_W + 1.0)],
+                    "pos": [r3(a[0] - ux * back_m), r3(a[1] + up_m), r3(a[2] - uz * back_m)],
+                    "look_at": [r3((a[0] + b[0]) / 2), r3((a[1] + b[1]) / 2 + 0.8), r3((a[2] + b[2]) / 2)], "fov": 50,
+                    "priority": 1})
+    return out
+
+
 def keth_pass() -> dict:
     blocks, ramps = [], []
     blocks += landing("Foot", 0.0, 0.0, 0.0, 6.0, 6.0, {"n": (-2.2, 2.2)})
@@ -126,7 +144,22 @@ def keth_pass() -> dict:
                    "FromQuellan": [102.0, 18.0, -40.0, 90.0]},
         "marks": {"knot_post": [-1.6, 6.0, -43.6, 90.0], "cold_ledge": [95.0, 18.0, -47.0, 0.0]},
         "actors": {},
-        "shots": {"K01": {"pos": [91.0, 19.7, -36.0], "look_at": [95.0, 19.6, -47.0], "fov": 35}},
+        "shots": {"K01": {"pos": [91.0, 19.7, -36.0], "look_at": [95.0, 19.6, -47.0], "fov": 35},
+                  # M4-A2P-012 (docs/kb/plan/act2/chapters/ch12.md): K01 is C1's breath at the cold ledge; the cords
+                  # on the first flight, the Ram's shelf under the seeping wall, the knotted post (C5)
+                  "K02": {"pos": [2.5, 4.5, -8.0], "look_at": [0.0, 3.0, -22.0], "fov": 50},
+                  "K04": {"pos": [36.0, 14.5, -36.0], "look_at": [48.0, 14.0, -49.0], "fov": 50},
+                  "K05": {"pos": [-0.5, 7.6, -42.0], "look_at": [-3.0, 7.4, -44.5], "fov": 35}},
+        "camera_volumes": climb_volumes("Flight", [((0.0, 0.0, -6.0), (0.0, 6.0, -34.0)),
+                                                    ((6.0, 6.0, -40.0), (34.0, 12.0, -40.0)),
+                                                    ((56.0, 12.0, -40.0), (84.0, 18.0, -40.0))])
+        + [{"id": "RamShelf", "mode": "pan_follow", "at": [45.0, 13.5, -40.0], "size": [22.0, 4.0, 20.0],
+            "pos": [37.0, 18.0, -30.0], "look_at": [46.0, 12.8, -42.0], "fov": 55, "priority": 2},
+           {"id": "Saddle", "mode": "pan_follow", "at": [95.0, 19.5, -40.0], "size": [22.0, 4.0, 20.0],
+            "pos": [86.0, 23.0, -30.0], "look_at": [96.0, 18.8, -42.0], "fov": 55, "priority": 2},
+           # the pass's foot: PassFoot and the "Encounter" return spawn (the origin) sit below Flight0's box
+           {"id": "Foot", "mode": "pan_follow", "at": [0.0, 1.5, 1.0], "size": [10.0, 4.0, 10.0],
+            "pos": [0.0, 4.5, 9.0], "look_at": [0.0, 2.0, -6.0], "fov": 50, "priority": 1}],
         "triggers": [{"id": "to_quellan", "activation": "touch", "at": [108.5, 18.0, -40.0], "size": [1.5, 0, 4.0],
                       "payload": {"beat": "to_quellan"}, "yaw": 0.0}],
         # M4-C12-03: the pass's random fights (act2_roster.md Ch12); none in Quellan or the Cloudloom
@@ -184,7 +217,14 @@ def quellan() -> dict:
         "spawns": {"FromPass": [2.0, 0.0, 0.0, 270.0], "FromCloudloom": [56.0, north_y, -38.0, 180.0]},
         "marks": {"inn_door": [32.0, 0.0, r3(sz - hw + 0.4), 0.0], "well": [52.4, 0.0, r3(sz + 10.0), 270.0]},
         "actors": {},
-        "shots": {"Q01": {"pos": [-2.0, 3.0, 2.0], "look_at": [40.0, 2.0, -2.0], "fov": 50}},
+        "shots": {"Q01": {"pos": [-2.0, 3.0, 2.0], "look_at": [40.0, 2.0, -2.0], "fov": 50},
+                  # M4-A2P-012: C4 at night, Ysolde and Asha at the well
+                  "Q02": {"pos": [47.0, 1.7, 7.0], "look_at": [52.4, 1.3, 10.0], "fov": 40}},
+        "camera_volumes": [
+            {"id": "StreetWest", "mode": "pan_follow", "at": [15.0, 1.5, 0.0], "size": [30.0, 4.0, 8.0],
+             "pos": [-5.0, 5.0, 6.0], "look_at": [15.0, 0.5, 0.0], "fov": 50, "priority": 1},
+            {"id": "StreetEast", "mode": "pan_follow", "at": [45.0, 1.5, 0.0], "size": [30.0, 4.0, 8.0],
+             "pos": [25.0, 5.0, 6.0], "look_at": [45.0, 0.5, 0.0], "fov": 50, "priority": 1}],
         "triggers": [{"id": "to_pass", "activation": "touch", "at": [-4.5, 0.0, 0.0], "size": [1.5, 0, 6.0],
                       "payload": {"beat": "to_pass"}, "yaw": 0.0},
                      {"id": "to_cloudloom", "activation": "touch", "at": [56.0, north_y, -42.5], "size": [4.0, 0, 1.5],
@@ -232,7 +272,15 @@ def cloudloom() -> dict:
         "spawns": {"Approach": [0.0, 0.0, 2.0, 0.0], "Hall": [0.0, HALL_Y, -24.0, 0.0]},
         "marks": {"hesk": [r3(hx0), HALL_Y, r3(hz0 - hz + 6.0), 180.0]},  # before the dais (no step-up onto it)
         "actors": {},
-        "shots": {"C01": {"pos": [0.0, HALL_Y + 2.0, -23.0], "look_at": [0.0, HALL_Y + 2.0, -57.0], "fov": 50}},
+        "shots": {"C01": {"pos": [0.0, HALL_Y + 2.0, -23.0], "look_at": [0.0, HALL_Y + 2.0, -57.0], "fov": 50},
+                  # M4-A2P-012: C3 the weaving-hall from high in the open roof; Ysolde reading Ama's keth
+                  "C02": {"pos": [8.0, HALL_Y + 12.0, -26.0], "look_at": [0.0, HALL_Y + 2.0, -48.0], "fov": 60},
+                  "C03": {"pos": [2.5, HALL_Y + 1.6, -50.0], "look_at": [0.0, HALL_Y + 1.5, -54.0], "fov": 35}},
+        "camera_volumes": climb_volumes("Stair", [((0.0, 0.0, -5.0), (0.0, HALL_Y, hz0 + hz))])
+        + [{"id": "Hall", "mode": "pan_follow", "at": [hx0, HALL_Y + 1.5, hz0], "size": [2 * hx, 4.0, 2 * hz],
+            "pos": [4.0, HALL_Y + 5.0, -15.0], "look_at": [hx0, HALL_Y + 0.5, -34.0], "fov": 55, "priority": 1},
+           {"id": "Foot", "mode": "pan_follow", "at": [0.0, 1.5, 1.0], "size": [8.0, 4.0, 8.0],
+            "pos": [0.0, 4.0, 8.0], "look_at": [0.0, 3.0, -8.0], "fov": 50, "priority": 1}],
         "triggers": [{"id": "to_quellan", "activation": "touch", "at": [0.0, 0.0, 4.25], "size": [4.0, 0, 1.5],
                       "payload": {"beat": "to_quellan"}, "yaw": 0.0}],
     }

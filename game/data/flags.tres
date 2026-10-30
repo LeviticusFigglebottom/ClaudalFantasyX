@@ -166,6 +166,7 @@ flags = {
 "tut_menu_save_seen": "Tutorial seen-flag (M2-MNU-300): the tip that saving happens at shrines, not in the menu, has been shown.",
 "ch10_started": "Ch10 (Act II): the party has come to Ossa Fen's edge at dusk (the chapter becomes 10; M4-C10-02).",
 "ch10_reached_reedhollow": "Ch10: the party has walked the fen's root-walks into Reedhollow, the Kirru village (Pell stays outside; M4-C10-02).",
+"ch10_drowner_defeated": "Ch10: the Mangrove Drowner is beaten in Ossa Fen's clearing (the way on to Reedhollow opens; M4-A2P-010).",
 "ch11_started": "Ch11 (Act II): the party has come to Sunken Vey's landing, the drowned galleries (the chapter becomes 11; M4-C11-02).",
 "ch11_reached_lowlight": "Ch11: the party has walked the drowned galleries to Lowlight, the temple half underwater (M4-C11-02).",
 "ch12_started": "Ch12 (Act II): the party has come to the foot of Keth Pass (the chapter becomes 12; M4-C12-02).",
