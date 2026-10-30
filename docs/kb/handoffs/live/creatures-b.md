@@ -853,3 +853,16 @@ What the Act II fights still need from others: enemy rows and encounters (combat
 - **Branch head: MERGE-READY @ 98b31c5fb.** It carries every fix: 098a878d1, 650257eaa, f893ee590 and 6973ffc08.
 - **In progress:** the Vowbound summon passes (the results above; Kesh, Hesk, Kahre and two finishers rendering).
 - **Id range noted:** new Act II tasks from creatures-b use M4-A2P-1850 to 1899.
+- **Kesh** (ch12, her full kit): all six voices read distinct (Ice holds perfectly still, Fire thrusts, Holy lifts,
+  Glimmer opens the palms), plus attack, hit and KO; The Seven is re-running (out of turns). **MERGE-READY @
+  021ce7405: Kesh rises in 2.6 s, like the other six.** Her `rise` was 3.0 s, longer than the summon cinematic's
+  entry hold (choreo.json summon_cinematic.entry.sec 2.6, the hold the other six's 2.6 s rises were built to), so
+  her first action cut its settle. The keys are scaled in proportion. New test in test_creature_vowbound_act2: every
+  Vowbound's rise fits that hold (fails at 3.0 s). Blender creature_kesh 7 identical; Godot vowbound 118/0 (the 1
+  leftover node predates this), creature 160/0; validate_data 0/0.
+- **For battle-presentation: the normal (not first) call cuts every Vowbound's rise in half.** choreo.json
+  vowbound.entry is delay 0.95 s + sec 1.3 s, so the first command comes about 2.25 s after the call, with the 2.6 s
+  rise only half played (it starts as the body appears, at the delay). Acting at once cuts the rise mid-climb in the
+  sweep, for all seven. Either `vowbound.entry.sec` rises to about 2.6 s (each call is then 1.3 s longer), or the
+  normal call should play a shorter rise. If you want a short `rise_quick` clip from me for normal calls, file it as
+  a task (M4-A2P-185x).
