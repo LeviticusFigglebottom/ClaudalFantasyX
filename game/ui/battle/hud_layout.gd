@@ -176,11 +176,11 @@ static func fit_lines(l: Label, height: float = 0.0) -> void:
 ## Drownbell's damage number had started under its boss read-out).
 static func clear_of_panels(p: Vector2, hud: Node, m: Dictionary, size: Vector2) -> Vector2:
 	var margin := num(m, "avoid_margin_px")
-	for path: Variant in m.get("avoid", []):
-		var c := hud.get_node_or_null(NodePath(str(path))) as Control if hud != null else null
-		if c == null or not c.is_visible_in_tree() or c.size == Vector2.ZERO:
+	for row: Variant in m.get("avoid", []):
+		var r := panel_rect(row as Dictionary, hud)
+		if not r.has_area():
 			continue
-		var r := c.get_global_rect().grow(margin)
+		r = r.grow(margin)
 		if not r.has_point(p):
 			continue
 		var best := p
@@ -194,3 +194,14 @@ static func clear_of_panels(p: Vector2, hud: Node, m: Dictionary, size: Vector2)
 				best = q
 		p = best
 	return p
+
+
+## A damage.avoid row's shown panel (HUD coordinates): its battle_hud.json section's rect when it names one (a panel
+## laid out inside a full-screen Control), else its node's own rect; an empty Rect2 when the node is hidden or absent.
+static func panel_rect(row: Dictionary, hud: Node) -> Rect2:
+	var c := hud.get_node_or_null(NodePath(str(row.get("node", "")))) as Control if hud != null else null
+	if c == null or not c.is_visible_in_tree():
+		return Rect2()
+	if row.has("rect"):
+		return rect_of(section(StringName(str(row["rect"]))))
+	return c.get_global_rect()

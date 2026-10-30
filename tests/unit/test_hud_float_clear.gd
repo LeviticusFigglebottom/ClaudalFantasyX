@@ -24,7 +24,7 @@ func after_each() -> void:
 
 
 func test_a_float_inside_a_panel_moves_out_by_the_shortest_way() -> void:
-	var m := {"avoid": ["BossStatus"], "avoid_margin_px": 28}
+	var m := {"avoid": [{"node": "BossStatus"}], "avoid_margin_px": 28}
 	var p := HudLayout.clear_of_panels(Vector2(500, 200), hud, m, Vector2(1920, 1080))
 	var r := panel.get_global_rect().grow(28)
 	assert_false(r.has_point(p) and not is_equal_approx(p.x, r.end.x), "out of the panel (%s)" % p)
@@ -33,11 +33,11 @@ func test_a_float_inside_a_panel_moves_out_by_the_shortest_way() -> void:
 
 
 func test_a_float_clear_of_every_panel_stays_put() -> void:
-	var m := {"avoid": ["BossStatus"], "avoid_margin_px": 28}
+	var m := {"avoid": [{"node": "BossStatus"}], "avoid_margin_px": 28}
 	assert_eq(HudLayout.clear_of_panels(Vector2(900, 500), hud, m, Vector2(1920, 1080)), Vector2(900, 500))
 
 
 func test_a_hidden_panel_is_no_obstacle() -> void:
 	panel.visible = false
-	var m := {"avoid": ["BossStatus"], "avoid_margin_px": 28}
+	var m := {"avoid": [{"node": "BossStatus"}], "avoid_margin_px": 28}
 	assert_eq(HudLayout.clear_of_panels(Vector2(200, 200), hud, m, Vector2(1920, 1080)), Vector2(200, 200))
