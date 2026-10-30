@@ -589,6 +589,18 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ eb887bc5 (supersedes 3389db19): the playtest FAST-TRACK is complete and pushed.**
+  - **What's in it:** the boats (7fbb9319) and the Oruvel edge walls (28b005ad), as the entry below says.
+  - **The interrupted step (the Lead, 13:48):** a long compound shell command stalled on a permission prompt. It is
+    redone as plain single steps inside the worktree and the scratchpad: no process kills, no writes outside, no
+    network. Nothing was refused this time.
+  - **Also in eb887bc5, the walk pass's first fix:** the Underway's two interact points had no prop.
+    - `old_tin` (the find behind the coral curtain) now has a Lit Age tin at the alcove's back.
+    - `limpet` ("Look", the shaft fight) now has a ribbed ochre limpet and three young ones on the gauge room's
+      north wall.
+    - New pieces `old_tin` and `shaft_limpet` in `ou_props.py`, with PROVENANCE rows. Viewed at player height.
+  - **The walk pass continues next.** The rest of the Prologue–Ch4 POI and interactable stills are rendered and being
+    reviewed: Haluna, the causeway, the ferry and the wake.
 - **MERGE-READY @ 925367eaf: FAST-TRACK, the human's playtest in Oruvel ("docked boats clip through the docks …
   you can easily fall off and start walking in the water").**
   - **(1) Boats, fixed (7fbb9319).**
