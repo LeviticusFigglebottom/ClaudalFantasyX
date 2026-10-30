@@ -1954,3 +1954,13 @@ MERGE-READY @ (this commit).
     1/0, validate_data 0/0.
 MERGE-READY @ (this commit).
 - **Next:** Haluna's cold entry and the battle return, re-measured on big24.
+- **Re-measured on big24 (+ this branch), headless, real time** (`scene_swap_probe`):
+  - **Haluna battle return, resident:** entry 461 ms, worst hidden frame 89 ms. **The same return reloading
+    (`--no-resident`):** 4,997 ms, with a 2,997 ms hidden frame. The playtest's black is gone at Haluna too.
+  - **Causeway battle return, resident:** 399 ms, worst hidden frame 33 ms.
+  - **Haluna cold entry from boot, with ResidentLoads on (`--to=haluna --resident-loads`):** entry 15,478 ms,
+    instantiate 899 ms, worst hidden frame 1,885 ms. Over ADR 0029's 3 s entry and 1 s hidden-frame budgets.
+    - This is the first entry from the title, while the hero bodies and the zone load cold. It isn't the
+      after-battle case, but it's the next loading item.
+    - **LEAD-ASK:** whose is it, the loading or resident-loads owner or mine (SceneRouter)? A first look would be
+      what the 15 s waits on: the resident-load swap hold versus the zone's own load.
