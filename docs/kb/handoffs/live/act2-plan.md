@@ -461,3 +461,19 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks** (docs only): validate_data 0/0 · taskboard clean.
 - MERGE-READY Ch12–Ch16 direction notes @ f5f0be211
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act III script pass, Ch17–Ch18 drafts (Lead; planning only)
+- `docs/kb/story/act3/drafts/`: **27 draft `.dlg` files** (Ch17: 11, every beat B01–B12; Ch18: 16, K01–K08 plus the 8 revisits and 7 heirlooms). Format as in Act II. **Nothing under `game/` reads them**: no flag, loc row, shot, mark or music cue was added.
+- **Checks:** `check_drafts.py` (new, in the drafts folder) compiles the drafts with dlgc on a temporary copy of `game/data` (speakers, emotions, cues, events, ids unique game-wide). It then checks the Act II runtime rules statically (the letterbox closes; light rules) and the Act III rules (nothing rises but the Haluna lifting, no line in Dace's voice, no "revenant", no Eighth Verse sung, every flag declared or listed). **27 files, 0/0.** A planted bad file trips all five rules.
+- Other checks: validate_data 0/0 (its banned-term scan covers `docs/kb/story/` .dlg and .py) · dlgc --check 0/0 (the game unchanged) · taskboard clean.
+- **For review** (drafts/README "Decisions"):
+  - Ch17 shots renamed to D01–D18 (H-ids are taken in `ch17/hollowmere`).
+  - Ch15's "twenty years" kept over the sheet's "thirty".
+  - The ledger dated by rhen_sallow.md: eight years old; "a Hollowmere trader"; "helping a friend on a long trip".
+  - Ama's 47 knots: the question-knot is the eighth place.
+  - The tally keeper is Ch15's record-keeper.
+  - B09 has no call-bark hook.
+  - `ch17_complete` is set by the flow.
+- **LEAD-ASK:** the drafts run under the sheets' §8 word budgets. Ch17 is about 460 spoken against an 880–1,300 band; Ch18's critical path about 265 against about 650. The hinge scenes are spare on purpose. Grow the field barks, revisits and heirlooms to the band, or revise §8?
+- MERGE-READY Act III drafts Ch17–Ch18 @ 9c44186b7
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.
