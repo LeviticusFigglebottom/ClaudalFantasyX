@@ -1148,3 +1148,16 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - The rerun also refreshed stale lists in Oruvel, Pemakar, Coilspire, Corrow and Corrow night (generated output; nothing hand-edited).
   - Checks: Godot resident_loads 8/0, haluna 65/0.
 - **MERGE-READY @ 9b29d8b3.** The Kirru crowd is done (see above, MERGE-READY @ the 13:08 entry).
+- **Your 14:28 relay:**
+  1. **conduit_crawler:** request task **M4-CRE-702** (role combat, for act1-chapters under M4-A2P-022) asks for its enemies.json row.
+     - The model was already built from the lore and act2_roster: a salt-glass dome on six jointed brass legs (563eda19), with clips, portrait, creatures.json row and review shot. It needs only the row.
+  2. **Crowd behaviour pass @ 14b55254:**
+     - **Idle variety:** each villager idles and works at its own pace (npc.json `idle_playback` [0.88, 1.12], from its id), on top of the existing phase offsets.
+     - **Look-ats:** the existing party glances work for every crowd member. Reedhollow's Kirru now aim from their own eye height (2.05 m, the youngster's 1.45) and keep the Kirru stillness.
+     - **Doorways and edges:** the new **tools/creatures/crowd_spot_audit.gd** (`godot --headless --path . res://tools/creatures/crowd_spot_audit.tscn`) checks every crowd member in all 17 zones against door nodes and marks, and against drops within 0.6 m.
+       - Six moved by row offsets: Pemakar's weir child, the two Bell Galleries divers, Coilspire's tender off `door_liss`, and three in Corrow.
+       - The audit now reports 0 flagged. Corrow's storm figure is exempt: a silhouette over the water by design.
+     - **Baselines:** the idle pace changes the settled pose in every shot with field villagers (crowd_*, villager zone shots and the zone and mood shots that show villagers). **Those baselines need rewriting.** I self-rendered crowd_lineup_a and crowd_market and viewed them; they look right.
+     - Checks: validate_data; tools test_npc 33 OK; Godot crowd 15/0, villager 43/0, npc 10/0, haluna 65/0.
+- **MERGE-READY @ 14b55254.**
+- **BACKLOG EMPTY:** the crowd behaviour pass is done; the conduit crawler waits on M4-CRE-702.
