@@ -209,9 +209,9 @@ func _list_rows() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for id in model.ids():
 		var here := model.is_here(id)
-		out.append(
-			{"id": id, "label": model.place_name(id), "right": tr("KITE_HERE") if here else "", "enabled": not here}
-		)
+		var refused := model.refusal(id)  # greyed with its reason: seen from the air, never landed at
+		var right := tr("KITE_HERE") if here else refused
+		out.append({"id": id, "label": model.place_name(id), "right": right, "enabled": not here and refused == ""})
 	out.append({"id": ROW_SEARCH, "label": tr("KITE_SEARCH"), "enabled": true})
 	out.append({"id": ROW_LEAVE, "label": tr("KITE_LEAVE"), "enabled": true})
 	return out

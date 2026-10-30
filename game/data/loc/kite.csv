@@ -31,3 +31,4 @@ KITE_REGION_PALE_RIM,The Pale Rim
 FIELD_MENU_KITE,The Kite
 FIELD_MENU_KITE_DESC,"Where the Kite can carry you, on the chart of the sea."
 KITE_PLACE_SHORT_FMT,"{place}. Square {cell}."
+KITE_CLOSED_HERETICS,Closed to heretics

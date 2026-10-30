@@ -164,6 +164,36 @@ func test_the_menu_searches_a_square_and_lists_what_it_finds() -> void:
 	_done()
 
 
+## M5-A3P-1702 (act3_ch18 §4): the shipped chart has the Act III revisits. Oruvel is one; Ansedra shows from Ch13 but,
+## once the party are heretics, is greyed with its reason and never flown to (seen from the air only).
+func test_the_shipped_chart_lists_oruvel_and_refuses_ansedra_to_heretics() -> void:
+	var bag := {&"kite_flying": true, &"ch01_started": true, &"ch13_started": true}
+	var log := trips
+	var m := KiteMapModel.new(
+		KiteMapModel.load_data(),
+		func(f: StringName) -> Variant: return bag.get(f, false),
+		func(f: StringName, v: Variant) -> void: bag[f] = v,
+		func(loc: StringName, spawn: StringName) -> bool:
+			log.append([loc, spawn])
+			return true
+	)
+	assert_true(m.ids().has(&"oruvel"), "Oruvel is a revisit")
+	assert_true(m.ids().has(&"ansedra"), "Ansedra is on the chart from Ch13")
+	assert_eq(m.refusal(&"ansedra"), "", "before the heresy it can be flown to")
+	bag[&"ch14_declared_heretics"] = true
+	assert_eq(m.refusal(&"ansedra"), tr("KITE_CLOSED_HERETICS"), "after it, refused with its reason")
+	assert_false(m.fly(&"ansedra"), "and the Kite doesn't land")
+	assert_true(trips.is_empty())
+	assert_true(m.fly(&"oruvel"))
+	var menu := KiteMapMenu.open_in(host, m)
+	for r: Dictionary in menu.rows_page().rows:
+		if StringName(str(r["id"])) == &"ansedra":
+			assert_false(bool(r["enabled"]), "the row is greyed")
+			assert_eq(str(r["right"]), tr("KITE_CLOSED_HERETICS"), "and says why")
+	_close(menu)
+	_done()
+
+
 func _model() -> KiteMapModel:
 	var bag := flags
 	var log := trips
