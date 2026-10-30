@@ -1182,3 +1182,12 @@ STATUS 18:46 (answer to the Lead's 18:45 ask): the Ch5 Pemakar/Ashcrown and Ch8 
 - Note for env-art: Ch8's day Corrow may show the same 18 m headland tile on `strand_rocks` close up; not in a hero shot.
 - **MERGE-READY @ fd5cf5a8.**
 SELF-RENDERED @ fd5cf5a8: the 11 Ch6/Ch7/Ch9 hero shots before; ch06_brine_road and _camp after (three fog tries); ch09_corrow_rocks and _strand after; id picks of the Brine horizon and the Corrow boulder (scratch), all viewed.
+
+### Act II beauty pass, Ch13–Ch16 (Lead 20:26)
+- Merged integration (big29) into env-art-b first (944f7d2c). Rendered the 18 hero shots as played (ch13_sanctum_gate/_basin/_vault, ch13_archive_door/_aisle/_table/_roll, ch14_court_entry/_ceremony/_steps/_gate, ch14_ansedra_ripple, ch15_sea_deck/_bier/_wide, ch16_rim_ship/_wade/_cairns) and viewed them.
+- **No change:** the Sanctum (the teal vault round the glowing basin, cold and still), the Lacquer Court (red lacquer against the burning sunset over the lagoon: the most beautiful-and-doomed frames in Act II), Ansedra's ripple (gold domes doubled in the mirror water), the open sea at night (moonlit swell round the bier boat; dark, as written) and the Pale Rim (the white-out where sea and sky meet, the cairns and markers fading into it; intended).
+- **Lamp Archive, fixed (d2263160):** under Ansedra's open-air grade the reading room was one flat grey wash with none of the spec's "long shafts" of clerestory light. `ch13_archive_dressing.py` now writes `lamp_archive_environment.tres`, a copy of Ansedra's grade with ambient 0.28 (from 0.6), exposure 0.85 (the spec's) and a dusty volumetric fog (0.045, forward-scattering 0.55). The light now hangs in the aisle as diagonal shafts from the windows; still no lamp lit (the spec).
+- **Left as is (noted):** `ch13_archive_roll` has no shaft on the Cantor roll (the spec's frame): at 16:30 the sun through the clerestories doesn't reach the lectern. A day-variant sun azimuth (the spec's C6 rows) would place it; not in this pass. `ch13_archive_aisle` frames the bare end wall between the cases.
+- **Checks:** test_ch13_archive_dressing OK (4), Godot `--filter=lamp_archive` 2 pass, validate_data OK.
+- **MERGE-READY @ d2263160.**
+SELF-RENDERED @ d2263160: the 18 Ch13–Ch16 hero shots before; the four archive shots after (two fog tries), all viewed.
