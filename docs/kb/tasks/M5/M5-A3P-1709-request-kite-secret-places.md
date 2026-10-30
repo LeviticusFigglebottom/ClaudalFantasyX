@@ -1,7 +1,7 @@
 ---
 id: M5-A3P-1709
-title: "Request (design): the Kite's secret places for coordinate search (SPEC §6.6; act3_ch18 §9)"
-role: design
+title: "Request (progression, design): the Kite's secret places for coordinate search (SPEC §6.6; act3_ch18 §9)"
+role: progression
 status: todo
 owner_session: ""
 depends_on: []

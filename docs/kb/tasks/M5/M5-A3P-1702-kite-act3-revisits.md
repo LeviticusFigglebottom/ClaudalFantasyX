@@ -5,7 +5,7 @@ role: ui
 status: review
 owner_session: claude/ui (ui-menus)
 depends_on: []
-reviewer: design
+reviewer: progression
 milestone: M5
 request-from: lead
 ---
