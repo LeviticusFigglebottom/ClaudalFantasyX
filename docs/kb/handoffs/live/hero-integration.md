@@ -1577,3 +1577,15 @@ now does both as the game does.
   - **Criterion 2 FAILs until M3-CIN-1233's continuous-path test exists** (act1-chapters' finding: the Prologue skips
     Ch1, and the slice's end card returns to the title).
   - test_act1_gate_check 3/0. Run it from a batch worktree root: `python3 tools/dev/lead/act1_gate_check.py`.
+
+MERGE-READY @ e83e411ed (+ this log): the walk audit and its fixes (d1a2a3674), the ADR 0203 tools (150670d1a), and
+the **Act II inventory** (report-only, lead/gate-big18, full scan): **34 items, all high**:
+- 13 greybox zones, Ch10-Ch16: ossa_fen, reedhollow, lowlight, sunken_vey, cloudloom, keth_pass, quellan, ansedra,
+  ansedra_lacquer_court, lamp_archive, sanctum, open_sea, drowned_choir, pale_rim;
+- 10 Act II foes still primitive stand-ins (fen_leech, root_crab, tannin_archer, gallery_ray, rime_urchin, cord_moth,
+  ridge_lynx, scree_crawler, glass_skate, rim_crawler);
+- 10 Act II encounters with no arena of their own.
+Owners follow the Act I split until act2_tracks.md's ownership lands: env-art-b 14, act1-chapters 10, creatures 10.
+- Checks: `--filter=qa_` 14/0 on this branch (the walk audit included), hero_ 114/0, tools tests (placeholder_audit
+  14/0, act1_gate_check 3/0, taskboard, merge_union, trial_merge) green, gdlint/gdformat clean, validate_data 0/0.
+- Running: act1_gate_check.py on lead/gate-big18 (the Lead's first reading of criteria 1-2).
