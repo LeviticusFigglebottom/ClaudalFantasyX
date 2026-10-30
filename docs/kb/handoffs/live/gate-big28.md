@@ -37,3 +37,12 @@ GATE-BUILT @ e94beb97
 - Selected: 100 test files.
 - Lane A (mine): 50; lane B (GATE-HELPER): 50, in `gate-big28-lanes-b.txt` @ e4a5e089.
 - Lead (18:45): battle-presentation @ 5aa9f169 (064c9e46 crawler and Vowbound effects, bdc5ef22 Act II boss intros) and creatures-b @ ≥ 6973ffc0 (the Lamp Engine lineup fix): both already in (pinned heads e72820da and 5e3492af).
+
+## Fast-gate results
+- Import check clean · boot 0 ERROR lines · log check 0.
+- Lane A (mine, 50 files): all green.
+- Lane B (GATE-HELPER, 50 files @ e4a5e089, arrived 19:12): all green.
+- Tools suite (-j 2, 210 units): only the known test_palette_check, test_screenshots and test_villagers.
+
+GATE-FAST-DONE @ e656ea96 (merge-approved: 100/100 Godot files green, no batch-caused or routed reds). Known:
+test_palette_check, test_screenshots, test_villagers.
