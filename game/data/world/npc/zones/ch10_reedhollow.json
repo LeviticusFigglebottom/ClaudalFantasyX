@@ -1,0 +1,112 @@
+{
+  "version": 1,
+  "doc": "Reedhollow's Kirru (the Lead, 2026-10-30: the creatures track builds the Kirru crowd bodies, assets_src/crowd/kirru; characters keep the named Pell, Owa and the Kirru child). The clutch: eight bodies on the greybox's clutch_0..7 stage actors on the Shore, so the farewell-tide (B09) shows Kirru, not capsules (the stage actors stay hidden until the story shows them); the bodies alternate so no two neighbours in either line match. The watchers (R01: the Kirru are already watching from the platforms, very tall, very still): one on each house platform, facing the lagoon, each row's `at` making its stand-in at CrowdSpots/<id>. Pell is never inside (rule 3); the gate and the causeway are clear. `body` rows: Kirru wear no tints.",
+  "zone": "ch10/reedhollow",
+  "storm_flag": "",
+  "villagers": [
+    {
+      "npc_id": "clutch_0",
+      "body": "kirru_elder_woman",
+      "attach": "child",
+      "stand_in": "CutsceneStage/Actors/clutch_0"
+    },
+    {
+      "npc_id": "clutch_1",
+      "body": "kirru_man",
+      "attach": "child",
+      "stand_in": "CutsceneStage/Actors/clutch_1"
+    },
+    {
+      "npc_id": "clutch_2",
+      "body": "kirru_woman",
+      "attach": "child",
+      "stand_in": "CutsceneStage/Actors/clutch_2"
+    },
+    {
+      "npc_id": "clutch_3",
+      "body": "kirru_youngster",
+      "attach": "child",
+      "stand_in": "CutsceneStage/Actors/clutch_3"
+    },
+    {
+      "npc_id": "clutch_4",
+      "body": "kirru_man",
+      "attach": "child",
+      "stand_in": "CutsceneStage/Actors/clutch_4"
+    },
+    {
+      "npc_id": "clutch_5",
+      "body": "kirru_elder_woman",
+      "attach": "child",
+      "stand_in": "CutsceneStage/Actors/clutch_5"
+    },
+    {
+      "npc_id": "clutch_6",
+      "body": "kirru_woman",
+      "attach": "child",
+      "stand_in": "CutsceneStage/Actors/clutch_6"
+    },
+    {
+      "npc_id": "clutch_7",
+      "body": "kirru_youngster",
+      "attach": "child",
+      "stand_in": "CutsceneStage/Actors/clutch_7"
+    },
+    {
+      "npc_id": "watcher_1",
+      "body": "kirru_man",
+      "attach": "child",
+      "stand_in": "CrowdSpots/watcher_1",
+      "at": [55.738, 0.0, -11.738, 135.0]
+    },
+    {
+      "npc_id": "watcher_2",
+      "body": "kirru_woman",
+      "attach": "child",
+      "stand_in": "CrowdSpots/watcher_2",
+      "at": [48.297, 0.0, -16.034, 165.0]
+    },
+    {
+      "npc_id": "watcher_4",
+      "body": "kirru_elder_woman",
+      "attach": "child",
+      "stand_in": "CrowdSpots/watcher_4",
+      "at": [32.262, 0.0, -11.738, 225.0]
+    },
+    {
+      "npc_id": "watcher_5",
+      "body": "kirru_youngster",
+      "attach": "child",
+      "stand_in": "CrowdSpots/watcher_5",
+      "at": [27.966, 0.0, -4.297, 255.0]
+    },
+    {
+      "npc_id": "watcher_7",
+      "body": "kirru_woman",
+      "attach": "child",
+      "stand_in": "CrowdSpots/watcher_7",
+      "at": [32.262, 0.0, 11.738, 315.0]
+    },
+    {
+      "npc_id": "watcher_8",
+      "body": "kirru_man",
+      "attach": "child",
+      "stand_in": "CrowdSpots/watcher_8",
+      "at": [39.703, 0.0, 16.034, 345.0]
+    },
+    {
+      "npc_id": "watcher_10",
+      "body": "kirru_youngster",
+      "attach": "child",
+      "stand_in": "CrowdSpots/watcher_10",
+      "at": [55.738, 0.0, 11.738, 45.0]
+    },
+    {
+      "npc_id": "watcher_11",
+      "body": "kirru_elder_woman",
+      "attach": "child",
+      "stand_in": "CrowdSpots/watcher_11",
+      "at": [60.034, 0.0, 4.297, 75.0]
+    }
+  ]
+}

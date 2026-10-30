@@ -4,27 +4,5 @@
     "StandIn",
     "Facing"
   ],
-  "villagers": [
-    {
-      "body": "NPCs/Town/Shopkeeper",
-      "npc_id": "shopkeeper",
-      "actor": "res://assets/characters/villagers/netmender/netmender_actor.tscn",
-      "talk": "ShopkeeperTalk",
-      "stand_in_for": "netmender"
-    },
-    {
-      "body": "NPCs/Town/Smith",
-      "npc_id": "smith",
-      "actor": "res://assets/characters/villagers/fisher/fisher_actor.tscn",
-      "talk": "SmithTalk",
-      "stand_in_for": "fisher"
-    },
-    {
-      "body": "NPCs/Town/Innkeeper",
-      "npc_id": "innkeeper",
-      "actor": "res://assets/characters/villagers/vendor/vendor_actor.tscn",
-      "talk": "InnkeeperTalk",
-      "stand_in_for": "vendor"
-    }
-  ]
+  "villagers": []
 }

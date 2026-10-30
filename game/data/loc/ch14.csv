@@ -7,9 +7,6 @@ CHAR_BRANNOC_HALE,Brannoc Hale
 CHAR_HULL_CAPTAIN,Hull-captain
 ENEMY_MALCOR_VENN,Warden Malcor Venn
 LORE_MALCOR_VENN,"The Warden of Ansedra's water, who keeps the lagoon flat and the barges poled. He read the declaration in a clear voice and believed every word of it. The flat-engine on his barge stills the water in its wake."
-OBJ_CH14_VOWS,Take your places in the gallery. The vows are at dusk.
-OBJ_CH14_STEPS,Hold the water-steps.
-OBJ_CH14_GATE,To the barge. Get through the water-gate.
 OBJ_CH14_SIDE_PIN,A hull-captain needs someone who may go up to the dais.
 TUT_CH14_HOLD_STEPS,Hold the steps until Merel cuts the barge loose.
 TUT_MALCOR_ENGINE,The flat-engine slows you with every pulse. Liss can break it.

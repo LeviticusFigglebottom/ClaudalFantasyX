@@ -6,7 +6,8 @@ title: ch11_the_engine
 location: ch11/lowlight
 ---
 @letterbox on
-@camera L05
+// T00 is lowlight.md's L05 (the engine hall from the stair head), renamed: the greybox's L05 is a sanctum view.
+@camera T00
 @music silence fade=1.0
 @sfx engine_tick
 @wait 3.0

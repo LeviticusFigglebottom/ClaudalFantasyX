@@ -589,6 +589,35 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ b45addab: the Lead's Prologue–Ch4 POI and interactable walk at eye height (the 10-30 pass).**
+  - **Method:** `tools/act1/poi_stills.py` drives walk_render's new `auto_targets`. It takes every Interactable in
+    each zone and every zone-map POI, standing an eye off each on its clearest side. About 130 stills over Oruvel,
+    the Underway, Haluna, the causeway, the Shell Shrine, the ferry and the wake, all viewed. The Prologue has
+    neither: its walk was done before.
+  - **Fixed:**
+    - **The Underway** (eb887bc5): the `old_tin` find and the `limpet` look had no prop. New pieces `old_tin` and
+      `shaft_limpet`.
+    - **The ferry** (51ac308c): the Order shrine, the crossing's rest point, was bare wall. New `deck_shrine` on the
+      mainmast's forward face, on the OrderShrine block. The ferry and Underway kits were rebuilt in full: every
+      other glb byte-identical.
+    - **The wake** (b45addab): the fisher and his feast mat stood in the night's swash. Mat, `table_fisher` and the
+      fisher's point moved 2 m inland together; floors re-read.
+      **FYI act1-chapters:** that's `tools/act1/ch04_haluna_wake.py`'s fisher point and trigger.
+    - **Oruvel's boats and walkway edges:** the playtest FAST-TRACK above.
+  - **Read fine, no change:**
+    - Haluna's touch points;
+    - the causeway's slabs, posts and offering ring;
+    - the Shell Shrine (the dome's lines are its mortar ribs; the floor streaks are sun through the oculi);
+    - Oruvel's NPCs;
+    - the wake's feast, lane, chapel, dock and wall (with the chapter's flags set).
+  - **Not env-art's (to chapters):**
+    - Oruvel's pen child stands in the PracticeNet block, which the kit draws as the pen's open water, while the
+      greybox's solid NetPen deck lets the player walk over that water.
+    - Reedhollow Shore's camera is the field camera's cabin rule (above).
+  - **Checks:**
+    - tools: ferry kit, Underway kit, zone_dressing_ch01, haluna_dressing, ch04_validate, validate_data;
+    - Godot `--filter=ch04` 13/0, `haluna` 65/0.
+  - **Shots that will drift:** ferry shots framing the mainmast; the wake's feast shots.
 - **MERGE-READY @ eb887bc5 (supersedes 3389db19): the playtest FAST-TRACK is complete and pushed.**
   - **What's in it:** the boats (7fbb9319) and the Oruvel edge walls (28b005ad), as the entry below says.
   - **The interrupted step (the Lead, 13:48):** a long compound shell command stalled on a permission prompt. It is

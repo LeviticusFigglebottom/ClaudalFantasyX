@@ -274,6 +274,8 @@ RULES = [
     ("sfx/kesh_rise.ogg", "momentary", -21.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
     ("sfx/barge_no_wake.ogg", "momentary", -27.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
     ("sfx/fin_cut.ogg", "momentary", -22.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/shoal_hum.ogg", "momentary", -28.0, 1.0, -1.0, "an Act II cutscene cue (the Lead's 13:48 Ch15 item)"),
+    ("sfx/choir_wind_chord.ogg", "momentary", -24.0, 1.0, -1.0, "an Act II cutscene cue (the Lead's 13:48 Ch16 item)"),
 ]
 FILE_LIMIT = 5 * 1024 * 1024        # CLAUDE.md §8: no file over 5 MB
 TOTAL_BUDGET = 105 * 1024 * 1024    # every shipped audio file (ADR 0175: Act II under assets/audio/act2/; 0174, 0171, 0170)

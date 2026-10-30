@@ -25,7 +25,7 @@ location: ch11/lowlight
 @camera N04
 @wait 2.5
 @camera N05
-@mark pell ledge_edge walk
+@mark pell pell_kneel walk
 @wait 1.5
 Pell [grief]: She is here. She is not lifted. Do not speak yet. Please. #line:ch11_nhoa_001 #tn:"'Lifted': the Kirru word for the dead who have gone up. Pell speaks of his sister."
 @anim pell kneel

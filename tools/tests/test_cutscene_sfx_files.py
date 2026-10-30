@@ -14,13 +14,10 @@ MUSIC_CUE = re.compile(r"^\s*@music\s+(\S+)", re.M)
 SILENCE = "silence"
 # Cues the scripts name that audio has not delivered yet. Empty since M3-AUD-819..822 landed; a new script id must
 # get a cue, or join this set on purpose while one is being made (it may only shrink). Act II's two people-boss and
-# memory gaps (act2_cue_sheet.md: abiding_guard is M4-A2P-092, kesh_memory is a row-only proposal) are on it.
-MUSIC_TODO: set[str] = {"kesh_memory"}
-# The same for `@sfx`: Act II script cues audio is making (M4-A2P-107). They play silent until their files land.
-SFX_TODO: set[str] = {
-    "egret_lift", "engine_tick", "fin_cut", "kerrid_sits", "kesh_rise", "lamp_crack", "lamp_housing_close",
-    "lamp_seat", "level_pin_ring", "stirring_bells", "water_gate_drop",
-}
+# memory gaps were on it until audio delivered them (big21, big22).
+MUSIC_TODO: set[str] = set()
+# The same for `@sfx`: Act II script cues audio is making (M4-A2P-107). Empty since big22 delivered all eleven.
+SFX_TODO: set[str] = set()
 
 
 def sfx_dir() -> Path:

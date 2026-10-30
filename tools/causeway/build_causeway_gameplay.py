@@ -45,6 +45,11 @@ SPAWN_STEP_M = 6.0
 # never the six to eight its old fixed gaps would give over the longer walk (the playtest's back-to-back fights).
 ENCOUNTER_MIN_SHARE = 0.32
 ENCOUNTER_MAX_SHARE = 0.45
+# The Lead's encounter-pacing FAST-TRACK (10-30, the human's playtest): every zone's gap is 95-145 m, a 31-44 s breather
+# at the run (game/data/world/greybox_defaults.json min_gap_m; tools/act1/encounter_pacing.py). The shares above
+# would give 68-95 m on this route, so the floor wins: about one fight per walk after the Harrier.
+ENCOUNTER_MIN_M = 95.0
+ENCOUNTER_MAX_M = 145.0
 
 
 def seg_len(a, b):
@@ -213,8 +218,8 @@ def build(route):
         "triggers": triggers,
         "camera_volumes": cams,
         "encounters": {"table": [{"encounter": "ch03_causeway_shore", "weight": 1}],
-                       "min_m": round(ENCOUNTER_MIN_SHARE * (total - harrier_s), 1),
-                       "max_m": round(ENCOUNTER_MAX_SHARE * (total - harrier_s), 1),
+                       "min_m": max(round(ENCOUNTER_MIN_SHARE * (total - harrier_s), 1), ENCOUNTER_MIN_M),
+                       "max_m": max(round(ENCOUNTER_MAX_SHARE * (total - harrier_s), 1), ENCOUNTER_MAX_M),
                        "when": {"set": ["ch03_harrier_won"]}, "seed": 3},
     }
 

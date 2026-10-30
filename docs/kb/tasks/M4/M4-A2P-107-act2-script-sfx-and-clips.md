@@ -36,8 +36,8 @@ The Act II scripts (M4-A2P-001..009) name cues and clips that nobody has made ye
 - `sequencer.json` `music_stand_ins` now names the delivered Act II files for 15 cues. Most of those files live under `assets/audio/act2/music/`, outside `music_dir`, so their rows are written `../act2/music/<id>`. If audio would rather move the files, the rows go away.
 
 ## Acceptance criteria
-- [ ] Each SFX file is rendered from source with a PROVENANCE row, and its id is off `SFX_TODO`.
-- [ ] Each music cue has a row in music.json and resolves in the sequencer, and its id is off `MUSIC_TODO`.
+- [x] Each SFX file is rendered from source with a PROVENANCE row, and its id is off `SFX_TODO` (big22 delivered all eleven; the list is empty).
+- [x] Each music cue has a row in music.json and resolves in the sequencer, and its id is off `MUSIC_TODO` (abiding_guard in big21, kesh_memory in big22).
 - [ ] Each clip is built, and its id is off `requested_clips.json` `clips` (characters).
 
 ## Review log
