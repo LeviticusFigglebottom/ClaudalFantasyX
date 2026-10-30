@@ -2098,3 +2098,21 @@ MERGE-READY @ (this commit).
   headless (much less on the PC) acceptable after M3-HER-1168?
 - **B11's opening:** after the router's fade lifts (5.3 s), B11 opens from the field, with no extra black of its own in
   the trace. Nothing to agree with slice-polish there.
+
+### big29 (46d8a067): the Act I smoke run and the field-camera rows; the Lead 10-30 20:45
+- **The Drownbell (the Lead's answer):** about 1.9 s headless is accepted once M3-HER-1168 (creatures) lands, and
+  Haluna is not to be kept resident. I re-measure when M3-HER-1168 merges.
+- **The Act I smoke run on 46d8a067** (cloud-qa hadn't posted one), in a clean worktree with a fresh profile:
+  **PASS, 0 SCRIPT ERRORs.**
+  - qa_threads 1/0, qa_encounters 1/0, fp_ 30/0, save_ 153/0;
+  - **act1_route 3/0,** New Game → Ch9's end card → the title.
+  - No soft-lock, stuck transition or held reveal in the logs.
+- **The field-camera rows on 46d8a067 + this branch (cbbbc34bf), a fresh import:**
+  - qa_field_camera 2/0, qa_party 3/0, camera_director 56/0. The only KNOWN entries are Tier4 (M3-HER-1157,
+    env-art-b) and B02 (M3-HER-1160, m2-slice).
+  - **24, 47 and 38:** clean in the spawn sweep.
+  - **37 (AfterHarrier):** the still is clean.
+  - **66:** never nearer than 5.1 m; 6 of 111 samples, all in the cross-town blend.
+  - **21:** 0 of 121 samples out of frame.
+  - **All six hold on big29.** They need the PC's hand pass to close.
+MERGE-READY @ (this commit).
