@@ -1361,3 +1361,9 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - the rise rule at 0 mm in every clip (the heart rides the root, not the glass); the KO sinks the globe, not the root;
   - 3.5k triangles, 25 bones; byte-identical, PROVENANCE, portrait, shot `creature_drowned_lantern` (viewed).
 - **MERGE-READY @ 647105978.** Next: M5-A3P-1807, the conduit crawler's Act III row (claimed).
+- **M5-A3P-1807 the conduit crawler's Act III use** (Ch19), at review:
+  - the same model and creatures.json row (a foe's row is found by its model scene); feet pinned in every clip and the
+    brush and wiper no longer drag, so the clip audit is clean; byte-identical, portrait re-rendered, shot viewed;
+  - its shot also differs from the baseline by the earlier leg rework (563eda19e): the shots session recaptures.
+  - Combat: **M5-A3P-1849** requests the enemies.json rows and encounters for all eight Act III regulars.
+- **MERGE-READY @ a1d431c1a.** Next: M5-A3P-1808, the kite gulls (claimed).
