@@ -376,6 +376,17 @@
         "clutch_stone-lod1": 12
       }
     },
+    "conclave_gallery": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 54792,
+      "lods": {
+        "conclave_gallery": 264,
+        "conclave_gallery-lod1": 252
+      }
+    },
     "conduit_housing": {
       "budget": [
         3000,
@@ -429,6 +440,83 @@
       "lods": {
         "coral_boulder_c": 3264,
         "coral_boulder_c-lod1": 408
+      }
+    },
+    "court_balustrades": {
+      "budget": [
+        8000,
+        600
+      ],
+      "bytes": 50228,
+      "lods": {
+        "court_balustrades": 320,
+        "court_balustrades-lod1": 192
+      }
+    },
+    "court_colonnade_roofs": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 22876,
+      "lods": {
+        "court_colonnade_roofs": 144,
+        "court_colonnade_roofs-lod1": 48
+      }
+    },
+    "court_column": {
+      "budget": [
+        700,
+        120
+      ],
+      "bytes": 23632,
+      "lods": {
+        "court_column": 236,
+        "court_column-lod1": 92
+      }
+    },
+    "court_gallery": {
+      "budget": [
+        3000,
+        300
+      ],
+      "bytes": 69932,
+      "lods": {
+        "court_gallery": 424,
+        "court_gallery-lod1": 228
+      }
+    },
+    "court_ground": {
+      "budget": [
+        12000,
+        400
+      ],
+      "bytes": 166716,
+      "lods": {
+        "court_ground": 1524,
+        "court_ground-lod1": 72
+      }
+    },
+    "court_water_gate": {
+      "budget": [
+        2000,
+        300
+      ],
+      "bytes": 23116,
+      "lods": {
+        "court_water_gate": 152,
+        "court_water_gate-lod1": 84
+      }
+    },
+    "court_water_steps": {
+      "budget": [
+        1500,
+        200
+      ],
+      "bytes": 16800,
+      "lods": {
+        "court_water_steps": 72,
+        "court_water_steps-lod1": 72
       }
     },
     "crate_stack": {
@@ -550,6 +638,17 @@
       "lods": {
         "garland_string": 1788,
         "garland_string-lod1": 476
+      }
+    },
+    "gilt_lamp_stand": {
+      "budget": [
+        900,
+        150
+      ],
+      "bytes": 19192,
+      "lods": {
+        "gilt_lamp_stand": 184,
+        "gilt_lamp_stand-lod1": 120
       }
     },
     "gold_lamp_post": {
@@ -2052,6 +2151,17 @@
         "spire_crown_floor-lod1": 1532
       }
     },
+    "stillguard_rack": {
+      "budget": [
+        900,
+        80
+      ],
+      "bytes": 27300,
+      "lods": {
+        "stillguard_rack": 216,
+        "stillguard_rack-lod1": 72
+      }
+    },
     "stilt_house": {
       "budget": [
         14000,
@@ -2284,6 +2394,17 @@
       "lods": {
         "wayside_offering": 1740,
         "wayside_offering-lod1": 173
+      }
+    },
+    "wedding_dais": {
+      "budget": [
+        5000,
+        400
+      ],
+      "bytes": 66608,
+      "lods": {
+        "wedding_dais": 656,
+        "wedding_dais-lod1": 216
       }
     },
     "well_shaft": {

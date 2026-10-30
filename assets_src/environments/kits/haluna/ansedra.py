@@ -70,6 +70,24 @@ The Lamp Archive's reading room (M4-A2P-043; ch13_lamp_archive.md), in its greyb
                       oil lamp. Origin at its foot, centre.
   roll_table          the same table with the Cantor roll unrolled along it, its rollers at the ends.
   ledger_stack        a pile of ledgers and rolled lists for the floor by the tables (the days' work). Origin at its foot.
+The Lacquer Court at the wedding (M4-A2P-044; ch14_lacquer_court.md), in its greybox's frame: the court 30 x 24 m (z 0
+to -24, floor y 0), the water-steps down to the barge's deck (-0.6) on +Z, the lagoon at y -1.0. The bespoke pieces'
+origin is the zone's origin, so they are placed at (0, 0):
+  court_ground        the court's paving with the Level line across it, the marble terrace round it that carries the
+                      halls, and the edge down to the lagoon.
+  court_balustrades   the low marble balustrades with gilt coping on the court's edge walls (COURT_WALLS) and the
+                      water-steps' side walls.
+  court_water_steps   the water-steps from the court (y 0) down to the barge's deck (-0.6) between their walls.
+  court_colonnade_roofs  the colonnades' lacquered beams and their lean-to tiled roofs over the court's N, W and E edges.
+  court_water_gate    the court's water-gate over the barge channel: two red posts, a lintel and the raised drop-gate.
+Placed pieces (origin at their foot):
+  court_column        one red-lacquered column (6 m) on a marble base with a gilt capital.
+  court_gallery       a guests' gallery (3 x 16 m, 0.6 m high): a marble platform with red benches along it.
+  wedding_dais        the dais (8 x 3 m, 0.8 m): marble steps, the red bridal carpet, two gilt standards with red
+                      streamers hanging dead still, the offerings (cloth bolts, sealed jars). Origin at its centre.
+  conclave_gallery    the Conclave's raised gallery (5 x 3 m, 2 m): lacquered screens, five seats, a gilt canopy.
+  gilt_lamp_stand     a gilt lamp-stand with its flame in a bowl (lit for the ceremony: the zone puts a light on it).
+  stillguard_rack     the Stillguard's spears racked by the gallery.
 """
 
 from __future__ import annotations
@@ -91,6 +109,9 @@ M_DECK = "kit_timber"
 M_TILE = "kit_roof_tile"
 M_GLASS = "kit_salt_glass"
 M_PAPER = "kit_cloth_sand"
+M_CLOTH_RED = "kit_keth_red"  # the bridal red: a woven, matte red (bridal_barge.py's)
+M_JAR = "kit_earthenware"
+M_FLAME = "kit_lamp_flame"
 
 TRI_BUDGET = {"bowl_dome": (6000, 400), "ansedra_far_domes": (8000, 3000), "pursuit_barge": (10000, 700),
               "lacquer_hall": (8000, 500), "lacquer_court_ground": (12000, 800), "sanctum_basin": (8000, 500),
@@ -99,7 +120,11 @@ TRI_BUDGET = {"bowl_dome": (6000, 400), "ansedra_far_domes": (8000, 3000), "purs
               "sanctum_nave_floor": (12000, 300), "sanctum_basin_nave": (6000, 300), "sanctum_vestibule": (8000, 600),
               "sanctum_bench": (600, 60), "sanctum_apse": (8000, 900), "cantor_stand": (800, 80),
               "archive_case": (6000, 300), "archive_hall_bay": (6000, 500), "archive_end_walls": (3000, 300),
-              "reading_table": (2500, 150), "roll_table": (2500, 200), "ledger_stack": (900, 60)}
+              "reading_table": (2500, 150), "roll_table": (2500, 200), "ledger_stack": (900, 60),
+              "court_ground": (12000, 400), "court_balustrades": (8000, 600), "court_water_steps": (1500, 200),
+              "court_colonnade_roofs": (6000, 600), "court_water_gate": (2000, 300), "court_column": (700, 120),
+              "court_gallery": (3000, 300), "wedding_dais": (5000, 400), "conclave_gallery": (4000, 300),
+              "gilt_lamp_stand": (900, 150), "stillguard_rack": (900, 80)}
 BUDGET_KEY = {"ansedra_far_domes_lit": "ansedra_far_domes"}
 
 PLINTH_TOP = 0.6
@@ -1149,6 +1174,308 @@ def build_ledger_stack(seed: int = 2136) -> list[kc.MeshBuilder]:
     return out
 
 
+# --- the Lacquer Court at the wedding (M4-A2P-044) ---------------------------------------------------------------
+COURT_Z = (0.0, -24.0)  # the court's south (water-steps) and north edges
+COURT_HALF_X = 15.0
+COURT_WATER_Y = -1.0
+COURT_BARGE_DECK = -0.6
+# The greybox's edge walls (centre x, centre z, length along x, length along z), 1 m high and 0.5 m thick.
+COURT_WALLS = ((0.0, -24.0, 30.0, 0.0), (-9.1, 0.0, 11.8, 0.0), (9.1, 0.0, 11.8, 0.0), (-15.0, -12.0, 0.0, 24.0),
+               (15.0, -14.0, 0.0, 20.0), (15.0, -0.5, 0.0, 1.0))
+STEPS_HALF_W = 3.0  # between the water-steps' walls (the greybox's, at +-3.25)
+STEPS_LEN = 4.0
+TERRACE = (27.0, -40.0)  # the terrace's half width and its north edge, round the court for the halls
+COLUMN_H = 6.0
+GALLERY = (1.5, 0.6, 8.0)  # half width, height, half length
+DAIS = (4.0, 0.8, 1.5)
+CONCLAVE = (2.5, 2.0, 1.5)
+COURT_GATE = (5.0, 18.0)  # the posts' half spacing and the gate's z
+FLAME_Y = 1.75  # gilt_lamp_stand's flame over its foot
+
+
+def build_court_ground_zone(seed: int = 2141) -> list[kc.MeshBuilder]:
+    out = []
+    z0, z1 = COURT_Z
+    hx = COURT_HALF_X
+    tx, tz = TERRACE
+    for lod in (False, True):
+        rng = kc.rng_for("court_ground", seed)
+        mb = kc.MeshBuilder("court_ground" + ("-lod1" if lod else ""))
+        stone, gilt = mb.material(M_STONE), mb.material(M_GILT)
+        cz = (z0 + z1) * 0.5
+        hz = (z0 - z1) * 0.5
+        if lod:
+            kc.rounded_block(mb, (0.0, -0.15, cz), (hx, 0.15, hz), stone, radius=0.01, seg=1, weather=MARBLE_W)
+        else:
+            nx, nz = 12, 10
+            kc.rounded_block(mb, (0.0, -0.25, cz), (hx, 0.2, hz), stone, radius=0.01, seg=1, weather=MARBLE_W)
+            for i in range(nx):
+                for k in range(nz):
+                    w, d = 2 * hx / nx, 2 * hz / nz
+                    kc.rounded_block(mb, (-hx + w * (i + 0.5), -0.03, z1 + d * (k + 0.5)), (w * 0.5 - 0.008, 0.03,
+                                     d * 0.5 - 0.008), stone, radius=0.006, seg=1, weather=MARBLE_W,
+                                     variation=float(rng.random()))
+            kc.rounded_block(mb, (0.0, 0.002, cz), (0.05, 0.003, hz - 0.8), gilt, radius=0.002, seg=1)  # the Level line
+        # The terrace round the court (N, W, E; the court's south edge is the water): a marble platform to the bed.
+        th = (0.0 - (COURT_WATER_Y - 1.2)) * 0.5
+        for (cx_, cz_, sx_, sz_) in ((0.0, (z1 + tz) * 0.5, tx, (z1 - tz) * 0.5),
+                                     (-(hx + tx) * 0.5, z0 * 0.5 + z1 * 0.5, (tx - hx) * 0.5, hz),
+                                     ((hx + tx) * 0.5, z0 * 0.5 + z1 * 0.5, (tx - hx) * 0.5, hz)):
+            kc.rounded_block(mb, (cx_, -th, cz_), (sx_, th, sz_), stone, radius=0.04, seg=1, weather=MARBLE_W,
+                             variation=float(rng.random()))
+        # The court's own south face down into the lagoon, either side of the water-steps.
+        for sx in (-1.0, 1.0):
+            w = (hx - STEPS_HALF_W) * 0.5
+            kc.rounded_block(mb, (sx * (STEPS_HALF_W + w), -th, z0 + 0.25), (w, th, 0.25), stone, radius=0.03, seg=1,
+                             weather=kc.Weathering(moss=0.0, salt=0.2, wet=0.25, erosion=0.1), wet_bias=0.2)
+        out.append(mb)
+    return out
+
+
+def build_court_balustrades(seed: int = 2142) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("court_balustrades", seed)
+        mb = kc.MeshBuilder("court_balustrades" + ("-lod1" if lod else ""))
+        stone, gilt = mb.material(M_STONE), mb.material(M_GILT)
+        runs = [(cx, cz, lx, lz, 0.0, 1.0) for cx, cz, lx, lz in COURT_WALLS]
+        runs += [(sx * (STEPS_HALF_W + 0.25), STEPS_LEN * 0.5, 0.0, STEPS_LEN, -0.5, 1.5) for sx in (-1.0, 1.0)]
+        for cx, cz, lx, lz, y0, y1 in runs:
+            hx_, hz_ = max(lx, 0.5) * 0.5, max(lz, 0.5) * 0.5
+            kc.rounded_block(mb, (cx, (y0 + y1) * 0.5 - 0.06, cz), (hx_, (y1 - y0) * 0.5 - 0.06, hz_), stone, radius=0.03,
+                             seg=1, weather=MARBLE_W, variation=float(rng.random()))
+            kc.rounded_block(mb, (cx, y1 - 0.06, cz), (hx_ + 0.05, 0.06, hz_ + 0.05), stone, radius=0.03, seg=1,
+                             weather=MARBLE_W)  # the coping
+            if not lod:
+                along = np.array([lx * 0.5, 0.0, lz * 0.5])
+                for side in (-1.0, 1.0):
+                    off = np.array([0.0 if lx else side * (hx_ + 0.055), 0.0, side * (hz_ + 0.055) if lx else 0.0])
+                    c = np.array([cx, y1 - 0.08, cz]) + off
+                    kc.tube(mb, np.array([c - along, c + along]), 0.012, 4, gilt)
+        out.append(mb)
+    return out
+
+
+def build_court_water_steps(seed: int = 2143) -> list[kc.MeshBuilder]:
+    out = []
+    n = 6
+    for lod in (False, True):
+        rng = kc.rng_for("court_water_steps", seed)
+        mb = kc.MeshBuilder("court_water_steps" + ("-lod1" if lod else ""))
+        stone = mb.material(M_STONE)
+        for k in range(n):
+            top = COURT_BARGE_DECK * (k + 1) / n
+            tread = STEPS_LEN / n
+            hy = (top - (COURT_WATER_Y - 1.0)) * 0.5
+            kc.rounded_block(mb, (0.0, top - hy, tread * (k + 0.5)), (STEPS_HALF_W, hy, tread * 0.5), stone, radius=0.02,
+                             seg=1, weather=kc.Weathering(moss=0.0, salt=0.2, wet=0.3, erosion=0.1),
+                             wet_bias=0.08 * k, variation=float(rng.random()))
+        out.append(mb)
+    return out
+
+
+def build_court_colonnade_roofs(seed: int = 2144) -> list[kc.MeshBuilder]:
+    """Over the N row (x -14..14 at z -23) and the W and E rows (z -21..-3 at x +-14): a lacquered beam on the
+    columns' capitals, and a lean-to of tile from it out over the court's edge wall."""
+    out = []
+    rows = (((-14.0, -23.0), (14.0, -23.0), (0.0, -1.0)), ((-14.0, -21.0), (-14.0, -3.0), (-1.0, 0.0)),
+            ((14.0, -21.0), (14.0, -3.0), (1.0, 0.0)))
+    for lod in (False, True):
+        rng = kc.rng_for("court_colonnade_roofs", seed)
+        mb = kc.MeshBuilder("court_colonnade_roofs" + ("-lod1" if lod else ""))
+        red, gilt, tile = mb.material(M_LACQUER), mb.material(M_GILT), mb.material(M_TILE)
+        for (ax, az), (bx, bz), (ox, oz) in rows:
+            a = np.array([ax - abs(oz) * 0.6, COLUMN_H + 0.2, az - abs(ox) * 0.6])
+            b = np.array([bx + abs(oz) * 0.6, COLUMN_H + 0.2, bz + abs(ox) * 0.6])
+            mid = (a + b) * 0.5
+            half = np.abs(b - a) * 0.5 + np.array([0.15, 0.2, 0.15])
+            kc.rounded_block(mb, mid, (max(half[0], 0.2), 0.2, max(half[2], 0.2)), red, radius=0.03, seg=1)
+            if not lod:
+                kc.rounded_block(mb, mid + np.array([0.0, -0.22, 0.0]), (max(half[0], 0.22), 0.02, max(half[2], 0.22)), gilt,
+                                 radius=0.01, seg=1)
+            out_v = np.array([ox, 0.0, oz])
+            lo_edge = 2.8  # the roof's fall over the edge wall, outward
+            hi_a, hi_b = a + np.array([0.0, 0.5, 0.0]) - out_v * 0.8, b + np.array([0.0, 0.5, 0.0]) - out_v * 0.8
+            lo_a, lo_b = a + out_v * lo_edge + np.array([0.0, -0.5, 0.0]), b + out_v * lo_edge + np.array([0.0, -0.5, 0.0])
+            grid = np.array([[hi_a, hi_b], [lo_a, lo_b]])
+            L = float(np.linalg.norm(b - a))
+            for flip in (False, True):
+                kc.quad_strip(mb, grid, tile, uv=np.array([[[0, 0], [L / 2, 0]], [[0, 1.6], [L / 2, 1.6]]]),
+                              col=(0, 0, 0, 0.4), uv2=(0.8, 0.5), flip=flip, smooth=False)
+            if not lod:  # the gilt ridge along the roof's top and the eave
+                kc.tube(mb, np.array([hi_a, hi_b]), 0.06, 5, gilt)
+                kc.tube(mb, np.array([lo_a, lo_b]), 0.05, 5, gilt)
+        del rng
+        out.append(mb)
+    return out
+
+
+def build_court_water_gate(seed: int = 2145) -> list[kc.MeshBuilder]:
+    out = []
+    gx, gz = COURT_GATE
+    for lod in (False, True):
+        rng = kc.rng_for("court_water_gate", seed)
+        mb = kc.MeshBuilder("court_water_gate" + ("-lod1" if lod else ""))
+        red, gilt = mb.material(M_LACQUER), mb.material(M_GILT)
+        for sx in (-1.0, 1.0):
+            kc.tube(mb, np.array([[sx * gx, COURT_WATER_Y - 1.2, gz], [sx * gx, 6.0, gz]]), 0.35, 6 if lod else 12, red,
+                    cap_end=True)
+            kc.rounded_block(mb, (sx * gx, 6.15, gz), (0.5, 0.15, 0.5), gilt, radius=0.05, seg=1)
+        kc.rounded_block(mb, (0.0, 6.4, gz), (gx + 0.5, 0.25, 0.3), red, radius=0.05, seg=1)
+        kc.rounded_block(mb, (0.0, 4.6, gz), (gx - 0.4, 1.3, 0.12), red, radius=0.03, seg=1)  # the raised drop-gate
+        if not lod:
+            kc.tube(mb, np.array([[-gx + 0.4, 3.35, gz + 0.13], [gx - 0.4, 3.35, gz + 0.13]]), 0.05, 6, gilt)
+            for sx in (-1.0, 1.0):
+                kc.tube(mb, np.array([[sx * (gx + 0.5), 6.4, gz], [sx * (gx + 1.1), 6.95, gz]]), np.array([0.12, 0.03]), 5,
+                        gilt)
+        del rng
+        out.append(mb)
+    return out
+
+
+def build_court_column(seed: int = 2146) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("court_column", seed)
+        mb = kc.MeshBuilder("court_column" + ("-lod1" if lod else ""))
+        stone, red = mb.material(M_STONE), mb.material(M_LACQUER)
+        kc.rounded_block(mb, (0.0, 0.12, 0.0), (0.36, 0.12, 0.36), stone, radius=0.03, seg=1, weather=MARBLE_W)
+        kc.tube(mb, np.array([[0.0, 0.24, 0.0], [0.0, COLUMN_H - 0.35, 0.0]]), np.array([0.26, 0.23]), 8 if lod else 16,
+                red, cap_end=True)
+        _revolve(mb, np.array([COLUMN_H - 0.4, COLUMN_H - 0.3, COLUMN_H - 0.1, COLUMN_H]),
+                 np.array([0.24, 0.3, 0.36, 0.36]), 8 if lod else 16, M_GILT, cap=True)
+        if not lod:
+            _revolve(mb, np.array([0.24, 0.3, 0.36]), np.array([0.29, 0.3, 0.27]), 16, M_GILT)
+        del rng
+        out.append(mb)
+    return out
+
+
+def build_court_gallery(seed: int = 2147) -> list[kc.MeshBuilder]:
+    out = []
+    hw, h, hl = GALLERY
+    for lod in (False, True):
+        rng = kc.rng_for("court_gallery", seed)
+        mb = kc.MeshBuilder("court_gallery" + ("-lod1" if lod else ""))
+        stone, red, gilt = mb.material(M_STONE), mb.material(M_LACQUER), mb.material(M_GILT)
+        kc.rounded_block(mb, (0.0, h * 0.5, 0.0), (hw, h * 0.5, hl), stone, radius=0.04, seg=1 if lod else 2,
+                         weather=MARBLE_W)
+        if not lod:
+            for sx in (-1.0, 1.0):
+                kc.tube(mb, np.array([[sx * (hw + 0.01), h - 0.06, -hl], [sx * (hw + 0.01), h - 0.06, hl]]), 0.015, 4,
+                        gilt)
+        for z in np.arange(-hl + 1.0, hl - 0.5, 2.5 if lod else 1.6):  # the guests' benches, facing the court
+            kc.rounded_block(mb, (0.0, h + 0.42, z), (0.22, 0.04, 0.6), red, radius=0.015, seg=1)
+            for dz in (-0.45, 0.45):
+                kc.rounded_block(mb, (0.0, h + 0.19, z + dz), (0.18, 0.19, 0.04), red, radius=0.01, seg=1)
+        del rng
+        out.append(mb)
+    return out
+
+
+def build_wedding_dais(seed: int = 2148) -> list[kc.MeshBuilder]:
+    out = []
+    hx, h, hz = DAIS
+    for lod in (False, True):
+        rng = kc.rng_for("wedding_dais", seed)
+        mb = kc.MeshBuilder("wedding_dais" + ("-lod1" if lod else ""))
+        stone, gilt, red, paper = (mb.material(M_STONE), mb.material(M_GILT), mb.material(M_CLOTH_RED),
+                                   mb.material(M_PAPER))
+        for k in range(3):  # three marble steps, the top one the dais
+            g = 0.3 * (2 - k)
+            kc.rounded_block(mb, (0.0, h * (k + 1) / 3 * 0.5, g * 0.5), (hx + g, h * (k + 1) / 3 * 0.5, hz + g * 0.5),
+                             stone, radius=0.03, seg=1, weather=MARBLE_W, variation=float(rng.random()))
+        kc.rounded_block(mb, (0.0, h + 0.008, 0.0), (1.0, 0.008, hz - 0.1), red, radius=0.004, seg=1)  # the carpet
+        kc.rounded_block(mb, (0.0, h * 0.5, hz + 0.6), (1.0, 0.008, 0.6), red, rot=kc.rot_x(-0.95), radius=0.004,
+                         seg=1)  # down the steps
+        for sx in (-1.0, 1.0):  # two gilt standards, their red streamers hanging dead still
+            x = sx * (hx - 0.5)
+            kc.tube(mb, np.array([[x, h, -hz + 0.4], [x, h + 3.4, -hz + 0.4]]), 0.05, 6 if lod else 10, gilt,
+                    cap_end=True)
+            kc.tube(mb, np.array([[x - 0.5, h + 3.3, -hz + 0.4], [x + 0.5, h + 3.3, -hz + 0.4]]), 0.03, 6, gilt,
+                    cap_end=True, cap_start=True)
+            for dx in (-0.35, 0.0, 0.35):
+                kc.rounded_block(mb, (x + dx, h + 2.5, -hz + 0.4), (0.09, 0.8 + 0.1 * dx, 0.006), red, radius=0.003,
+                                 seg=1)
+        if not lod:  # the offerings: bolts of cloth and sealed jars at the dais's back edge
+            for k in range(4):
+                kc.tube(mb, np.array([[-2.8 + 0.5 * k, h + 0.12, -hz + 0.35], [-2.8 + 0.5 * k, h + 0.12, -hz + 1.05]]),
+                        0.12, 8, red if k % 2 else paper, cap_end=True, cap_start=True)
+            for k in range(3):
+                _revolve_at(mb, 1.6 + 0.55 * k, -hz + 0.6, h + np.array([0.0, 0.12, 0.32, 0.44, 0.5]),
+                            np.array([0.1, 0.17, 0.15, 0.07, 0.08]), 12, M_JAR)
+        out.append(mb)
+    return out
+
+
+def build_conclave_gallery(seed: int = 2149) -> list[kc.MeshBuilder]:
+    out = []
+    hx, h, hz = CONCLAVE
+    for lod in (False, True):
+        rng = kc.rng_for("conclave_gallery", seed)
+        mb = kc.MeshBuilder("conclave_gallery" + ("-lod1" if lod else ""))
+        stone, black, red, gilt = (mb.material(M_STONE), mb.material(M_BLACK), mb.material(M_LACQUER),
+                                   mb.material(M_GILT))
+        kc.rounded_block(mb, (0.0, h * 0.5, 0.0), (hx, h * 0.5, hz), stone, radius=0.04, seg=1, weather=MARBLE_W)
+        kc.rounded_block(mb, (0.0, h + 1.2, -hz + 0.08), (hx, 1.2, 0.06), black, radius=0.02, seg=1)  # the back screen
+        for sx in (-1.0, 1.0):
+            kc.rounded_block(mb, (sx * (hx - 0.08), h + 1.2, -0.3), (0.06, 1.2, hz - 0.3), black, radius=0.02, seg=1)
+        for k in range(5):  # the five seats
+            x = -hx + 0.5 + k * (2 * hx - 1.0) / 4
+            kc.rounded_block(mb, (x, h + 0.25, -hz + 0.6), (0.24, 0.25, 0.24), red, radius=0.02, seg=1)
+            kc.rounded_block(mb, (x, h + 0.75, -hz + 0.38), (0.24, 0.3, 0.04), red, radius=0.02, seg=1)
+        for sx in (-1.0, 1.0):  # the canopy: four gilt posts and a gilt-edged lacquer roof
+            for z in (-hz + 0.1, hz - 0.1):
+                kc.tube(mb, np.array([[sx * (hx - 0.1), h, z], [sx * (hx - 0.1), h + 2.8, z]]), 0.05, 6, gilt,
+                        cap_end=True)
+        kc.rounded_block(mb, (0.0, h + 2.9, 0.0), (hx + 0.2, 0.1, hz + 0.2), red, radius=0.03, seg=1)
+        if not lod:
+            kc.rounded_block(mb, (0.0, h + 2.78, 0.0), (hx + 0.22, 0.02, hz + 0.22), gilt, radius=0.01, seg=1)
+        del rng
+        out.append(mb)
+    return out
+
+
+def build_gilt_lamp_stand(seed: int = 2150) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("gilt_lamp_stand", seed)
+        mb = kc.MeshBuilder("gilt_lamp_stand" + ("-lod1" if lod else ""))
+        gilt = mb.material(M_GILT)
+        for k in range(3):  # a tripod foot
+            a = k * 2 * math.pi / 3
+            kc.tube(mb, np.array([[0.32 * math.cos(a), 0.0, 0.32 * math.sin(a)], [0.0, 0.35, 0.0]]), 0.025, 4, gilt)
+        kc.tube(mb, np.array([[0.0, 0.3, 0.0], [0.0, FLAME_Y - 0.15, 0.0]]), 0.03, 6 if lod else 8, gilt)
+        _revolve(mb, FLAME_Y - np.array([0.2, 0.15, 0.05, 0.0]), np.array([0.03, 0.12, 0.17, 0.18]), 8 if lod else 14,
+                 M_GILT)
+        _revolve(mb, FLAME_Y + np.array([-0.04, 0.05, 0.18, 0.3]), np.array([0.09, 0.08, 0.04, 0.0]), 6 if lod else 10,
+                 M_FLAME)
+        del rng
+        out.append(mb)
+    return out
+
+
+def build_stillguard_rack(seed: int = 2151) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("stillguard_rack", seed)
+        mb = kc.MeshBuilder("stillguard_rack" + ("-lod1" if lod else ""))
+        black, bronze, gilt = mb.material(M_BLACK), mb.material(M_BRONZE), mb.material(M_GILT)
+        for dx in (-0.9, 0.9):
+            kc.rounded_block(mb, (dx, 0.9, 0.0), (0.05, 0.9, 0.12), black, radius=0.01, seg=1)
+        for y in (0.3, 1.5):
+            kc.rounded_block(mb, (0.0, y, 0.0), (0.95, 0.04, 0.12), black, radius=0.01, seg=1)
+        for k in range(3 if lod else 6):
+            x = -0.7 + 1.4 * k / (2 if lod else 5)
+            kc.tube(mb, np.array([[x, 0.05, 0.0], [x, 2.6, 0.05]]), 0.018, 4, black)
+            if not lod:
+                kc.tube(mb, np.array([[x, 2.6, 0.05], [x, 2.85, 0.055]]), np.array([0.04, 0.003]), 4, bronze)
+                kc.tube(mb, np.array([[x, 2.55, 0.05], [x, 2.6, 0.05]]), 0.026, 6, gilt)
+        del rng
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "bowl_dome": build_bowl_dome,
     "ansedra_far_domes": build_far_domes,
@@ -1175,4 +1502,15 @@ TARGETS = {
     "reading_table": build_reading_table,
     "roll_table": build_roll_table,
     "ledger_stack": build_ledger_stack,
+    "court_ground": build_court_ground_zone,
+    "court_balustrades": build_court_balustrades,
+    "court_water_steps": build_court_water_steps,
+    "court_colonnade_roofs": build_court_colonnade_roofs,
+    "court_water_gate": build_court_water_gate,
+    "court_column": build_court_column,
+    "court_gallery": build_court_gallery,
+    "wedding_dais": build_wedding_dais,
+    "conclave_gallery": build_conclave_gallery,
+    "gilt_lamp_stand": build_gilt_lamp_stand,
+    "stillguard_rack": build_stillguard_rack,
 }
