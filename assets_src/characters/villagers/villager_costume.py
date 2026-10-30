@@ -484,6 +484,7 @@ SHAWL_TOP = 50.0  # degrees of elevation over the shoulder (TorsoChart): the sha
 SHAWL_DROP = ([0, 30, 60, 90, 120, 150, 180], [0.14, 0.13, 0.08, 0.045, 0.12, 0.22, 0.27])
 SHAWL_ROWS = 14
 SHAWL_COLS = 64
+SHAWL_SOLID_BACK = 0.0015  # m at S = 1: a solid shawl's back-face inset (M4-A2P-050)
 NET_SIDES = 3  # a twine cord's cross-section
 NET_SAMPLES = 2  # samples per sheet row along a cord
 
@@ -526,6 +527,12 @@ def build_shawl(fields: Fields, chart: TorsoChart, sh: dict) -> Part:
     th = np.linspace(od, 360.0 - od, SHAWL_COLS)
     top = np.full(len(th), chart.z_sh + math.radians(SHAWL_TOP) * chart.k)
     bot = chart.z_sh - RC._sym_interp(th, *SHAWL_DROP) * S * float(sh.get("drop_k", 1.0))
+    if sh.get("solid"):  # M4-A2P-050 (optional): a cloth shawl (Merel's bridal cloth), the sheet with a back face,
+        # on the head wrap's crepe island unless `island` names another
+        sheet = RC.torso_sheet(fields, chart, "Shawl", ATLAS[sh.get("island", "headwrap")], th, top, bot,
+                               float(sh.get("off_m", SHAWL_OFF)) * S, SHAWL_ROWS, SHAWL_SOLID_BACK * S, False,
+                               wind_amp=float(sh.get("wind", 0.06)))
+        return _mat(sheet, sh["mat"])
     sheet = RC.torso_sheet(fields, chart, "ShawlSheet", ATLAS["wraps"], th, top, bot,
                            float(sh.get("off_m", SHAWL_OFF)) * S, SHAWL_ROWS, None, False)
     P = sheet.grid_P

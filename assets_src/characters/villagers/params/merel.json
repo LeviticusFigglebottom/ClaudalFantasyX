@@ -1,0 +1,125 @@
+{
+ "_about": "Merel Dask, the living daughter of a Warden of Ansedra, about 24: sincere and brave, she loves him (act2_ch14.md B01, W05: 'I'll learn your knots'). In wedding red (lacquer_red, a long-sleeved bodice and an ankle skirt in lacquer_red_deep), a gold_leaf sash, and the bridal cloth over her shoulders (gauze_white, a solid shawl: she lays it over Tobin at L01), her black hair up in an Ansedra knot. Poles the bridal barge out (`pole_barge`, B07 L02-L03) and is taken at the water-gate 'still in wedding red with Tobin's blood on her sleeve' (B08): the `_blood` variant stains the right sleeve (cloth_a_blood, swapped at runtime by CostumeVariant). Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). M4-A2P-050. Keys starting with '_' are read by the villager_* modules, not by bb_params.",
+ "name": "merel",
+ "height_m": 1.62,
+ "heads_tall": 7.3,
+ "shoulder_width_heads": 1.56,
+ "chest_width_heads": 1.18,
+ "chest_depth_heads": 0.88,
+ "waist_width_heads": 1.0,
+ "hip_width_heads": 1.42,
+ "crotch_height_heads": 3.5,
+ "arm_span_ratio": 1.0,
+ "hand_length_heads": 0.78,
+ "foot_length_ratio": 0.145,
+ "neck_length_heads": 0.44,
+ "neck_width_ratio": 0.48,
+ "head_width_ratio": 0.67,
+ "femininity": 0.95,
+ "muscle": 0.45,
+ "mass": 0.1,
+ "breast": 0.35,
+ "eye_scale": 1.16,
+ "ipd_m": 0.061,
+ "arm_abduction_deg": 47.0,
+ "skin_hex": "#B98A6C",
+ "eye_tilt_deg": 1.0,
+ "jaw_width": 0.9,
+ "cheekbone_height": 0.004,
+ "cheekbone_width": 1.1,
+ "chin_size": 0.85,
+ "nose_bridge_width": 0.9,
+ "nose_tip_projection": 0.9,
+ "lip_fullness": 1.1,
+ "lip_close": 0.6,
+ "lip_seal": 0.96,
+ "lip_lower_fullness": 1.05,
+ "mouth_corner_lift": 0.0008,
+ "brow_ridge": 0.85,
+ "donor_mix_african": 0.15,
+ "donor_mix_asian": 0.25,
+ "donor_mix_caucasian": 0.6,
+ "_skin": {
+  "hex": "#B98A6C",
+  "age": 0.05,
+  "freckles": 0,
+  "reach_bands": {
+   "L": 0,
+   "R": 0
+  },
+  "seed": 511,
+  "lip": "#94584E"
+ },
+ "_hair": {
+  "kind": "bun",
+  "seed": 512,
+  "scalp_cards": [
+   170,
+   130,
+   90
+  ],
+  "hairline_cards": 60,
+  "bun_r_m": 0.036,
+  "bun_ribbons": 30,
+  "colour": "#16120F",
+  "underpaint": "#18140F"
+ },
+ "_eyes": {
+  "iris": "#2A1C12"
+ },
+ "_costume": {
+  "top": {
+   "mat": "cloth_a",
+   "hem": "hip",
+   "sleeve": 0.96,
+   "neck_v_m": 0.05
+  },
+  "skirt": {
+   "mat": "cloth_b",
+   "hem": "ankle",
+   "folds": 11,
+   "fold_amp": 0.007,
+   "flare": 0.14,
+   "seed": 513,
+   "keep_above_knee_m": 1.0
+  },
+  "sash": {
+   "mat": "cloth_c",
+   "width_m": 0.07,
+   "turns": 2,
+   "tails_m": 0.3
+  },
+  "shawl": {
+   "mat": "cloth_d",
+   "solid": true,
+   "open_deg": 30.0,
+   "off_m": 0.012,
+   "drop_k": 1.2
+  },
+  "sandals": "leather"
+ },
+ "_tints": {
+  "cloth_a": "#B3261E",
+  "cloth_b": "#7A1712",
+  "cloth_c": "#D4A437",
+  "leather": "#FFFFFF",
+  "cloth_d": "#EBE7DF"
+ },
+ "_blood": {
+  "mat": "cloth_a",
+  "island": "sleeve_R",
+  "seed": 514,
+  "from_v": 0.45,
+  "cover": 0.55
+ },
+ "_build": {
+  "shapes": "all",
+  "host_snaps": true,
+  "garment_fit": true
+ },
+ "_persona": {
+  "sway": 0.8,
+  "lean": 0.0,
+  "arms_down": 41.0
+ }
+}

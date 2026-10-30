@@ -1493,6 +1493,76 @@
       "settle_frames": 30
     },
     {
+      "id": "villager_tobin_front",
+      "scene": "res://game/levels/_tests/characters/villagers/tobin_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tobin_face",
+      "scene": "res://game/levels/_tests/characters/villagers/tobin_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tobin_falls",
+      "scene": "res://game/levels/_tests/characters/villagers/tobin_falls.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_front",
+      "scene": "res://game/levels/_tests/characters/villagers/merel_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_face",
+      "scene": "res://game/levels/_tests/characters/villagers/merel_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_pole_barge",
+      "scene": "res://game/levels/_tests/characters/villagers/merel_pole_barge.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_bloodied",
+      "scene": "res://game/levels/_tests/characters/villagers/merel_bloodied.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "villager_ferrymaster_front",
       "scene": "res://game/levels/_tests/characters/villagers/ferrymaster_stage.tscn",
       "camera": "Cameras/Front",

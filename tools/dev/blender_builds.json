@@ -1193,6 +1193,34 @@
       ]
     },
     {
+      "id": "villager_tobin",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-050: Tobin Varrow (Ch13-14) on the villager build: Liss's family face, the Saltwright wedding coat and the Warden's red sash, his line-marks; hold_hands and tobin_falls.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/tobin/*.glb", "assets/characters/villagers/tobin/textures/*.png", "assets/characters/villagers/tobin/materials/*.tres", "assets/characters/villagers/tobin/*.tscn", "assets/characters/villagers/tobin/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "tobin", "--bake-dir", "{scratch}/tobin_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "tobin", "--bake-dir", "{scratch}/tobin_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "tobin"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "tobin"]
+      ]
+    },
+    {
+      "id": "villager_merel",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-050: Merel Dask (Ch13-14) on the villager build: wedding red, the bridal cloth (a solid shawl), the bloodied-sleeve variant (`_blood`: textures/merel_blood_albedo.png, materials/cloth_a_blood.tres); hold_hands and pole_barge.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/merel/*.glb", "assets/characters/villagers/merel/textures/*.png", "assets/characters/villagers/merel/materials/*.tres", "assets/characters/villagers/merel/*.tscn", "assets/characters/villagers/merel/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "merel", "--bake-dir", "{scratch}/merel_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "merel", "--bake-dir", "{scratch}/merel_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "merel"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "merel"]
+      ]
+    },
+    {
       "id": "villager_ferrymaster",
       "threads": 4,
       "owner": "character",
