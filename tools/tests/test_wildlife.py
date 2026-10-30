@@ -155,7 +155,7 @@ class InsectValidatorTest(unittest.TestCase):
 
     def test_swarm_rows_are_checked(self) -> None:
         z = copy.deepcopy(self.zone)
-        z["swarms"][0]["type"] = "firefly"
+        z["swarms"][0]["type"] = "beetle"
         z["swarms"][1]["center"] = [0.0, -24.0]
         z["swarms"][2]["radius_m"] = 0.0
         errs = self.zone_errs(z)
@@ -180,7 +180,7 @@ class InsectValidatorTest(unittest.TestCase):
         z = copy.deepcopy(self.zone)
         z["swarms"][2]["count"] = self.budgets["insects"]
         self.assertTrue(any("swarms" in e and "over the budget" in e for e in self.zone_errs(z)))
-        self.assertEqual(self.budgets["draw_calls"], 6, "six MultiMeshes: gulls x2, crabs, fish, moths, dragonflies")
+        self.assertEqual(self.budgets["draw_calls"], 7, "seven MultiMeshes: gulls x2, crabs, fish, moths, dragonflies, fireflies")
 
     def test_zone_swarms_as_placed(self) -> None:
         haluna = _load(f"{vw.WILDLIFE_DIR}/ch02_haluna.json")

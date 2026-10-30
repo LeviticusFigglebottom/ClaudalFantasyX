@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/wildlife/zone_wildlife.gd" id="stage"]
+
+[node name="ZoneWildlife" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch10/ossa_fen/ossa_fen.tscn"
+zone_id = &"ch10/ossa_fen"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Walk0" type="Camera3D" parent="Cameras"]
+transform = Transform3D(-0.722308, 0.115275, -0.681896, 0, 0.98601, 0.166686, 0.691571, 0.120398, -0.712203, 5, 1.7, 1.8)
+fov = 45.0
+
+[node name="Pocket" type="Camera3D" parent="Cameras"]
+transform = Transform3D(-0.894427, -0.0594672, 0.443242, 0, 0.99112, 0.132973, -0.447214, 0.118934, -0.886484, 66.5, 1.5, -26.5)
+fov = 45.0

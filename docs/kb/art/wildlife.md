@@ -218,3 +218,22 @@ lightning), `ch07/tamsule_bell_galleries` (story staging under the Bell), the pr
 Review: `game/levels/_tests/wildlife/zone_wildlife.gd` instances a zone scene with its layer;
 `zone_wildlife_brine_shoals.tscn` (shots `wildlife_zone_brine_flats`, `wildlife_zone_brine_wrecks`) and
 `zone_wildlife_oruvel_underway.tscn` (`wildlife_zone_underway_crown`).
+
+## Act II: fireflies (Ch10 Ossa Fen, M4-A2P-056, 2026-10-30)
+A third insect, `insect_firefly` (assets_src/wildlife/insect/build_insect.py): a slim beetle about 1.4 cm long, dusky
+wing covers with a pale margin held up and out, clear hind wings beating beneath, a faded red shield over the head,
+and the lantern, the abdomen's last segments in pale yellow-green wax. Wildlife, never glimmer: the fen's lights are
+animals (ossa_fen.md), and the glow is sun_gold mixed 30% toward palm_green, warm yellow-green.
+- **The glow** is the only light wildlife makes. The wildlife shader's mode 6 is mode 5's flutter with the
+  instance's blink in its mode parameter; the `firefly` material lights the mesh behind `glow_tail_z` at
+  `glow_color` x `glow_energy` x the blink, and swells the lit lantern about `glow_centre` toward `glow_angle`
+  radians of the view at its distance (from its own `glow_radius`), so a centimetre of light still reads as a point
+  at walking distance without a bloom pass, and stays small up close. No TIME: the blink comes from the layer.
+- **The motion** (WildlifeSwarm, type `firefly`): the moth's orbit, slower and lower (wildlife.json `firefly`), and
+  each one flashes once every `blink_s` (its own period, re-drawn per flash) over `blink_on_s`, a sine-squared rise
+  and fall, keeping `glow_floor` between flashes.
+- **Budgets:** fireflies count against `insects` (24 a zone) and draw in their own MultiMesh, the layer's seventh
+  (`draw_calls` 7).
+- **Placed:** ch10_ossa_fen.json, four swarms of six beside the root-walks; review shots
+  `wildlife_zone_ossa_fen_walk0` and `wildlife_zone_ossa_fen_pocket` (zone_wildlife.gd now keeps a zone's own
+  layer, as GreyboxZone builds one from the wildlife file, instead of adding a second).

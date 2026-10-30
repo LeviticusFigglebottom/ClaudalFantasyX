@@ -12,6 +12,10 @@ var layer: WildlifeLayer
 func _ready() -> void:
 	zone = (load(zone_scene) as PackedScene).instantiate() as Node3D
 	add_child(zone)
+	# a zone that builds its own layer (GreyboxZone, from its wildlife file) keeps it: never a second one
+	layer = zone.get_node_or_null(^"WildlifeLayer") as WildlifeLayer
+	if layer != null:
+		return
 	layer = WildlifeLayer.new()
 	layer.zone_id = zone_id
 	zone.add_child(layer)

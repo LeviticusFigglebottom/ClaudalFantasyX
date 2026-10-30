@@ -3,11 +3,12 @@
 
 * game/data/world/wildlife/wildlife.json: the four kinds (gull, crab, fish, insect) with every tuning key
   WildlifeLayer reads, their scene, mesh names and material(s) that exist, [lo, hi] ranges in order, the budgets and
-  culling. The insect kind (M3-CRE-616) keeps its tuning in a `moth` and a `dragonfly` table, one material per mesh.
+  culling. The insect kind (M3-CRE-616) keeps its tuning in a `moth`, a `dragonfly` and (Ch10, M4-A2P-056) a
+  `firefly` table, one material per mesh.
 * game/data/world/wildlife/<zone>.json (every other file there) and the review stage's data: the `zone` id names
   the file (ch02/haluna -> ch02_haluna.json) and is a locations.json location; flocks, beaches and shoals are
   well formed (unique ids, positive counts, perches inside the flock's radius, perched_at_start no more than the
-  perches), swarms too (type moth or dragonfly, perches only on a dragonfly patrol and inside its radius), and the
+  perches), swarms too (type moth, dragonfly or firefly, perches only on a dragonfly patrol and inside its radius), and the
   zone's totals stay within the budgets.
 """
 
@@ -35,7 +36,7 @@ KIND_KEYS = {
     "fish": {"scale", "speed_mps", "dart_speed_mps", "spread_m", "follow_rate", "turn_rate", "wander_arrive_m",
              "wobble_m", "wobble_hz", "startle_radius_m", "startle_s", "swim_hz", "swim_hz_per_mps", "swim_amp",
              "bottom_clearance_m", "startle_follow_mult", "wobble_y_fraction"},
-    "insect": {"moth", "dragonfly"},  # tables: INSECT_KEYS
+    "insect": {"moth", "dragonfly", "firefly"},  # tables: INSECT_KEYS
 }
 # The insect kind's tables (WildlifeSwarm): every key, and the ones drawn once per insect from a [lo, hi] range
 # (the rest are read as plain numbers).
@@ -47,12 +48,15 @@ INSECT_KEYS = {
                   "dart_amp", "perch_chance", "perch_s", "flee_radius_m", "flee_m", "flee_speed_mps", "turn_rate",
                   "amp_rate", "flutter_hz"},
 }
+# the firefly flies the moth's orbit, and blinks
+INSECT_KEYS["firefly"] = INSECT_KEYS["moth"] | {"blink_s", "blink_on_s", "glow_floor"}
 INSECT_RANGES = {
     "moth": {"scale", "orbit_fraction", "orbit_hz", "bob_hz", "jitter_s", "dart_s", "flutter_hz"},
     "dragonfly": {"scale", "hover_s", "drift_hz", "dart_m", "dart_speed_mps", "perch_s", "flutter_hz"},
 }
+INSECT_RANGES["firefly"] = INSECT_RANGES["moth"] | {"blink_s"}
 SWARM_TYPES = set(INSECT_KEYS)
-KIND_MESHES = {"gull": {"flying", "perched"}, "crab": {"body"}, "fish": {"body"}, "insect": {"moth", "dragonfly"}}
+KIND_MESHES = {"gull": {"flying", "perched"}, "crab": {"body"}, "fish": {"body"}, "insect": {"moth", "dragonfly", "firefly"}}
 KIND_COMMON = {"scene", "meshes", "material", "cast_shadow"}
 BUDGET_KEYS = {"gulls", "crabs", "fish", "insects", "draw_calls", "ms_per_frame"}
 # zone row tables -> (budget key, required keys, optional keys)

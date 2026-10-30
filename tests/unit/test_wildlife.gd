@@ -427,3 +427,72 @@ func test_insects_are_clamped_to_their_budget_and_draw_in_two_multimeshes() -> v
 		layer.step(DT, Vector3.ZERO, false)
 	layer.free()
 	DirAccess.remove_absolute(path)
+
+
+func test_fireflies_orbit_low_and_blink_each_on_its_own_beat() -> void:
+	var kind: Dictionary = _kinds["kinds"]["insect"]
+	var ff: Dictionary = kind["firefly"]
+	var a := WildlifeSwarm.new(_swarm_row("firefly"), kind, 1010, 5)
+	var b := WildlifeSwarm.new(_swarm_row("firefly"), kind, 1010, 5)
+	assert_true(a.is_firefly() and a.is_orbiter() and not a.is_moth(), "a firefly flies the moth's orbit")
+	var floor_glow := float(ff["glow_floor"])
+	var flashes := PackedInt32Array()
+	flashes.resize(a.count())
+	var lit := PackedByteArray()
+	lit.resize(a.count())
+	var together := 0
+	for f in 60 * 30:
+		a.step(DT, Vector3(4.0, 0.0, -3.0), true)
+		b.step(DT, Vector3.ZERO, false)
+		var on := 0
+		for i in a.count():
+			var m := a.insects[i]
+			assert_true(m.glow >= floor_glow - EPS and m.glow <= 1.0 + EPS, "the lantern stays in its range")
+			assert_true(absf(m.pos.y - a.center.y) <= float(ff["height_m"]) + EPS, "and the swarm's height band")
+			var now := 1 if m.glow > 0.5 else 0
+			if now == 1 and lit[i] == 0:
+				flashes[i] += 1
+			lit[i] = now
+			on += now
+		if on == a.count():
+			together += 1
+	for i in a.count():
+		assert_eq(a.insects[i].glow, b.insects[i].glow, "deterministic: the same seed blinks the same")
+		# 30 s at one flash every blink_s
+		var lo := int(30.0 / float(ff["blink_s"][1])) - 1
+		var hi := int(30.0 / float(ff["blink_s"][0])) + 1
+		assert_true(flashes[i] >= lo and flashes[i] <= hi, "firefly %d flashed %d times" % [i, flashes[i]])
+	assert_true(together < 30, "they do not all flash at once (%d frames)" % together)
+	var buf := WildlifeBuffer.new(5)
+	a.write(buf, 0)
+	assert_eq(buf.data[14], WildlifeBuffer.MODE_GLOW, "the shader's glow mode")
+	assert_true(is_equal_approx(buf.data[15], a.insects[0].glow), "carrying the blink (float32)")
+
+
+func test_a_firefly_swarm_draws_in_its_own_multimesh() -> void:
+	var path := "user://wildlife_fireflies.json"
+	var data := {
+		"zone": "_tests/fireflies",
+		"swarms":
+		[
+			{"id": "a", "type": "moth", "center": [0, 2, 0], "radius_m": 1, "count": 4},
+			{"id": "b", "type": "firefly", "center": [6, 0.6, 0], "radius_m": 3, "count": 8}
+		]
+	}
+	var fa := FileAccess.open(path, FileAccess.WRITE)
+	fa.store_string(JSON.stringify(data))
+	fa.close()
+	var layer := _layer(path)
+	assert_eq(layer.insect_count(WildlifeSwarm.TYPE_FIREFLY), 8, "eight fireflies")
+	assert_eq(layer.draw_calls(), 2, "moths and fireflies: two MultiMeshes")
+	var mmi := layer.multimeshes[WildlifeLayer.FIREFLIES] as MultiMeshInstance3D
+	var mat := mmi.material_override as ShaderMaterial
+	assert_true(mat != null and mat.resource_path.ends_with("/firefly.tres"), "the firefly material")
+	assert_true(float(mat.get_shader_parameter("glow_energy")) > 0.0, "whose lantern glows")
+	for f in 30:
+		layer.step(DT, Vector3.ZERO, false)
+	var fb := layer.buffers[WildlifeLayer.FIREFLIES] as WildlifeBuffer
+	assert_eq(fb.data[14], WildlifeBuffer.MODE_GLOW, "written in glow mode")
+	assert_eq((layer.buffers[WildlifeLayer.MOTHS] as WildlifeBuffer).data[14], WildlifeBuffer.MODE_FLUTTER, "moths not")
+	layer.free()
+	DirAccess.remove_absolute(path)

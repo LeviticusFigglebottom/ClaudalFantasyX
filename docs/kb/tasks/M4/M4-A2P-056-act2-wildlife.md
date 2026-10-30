@@ -20,5 +20,6 @@ Ambient wildlife (never foes): fen birds and fireflies (Ch10), highland goats or
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+- 2026-10-30, the creatures track (ADR 0205: Act II starts per track; the claim is the Lead's to record on the integration branch): **the fen fireflies are built and placed** (ch10_ossa_fen.json; plan sheet fen_firefly.md, State). Next: the fen kingfisher, the woolback, the rim rays.
 
 ## Review log

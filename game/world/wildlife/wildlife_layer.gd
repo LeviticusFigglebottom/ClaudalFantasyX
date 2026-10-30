@@ -2,12 +2,13 @@ class_name WildlifeLayer
 extends Node3D
 ## Ambient, non-combat wildlife for a zone (M3-CRE-611, docs/kb/art/wildlife.md): gulls wheeling and settling on
 ## perches, shore crabs that scuttle off when the player comes near, fish shoals in the shallows, and (M3-CRE-616)
-## insects: moths round the lamps, dragonflies patrolling over water and paddies. A zone adds one
+## insects: moths round the lamps, dragonflies patrolling over water and paddies, fireflies over the fen at dusk
+## (Ch10, M4-A2P-056). A zone adds one
 ## WildlifeLayer node (at the zone's origin) with `zone_id` set to its location id; the placement is
 ## game/data/world/wildlife/<zone id with / as _>.json, the kinds and budgets wildlife.json.
 ##
-## Cheap by construction: at most six MultiMeshes for the whole layer (gulls flying, gulls perched, crabs, fish,
-## moths, dragonflies; the motion is the wildlife shader's, driven per instance from here), no Skeleton3D, no
+## Cheap by construction: at most seven MultiMeshes for the whole layer (gulls flying, gulls perched, crabs, fish,
+## moths, dragonflies, fireflies; the motion is the wildlife shader's, driven per instance from here), no Skeleton3D, no
 ## AnimationPlayer, no physics bodies (wildlife never blocks the player). A group (a flock, a beach, a shoal, a
 ## swarm) pauses while its bounds are off
 ## screen and hides past the cull distance. Deterministic: every animal's choices come from a seed made from the
@@ -19,6 +20,7 @@ const CRABS := &"crab"
 const FISH := &"fish"
 const MOTHS := &"moth"
 const DRAGONFLIES := &"dragonfly"
+const FIREFLIES := &"firefly"
 const PLAYER_GROUP := &"player"
 const USEC_PER_MS := 1000.0
 const VIS_HIDDEN := 0
@@ -118,6 +120,7 @@ func build() -> void:
 	buffers[FISH] = WildlifeBuffer.new(fish_count())
 	buffers[MOTHS] = WildlifeBuffer.new(insect_count(WildlifeSwarm.TYPE_MOTH))
 	buffers[DRAGONFLIES] = WildlifeBuffer.new(insect_count(WildlifeSwarm.TYPE_DRAGONFLY))
+	buffers[FIREFLIES] = WildlifeBuffer.new(insect_count(WildlifeSwarm.TYPE_FIREFLY))
 	_make_multimesh(GULLS_FLYING, k["gull"], "flying", _union(flocks))
 	_make_multimesh(GULLS_PERCHED, k["gull"], "perched", _union(flocks))
 	_make_multimesh(CRABS, k["crab"], "body", _union(beaches))
@@ -125,6 +128,7 @@ func build() -> void:
 	if k.has("insect"):
 		_make_multimesh(MOTHS, k["insect"], "moth", _union(swarms_of(WildlifeSwarm.TYPE_MOTH)))
 		_make_multimesh(DRAGONFLIES, k["insect"], "dragonfly", _union(swarms_of(WildlifeSwarm.TYPE_DRAGONFLY)))
+		_make_multimesh(FIREFLIES, k["insect"], "firefly", _union(swarms_of(WildlifeSwarm.TYPE_FIREFLY)))
 	_write_all()
 
 
@@ -196,7 +200,7 @@ func fish_count() -> int:
 	return n
 
 
-## Insects of one type (WildlifeSwarm.TYPE_MOTH or TYPE_DRAGONFLY), or of both with "".
+## Insects of one type (WildlifeSwarm.TYPE_MOTH, TYPE_DRAGONFLY or TYPE_FIREFLY), or of all with "".
 func insect_count(swarm_type: String = "") -> int:
 	var n := 0
 	for s in swarms:
@@ -233,8 +237,11 @@ func step(delta: float, player: Vector3, has_player: bool, camera: Camera3D = nu
 	var perched: WildlifeBuffer = buffers.get(GULLS_PERCHED)
 	var crabs: WildlifeBuffer = buffers.get(CRABS)
 	var fish: WildlifeBuffer = buffers.get(FISH)
-	var moths: WildlifeBuffer = buffers.get(MOTHS)
-	var dragonflies: WildlifeBuffer = buffers.get(DRAGONFLIES)
+	# the insects' MultiMesh per swarm type, and each type's next instance
+	var insect_keys := {
+		WildlifeSwarm.TYPE_MOTH: MOTHS, WildlifeSwarm.TYPE_DRAGONFLY: DRAGONFLIES, WildlifeSwarm.TYPE_FIREFLY: FIREFLIES
+	}
+	var insect_base := {MOTHS: 0, DRAGONFLIES: 0, FIREFLIES: 0}
 	var dirty := {}
 	var g := 0
 	var base := 0
@@ -273,22 +280,15 @@ func step(delta: float, player: Vector3, has_player: bool, camera: Camera3D = nu
 			dirty[FISH] = true
 		base += s.count()
 		g += 1
-	var moth_base := 0
-	var dragonfly_base := 0
 	for s in swarms:
 		var vis := _visibility(s.bounds, camera)
 		if vis == VIS_ACTIVE:
 			s.step(delta, player, has_player)
-		var moth := s.is_moth()
+		var key: StringName = insect_keys[s.swarm_type]
 		if _changed(g, vis):
-			_write_or_hide(
-				vis, moths if moth else dragonflies, moth_base if moth else dragonfly_base, s.count(), s.write
-			)
-			dirty[MOTHS if moth else DRAGONFLIES] = true
-		if moth:
-			moth_base += s.count()
-		else:
-			dragonfly_base += s.count()
+			_write_or_hide(vis, buffers[key], insect_base[key], s.count(), s.write)
+			dirty[key] = true
+		insect_base[key] += s.count()
 		g += 1
 	_upload(dirty)
 	last_step_ms = float(Time.get_ticks_usec() - t0) / USEC_PER_MS

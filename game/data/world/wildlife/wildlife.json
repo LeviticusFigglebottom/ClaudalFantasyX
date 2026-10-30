@@ -80,14 +80,15 @@
       "wobble_y_fraction": 0.5
     },
     "insect": {
-      "_doc": "M3-CRE-616: one GLB, two meshes, a material each (insect/materials/<slot>.tres); a zone's swarms row picks the table by its type. moth: on an orbit of orbit_fraction x the row's radius round the centre (orbit_hz revolutions a second), bobbing bob_m, with a jitter of up to jitter_m re-drawn every jitter_s and chased at jitter_rate, and every dart_s a dart of dart_m for dart_time_s chased dart_rate_mult times faster; moths ignore the player. dragonfly: hovers hover_s (drifting drift_m), then darts dart_m to a new spot (or, with perch_chance, to a free perch for perch_s) at dart_speed_mps; a player within flee_radius_m sends it flee_m away at flee_speed_mps. Both stay within the row's radius_m and height_m of its centre's y. flutter_hz is the wing beat; flutter_amp / hover_amp / dart_amp scale the material's flutter_angle.",
+      "_doc": "M3-CRE-616: one GLB, two meshes, a material each (insect/materials/<slot>.tres); a zone's swarms row picks the table by its type. moth: on an orbit of orbit_fraction x the row's radius round the centre (orbit_hz revolutions a second), bobbing bob_m, with a jitter of up to jitter_m re-drawn every jitter_s and chased at jitter_rate, and every dart_s a dart of dart_m for dart_time_s chased dart_rate_mult times faster; moths ignore the player. dragonfly: hovers hover_s (drifting drift_m), then darts dart_m to a new spot (or, with perch_chance, to a free perch for perch_s) at dart_speed_mps; a player within flee_radius_m sends it flee_m away at flee_speed_mps. Both stay within the row's radius_m and height_m of its centre's y. flutter_hz is the wing beat; flutter_amp / hover_amp / dart_amp scale the material's flutter_angle. firefly (Ch10, M4-A2P-056): the moth's orbit and its keys (slower, lower), plus a lantern that flashes once every blink_s (drawn per flash) over blink_on_s and between flashes keeps glow_floor (0 .. 1 of the material's glow_energy).",
       "scene": "res://assets/wildlife/insect/insect.glb",
-      "meshes": {"moth": "insect_moth", "dragonfly": "insect_dragonfly"},
+      "meshes": {"moth": "insect_moth", "dragonfly": "insect_dragonfly", "firefly": "insect_firefly"},
       "material": {
         "moth": "res://assets/wildlife/insect/materials/moth.tres",
-        "dragonfly": "res://assets/wildlife/insect/materials/dragonfly.tres"
+        "dragonfly": "res://assets/wildlife/insect/materials/dragonfly.tres",
+        "firefly": "res://assets/wildlife/insect/materials/firefly.tres"
       },
-      "cast_shadow": {"moth": false, "dragonfly": false},
+      "cast_shadow": {"moth": false, "dragonfly": false, "firefly": false},
       "moth": {
         "scale": [0.85, 1.15],
         "orbit_fraction": [0.3, 0.75],
@@ -125,16 +126,38 @@
         "turn_rate": 12.0,
         "amp_rate": 6.0,
         "flutter_hz": [22.0, 28.0]
+      },
+      "firefly": {
+        "scale": [0.85, 1.15],
+        "orbit_fraction": [0.25, 0.9],
+        "orbit_hz": [0.04, 0.1],
+        "counter_orbit_chance": 0.5,
+        "height_m": 0.5,
+        "bob_m": 0.25,
+        "bob_hz": [0.15, 0.35],
+        "jitter_m": 0.2,
+        "jitter_s": [0.4, 1.2],
+        "jitter_rate": 2.5,
+        "dart_m": 0.35,
+        "dart_s": [4.0, 9.0],
+        "dart_time_s": 0.6,
+        "dart_rate_mult": 2.0,
+        "turn_rate": 4.0,
+        "flutter_hz": [18.0, 24.0],
+        "flutter_amp": 1.0,
+        "blink_s": [2.5, 4.0],
+        "blink_on_s": 2.0,
+        "glow_floor": 0.04
       }
     }
   },
   "budgets": {
-    "_doc": "Per layer (one zone). The layer clamps counts to these and warns; the validator fails a zone file over them. draw_calls: the layer's MultiMeshes (gulls flying, gulls perched, crabs, fish, moths, dragonflies), before shadow passes. insects: moths and dragonflies together (M3-CRE-616). ms_per_frame: the CPU budget WildlifeLayer._process is measured against (docs/kb/art/wildlife.md).",
+    "_doc": "Per layer (one zone). The layer clamps counts to these and warns; the validator fails a zone file over them. draw_calls: the layer's MultiMeshes (gulls flying, gulls perched, crabs, fish, moths, dragonflies, fireflies), before shadow passes. insects: moths, dragonflies and fireflies together (M3-CRE-616). ms_per_frame: the CPU budget WildlifeLayer._process is measured against (docs/kb/art/wildlife.md).",
     "gulls": 12,
     "crabs": 24,
     "fish": 80,
     "insects": 24,
-    "draw_calls": 6,
+    "draw_calls": 7,
     "ms_per_frame": 1.0
   },
   "cull": {

@@ -1,0 +1,10 @@
+{
+  "_doc": "Ossa Fen at the overcast dusk (Ch10, M4-A2P-056; docs/kb/plan/act2/creatures/fen_firefly.md): fireflies low among the mangrove roots beside the Kirru's root-walks, over the tannin water (its surface y -0.25), off the walks so the party walks past them: by Walk0's left rail, Walk2's right, round the side pocket's end and by Walk4's left rail. Wildlife, not glimmer (ossa_fen.md: the fen's lights are animals, not the dead). Placed on the greybox layout (ossa_fen_layout.json); re-seat them with tools/creatures/wildlife_snap.gd and wildlife_audit.gd when the dressed kit replaces the blocks.",
+  "zone": "ch10/ossa_fen",
+  "swarms": [
+    {"id": "walk0_roots", "type": "firefly", "center": [9.0, 0.55, 6.0], "radius_m": 2.5, "count": 6},
+    {"id": "walk2_roots", "type": "firefly", "center": [48.0, 0.55, -11.8], "radius_m": 2.5, "count": 6},
+    {"id": "pocket_end", "type": "firefly", "center": [63.5, 0.6, -21.0], "radius_m": 3.0, "count": 6},
+    {"id": "walk4_roots", "type": "firefly", "center": [96.5, 0.55, 8.0], "radius_m": 2.5, "count": 6}
+  ]
+}
