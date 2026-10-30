@@ -2250,6 +2250,9 @@ def _vowbound_row_errors(r: dict, skills: dict[str, dict], char_ids: set[str], l
                 errs.append(f"{w}: unknown skill '{sid}'")
             elif skills[sid].get("swell") is True:
                 errs.append(f"{w}: '{sid}' is a Swell technique; name it in swell.technique")
+    cyc = r.get("cycle", [])  # M4-A2P-025 (BattleCycle): one of its own skills per element, in order
+    if not isinstance(cyc, list) or any(s not in (sk or []) for s in cyc) or len(set(cyc)) != len(cyc):
+        errs.append(f"{w}: cycle must list distinct skills of its own")
     aff = r.get("affinities", {})
     if not isinstance(aff, dict) or any(k not in ELEMENTS - {"none"} or v not in AFFINITIES for k, v in aff.items()):
         errs.append(f"{w}: affinities must map elements to one of {sorted(AFFINITIES)}")
