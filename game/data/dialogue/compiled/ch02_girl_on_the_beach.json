@@ -81,7 +81,7 @@
     {"op": "cue", "cue": "wait", "args": [1.2], "kwargs": {}, "src": 104},
     {"op": "goto", "to": 73, "src": 94},
     {"op": "line", "id": "ch02_beach_031", "key": "DLG_CH02_BEACH_031", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 106},
-    {"op": "line", "id": "ch02_beach_032", "key": "DLG_CH02_BEACH_032", "speaker": "asha", "emotion": "smile", "voice": "", "src": 107},
+    {"op": "line", "id": "ch02_beach_032", "key": "DLG_CH02_BEACH_032", "speaker": "asha", "emotion": "tender", "voice": "", "src": 107},
     {"op": "line", "id": "ch02_beach_033", "key": "DLG_CH02_BEACH_033", "speaker": "rhen", "emotion": "surprised", "voice": "", "src": 108},
     {"op": "cue", "cue": "face", "args": ["asha", "soft_smile", 0.3], "kwargs": {}, "src": 109},
     {"op": "line", "id": "ch02_beach_034", "key": "DLG_CH02_BEACH_034", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 110},
