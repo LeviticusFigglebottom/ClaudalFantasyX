@@ -1042,6 +1042,17 @@ that test at this branch's zones.
   - **The Act II town interiors:** still none to walk. The eye-height pass over the two existing towns is above
     (M4-A2P-115).
   - **MERGE-READY @ f0e1e6fd.**
+- **Dock edges with the field controller (10-30, after merging the integration head 1f5de1d1):**
+  - **The probe:** hero-integration's `test_qa_dock_edges` runs Rhen flat out in 16 directions from every spawn,
+    through the real FieldController and its FieldShore.
+  - **Act I:** it passes on all 23 Act I zones with water, my Ch5–9 among them.
+  - **Act II:** the same walk on my Ch13–17 zones (not routed yet, so run from a scratch copy) covers the six with
+    water: Ansedra, the Lacquer Court, the open sea, the Pale Rim, the Choir and Hollowmere. None steps off an edge
+    or stands deep. The Rim's wade stays inside FieldShore's wading depth.
+  - **The result:** no walls needed. FieldShore holds every edge, and the Pemakar shore walls (02640c97) stay as a
+    second guard.
+  - **The Act II town interiors:** still none exist. Both towns that do exist are walked above (M4-A2P-115).
+  - **MERGE-READY @ 1f5de1d1** (the merge; nothing else changed).
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
   god rays now) at High 1440p against the 0.3 ms target.
