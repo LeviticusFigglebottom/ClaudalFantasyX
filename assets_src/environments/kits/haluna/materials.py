@@ -515,6 +515,16 @@ MATERIALS["kit_iskarra_cladding"]["params"]["col_tint"] = hexc("#F4E7C9")
 MATERIALS["kit_iskarra_glaze"]["params"]["col_tint"] = hexc("#1F7FC2")
 MATERIALS["kit_iskarra_paving"]["params"]["col_tint"] = hexc("#EFDDB4")
 
+# ---- M4-A2P-040 (appended by env-art): the Ch10 zones' level land (fen_zones.py) --------------------------------------
+# The fen's mud, dried on the bank and the shore (15 cm over the water: the tide wetness soaked them black at dusk): paler,
+# no tide band, a breakup of green-grey algae in the low spots and pale salt where it dried.
+MATERIALS["kit_fen_bank"] = _ext_stone(_BS + "mud_albedo.png", _BS + "mud_normal.png", (2.5, 2.5), base_triplanar=True,
+                                       col_tint=hexc("#B4A68C"), normal_strength=0.7, roughness_base=0.82,
+                                       specular_base=0.3, cavity_darken=0.45, ao_strength=0.7, variation_value=0.14,
+                                       use_barnacles=False, use_salt=True, salt_coverage="Vector2(0.04, 0.16)",
+                                       algae_coverage="Vector2(0.15, 0.45)", col_algae=hexc("#5A5E44"), use_moss=False,
+                                       capillary_band_m=0.0)
+
 
 if __name__ == "__main__":
     sys.exit(main())

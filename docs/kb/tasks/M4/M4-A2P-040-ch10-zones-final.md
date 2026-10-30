@@ -23,4 +23,16 @@ Place the built kit (M3-ENV-718, 733) in both zones per ossa_fen.md's swap map, 
 
 - **2026-10-30 (env-art):** claimed under ADR 0205 (env-art has no open Act I row; rows 24 and 47-FerryAft are field-camera rows, routed).
 
+- **2026-10-30 (env-art), progress:**
+  - **The mangrove system:** `ossa_fen.build_tree` takes parameters; three variants beside the kit tree (`mangrove_tall`
+    11 m, `mangrove_low` 6.5 m, `mangrove_young` 4 m) share its wind contract and materials.
+  - **The ground:** `fen_zones.py` builds each zone's mud bed from its greybox (level land at y 0, channels 0.6-1.4 m
+    down, root-mat humps under every trunk and house), with litter and roots on the land in `kit_fen_bank`.
+  - **The dressing:** `tools/act2/ch10_fen_dressing.py` writes both zones' dressing, grade and water, and env-art's
+    preview with ten composed cameras per zone. `tools/tests/test_ch10_fen_dressing.py` (5): matches its generator,
+    walks tiled end to end, no tree or reed on a walk, the land level, no tree on a spawn or mark.
+  - **Viewed** (20 cameras): the channels, the root-walks, the dead tree, the clearing, the reed causeway and ring, the
+    roosts, the clutch's stone and cords read. Open: the flat land reads dark at dusk (the layout's ambient: M4-A2P-0401),
+    Pell's capsule (characters'). The mount is chapters' (M4-A2P-0401).
+
 ## Review log

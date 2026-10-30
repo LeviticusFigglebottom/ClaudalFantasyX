@@ -1135,6 +1135,28 @@
         "mangrove_dead-lod1": 560
       }
     },
+    "mangrove_low": {
+      "budget": [
+        10000,
+        900
+      ],
+      "bytes": 424660,
+      "lods": {
+        "mangrove_low": 7118,
+        "mangrove_low-lod1": 782
+      }
+    },
+    "mangrove_tall": {
+      "budget": [
+        11000,
+        900
+      ],
+      "bytes": 435172,
+      "lods": {
+        "mangrove_tall": 7054,
+        "mangrove_tall-lod1": 750
+      }
+    },
     "mangrove_tree": {
       "budget": [
         10000,
@@ -1144,6 +1166,17 @@
       "lods": {
         "mangrove_tree": 5946,
         "mangrove_tree-lod1": 646
+      }
+    },
+    "mangrove_young": {
+      "budget": [
+        5000,
+        500
+      ],
+      "bytes": 190688,
+      "lods": {
+        "mangrove_young": 3266,
+        "mangrove_young-lod1": 406
       }
     },
     "market_stall": {
@@ -1276,6 +1309,17 @@
       "lods": {
         "order_chapel": 6064,
         "order_chapel-lod1": 418
+      }
+    },
+    "ossa_fen_ground": {
+      "budget": [
+        40000,
+        2500
+      ],
+      "bytes": 1150032,
+      "lods": {
+        "ossa_fen_ground": 29036,
+        "ossa_fen_ground-lod1": 1326
       }
     },
     "outrigger_7m": {
@@ -1430,6 +1474,17 @@
       "lods": {
         "reed_platform_6m": 2190,
         "reed_platform_6m-lod1": 120
+      }
+    },
+    "reedhollow_ground": {
+      "budget": [
+        24000,
+        2000
+      ],
+      "bytes": 308312,
+      "lods": {
+        "reedhollow_ground": 8292,
+        "reedhollow_ground-lod1": 468
       }
     },
     "roof_fan_shell": {
