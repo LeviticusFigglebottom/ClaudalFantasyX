@@ -115,7 +115,10 @@
       {"id": "causeway_notice", "category": "records", "title_key": "CODEX_CAUSEWAY_NOTICE_TITLE",
        "body_key": "CODEX_CAUSEWAY_NOTICE_BODY", "unlock": {"record": true}},
       {"id": "basin_steps", "category": "records", "title_key": "CODEX_BASIN_STEPS_TITLE",
-       "body_key": "CODEX_BASIN_STEPS_BODY", "unlock": {"record": true}}
+       "body_key": "CODEX_BASIN_STEPS_BODY", "unlock": {"record": true}},
+      {"id": "farewell_tide", "category": "world", "title_key": "CODEX_FAREWELL_TIDE_TITLE", "body_key": "CODEX_FAREWELL_TIDE_BODY", "unlock": {"flag": "ch10_farewell_tide_seen"}},
+      {"id": "name_shells", "category": "world", "title_key": "CODEX_NAME_SHELLS_TITLE", "body_key": "CODEX_NAME_SHELLS_BODY", "unlock": {"flag": "ch10_reached_reedhollow"}},
+      {"id": "kirru_eldest", "category": "people", "title_key": "CODEX_KIRRU_ELDEST_TITLE", "body_key": "CODEX_KIRRU_ELDEST_BODY", "unlock": {"flag": "ch10_reached_reedhollow"}}
     ]
   }
 }
