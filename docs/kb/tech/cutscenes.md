@@ -159,6 +159,12 @@ The other kind of gate ends by letting go (act2_ch10.md B09: the player who held
 - The score must be able to hold too (a loop or drone under the moment, then the tail on release; M4-CIN-1301).
 - Tests: `tests/unit/test_cutscene_release_gate.gd`.
 
+## Tracking shots and groups (M4-CIN-1302)
+
+- **`@camera <shot> track=<actor>`** plays a copy of the shot that keeps its offset to the actor as it moves: one continuous move from one authored frame (act2_ch10.md O02, the camera going on with the line while Pell stops). `CutsceneTrack` (`game/cutscene/cutscene_track.gd`) moves the copy's position and look_at by the actor's movement each frame; the director evaluates a fixed shot from those every frame. It ends itself once the director is on any other shot. The authored shot is never changed.
+- **`@anim <group> <clip>`**, when the stage has no actor of that id, plays on every actor named `<group>_*`, each after its own fixed delay of up to `sequencer.json` `group_spread_sec` (`CutsceneGroup`). Thirty Kirru turn as many people, not one copy (T04). The delays come from each name, mixed so that `clutch_01` and `clutch_02` don't land together, and are the same on every run.
+- Tests: `test_cutscene_sequencer.gd` (`test_a_tracked_shot_moves_with_its_actor`, `test_a_group_anim_plays_on_every_member_each_in_its_own_time`).
+
 ## Motion (M2-FP-29)
 The human's playtest said cutscene turns snapped and walks started and stopped at full speed. `CutsceneMotion` (game/cutscene/cutscene_motion.gd) shapes both, using the tunings in `sequencer.json`:
 - **Turns** (`@anim <actor> look_at`, the turn into a walk, the turn onto a stand-in mark): eased in and out on Godot's `ease()` curve `turn_ease` (negative means in-out). They take from `turn_min_sec` for a small angle up to `turn_sec` for a half turn. Nothing snaps any more.

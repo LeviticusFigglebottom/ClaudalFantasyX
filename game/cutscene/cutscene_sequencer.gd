@@ -483,6 +483,8 @@ func _cue_camera(step: DialogueStep) -> void:
 		if blend > 0.0:
 			overlay.box.visible = false
 		_key_for(_stage.shot_node(id))
+		var who := str(step.kwargs.get("track", ""))  # M4-CIN-1302: one continuous move with an actor
+		shot = CutsceneTrack.attach(self, shot, _actor(StringName(who)) if who != "" else null, _director)
 		_director.play_shot(shot, blend, ease)
 		_grade(step.kwargs.get("grade", ""))
 	await _land()
@@ -591,6 +593,8 @@ func _cue_mark(step: DialogueStep) -> void:
 
 
 func _cue_anim(step: DialogueStep) -> void:
+	if CutsceneGroup.play(step, _stage, config, _start_motion, _cue_anim):  # M4-CIN-1302: a group, member by member
+		return
 	var actor := _actor(StringName(str(step.args[0])))
 	if actor == null:
 		return

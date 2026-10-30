@@ -77,3 +77,5 @@ at Ossa Fen's edge at dusk).
       silence; then `ossa_fen` comes in on the line's first steps.
   Open question 2 (Kerrid in Reedhollow): from staging, keep him outside with Pell; B09's frames are cleaner with
   no rule to keep him out of them.
+  - (cinematics, the same day) Correction to item 7: `@wait vfx=` is dropped (count= motes persist and can't be read
+    back). O06's hold will be timed against stills of the real field. Items 2, 5 and 9 are built (M4-CIN-1302).

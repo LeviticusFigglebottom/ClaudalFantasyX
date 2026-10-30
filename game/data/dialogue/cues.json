@@ -14,12 +14,13 @@
  },
  "cues": {
   "camera": {
-   "doc": "Cut (no blend=, or blend=0) or blend to an authored shot. ease= names a field_camera.json ease for this blend (sets.camera_eases mirrors them). grade= also blends the color grade to that color-script frame. 'release' is reserved (see reserved.camera).",
+   "doc": "Cut (no blend=, or blend=0) or blend to an authored shot. ease= names a field_camera.json ease for this blend (sets.camera_eases mirrors them). grade= also blends the color grade to that color-script frame. track=<actor> keeps the shot's offset to that actor as it moves: one continuous move (M4-CIN-1302). 'release' is reserved (see reserved.camera).",
    "args": [{"name": "shot", "type": "id"}],
    "kwargs": {
     "blend": {"type": "number", "min": 0},
     "ease": {"type": "enum", "set": "camera_eases"},
-    "grade": {"type": "enum", "set": "grades"}
+    "grade": {"type": "enum", "set": "grades"},
+    "track": {"type": "id"}
    }
   },
   "anim": {
