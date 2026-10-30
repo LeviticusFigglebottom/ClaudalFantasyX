@@ -7,7 +7,8 @@ extends RefCounted
 ##   enemies.json  "phases": [{id, at_hp_pct, name_key?, prompt_key?, skills?, ai?, affinities?,
 ##                 stats?, delay_immune?, field?, spawn?: [enemy ids], remove?: [enemy ids]}]
 ##                 Applied in order, once each, at the end of any turn that leaves the enemy alive
-##                 at or below at_hp_pct of its max HP (phase_changed, combatants_joined).
+##                 at or below at_hp_pct of its max HP (phase_changed, combatants_joined), or once
+##                 no foe of the row's "when_down" enemy id stands (M4-A2P-023, BattleParts).
 ##                 "weak_point": {hits, max_delay, name_key}: while the enemy is charging, landed
 ##                 physical hits from an attacker whose action delay for that skill is at most
 ##                 max_delay ticks count; `hits` of them break the charge (charge_broken).
@@ -276,8 +277,12 @@ static func check_phases(engine: BattleEngine) -> void:
 	for e in engine.enemies.duplicate():
 		while e.is_alive() and e.phase_index + 1 < e.phases.size():
 			var row: Dictionary = e.phases[e.phase_index + 1]
-			if e.hp * Formulas.PCT > e.max_hp * int(row.get("at_hp_pct", 0)):
-				break
+			var hp_due: bool = e.hp * Formulas.PCT <= e.max_hp * int(row.get("at_hp_pct", 0))
+			if (
+				not hp_due
+				and not (row.has("when_down") and BattleParts.is_down(engine, StringName(str(row["when_down"]))))
+			):
+				break  # M4-A2P-023: "when_down" brings the phase on when that foe falls, whatever the HP
 			_enter_phase(engine, e, e.phase_index + 1)
 
 

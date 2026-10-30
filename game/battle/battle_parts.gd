@@ -9,6 +9,25 @@ extends RefCounted
 ##   skills.json "restores_part": true         on an ally: mends that ally's longest-broken part ("part_restored" on
 ##                                             the hit; BattleEngine.part_restored). Nothing to mend: no effect.
 ## EnemyAI reads them through the conditions ally_part_broken and ally_struck and the target selector broken_ally.
+## M4-A2P-023, a part only one hero can break (Malcor Venn's flat-engine, which Liss breaks):
+##   enemies.json "answered_by": hero id   only that hero may act on this foe. For anyone else it is off
+##                                         living_foes_of and every target list, and a group skill passes over it
+##                                         (never refused). "answered_key" is the loc key the target cursor says why.
+##   enemies.json phase rows "when_down": enemy id   the phase also comes when no foe of that id stands (Venn boards
+##                                         on the engine's break, or at 50%, whichever is first).
+
+
+## True when `actor` may act on `target`: a foe answered by one hero is that hero's alone (M4-A2P-023).
+static func may_strike(actor: BattleCombatant, target: BattleCombatant) -> bool:
+	return target.answered_by == &"" or actor.team == target.team or actor.id == target.answered_by
+
+
+## True when no living enemy of id `enemy` stands (a phase's "when_down").
+static func is_down(engine: BattleEngine, enemy: StringName) -> bool:
+	for e in engine.enemies:
+		if e.is_alive() and BattleEngine.enemy_id(e) == enemy:
+			return false
+	return true
 
 
 ## The charge `actor` lost on the weak point: its part breaks when the row declares it.

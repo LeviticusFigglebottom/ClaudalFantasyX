@@ -25,4 +25,10 @@ M4-A2P-021 adds BattleCover (`game/battle/battle_cover.gd`):
 - [ ] On stage (battle-presentation): the ray lifts above the water line and the skate shows only a sand ripple.
       Creatures' clips if they exist; otherwise a request to them.
 
+## Added: another hero's part (M4-A2P-023)
+- A foe with enemies.json `answered_by` (Malcor Venn's flat-engine: Liss's alone) is off every other hero's target
+  list. A group skill passes over it.
+- [ ] The cursor shows it greyed for the others, with its `answered_key` (BattleCombatant.answered_key), the same way
+      as a covered foe.
+
 ## Review log

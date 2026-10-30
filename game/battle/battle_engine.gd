@@ -597,7 +597,7 @@ func attack_element(actor: BattleCombatant, target: BattleCombatant, sk: Diction
 func living_foes_of(c: BattleCombatant) -> Array[BattleCombatant]:
 	var out: Array[BattleCombatant] = []
 	for f in _living(enemies if c.team == BattleCombatant.TEAM_PARTY else party_active):
-		if not f.untargetable:
+		if not f.untargetable and BattleParts.may_strike(c, f):
 			out.append(f)
 	return out
 
@@ -798,6 +798,8 @@ func _valid_targets(actor: BattleCombatant, sk: Dictionary, targets: Array[Battl
 				continue
 		elif t.is_entry() and t != actor or is_foe and t.untargetable:
 			continue
+		if is_foe and not BattleParts.may_strike(actor, t):
+			continue  # M4-A2P-023: another hero's part (a group skill passes over it)
 		match kind:
 			"single_foe", "all_foes":
 				if not is_foe:

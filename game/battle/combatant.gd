@@ -128,6 +128,9 @@ var covered := false
 ## M4-A2P-022 (BattleParts): enemies.json "parts" (the charge skills that are breakable parts), the ones broken now
 ## (oldest first; a restores_part skill mends the first), and whether the party has landed a blow on it yet.
 var parts: Array[StringName] = []
+## M4-A2P-023: enemies.json "answered_by" (the one hero who may act on it) and "answered_key" (why, for the cursor).
+var answered_by: StringName = &""
+var answered_key := ""
 var broken_parts: Array[StringName] = []
 var struck := false
 ## enemies.json "hp_floor_pct": hits never take it below this share of max HP (the Reach can't fall
@@ -169,6 +172,8 @@ static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> Ba
 	c.delay_immune = bool(d.get("delay_immune", false))
 	c.glides = bool(d.get("glide", false))
 	c.ambushes = bool(d.get("ambush", false))
+	c.answered_by = StringName(str(d.get("answered_by", "")))
+	c.answered_key = str(d.get("answered_key", ""))
 	for p: Variant in d.get("parts", []):
 		c.parts.append(StringName(str(p)))
 	c.phases = (d.get("phases", []) as Array).duplicate(true)
