@@ -96,6 +96,14 @@ func _ready() -> void:
 		encounters.setup(self, layout.get("encounters", {}), defaults.get("encounters", {}))
 
 
+## SceneRouter's resident field (kept through a fight, re-attached; nothing re-runs _ready): the flag-driven
+## layout states and variants are applied again, since a win may have set their flags.
+func on_resident_return() -> void:
+	for method: StringName in [&"refresh_states", &"apply_variant"]:
+		if has_method(method):
+			call(method)
+
+
 ## Moves the player to Spawns/<spawn> facing `yaw_deg` and snaps the camera. The "Encounter" spawn
 ## is where the last field encounter here left Rhen (FieldEncounters.return_points).
 func place_at(spawn: StringName, yaw_deg: float = 0.0) -> bool:

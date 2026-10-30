@@ -465,8 +465,8 @@ SKILL_POLYP_MEND,Feeding Tide
 SKILL_CALL_ILUN,Call Ilun
 PHASE_DROWNBELL_FLOOD,The Flood
 PART_DROWNBELL_RIM,Rim
-TUT_DROWNBELL_TOLL,The Drownbell's toll is coming. Strike its rim to silence it.
-TUT_DROWNBELL_FLOOD,The water is feeding it. Call on Ilun.
+TUT_DROWNBELL_TOLL,"When the bell gathers its toll, strike fast. Three quick physical blows silence it; slow blows and magic don't count."
+TUT_DROWNBELL_FLOOD,"The water feeds the bell. Call Ilun from Asha's commands: he drinks the flood, and a full gauge unleashes Floodnet to clear it."
 HUD_FAIL_NO_FIELD,There is no water field to clear.
 HUD_CHARGE_BROKEN_FMT,{name}'s {part} breaks. {skill} is silenced.
 HUD_WEAK_POINT_FMT,{part} {hits}/{need}
@@ -822,9 +822,9 @@ MAP_DIR_W,west
 MAP_DIR_NW,north-west
 ENC_CH03_CAUSEWAY_SHORE,The Causeway Shallows
 ENC_CH03_CAUSEWAY_HARRIER,A Harrier over the Saltgrass
-TUT_FLIER_RHEN,"Fliers dodge most blows. Rhen's quick, precise strikes find them."
+TUT_FLIER_RHEN,"Fliers dodge more blows than most. Rhen's Quick Hit lands most often, and magic never misses."
 SAVE_SLOT_PROLOGUE,Prologue
-FLOW_END_CARD_VOICE,"""I said yes to a girl I'd known for two days. I didn't know yet what I was walking her toward."""
+FLOW_END_CARD_VOICE,"""I said yes to a girl I'd known for a day. I didn't know yet what I was walking her toward."""
 CREDITS_GAME,Hymn of the Undertow
 CREDITS_SLICE,"Act I: from the Underway at Oruvel to the road out of Corrow"
 CREDITS_MUSIC,Original music
@@ -834,9 +834,9 @@ CREDITS_THANKS,Thank you for playing.
 FIELD_PROMPT_DEFAULT,Examine
 CTRL_ACT_BATTLE_PAUSE,Pause a battle
 TIP_OBJECTIVE_TITLE,Where to next
-TIP_OBJECTIVE_BODY,"Press {field_objective} to see your errand again. The Map, in the menu ({ui_cancel}), shows the way."
+TIP_OBJECTIVE_BODY,"Press {field_objective} to see your objective again. The Map, in the menu ({ui_cancel}), shows the way."
 TIP_FIELD_MENU_TITLE,The menu
-TIP_FIELD_MENU_BODY,"Press {ui_cancel} to open the menu: items, gear, the Lattice, each hero's Swell, and the map."
+TIP_FIELD_MENU_BODY,"Press {ui_cancel} to open the menu: Items, Equip, the Lattice, each hero's Swell, and the Map."
 TIP_SAVE_SHRINE_TITLE,Save shrines
 TIP_SAVE_SHRINE_BODY,"A shrine keeps your journey. Press {field_interact} at one to record it and rest."
 TIP_SHOP_TITLE,Trade

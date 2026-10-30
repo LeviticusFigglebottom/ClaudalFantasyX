@@ -386,20 +386,31 @@ def feasible(ranges: dict, person: dict, bodies: dict, used_in_zone: set) -> lis
     return out
 
 
+def is_late(ranges: dict, person: dict) -> bool:
+    """A person added after the rest (ranges.json assign `late_zones`, `late_prefixes`): assigned after everyone else."""
+    w = ranges["assign"]
+    return person["zone"] in w.get("late_zones", []) or any(
+        str(person["id"]).startswith(pre) for pre in w.get("late_prefixes", []))
+
+
 def assign(ranges: dict, roster: dict) -> dict[str, str]:
     """person id -> body. Zones with the most people go first (Act I's before Act II's, so a new Act II town never
-    reshuffles Act I's bodies); within a zone, the person with the fewest choices."""
+    reshuffles Act I's bodies); within a zone, the person with the fewest choices. Late people (`is_late`: crowds
+    added after the rest, such as the slice towns' vignettes) go after everyone, for the same reason, zone by zone,
+    never wearing a body their zone already shows."""
     w = ranges["assign"]
     bodies = roster["bodies"]
     people = roster["people"]
-    zones: dict[str, list[int]] = {}
+    groups: dict[tuple[bool, str], list[int]] = {}
     for i, p in enumerate(people):
-        zones.setdefault(p["zone"], []).append(i)
+        groups.setdefault((is_late(ranges, p), p["zone"]), []).append(i)
     uses = {bid: 0 for bid in bodies}
+    used_in: dict[str, set] = {}
     out: dict[str, str] = {}
-    for zone in sorted(zones, key=lambda z: (chapter_of(z) >= ACT2_CHAPTER, -len(zones[z]), z)):
-        used: set = set()
-        left = list(zones[zone])
+    order = sorted(groups, key=lambda g: (g[0], chapter_of(g[1]) >= ACT2_CHAPTER, -len(groups[g]), g[1]))
+    for late, zone in order:
+        used = used_in.setdefault(zone, set())
+        left = list(groups[(late, zone)])
         while left:
             left.sort(key=lambda i: (len(feasible(ranges, people[i], bodies, used)), i))
             p = people[left.pop(0)]

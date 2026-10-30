@@ -91,6 +91,96 @@ func test_the_card_shows_one_tip_reads_then_the_next() -> void:
 	_done()
 
 
+## The Lead's first-hour pass (2026-10-30): New Game plays Act I (the prologue, then Ch1), so the Where-to-next tip
+## comes with Ch1's first objective and the menu tip after Ch1's first won fight (the wickfry), not a chapter later
+## on the slice's flags. Each still comes once.
+func test_the_act1_route_teaches_the_objective_and_the_menu_in_ch1() -> void:
+	var t := _tips()
+	flags[&"ch01_started"] = true
+	t.raise_field_ready()
+	assert_true(t.queue.is_empty(), "nothing in the fade-in")
+	t.raise_flag(&"ch01_saw_bell_room", true)
+	flags[&"ch01_saw_bell_room"] = true
+	assert_eq(_ids(t), [&"objective"], "the bell room (Ch1's second objective) brings the Where-to-next tip")
+	t.raise_flag(&"ch01_wickfry_won", true)
+	assert_eq(_ids(t), [&"objective", &"field_menu"], "the first won fight brings the menu tip")
+	t.take()
+	t.take()
+	t.raise_flag(&"ch02_tideline_won", true)
+	flags[&"ch02_met_asha"] = true
+	t.raise_field_ready()
+	assert_eq(_ids(t), [&"menu_save"], "the slice's flags in Ch2 raise neither again; the save tip follows")
+	_done()
+
+
+## The first fight's victory flag is set in the battle scene, where no field tip card listens; the zone then
+## reloads. The field's first input catches the menu tip up, once.
+func test_a_flag_set_while_no_field_listened_is_caught_up_on_the_field() -> void:
+	var t := _tips()
+	flags[&"ch01_wickfry_won"] = true
+	t.raise_field_ready()
+	assert_true(_ids(t).has(&"field_menu"), "the menu tip comes when the field takes input after the fight")
+	t.take()
+	t.raise_field_ready()
+	assert_false(_ids(t).has(&"field_menu"), "and only once")
+	_done()
+
+
+## M4-A2P-1702 (act2-plan's ui/tutorials.md): Act II's field tips, once each: Seven heroes when Ch10 starts (caught up
+## on the first field if it was set in the fade-in), Records when the archive's hands are found, and Dark shrines at the
+## first shrine in reach after the heresy, not before. A layout trigger's shrine is a shrine too (M4-A2P-1004 F8).
+func test_act2_tips_come_once_at_their_moment() -> void:
+	var t := _tips()
+	for f in [&"tut_objective_seen", &"tut_field_menu_seen", &"tut_menu_save_seen", &"tut_swell_seen"]:
+		flags[f] = true
+	flags[&"tut_save_shrine_seen"] = true
+	flags[&"ch10_started"] = true
+	t.raise_field_ready()
+	assert_eq(_ids(t), [&"seven"], "Ch10's first field: the seven heroes")
+	t.take()
+	var shrine := Interactable.new()
+	shrine.payload = {"save_shrine": "lowlight_shrine"}
+	assert_true(TutorialTips.tags_of(shrine).has(TutorialTips.TAG_SHRINE), "a layout trigger's shrine is tagged")
+	t.raise_near(TutorialTips.tags_of(shrine))
+	assert_true(t.queue.is_empty(), "no dark-shrine tip before the heresy")
+	t.raise_flag(&"ch13_archive_read", true)
+	assert_eq(_ids(t), [&"records"])
+	t.take()
+	flags[&"ch14_declared_heretics"] = true
+	t.raise_near(TutorialTips.tags_of(shrine))
+	assert_eq(_ids(t), [&"dark_shrine"], "the first shrine after the heresy")
+	t.take()
+	t.raise_near(TutorialTips.tags_of(shrine))
+	t.raise_field_ready()
+	assert_true(t.queue.is_empty(), "each once")
+	shrine.free()
+	_done()
+
+
+## A tip fades out when the player presses what it teaches: the menu tip does not wait out a visit to the menu and
+## then ask again for what was just done.
+func test_pressing_what_a_tip_teaches_dismisses_it() -> void:
+	flags[&"ch01_wickfry_won"] = true
+	var card := _card()
+	card.tips.raise_flag(&"ch01_wickfry_won", true)
+	card.advance(0.0)
+	assert_eq(card.title_text(), tr("TIP_FIELD_MENU_TITLE"))
+	assert_true(TutorialTips.actions_named(card.current).has(&"ui_cancel"), "the menu tip names Cancel")
+	var other := InputEventAction.new()
+	other.action = &"ui_down"
+	other.pressed = true
+	card._input(other)
+	assert_eq(card.phase, TipCard.Phase.IN, "another key leaves it")
+	var ev := InputEventAction.new()
+	ev.action = &"ui_cancel"
+	ev.pressed = true
+	card._input(ev)
+	assert_eq(card.phase, TipCard.Phase.OUT, "Cancel (the menu) fades it out")
+	card.advance(float(TutorialTips.load_data()["fade_sec"]) + 0.01)
+	assert_false(card.is_showing())
+	_done()
+
+
 func test_input_names_fill_bindings() -> void:
 	FieldInput.ensure_actions()
 	var key := InputNames.first_name(FieldInput.INTERACT, false)

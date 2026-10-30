@@ -589,6 +589,50 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **LEAD (19:25), IN PROGRESS: the Ch4 beauty pass (the Haluna wake, the Brightwater ferry), then the Prologue-to-Ch4
+  transitions as played.** Eye-height stills are rendering.
+- **LEAD (18:24), answered: the Ch2 Haluna and Ch3 causeway beauty pass (M4-A2P-1400, review: art). MERGE-READY @ dadb6930.**
+  - Stills at eye height along the walkthrough legs, viewed: Haluna 22, the causeway 12, the Shell Shrine 8.
+  - **Fixed:** Haluna's 49 windbreak trees rendered as black blots from every side. `kit_windbreak_leaf` now has a
+    tint over 1, half the baked AO, more transmission and a softer wrap; the trees read as leafy dark-green shade.
+  - **Viewed and left as is:**
+    - Haluna's beach, lanes and stilt pier: the sea light is strong.
+    - The causeway's stepping stones, posts and tide pools read clearly.
+    - The shrine's sunlit approach and cool interior are as designed.
+  - **Checks:**
+    - Tools: test_haluna_kit and test_haluna_dressing OK.
+    - Godot `--filter`: vegetation 17/0, haluna 65/0.
+    - validate_data and taskboard --check clean.
+  - **Baselines that move (none written):** every Haluna shot that frames a windbreak tree.
+- **LEAD (17:45), answered: the Ch1 Underway and Oruvel dressing pass. MERGE-READY @ 922cd122.**
+  - **Stills viewed before and after:**
+    - the Underway's four walkthrough dive legs, 22 points at eye height;
+    - Oruvel's decks, the scale booth, the Terrace and the east vista;
+    - the dive raft: looking down into the well and approaching it.
+  - **Underway caustics:**
+    - There were none. The water shader projects caustics onto the floor as seen from above, never from under the
+      surface.
+    - `env_weathering` gains opt-in `uw_caustics` (default 0, so every other material is unchanged). It draws the
+      `water_caustics` web on every surface under the live water height: floors on x/z, walls on their own plane (a
+      first try smeared the floor's web down the walls as streaks). It fades with depth and view distance.
+    - The Underway kit's weathered materials turn it on (`ou_materials.py`, 1.2). The underway_tower arena uses the
+      same materials, so it gets the caustics too.
+  - **Dive readability:**
+    - The dive raft's well read as flat dark water; its tether and ladder are tarred black.
+    - A rope hoop of six white floats now rides the well, and a pale shot-line drops from it, white-tagged every
+      0.6 m, to a lead sinker (`ov_heroes.py` `_dive_mark`; dive_raft 15424 tris, within its 18000 budget).
+  - **Not changed (the layout's, act1-chapters'):**
+    - The Underway's sun casts hard, crisp shadows at about 10 m depth. Softening them (shadow blur, or a lower sun
+      energy with more ambient) would help the underwater read; it's the layout's `sun` block.
+    - Caustics also show inside those shadows, since they are emission; a real-GPU look will tell whether that
+      matters.
+  - **Checks:**
+    - Tools: test_oruvel_kit, test_oruvel_moorings and the Underway kit tests OK.
+    - Godot `--filter`: underway 9/0, environment_shaders 11/0, shader_prewarm 22/0, weathering 2/0, ch01 20/0,
+      water 49/0.
+    - validate_data clean.
+  - **Baselines that will move (none written):** the Underway and underway_tower shots, and the oruvel shots that
+    frame the dive raft's well.
 - **LEAD (16:45), answered: the Prologue dead-city dressing pass. MERGE-READY @ b39caa29.**
   - Eye-height stills along the whole cutscene path were viewed before and after: P01, the P01-to-P02 blend at 25/50/75 %,
     P02, Rhen's crossing, the plaza in eight directions, and up at the towers.
@@ -1149,6 +1193,7 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- Ch1 Underway pass (922cd122): Underway caustics on a real GPU (strength 1.2, and whether caustics inside the sun's shadows read wrong), and the dive well's floats from the deck.
 - Prologue dressing pass (b39caa29): look at P01 and P02 on a real GPU for the Iskarra towers' grime streaks and tide band, the plaza puddles' gloss and the amber lamp globes.
 - **M3-ENV-1323 (2026-10-30):** A/B `battle_arena_underway_tower` with its Sun node hidden. Rectangles that
   stay are the F9 slabs against the sand (a material edge); rectangles that go are window light.

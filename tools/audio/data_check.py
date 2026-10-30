@@ -28,6 +28,7 @@ LIFE = "game/data/audio/life.json"  # M3-AUD-814
 IMPACT = "game/data/audio/impact_audio.json"  # M3-AUD-816
 CUTSCENE_FOLEY = "game/data/audio/cutscene_foley.json"  # M3-AUD-817
 ASHCROWN_SFX = "game/data/audio/ashcrown_sfx.json"  # M3-AUD-825
+PROP_SFX = "game/data/audio/prop_sfx.json"  # the Lead's 10-30 18:45 item: cinematics' practicals that sound
 CHOREO = "game/data/battle/choreo.json"  # the battle-presentation track's styles (once merged)
 SPEAKERS = "game/data/dialogue/speakers.json"
 CREATURE_VOICES = "game/data/audio/creature_voices.json"  # M3-AUD-14
@@ -152,8 +153,11 @@ def music_errors(music: object, exists, flags: set[str], encounters: set[str],
     battle = music.get("battle") or {}
     if battle.get("default") not in cues:
         errs.append(f"{MUSIC} battle.default: unknown cue {battle.get('default')}")
+    pending = set(battle.get("pending_encounters") or [])
+    for enc in sorted(pending & set(encounters)):
+        errs.append(f"{MUSIC} battle.pending_encounters: {enc} exists now, take it off the list")
     for enc, cid in (battle.get("encounters") or {}).items():
-        if enc not in encounters:
+        if enc not in encounters and enc not in pending:  # pending: a planned fight combat has not written yet
             errs.append(f"{MUSIC} battle.encounters: unknown encounter {enc}")
         if cid not in cues:
             errs.append(f"{MUSIC} battle.encounters.{enc}: unknown cue {cid}")
@@ -318,6 +322,29 @@ def ambience_errors(doc: object, exists, flags: set[str], buses: set[str], music
             errs.append(f"{w}.night_flag: {row.get('night_flag')} is not declared")
         if row.get("wind") and not wind:
             errs.append(f"{w}.wind: the table has no wind row")
+    return errs
+
+
+def prop_errors(doc: object, exists, buses: set[str]) -> list[str]:
+    """prop_sfx.json: each prop scene exists (unless pending), its loop file exists, its bus is real."""
+    if not isinstance(doc, dict):
+        return [f"{PROP_SFX}: must be an object"]
+    errs: list[str] = []
+    for scene, row in (doc.get("props") or {}).items():
+        w = f"{PROP_SFX} props.{scene}"
+        if not isinstance(row, dict):
+            errs.append(f"{w}: must be an object")
+            continue
+        if not (scene.startswith("res://") and scene.endswith(".tscn")):
+            errs.append(f"{w}: the key must be a res://...tscn path")
+        elif not row.get("pending") and not exists(scene):
+            errs.append(f"{w}: {scene} does not exist")
+        _res_file(row.get("file"), exists, f"{w}.file", errs)
+        if row.get("bus", "World") not in buses:
+            errs.append(f"{w}.bus: unknown bus {row.get('bus')}")
+        for k in ("volume_db", "unit_size_m", "height_m"):
+            if k in row and not _num(row[k]):
+                errs.append(f"{w}.{k}: must be a number")
     return errs
 
 
@@ -573,6 +600,8 @@ def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags:
     e2, _ = music_errors(files.get(MUSIC), exists, flags, encounters, amb_beds)
     e3, ids = sfx_errors(merged_sfx(files), exists, buses)
     errs += e2 + e3
+    if PROP_SFX in files:
+        errs += prop_errors(files[PROP_SFX], exists, buses)
     if AMBIENCE in files:
         music_beds = set(((files.get(MUSIC) or {}).get("ambience") or {}).keys())
         errs += ambience_errors(files[AMBIENCE], exists, flags, buses, music_beds)
@@ -762,7 +791,7 @@ def load_files(root: Path) -> dict[str, object]:
     out = {}
     extra = [p.relative_to(root).as_posix() for p in sorted((root / SFX_DIR).glob("sfx_*.json"))]
     for rel in [MIX, MUSIC, SFX, BATTLE_SFX, SHRINE_SFX, UI_SFX, AMBIENCE, FOOTSTEPS, ENCOUNTERS, VFX_EFFECTS,
-                ACCESSIBILITY, VOICES, SPEAKERS, REEFBALL_HOOKS, CHOREO_SFX, CHOREO, BATTLE_STINGS, CREATURE_VOICES, ENEMIES, LIFE, IMPACT, CUTSCENE_FOLEY, ASHCROWN_SFX] + extra:
+                ACCESSIBILITY, VOICES, SPEAKERS, REEFBALL_HOOKS, CHOREO_SFX, CHOREO, BATTLE_STINGS, CREATURE_VOICES, ENEMIES, LIFE, IMPACT, CUTSCENE_FOLEY, ASHCROWN_SFX, PROP_SFX] + extra:
         p = root / rel
         if p.is_file():
             out[rel] = json.loads(p.read_text(encoding="utf-8"))

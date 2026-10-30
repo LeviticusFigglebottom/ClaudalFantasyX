@@ -170,7 +170,10 @@ func _fit_desc() -> void:
 	HudLayout.fit_lines(_desc, cap)  # a line too long for the cap at 130 % shrinks a little first
 	_desc.size.y = minf(ceilf(HudLayout.lines_height(_desc)), cap) if _desc.text != "" else 0.0
 	_status.position.y = _desc.position.y + _desc.size.y + gap
-	HudLayout.fit_lines(_status, _help.position.y - _status.position.y)
+	# M4-A2P-1700: the status gets the column down to the help line, not the one line it was built with, or its
+	# wrapped second line is trimmed to an ellipsis ("The door is barred. No rooms for…" at 130 %).
+	_status.size.y = maxf(_help.position.y - _status.position.y, 0.0)
+	HudLayout.fit_lines(_status, _status.size.y)
 
 
 ## Puts the line and the status under `top` (a y in reference pixels).

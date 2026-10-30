@@ -17,8 +17,8 @@ location: ch18/kite
     Pell [neutral]: Now you do. I am sorry it was this. #line:ch18_night_004
 <<endif>>
 <<if $ch11_camp_talk>>
-    Asha [tender]: You said someone should see it. #line:ch18_night_005
-    Pell [neutral]: I will. From the right side, this time. #line:ch18_night_006
+    Asha [tender]: You said glad was the word you would want. #line:ch18_night_005
+    Pell [neutral]: It still is. #line:ch18_night_006
 <<endif>>
 <<if $ch12_camp_talk>>
     Ysolde [neutral]: The end of the road is further than you said. #line:ch18_night_007

@@ -18,11 +18,11 @@ PHASE_REACH_GRIP,The Grip
 PHASE_REACH_DARK,The Dark
 PHASE_REACH_BREACH,The Breach
 FIELD_STORM_DARK,Storm-dark
-TUT_CH08_WAVE_HOLD,"Each turn of the Fisher Stair brings a group of climbers up. Spawn that grip the stair push it back: hold it on a shield."
+TUT_CH08_WAVE_HOLD,Each turn of the Fisher Stair brings climbers up. A crawler's grip pushes it back: Toma's Hold the Stair takes the grip instead.
 TUT_CH08_WAVE_ROPE,"Liss can haul the stair to speed the climb, but the Squall Wings dive a hauled rope."
-TUT_CH08_WAVE_LAST,"The Kirru on the parapet draws one spawn off with every call. Only the party can burn the rooted polyp."
-TUT_CH08_REACH_GRIP,The storm's hand is closing on the stair. Hold it on a shield.
-TUT_CH08_REACH_DARK,The climbers can't see the stair. Call on Virel to light it.
+TUT_CH08_WAVE_LAST,The Kirru draws one moving spawn off with each Storm-Call. The rooted polyp mends the crawlers: only the party can bring it down.
+TUT_CH08_REACH_GRIP,The storm's hand is closing on the stair. Use Toma's Hold the Stair before it lands to take the blow.
+TUT_CH08_REACH_DARK,"The dark blinds the party and slows the climbers. Call Virel: his full gauge unleashes Flare Line, which lights the stair."
 TUT_CH08_REACH_BREACH,Nothing can touch it. Get the last of them up.
 HUD_CH08_STAIR_HOLDS,The stair holds.
 HUD_CH08_REACH_SURVIVED,The last of them are up.

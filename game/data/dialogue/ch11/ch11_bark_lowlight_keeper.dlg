@@ -1,9 +1,10 @@
-// Ch11: the last keeper of the half-drowned temple. Faithful and tired; after Nhoa, afraid of a silence she can't name.
+// Ch11: a tender who comes down from the Vey to the half-drowned temple (its own congregation drowned: lowlight.md).
+// Read-through 2026-10-30: was a resident keeper; the temple is kept by the Lamp Engine (act2_ch11 B04). Faithful and tired; after Nhoa, afraid of a silence she can't name.
 title: ch11_bark_lowlight_keeper
 location: ch11/lowlight
 ---
 <<if $ch11_nhoa_bound>>
-    Tender as "Lowlight keeper" [afraid]: The cold came up the shaft last night, and then it stopped. Forty years I've kept this temple. It has never stopped. #line:ch11_bark_keeper_001 #long
+    Tender as "Lowlight keeper" [afraid]: The cold came up the shaft an hour ago, and then it stopped. Forty years I've come down to this temple. It has never stopped. #line:ch11_bark_keeper_001 #long
 <<else>>
     Tender as "Lowlight keeper" [exhausted]: The water takes a step a year. We pray on the step above it. There are not many steps left. #line:ch11_bark_keeper_002
 <<endif>>

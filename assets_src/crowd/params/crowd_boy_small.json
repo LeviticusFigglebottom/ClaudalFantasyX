@@ -106,5 +106,7 @@
     "lean": -0.32,
     "arms_down": 40.5
   },
-  "_work": []
+  "_work": [
+    "play_clap"
+  ]
 }

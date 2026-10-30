@@ -31,6 +31,7 @@
 
 #include "res://game/shaders/include/common.gdshaderinc"
 #include "res://game/shaders/include/globals.gdshaderinc"
+#include "res://game/shaders/water/water_caustics.gdshaderinc"
 
 // Macro detail octave scale relative to detail_scale_m (Ultra only), and the width of a layer's
 // soft edge before height sharpening, in mask units. Tuned on the haluna_mood shots.
@@ -125,6 +126,22 @@ uniform float wet_flatten : hint_range(0.0, 1.0) = 0.6; // puddle normal flatten
 // on Iskarra's towers. 0 (the default) leaves every other material as it was.
 uniform float grime_from_wet : hint_range(0.0, 1.0) = 0.0;
 uniform vec4 col_grime : source_color = vec4(0.369, 0.353, 0.298, 1.0); // #5E5A4C
+group_uniforms;
+
+// The Ch1 Underway dressing pass (env-art): a zone walked under the surface sees no caustics (the water shader projects
+// them onto the floor seen from above). Opt-in per material (0, the default, compiles to the same look): the web of
+// water_caustics.gdshaderinc lights every surface under the live water height, strongest on up-facing ones, fading
+// with depth and with view distance (far caustics average out in the murk).
+group_uniforms underwater_caustics;
+uniform float uw_caustics : hint_range(0.0, 4.0) = 0.0;
+uniform vec4 uw_caustic_color : source_color = vec4(0.78, 0.96, 0.88, 1.0);
+uniform float uw_caustic_scale_per_m : hint_range(0.05, 4.0) = 0.55;
+uniform float uw_caustic_speed : hint_range(0.0, 4.0) = 0.5;
+uniform float uw_caustic_width : hint_range(0.005, 0.5) = 0.07;
+uniform float uw_caustic_blur_per_m : hint_range(0.0, 0.1) = 0.012;
+uniform float uw_caustic_falloff_m : hint_range(1.0, 60.0) = 16.0;
+uniform float uw_caustic_view_fade_m : hint_range(1.0, 200.0) = 28.0;
+uniform float uw_caustic_wall : hint_range(0.0, 1.0) = 0.25; // a vertical face's share of an up-facing one's
 group_uniforms;
 
 group_uniforms debug;
@@ -316,6 +333,20 @@ void fragment() {
 	spec = mix(spec, 0.5, wet);
 	wn = normalize(mix(wn, wn_geo, wet * wet_flatten));
 
+	// ---- 8. Underwater caustics (opt-in, uw_caustics > 0) ----------------------------------------
+	vec3 caustic_emit = vec3(0.0);
+	if (uw_caustics > 0.0 && wp.y < water_height_y) {
+		float depth = water_height_y - wp.y;
+		float width = uw_caustic_width + uw_caustic_blur_per_m * depth;
+		// Floors take the web on x/z; walls on their own plane (along the wall, up), not smeared down from the floor's.
+		vec2 on_wall = vec2(wp.x * abs(wn_geo.z) + wp.z * abs(wn_geo.x), wp.y);
+		vec2 q = abs(wn_geo.y) > 0.5 ? wp.xz : on_wall;
+		float web = hymn_caustic(q * uw_caustic_scale_per_m, TIME * uw_caustic_speed, width, 2);
+		float face = mix(uw_caustic_wall, 1.0, clamp(wn_geo.y, 0.0, 1.0)) * step(-0.2, wn_geo.y);
+		float fade = exp(-depth / uw_caustic_falloff_m) * exp(-length(VERTEX) / uw_caustic_view_fade_m);
+		caustic_emit = albedo * uw_caustic_color.rgb * (web * uw_caustics * face * fade);
+	}
+
 	// ---- Output ------------------------------------------------------------------------------
 	float ao = mix(1.0, ao_baked, ao_strength);
 	if (debug_view == 1) {
@@ -325,6 +356,7 @@ void fragment() {
 	}
 	ALBEDO = albedo * mix(1.0, ao, 0.35);
 	AO = ao;
+	EMISSION = caustic_emit;
 	ROUGHNESS = rough;
 	SPECULAR = spec;
 	NORMAL = normalize((VIEW_MATRIX * vec4(wn, 0.0)).xyz);
