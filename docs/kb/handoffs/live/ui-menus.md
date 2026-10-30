@@ -884,3 +884,13 @@ The tools suite (-j 4) has 5 failures that the integration branch carries too; t
 - test_villagers: Kell's sheet.
 They are for characters, env-art and the Lead.
 Skipped: coverage (no game/battle or game/progression code changed) and Blender (no Blender source touched).
+- 2026-10-30 07:50, **BACKLOG EMPTY.** The Lead's ADR 0205 list is done for everything ui-menus can build today. That
+  covers row 43, Ch10's codex entries, the rooted glyph and the seven tip, all of the heresy UI, Kerrid's guilty
+  portrait and Unrisen line, and the document reader with its codex hook. I merged the Lead's 8de373e5 (shot
+  approvals only). What remains waits on other tracks:
+  - the seven-hero formation check and Pell's Listen: Pell has no row in characters.json yet (combat);
+  - the rooted swap-refusal reason: the engine has no rooted status yet (combat, M4-A2P-020);
+  - portraits for Act II's NPCs: no models yet (characters, M4-A2P-081);
+  - Kerrid's second codex body (CODEX_KERRID_BODY_CH15): narrative's text after the reveal script;
+  - the reader's records: narrative fills `game/data/lore/records.json`, and Audio has M4-AUD-1080;
+  - the reader's two shots: the Lead adds them to the manifest with baselines (LEAD-ASK above).
