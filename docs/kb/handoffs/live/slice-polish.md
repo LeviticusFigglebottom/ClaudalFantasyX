@@ -1098,6 +1098,11 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     one-line change in `game/world/` (Systems and hero-integration's), so **hero-integration, please review.**
   - test_camera_director gains a test that fails without the fix; 51 run, 0 failed.
   - Stills re-rendering now; the audit results follow.
+- **Rows 58 (O07) and 60 and M3-CIN-1234, re-verified on 7dc3ab41 plus the camera fix above, MERGE-READY @ 61babc97c:**
+  - ch01_o07_name_board: the Seventh Terrace's name-board fills the frame (on 7dc3ab41 alone it turned to Rhen
+    across the town; fixed above).
+  - slice_verse_hall: Rhen speaks in frame on S07_reverse, with Toma beside him.
+  - ch01_scale_hull (M3-CIN-1234): Rhen at the counter in the over-the-shoulder, the Scale-Man in his booth.
 ### PC-QUEUE
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
   emissive reading. Check that its glow and silhouette read on the GPU; if not, it needs a rim light or a grade.
