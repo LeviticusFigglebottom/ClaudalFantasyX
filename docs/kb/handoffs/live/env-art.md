@@ -589,6 +589,27 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ cd7fbf94: M4-A2P-042, Ch12 (Keth Pass, Quellan, Cloudloom) dressed.** The change is additive: no
+  played scene changes until chapters mount it (M4-A2P-0421, filed). The details are in keth_pass.md's revision line.
+  - **Built from the greybox** (§6's modules don't fit it), in `keth_zones.py`:
+    - each zone's ground: walks level, crag behind every cliff, scree off every drop, turf on the flats;
+    - the flights' road stones and slope-following parapets, the cords between their posts, the knot post;
+    - Quellan's houses on their footprints and its paved street and square;
+    - Cloudloom's white hall in dressed courses, with a beam over each row of keth.
+  - **Kit placed round them:** the Lit Age wall and seep pool, the inn, the well, twelve keth curtains (2,880 cords),
+    Hesk's dais, cairns and the far ridges.
+  - **A kit change:** `quellan_house` and `quellan_inn` walls are the road's granite and their roofs `kit_keth_turf`
+    (the card grass read as snow). Two kit-row shots change, `kitrow_keth_cloudloom_house` and
+    `kitrow_quellan_inn_well_dais`; both were re-rendered and viewed, and neither has a baseline.
+  - **Gates:**
+    - Viewed at 30 cameras.
+    - Python suites OK: test_ch12 (5), ch11, ch10, haluna_kit, haluna_dressing (48 in all).
+    - Godot `ch12` 4/4 and `post_import` 21/21.
+    - validate_data, taskboard and gdlint clean.
+    - The full haluna_kit build reproduces all 219 glbs (the manifest is updated).
+- **Act II share done to the dressing:** Ch10 (M4-A2P-040), Ch11 (041) and Ch12 (042) are built and merge-ready.
+  Each waits on its mount request to chapters (0401, 0411, 0421); the tasks stay `doing` until a mount lands and
+  env-art views the mounted zone.
 - **MERGE-READY @ 79fc304f: M4-A2P-041, Ch11 (the Sunken Vey and Lowlight) dressed.** The change is additive: new pieces,
   dressing JSONs, grades and previews. No played scene changes until chapters mount it (M4-A2P-0411, filed). The
   details are in lowlight.md's revision line.
@@ -823,6 +844,11 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- **Ch12's shade at a walker's eye (Keth Pass, Quellan): the dark slate and crag go near-black on lavapipe in every
+  shadow.** The cause is the colour script's 0.8 colour fill at exposure 0.65, with no bounce light on the software
+  renderer. A sky-source ambient barely moved it. On the real GPU (SDFGI/SSIL), judge whether the shade reads. If it
+  doesn't, the fix is chapters' layouts' `environment.ambient_energy` (0.8 → ~1.2, as Ch10's 0.85 ask) or a lighter
+  `kit_keth_crag` tint.
 - **The night lagoon (Haluna, the Ch4 wake): reads too bright on lavapipe.** The shallows glow luminous cyan from the
   dock end, with the moonlit white sand lifting it. Proposal: `HalunaMood.night_sea_glow` 0.12 -> **0.07** (colour
   script rule 3 allows it; `haluna_mood.gd`), judged on the real GPU before changing it.
