@@ -19,7 +19,7 @@
 ## Exact next step
 1. Watch for chapters' mounts. Once one lands, walk-render that zone (`game/levels/_tests/walkthrough/walk_render.tscn`
    with the zone's own scene), fix what reads wrong, and set the task to `review` (reviewer: rendering).
-2. While waiting, look at Ch10's Kirru roost weave, which reads busy up close.
+2. (Done: Ch10's Kirru roost weave was re-rendered close up and reads fine. No other env-art item is open.)
 
 ## Known issues
 - **Ch12 shade:** near-black on lavapipe in every shadow. It's on the PC-QUEUE; the remedy is chapters' ambient or

@@ -607,6 +607,8 @@ Read this section first; everything below it is history. The branch is `claude/e
     - Godot `ch12` 4/4 and `post_import` 21/21.
     - validate_data, taskboard and gdlint clean.
     - The full haluna_kit build reproduces all 219 glbs (the manifest is updated).
+- **Ch10's Kirru roost weave** (re-rendered close up at Lodge_close, Ring_lodges, F02 and Causeway_mid): it reads
+  as woven hoops, not busy, and no tree stands on a walk. No change.
 - **Act II share done to the dressing:** Ch10 (M4-A2P-040), Ch11 (041) and Ch12 (042) are built and merge-ready.
   Each waits on its mount request to chapters (0401, 0411, 0421); the tasks stay `doing` until a mount lands and
   env-art views the mounted zone.
