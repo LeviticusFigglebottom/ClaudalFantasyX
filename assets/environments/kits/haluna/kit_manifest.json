@@ -915,6 +915,17 @@
         "hm_dock_4m_open_s-lod1": 156
       }
     },
+    "hm_dockmaster_house": {
+      "budget": [
+        11000,
+        700
+      ],
+      "bytes": 253044,
+      "lods": {
+        "hm_dockmaster_house": 4102,
+        "hm_dockmaster_house-lod1": 368
+      }
+    },
     "hm_drydock_berth": {
       "budget": [
         5000,
