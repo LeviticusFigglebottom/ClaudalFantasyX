@@ -1073,6 +1073,14 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - ch01_drop: Rhen on the Underway's floor in his lantern's light.
   - With this session's rows 58 and 60 and the dive, every Ch1 and slice beat has been viewed.
   - **Thread tests:** _thread 40, 0 failed (this branch's head).
+- **BACKLOG EMPTY @ d6c209c61:**
+  - **Act I:** no open row is mine. QA pass 3's rows 48, 58 and 60 and the dive are fixed and viewed, and the big18
+    beat pass is through every Ch1 and slice beat. The PC-QUEUE items below need the GPU.
+  - **Act II:** the cinematics tasks M4-A2P-070…075 wait on the Ch10 scripts (M4-A2P-001, story), the Kirru
+    (M4-A2P-053, characters) and the farewell-tide score (M4-A2P-090 and my request M4-CIN-1301, audio). The beat
+    sheet's staging review is done, and the tools its staging needs are built (M4-CIN-1302/1303, MERGE-READY).
+  - **For the Lead:** apply act2_tracks.md's cinematics rows (`game/data/cutscene/ch1[0-6]/**`,
+    `game/cutscene/act2/**`) and unblock M4-A2P-070 when Ch10's scripts land; I start it then.
 ### PC-QUEUE
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
   emissive reading. Check that its glow and silhouette read on the GPU; if not, it needs a rim light or a grade.
