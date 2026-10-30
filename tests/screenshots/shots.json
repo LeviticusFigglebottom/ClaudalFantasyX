@@ -7717,6 +7717,26 @@
       "settle_frames": 60
     },
     {
+      "id": "kirru_lineup_front",
+      "scene": "res://game/levels/_tests/npc/kirru_lineup.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60
+    },
+    {
+      "id": "kirru_lineup_faces",
+      "scene": "res://game/levels/_tests/npc/kirru_lineup.tscn",
+      "camera": "Cameras/Faces",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60
+    },
+    {
       "id": "crowd_market",
       "scene": "res://game/levels/_tests/npc/crowd_lineup.tscn",
       "camera": "Cameras/Market",

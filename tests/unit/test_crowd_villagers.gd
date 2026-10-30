@@ -9,6 +9,8 @@ const ASHCROWN := "res://game/levels/ch05/ashcrown/ashcrown.tscn"
 const BRINE_SHOALS := "res://game/levels/ch06/brine_shoals/brine_shoals.tscn"
 const CORROW := "res://game/levels/ch08/corrow/corrow.tscn"
 const TEST_DATA := "user://crowd_layer_test.json"
+const KIRRU := "res://assets_src/crowd/kirru/kirru_bodies.json"
+const REEDHOLLOW := "res://game/data/world/npc/zones/ch10_reedhollow.json"
 const DT := 1.0 / 60.0
 const BASE_CLIPS: Array[StringName] = [&"idle", &"talk", &"walk"]
 ## M3-CRE-662: the shared clip libraries. Standing clips sampled at these times keep each body's toes on its own floor.
@@ -213,6 +215,36 @@ func test_every_crowd_body_loads_with_its_clips() -> void:
 	_done()
 
 
+## The Kirru crowd bodies (assets_src/crowd/kirru; the Lead, 2026-10-30): each loads with the kirru library's clips
+## (Pell's idle, talk and walk), its hips track fitted to its own height, and Reedhollow's rows resolve to them.
+func test_every_kirru_body_loads_with_pells_clips() -> void:
+	var bodies := VillagerLayer.load_data(KIRRU).get("bodies", {}) as Dictionary
+	assert_eq(bodies.size(), 4, "four Kirru builds")
+	var scales: Array[float] = []
+	for body: String in bodies:
+		var scene := load(VillagerLayer.CROWD_ACTOR_PATH % [body, body]) as PackedScene
+		assert_true(scene != null, "%s: actor scene loads" % body)
+		if scene == null:
+			continue
+		var actor := scene.instantiate() as Node3D
+		_holder().add_child(actor)
+		var anim := HeroMotion.player_of(actor)
+		assert_true(anim != null, "%s: an AnimationPlayer from the import rule" % body)
+		if anim == null:
+			continue
+		for clip: StringName in BASE_CLIPS:
+			assert_true(anim.has_animation(clip), "%s: clip %s" % [body, clip])
+		var skel := actor.find_children("*", "Skeleton3D", true, false)
+		assert_false(skel.is_empty(), "%s: a skeleton" % body)
+		if not skel.is_empty():
+			scales.append((skel[0] as Skeleton3D).motion_scale)
+	assert_true(scales.min() < scales.max(), "the youngster's hips track is scaled below the adults'")
+	var rows := VillagerLayer.load_data(REEDHOLLOW).get("villagers", []) as Array
+	for row: Dictionary in rows:
+		assert_true(bodies.has(str(row["body"])), "%s wears a Kirru body" % row["npc_id"])
+	_done()
+
+
 ## M3-CRE-662: each body wears its group's one library (the same resource for every member), its armature carries
 ## the library's root name, its hips track is scaled to its own height, and its standing clips keep its toes where
 ## its own rest pose has them (a child on the adult library's hips would float or sink by tens of cm).
@@ -249,8 +281,8 @@ func test_every_crowd_body_shares_its_groups_clips_at_its_own_height() -> void:
 					var what := "%s: %s at %.1f s, %s off the floor" % [body, clip, t, toe]
 					assert_between(dy, -FLOOR_TOLERANCE_M, FLOOR_TOLERANCE_M, what)
 	var distinct := {}
-	for lib_name: Variant in libraries.values():
-		distinct[lib_name] = true
+	for body: String in data["bodies"] as Dictionary:  # the villager bodies' groups (the Kirru's library: its own test)
+		distinct[libraries.get(body, "")] = true
 	assert_eq(first_of.size(), distinct.size(), "every group's library in use")
 	_done()
 

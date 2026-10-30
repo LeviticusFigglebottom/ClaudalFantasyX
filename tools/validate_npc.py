@@ -25,7 +25,7 @@
   function).
 * Shared clips (M3-CRE-662): every planned body sits in exactly one of ranges.json's `clip_libraries` (its
   reference among the members), each library's file is committed, and the crowd import rules map bodies to the
-  same libraries.
+  same libraries, plus the Kirru bodies of assets_src/crowd/kirru/kirru_bodies.json to theirs (each with its actor).
 """
 
 from __future__ import annotations
@@ -58,6 +58,7 @@ CROWD_RANGES = "assets_src/crowd/ranges.json"
 CROWD_PARAMS = "assets_src/crowd/params/{id}.json"
 CROWD_LIBRARY = "assets/crowd/clips/crowd_{lib}_clips.tres"
 CROWD_IMPORT_RULES = "game/data/import/crowd.json"
+KIRRU_BODIES = "assets_src/crowd/kirru/kirru_bodies.json"  # built on Pell's build, not the villager generator
 # CIELAB from sRGB (D65): the sRGB transfer curve, the sRGB -> XYZ matrix, the D65 white, the CIE f(t) knee
 SRGB_KNEE = 0.04045
 SRGB_LINEAR_SLOPE = 12.92
@@ -375,11 +376,21 @@ def clip_library_errors(root: Path, bodies: dict) -> list[str]:
         errs.append(f"{CROWD_RANGES}: body {b} is in no clip library")
     for b in sorted(set(member) - set(bodies)):
         errs.append(f"{CROWD_RANGES}: clip library member {b} is not a planned body")
+    # the Kirru bodies (kirru_bodies.json) share their own library, Pell's field clips (kirru_clips.py)
+    kirru = _load(root / KIRRU_BODIES, errs) if (root / KIRRU_BODIES).exists() else {}
+    for b in sorted(kirru.get("bodies", {})):
+        lib = str(kirru.get("library", ""))
+        member[b] = lib
+        if not (root / CROWD_ACTOR.format(id=b)).exists():
+            errs.append(f"{KIRRU_BODIES}: body {b} has no {CROWD_ACTOR.format(id=b)}")
+        if not (root / CROWD_LIBRARY.format(lib=lib)).exists():
+            errs.append(f"{KIRRU_BODIES}: clip library {lib} has no {CROWD_LIBRARY.format(lib=lib)}")
     rules_path = root / CROWD_IMPORT_RULES
     if rules_path.exists():
         mapped = _load(rules_path, errs).get("animations", {}).get("libraries", {})
         if mapped != member:
-            errs.append(f"{CROWD_IMPORT_RULES}: animations.libraries differs from {CROWD_RANGES} clip_libraries")
+            errs.append(f"{CROWD_IMPORT_RULES}: animations.libraries differs from {CROWD_RANGES} clip_libraries "
+                        f"and {KIRRU_BODIES}")
     return errs
 
 
