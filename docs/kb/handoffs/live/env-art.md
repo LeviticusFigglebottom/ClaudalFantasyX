@@ -589,6 +589,18 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **STATUS 20:46 (answers the Lead's 20:45 check-in): everything is pushed; the head is the log commit after 937389e9.**
+  - Oruvel's last outrigger (M3-ENV-1391): MERGE-READY @ 0de280e2 (pushed 19:58).
+  - The Ch4 beauty pass and the Prologue-to-Ch4 arrivals (M4-A2P-1401): MERGE-READY @ 937389e9 (pushed 19:58).
+  - **Transitions, viewed as played:**
+    - Zone exits: this stretch has none to walk through; every hand-off is a beat or cutscene. So I viewed the frame
+      the player gets on arriving at each spawn (M4-A2P-1401 has the findings: the ferry Landing is fixed; the
+      DockShore camera and the shrine Entry party stacking are the Lead's call).
+    - Chapter cards: flow_chapter_card_ch04_voice, flow_chapter_card_ch04 and cutscene_act_card were captured to my
+      scratchpad (no baseline) and viewed. They are clean: centred serif titles on black under the gold rule.
+    - One typography note for UI/narrative: the Ch4 voice caption uses straight ASCII quotes ("...") on the serif card;
+      typographic quotes would match the card. That's a loc string, not env-art's.
+    - Ch1 to Ch3 have no chapter card in the played route; each hand-off is a fade into the next zone's arrival.
 - **LEAD (19:45), answered: M3-ENV-1391's last box. MERGE-READY @ 4f46aecd.** LowHull's outrigger lay along the run's
   two plank bridges, its booms through their rails. It now floats alongside the run (z -21.25, yaw 180), with its
   AABB 0.1 m clear. The salvage on the planks over LowHull still blocks the way, and both still drift with the block.
