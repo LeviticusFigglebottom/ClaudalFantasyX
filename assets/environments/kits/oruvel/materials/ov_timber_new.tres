@@ -8,9 +8,9 @@
 [resource]
 resource_name = "ov_timber_new"
 shader = ExtResource("1_shader")
-shader_parameter/algae_band_m = Vector2(-0.45, 0.06)
+shader_parameter/algae_band_m = Vector2(-0.45, -0.2)
 shader_parameter/algae_coverage = Vector2(0.45, 0.85)
-shader_parameter/barnacle_band_m = Vector2(-0.6, 0.0)
+shader_parameter/barnacle_band_m = Vector2(-0.6, -0.25)
 shader_parameter/barnacle_coverage = 0.4
 shader_parameter/base_triplanar = false
 shader_parameter/cavity_darken = 0.35

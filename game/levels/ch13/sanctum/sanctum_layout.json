@@ -3,13 +3,13 @@
  "sun": {
   "pitch_deg": -25.0,
   "yaw_deg": 130.0,
-  "energy": 1.6,
+  "energy": 0.0,
   "color": "#fff9f2"
  },
  "environment": {
   "background": "#2a2620",
-  "ambient_color": "#8a8478",
-  "ambient_energy": 0.5
+  "ambient_color": "#8a96a4",
+  "ambient_energy": 0.2
  },
  "block_color": "#bab4a8",
  "blocks": [

@@ -13,7 +13,7 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 - Gold dusk light over drowned white towers. The party, all seven, are on a broken plaza that juts above the water, but **apart**, each keeping a vigil at a distance from the others: Kerrid standing (he never sits), Pell with his back to the sea, Ysolde with her book shut, Asha on the steps. **There is no fire** ([ADR 0017](../../decisions/0017-act-one-restaging.md)). Nobody speaks. Asha's verse-sleeve is fully embroidered. The sea glows faintly with drowned motes.
 - A short walk (a controls tutorial) **among them**, never away from them: Rhen crosses the plaza from one to the next, and each gets a look or a gesture, no words. He ends sitting beside Asha and trims his oil lantern's wick. It is the only flame in the frame.
 - Rhen, in voice-over, as the wick catches: **"Everyone I'm going to tell you about is still here tonight. Remember that, later."** ([ADR 0020](../../decisions/0020-kerrid-restaging.md) (g): replaces the SPEC's original line, with the human's approval.) *VO direction:* read it as plain fact, not foreboding. On replay it is literally true: the held dead are still in the world until H09 ([ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md) (k)).
-- Glimmer rises around him, and we cut to black and then back to Oruvel, *one month earlier*, with a title card.
+- Held glimmer drifts around him, sideways and seaward (it never rises: nothing is released before H09; act3_threads T-07, the Lead 2026-10-30), and we cut to black and then back to Oruvel, *one month earlier*, with a title card.
 - **Cinematics note:** this frame recurs at each act break as a short Rhen voice-over of one or two lines.
 
 ---

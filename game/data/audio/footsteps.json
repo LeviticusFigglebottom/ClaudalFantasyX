@@ -25,7 +25,7 @@
   "foley": {
     "cloth": {"walk": "hero_cloth_walk", "run": "hero_cloth_run"},
     "cloth_db": 0.0,
-    "gear": {"rhen": "hero_gear_lantern", "asha": "hero_gear_shells", "toma": "hero_gear_leather"},
+    "gear": {"rhen": "hero_gear_lantern", "asha": "hero_gear_shells", "toma": "hero_gear_leather", "ysolde": "hero_gear_book", "kerrid": "hero_gear_anchor", "liss": "hero_gear_harness"},
     "gear_every": 2,
     "gear_db": 0.0,
     "gear_default": "rhen"

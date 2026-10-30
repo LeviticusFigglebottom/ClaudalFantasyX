@@ -50,6 +50,13 @@ class FenDressingTests(unittest.TestCase):
                     d = min(gen._seg_dist(tuple(p["at"]), a, b) - hw for a, b, hw in segs)
                     self.assertGreater(d, 1.0, f"{zone} {p['piece']} at {p['at']} is {d:.2f} m off a walk")
 
+    def test_no_tree_stands_in_a_spawns_camera_line(self) -> None:
+        trees = [p for p in gen.layout("ossa_fen")["pieces"] if p["piece"].startswith("mangrove_") and p["piece"] != "mangrove_dead"]
+        for spawn, (a, b) in gen.CAMERA_LINES.items():
+            for p in trees:
+                d = gen._seg_dist(tuple(p["at"]), a, b)
+                self.assertGreater(d, gen.CAMERA_LINE_GAP_M, f"{p['piece']} at {p['at']} is {d:.2f} m off {spawn}'s lens")
+
     def test_the_ground_is_level_on_the_land_and_under_water_off_it(self) -> None:
         for zone in ZONES:
             h = fz.zone_height(zone, kc.Noise3(kc.rng_for(f"{zone}_ground", 1)))

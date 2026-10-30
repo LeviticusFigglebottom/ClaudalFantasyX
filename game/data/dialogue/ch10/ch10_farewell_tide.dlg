@@ -34,6 +34,7 @@ location: ch10/reedhollow
 @camera T04
 @anim clutch turn_back
 <<event release_input release_tide>>
+@music farewell_tide_release fade=0.5
 @wait 1.5
 @camera T05
 @wait 2.0

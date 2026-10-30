@@ -551,6 +551,36 @@
    "solid": false
   },
   {
+   "id": "CeremonyLamps",
+   "pos": [
+    0.0,
+    0.5,
+    -14.0
+   ],
+   "size": [
+    26.0,
+    1.0,
+    18.0
+   ],
+   "solid": false,
+   "visible": false
+  },
+  {
+   "id": "CeremonyLampsFallen",
+   "pos": [
+    0.0,
+    0.5,
+    -14.0
+   ],
+   "size": [
+    26.0,
+    1.0,
+    18.0
+   ],
+   "solid": false,
+   "visible": false
+  },
+  {
    "id": "EntryStep",
    "pos": [
     16.5,
@@ -856,6 +886,31 @@
    ],
    "fov": 50,
    "priority": 2
+  }
+ ],
+ "variants": [
+  {
+   "when": {
+    "unset": [
+     "ch14_declared_heretics"
+    ]
+   },
+   "hide": [
+    "CeremonyLampsFallen"
+   ]
+  },
+  {
+   "when": {
+    "set": [
+     "ch14_declared_heretics"
+    ]
+   },
+   "hide": [
+    "CeremonyLamps"
+   ],
+   "show": [
+    "CeremonyLampsFallen"
+   ]
   }
  ],
  "triggers": [

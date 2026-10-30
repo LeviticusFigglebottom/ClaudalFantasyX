@@ -21,7 +21,7 @@ ITEMS_MENU_PREVIEW_JOIN,", "
 ITEMS_MENU_LIST_JOIN," · "
 ITEMS_MENU_USED_FMT,Used {item}. {effects}
 ITEMS_MENU_ERR_NONE_LEFT_FMT,There is no {item} left.
-ITEMS_MENU_ERR_KEY_FMT,{item} is a key item. It is kept, not used.
+ITEMS_MENU_ERR_KEY_FMT,"{item} is a key item. It is kept, not used."
 ITEMS_MENU_ERR_MATERIAL_FMT,{item} is a material. It is worked into gear through Customize.
 ITEMS_MENU_ERR_FACET_FMT,{item} is a Facet. It wakes a node on the Lattice page.
 ITEMS_MENU_ERR_BATTLE_ONLY_FMT,{item} can only be used in battle.
@@ -55,7 +55,7 @@ STATUS_MENU_CARRIED,Carried
 STATUS_MENU_NONE,None
 STATUS_MENU_GEAR,Gear
 STATUS_MENU_WEAPON,Weapon
-STATUS_MENU_ARMOR,Armor
+STATUS_MENU_ARMOR,Armour
 STATUS_MENU_EMPTY_SLOT,Nothing worn
 STATUS_MENU_NO_ABILITIES,No abilities set
 STATUS_MENU_LATTICE,Lattice
