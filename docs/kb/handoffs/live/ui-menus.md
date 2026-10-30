@@ -1031,3 +1031,14 @@ MERGE-READY @ 92151e255: big21 merged; the Bound section; Act II inns.
   test_battle_controller 33/0 (a new drain and repair test), battle_choreo 28/0, battle_reduced 5/0, pseudo_loc 26/0.
   No committed shot shows them.
 MERGE-READY @ a4336326a: Act II battle floats.
+- 2026-10-30 14:40, **PC pass 5: row 67 FIXED.** Every entry is under 1 s hidden, and Brine Shoals ran 5/5 fresh with no
+  hang. No pass 5 row is routed to ui-menus. I merged the integration branch's 15d80358c (the Lead's log).
+- **BACKLOG EMPTY** for what ui-menus can build without other tracks:
+  - **Portraits:** Malcor Venn's model is still only on claude/characters, and the Abiding guards are on no branch.
+  - **hud.md:**
+    - buff strip, darkness and tide pulse: no engine support yet (Combat);
+    - Pell's Listen and his absence: Pell's battle row;
+    - a Read-panel ability list (drain and repair tags) would be a new feature, which I'm leaving until Combat's kit
+      rows settle.
+  - **Codex:** Narrative now writes the Act II entries (its people and world sets landed in big20 and big21).
+  - **The reader's records:** Narrative.
