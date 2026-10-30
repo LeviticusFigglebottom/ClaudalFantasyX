@@ -42,6 +42,7 @@ const STEP_OFF_M := 5.0
 const OUT_OF_WORLD_Y := -500.0
 ## Jumps find the ground with a ray from this high above the spot.
 const GROUND_RAY_M := 40.0
+const TRIGGER_RAY_M := 2.0
 
 var _opts: Dictionary = {}
 var _t0 := 0
@@ -354,8 +355,8 @@ func _triggers_near(_cur: Node, at: Vector3, radius: float = SWEEP_RADIUS_M) -> 
 
 
 ## `at` moved onto the ground under it (a ray down from GROUND_RAY_M above), lifted SWEEP_LIFT_M; `at` if none.
-func _on_ground(p: FieldController, at: Vector3) -> Vector3:
-	var q := PhysicsRayQueryParameters3D.create(at + Vector3.UP * GROUND_RAY_M, at + Vector3.DOWN * GROUND_RAY_M)
+func _on_ground(p: FieldController, at: Vector3, from_up: float = GROUND_RAY_M) -> Vector3:
+	var q := PhysicsRayQueryParameters3D.create(at + Vector3.UP * from_up, at + Vector3.DOWN * GROUND_RAY_M)
 	q.exclude = [p.get_rid()]
 	var hit := p.get_world_3d().direct_space_state.intersect_ray(q)
 	return ((hit["position"] as Vector3) if not hit.is_empty() else at) + Vector3.UP * SWEEP_LIFT_M
@@ -373,11 +374,13 @@ func _skip_objective() -> String:
 ## Steps the hero off `a` for a few frames, then onto it: a touch fires on entering, so standing in it already (or
 ## having entered it while the story was busy) never fires it again.
 func _step_onto(p: FieldController, a: Node3D) -> void:
-	p.global_position = _on_ground(p, a.global_position + Vector3(STEP_OFF_M, 0, 0))
+	# A trigger has its true height: ray from just above it, or a floor overhead (the Coilspire's gallery over its crown)
+	# takes the hero.
+	p.global_position = _on_ground(p, a.global_position + Vector3(STEP_OFF_M, 0, 0), TRIGGER_RAY_M)
 	for i in 3:
 		await get_tree().physics_frame
 	p.velocity = Vector3.ZERO
-	p.global_position = _on_ground(p, a.global_position)
+	p.global_position = _on_ground(p, a.global_position, TRIGGER_RAY_M)
 
 
 ## The action of a showing HoldPrompt (&"" when none); every other held prompt action is released.

@@ -122,6 +122,28 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## STATUS (23:35): objectives preview on 7a37c3d53, then big33 and the Lead's 23:06 ask
+- **Preview on act1-chapters' 7a37c3d53 (F8 Ch6 → end card).** With the new rows, the probe plays Ch6 and Ch7 by
+  objective. In Ch8 it plays Corrow and Ivo, the Coilspire path fight, and the Coilspire door
+  (`ch08_entered_coilspire` at 577.6 s; this was blocked on big28).
+- **The flue puzzle** ("Lead the flame up the flues to the crown") was skipped by the probe (PLAY_SKIP raised
+  `ch08_flame_at_crown`). That's a limit of the probe, not of the game.
+- **Then a soft-lock at 939 s.** The HUD reads "No errand calls just now" at (309.4, 81.3, 157.8).
+  - **Objective gap, owner act1-chapters.** The Coilspire rows are q_door (until entered), q_crown (until
+    `ch08_flame_at_crown`) and q_beacon (requires `ch08_virel_bound`). No row covers flame_at_crown → virel_bound,
+    which is the crown binding beat (trigger `crown`, y 74.3). A player who reaches the crown sees "No errand calls
+    just now" until they find the trigger on their own.
+  - The probe's whole-zone sweep stepped onto `crown` over and over without firing it. Its landing ray started 40 m up
+    and took the gallery floor above the crown. The probe now rays from 2 m above each trigger
+    (`playthrough_probe.gd`, TRIGGER_RAY_M). Ch5 wasn't reached in this preview.
+  - ERROR lines in this run: 39. Of those, 32 are the known UiAudio `used` reconnect on resident returns (audio and
+    integration-qa; big34 should fix it). The rest are 3 × `material` null, 2 × uninitialized RID, 1 × `mem` null and
+    1 × wrong RID, all rendering-server noise in headless mode.
+- **Now: F8 Ch6 → end card on big33 (5695a69ce),** with the fixed probe.
+- **Next, from the Lead's 23:06 ask:** once big34 merges, one continuous fresh-profile run from New Game to the end card
+  (or the chapter-start pieces again), counting ERROR lines against a target of 0. Then the Act II smoke, Ch10 → Ch13,
+  the same way.
+
 ## STATUS for the Lead (23:05): the Act I end-card playthrough
 - **Done on big28 (c646c3a8): the Act I end card is reached, with no game soft-lock.** The run is pieced together:
   fresh New Game → Ch6, then F8 Ch6 → Ch8, then F8 Ch9 → end_card. Details are in the big28 section below.
