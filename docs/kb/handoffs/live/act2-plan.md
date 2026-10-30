@@ -163,3 +163,25 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **For ui-menus:** `test_codex.gd`'s World total goes from 12 to 16 (two pinned numbers).
 - **For chapters and towns:** these barks still need NPC actors and interactables placed in the field.
 - BACKLOG EMPTY (story track).
+
+## 2026-10-30: FAST-TRACK (big20 tools reds) + consistency second pass
+- Merged big20 (7dc3ab41). Conflicts:
+  - `test_codex.gd`: World total is now 16, from ui-menus' `farewell_tide` and `name_shells` plus my `outside_the_level` and `the_hush`. My duplicate `farewell_tide` and `name_shells` entries were dropped.
+  - `flags.tres`: both sides' rows kept.
+  - Four boss loc rows that `strings.csv` now holds were dropped from the chapter csv files.
+- **test_cutscene_sfx_files:** green (6/0). The Act II scripts named cues audio hasn't delivered.
+  - Music: 15 `music_stand_ins` rows point at the delivered Act II files (`../act2/music/<id>`, `act2/<boss>_p1`). `abiding_guard` and `kesh_memory` go on `MUSIC_TODO`.
+  - SFX: six cues moved to sounds that exist (`barge_pole`, `hearth_crackle`, `undertow_wall_roar`, `current_song`). Eleven go on a new `SFX_TODO` with the same may-only-shrink rule, plus a test that keeps that list honest.
+  - Request: **M4-A2P-105** (audio).
+- **test_hero_clips:** green (19/0, 531 s). 73 Act II `@anim` clips went on `requested_clips.json` `clips`, the M3-CHR-1000 pending list. Characters builds them (M4-A2P-105).
+- **Flags (act2_consistency.md second pass):** the scripts now use the lane names that code already uses: `ch10_drowner_defeated`, `ch10_farewell_tide_seen` and `ch15_kerrid_revealed`. My three duplicates are retired.
+  - For ui-menus: `kirru_eldest` duplicates `owa`.
+  - For chapters: M4-A2P-015 still says `ch15_kerrid_told`.
+- **Ch14–Ch16 barks and lore:** already covered by M4-A2P-009 (Ch14: 3 barks, Ch15: 4, Ch16: 2, plus Venn and Abiding Guard lore and the `outside_the_level` and `the_hush` codex entries).
+- **Checks:**
+  - validate_data 0/0, dlgc --check 0/0, taskboard clean;
+  - test_cutscene_sfx_files 6/0, test_placeholder_audit 14/0, test_hero_clips 19/0;
+  - Godot `codex` 16/0, `ch10_thread` 1/0, `act2_dialogue` 1/0, `status_menu` 7/0, `cutscene_music` 3/0;
+  - after the merge, Godot needs `--import` to rebuild the class cache, or every test parse-fails.
+- MERGE-READY @ 469b3980c
+- BACKLOG EMPTY (story track).
