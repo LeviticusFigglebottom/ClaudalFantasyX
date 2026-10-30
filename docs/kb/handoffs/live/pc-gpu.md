@@ -176,9 +176,27 @@ No job of this session is running. WSL `hymn` is idle: the batch (PIDs 302 and 2
   test wave). Asha is unchanged. Rendering, env-art and art should view the shots and approve the baselines.
 - **M2-CHR-11 verify (2026-10-27):** claude/characters @ 3723f3eb (incl. 20773234), AVX2 i9-12900K: base_body, rhen, toma
   and 9 villagers 12/12 identical (664 s). Reported to the Lead and characters.
-- **In progress (2026-10-28 05:20 EDT):**
-  - Act I QA pass B, visual, on lead/gate-ft-beach on the RX 9070 XT: every zone, spawn, battle and boss of Act I, stills every 5 s.
-  - Next: the per-zone budget run (`--budget`, no stills) after the visual walk (coverage is done). Then the rows and sheets go to gpu/act1-qa-*.
+- **Act I real-GPU QA, passes A and B and the budget (2026-10-28):** `docs/kb/qa/act1_gpu_qa.md` on `gpu/act1-qa-2`, 41 rows with owners, plus sheets under docs/kb/qa/gpu/act1/.
+  - Pass B walked Act I on lead/gate-ft-beach: 122 segments, 401 stills.
+  - New in pass B:
+    - the BattleResultPanel freed-object error (506×);
+    - ch06_ridge_skippers fought on the test stage;
+    - Moll still a capsule in battle;
+    - the Reach's arm fills the frame;
+    - followers between the camera and Rhen (Ch3);
+    - the camera against the Coilspire wall;
+    - Ch9 without Asha and Toma.
+  - **Budget:** every scene entry and battle start is OVER the 1000 ms hidden-frame budget. It grows from ~1.2 s (Ch1) to 4.1–4.5 s (Ch5–Ch9) as video memory climbs, so it may be accumulation. Visible frames are all within 50 ms, and GPU p99 is ≤ 3.6 ms everywhere. Owner: tech / ui (loading).
+- **The human's four FAST-TRACKS on big15 (lead/gate-big15 @ 6466a6f5), RX 9070 XT, High 1440p (2026-10-28 ~09:30):** sheets in `docs/kb/qa/gpu/act1/playtest_big15/`.
+  1. **The Prologue colour: yes.** Domes, blue bands and banners are in colour.
+  2. **The beach: yes.** Rhen lies in the shallows with Asha kneeling beside him, both faces in frame. He then sits up and stands. Still open: Asha's skirt passes through him (row 31), and two lines are framed on his waist when he stands (row 32).
+  3. **The party start: partly.** **Rhen is now on screen** at the start, with his lantern, walking beside Asha up the beach (start15.jpg). But the camera opens ~15 m back over the shallows, Toma isn't in frame, and when the camera turns in the village lane it swings into the stone walls with Rhen hidden.
+  4. **The run: grounded** (the Ch1 filmstrip at 0.12 s).
+- **Act I re-check on big15:** 15 of the open rows fixed, 12 still open (act1_gpu_qa.md, gpu/act1-qa-2).
+- **Load: over 75% today.** While lane B ran, the big15 Windows import peaked at 94% total CPU for ~74 s, and the 48-shot re-check ran at a median of 85% (max 100%). The playtest walk ran during Blender at a median of 40% (max 67%). From now on, GPU work waits for the gate's single-process steps, or the gate drops to 1 shard.
+- **big15 gate (running), lead/gate-big15 @ 6466a6f5** (restarted 06:35 when big15 moved from a44fec70):
+  - Lane B done: 593 compared, 375 failed, wall 7538 s.
+  - Blender running, then the lane-A suite (3 h limit) and coverage. Results to gpu/gate-big15-shots.
 - **M1-QA-09 on hardware (heroes, 2026-10-27):** 49 shots at High 2× and Ultra on ze8rrn@f580e756, `gpu/m1-qa-09-heroes`
   `docs/kb/qa/gpu/2026-10-27-m1-qa-09-heroes/`. Asha's staff and Toma's spear aren't gripped (open hands; they float upright
   in run/walk_cycle/offer_hand). The staff goes through the skirt when kneeling. Asha's underskirt is a rigid tube in

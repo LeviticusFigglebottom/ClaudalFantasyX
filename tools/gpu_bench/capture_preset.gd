@@ -21,14 +21,23 @@ extends Node
 ## Storm:half_res_compute=false, M2-RND-01).
 ## --add-box=x,y,z,sx,sy,sz adds an opaque grey box (world centre and size, metres) to the scene, e.g. a
 ## pillar inside the Undertow's wall foot to check its occlusion (M2-RND-01).
+## --setup applies each shot's setup block (globals, nodes, time_scale; not viewport) as capture.tscn does, held every
+## frame after the scene's own _process (Act I real-GPU QA: moods, the slice cutscene shots).
 
 const MANIFEST := "res://tests/screenshots/shots.json"
 
 var _opts: Dictionary = {}
+var _setup: CaptureSetup = null
 
 
 func _ready() -> void:
+	process_priority = ScreenshotCapture.HOLD_PRIORITY
 	_run.call_deferred()
+
+
+func _process(_delta: float) -> void:
+	if _setup != null:
+		_setup.hold()
 
 
 func _run() -> void:
@@ -50,8 +59,22 @@ func _run() -> void:
 		var res := shot["resolution"] as Array
 		win.size = Vector2i(roundi(float(res[0]) * scale), roundi(float(res[1]) * scale))
 		seed(int(shot.get("seed", 0)))
+		# --setup (Act I real-GPU QA): the shot's setup block as capture.tscn applies it (globals, nodes, time_scale),
+		# so a scene that needs it (a mood, a cutscene shot's level) is the shot. Its "viewport" key is left out:
+		# the preset decides AA here.
+		if _opts.has("setup"):
+			var spec := (shot.get("setup", {}) as Dictionary).duplicate()
+			spec.erase("viewport")
+			_setup = CaptureSetup.new(spec)
+			var err := _setup.begin(get_viewport())
+			if err != "":
+				push_error("CAPTURE_PRESET setup %s: %s" % [shot["id"], err])
 		var scene := (load(str(shot["scene"])) as PackedScene).instantiate()
 		add_child(scene)
+		if _setup != null:
+			var err := _setup.attach(scene)
+			if err != "":
+				push_error("CAPTURE_PRESET setup %s: %s" % [shot["id"], err])
 		var cam_path := str(shot.get("camera", "default"))
 		if cam_path != "default":
 			(scene.get_node(NodePath(cam_path)) as Camera3D).make_current()
@@ -91,6 +114,9 @@ func _run() -> void:
 		print("CAPTURE_PRESET ok %s %s %dx%d" % [shot["id"], preset, win.size.x, win.size.y])
 		if handle != 0:
 			GraphicsSettings.pop_override(handle)
+		if _setup != null:
+			_setup.end()
+			_setup = null
 		scene.queue_free()
 		await get_tree().process_frame
 	get_tree().quit()
