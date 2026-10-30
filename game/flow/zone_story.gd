@@ -76,6 +76,16 @@ func _ready() -> void:
 		_autostart.call_deferred()
 
 
+## SceneRouter's resident field (kept through a fight, re-attached; nothing re-runs _ready): the zone arrives
+## again as a fresh load would. The hand-off to the fight is over, and the arrival runs (a scripted win's scene).
+func on_resident_return() -> void:
+	handed_off = false
+	busy = false
+	active = false
+	if autostart:
+		_autostart()  # now, not deferred: it waits for the scene_changed the router emits after placing the party
+
+
 func _exit_tree() -> void:
 	for pair: Array in [[FieldEvents.INTERACTED, _on_interacted], [FieldEvents.TRIGGER_ENTERED, _on_trigger]]:
 		if EventBus.is_connected(pair[0], pair[1]):
