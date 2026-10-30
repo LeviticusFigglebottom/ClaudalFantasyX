@@ -8,3 +8,5 @@ Contact sheets: BASE | OUT, 8 rows per sheet, for every non-PASS shot.
 
 ## big22 (claude/new-session-mj8c3c @ 19e7f01c)
 - 13:38 UTC: import clean after `git lfs pull` (the checkout had LFS pointers: 193 Ogg decode errors before). Full manifest: 687 shots, 3 workers.
+- 14:30 UTC: 182/687 captured: 123 PASS, 51 DRIFT, 8 NO-BASELINE, 0 failed. Drifts so far are content (villager face/hair/brow restyles, Asha clips, Haluna set, battle UI panels); unchanged shots match at RMSE 0.00000, so lavapipe parity holds. Chunks push every 20 min.
+- Gotcha: after `git lfs pull` the pre-push hook failed with "Unable to verify locks"; fixed with `git config lfs.https://github.com/LeviticusFigglebottom/ClaudalFantasyX.git/info/lfs.locksverify false`.
