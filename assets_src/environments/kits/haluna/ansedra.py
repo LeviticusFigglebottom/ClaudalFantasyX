@@ -336,6 +336,10 @@ def build_pursuit_barge(seed: int = 2103) -> list[kc.MeshBuilder]:
 STONE_W = kc.Weathering(moss=0.0, salt=0.1, wet=0.05, erosion=0.15, noise_scale_m=1.0)
 
 
+HALL_PANELS = 5
+HALL_BEAM_M = 1.8
+
+
 def build_lacquer_hall(seed: int = 2104) -> list[kc.MeshBuilder]:
     out = []
     w, d = 12.0, 8.0
@@ -352,9 +356,23 @@ def build_lacquer_hall(seed: int = 2104) -> list[kc.MeshBuilder]:
                 kc.tube(mb, np.array([[x, 0.6, z], [x, 0.6 + col_h, z]]), 0.22, 6 if lod else 12, red, cap_end=True)
                 if not lod:
                     kc.rounded_block(mb, (x, 0.6 + col_h - 0.1, z), (0.32, 0.12, 0.32), gilt, radius=0.04, seg=1)
-        if not lod:  # the back wall's lacquered panels
-            kc.rounded_block(mb, (0.0, 0.6 + col_h * 0.5, -d + 0.4), (w * 0.5 - 0.6, col_h * 0.5, 0.12), red,
-                             radius=0.03, seg=1)
+        if not lod:  # the back wall: lacquered panels in gilt frames (one plain slab read flat black in shade)
+            kc.rounded_block(mb, (0.0, 0.6 + col_h * 0.5, -d + 0.34), (w * 0.5 - 0.6, col_h * 0.5, 0.06),
+                             mb.material(M_BLACK), radius=0.02, seg=1)
+            pw = (w - 1.2) / HALL_PANELS
+            for k in range(HALL_PANELS):
+                px = -w * 0.5 + 0.6 + pw * (k + 0.5)
+                kc.rounded_block(mb, (px, 0.6 + col_h * 0.5, -d + 0.44), (pw * 0.5 - 0.12, col_h * 0.5 - 0.3, 0.05),
+                                 red, radius=0.03, seg=1, variation=float(rng.random()))
+                for yy in (0.6 + 0.25, 0.6 + col_h - 0.25):
+                    kc.rounded_block(mb, (px, yy, -d + 0.5), (pw * 0.5 - 0.12, 0.03, 0.02), gilt, radius=0.01, seg=1)
+            # the ceiling under the roof: timber boards on beams across the hall
+            deck = mb.material(M_DECK)
+            kc.rounded_block(mb, (0.0, 0.6 + col_h + 0.05, -d * 0.5), (w * 0.5, 0.05, d * 0.5), deck, radius=0.01,
+                             seg=1)
+            for bx in np.arange(-w * 0.5 + 0.6, w * 0.5 - 0.5, HALL_BEAM_M):
+                kc.rounded_block(mb, (bx, 0.6 + col_h - 0.12, -d * 0.5), (0.1, 0.12, d * 0.5 - 0.3), deck,
+                                 radius=0.02, seg=1)
         # The three-tier roof: each tier a hip of tile over a gilt-edged eave, smaller and steeper going up.
         y = 0.6 + col_h
         for k, (sw, sd, h) in enumerate(((w * 0.6, d * 0.65, 1.3), (w * 0.42, d * 0.47, 1.2), (w * 0.26, d * 0.3, 1.4))):

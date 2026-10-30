@@ -1316,9 +1316,9 @@
         8000,
         500
       ],
-      "bytes": 87052,
+      "bytes": 117460,
       "lods": {
-        "lacquer_hall": 900,
+        "lacquer_hall": 1176,
         "lacquer_hall-lod1": 264
       }
     },
