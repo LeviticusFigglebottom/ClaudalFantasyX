@@ -589,6 +589,11 @@
       "out_dir": "res://assets/ui/portraits/creatures"
     },
     {
+      "id": "chain_lamp",
+      "scene": "res://game/creatures/chain_lamp/chain_lamp_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
       "id": "ridge_lynx",
       "scene": "res://game/creatures/ridge_lynx/ridge_lynx_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"

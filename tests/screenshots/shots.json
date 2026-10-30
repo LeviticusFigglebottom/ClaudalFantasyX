@@ -10334,6 +10334,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_chain_lamp",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_chain_lamp.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }

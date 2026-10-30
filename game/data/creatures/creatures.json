@@ -217,6 +217,13 @@
       "stand_in": {"yaw_deg": 90.0},
       "portrait": {"yaw_deg": 50.0, "pitch_deg": 18.0}
     },
+    "chain_lamp": {
+      "scene": "res://game/creatures/chain_lamp/chain_lamp_battle.tscn",
+      "vfx_anchors": {"core": "beam", "wound": "shackle"},
+      "contact": {"attack": 0.45, "cast": 1.3},
+      "ko_fade_sec": 1.0,
+      "portrait": {"pitch_deg": 10.0}
+    },
     "ridge_lynx": {
       "scene": "res://game/creatures/ridge_lynx/ridge_lynx_battle.tscn",
       "contact": {"attack": 0.7, "cast": 0.75},

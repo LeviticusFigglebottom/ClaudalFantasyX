@@ -103,4 +103,6 @@ lifts `root` so the curled body lies on the floor and not through it.
 - **Grounding:** the feet are pinned (common/grounding.py) through the idle, the trim, the relight and the hits.
 - **KO:** each pair's leg curl is eased over 0.55 s, and the roll onto its side over 0.65 s, so nothing pops. Only
   the collapse's slide flags in the clip audit, as for the other KOs.
+- **Fixed:** the taper's thimble, its cup and the reservoir were inside out (ck.lathe's outward faces run top to
+  bottom); they are turned right, as found while building the chain lamp.
 - **Still open:** `clip_by_skill` waits for Combat's skill ids. Portrait, and review shot `creature_wick_crawler`.

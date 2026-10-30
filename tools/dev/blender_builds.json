@@ -1190,6 +1190,16 @@
       ]
     },
     {
+      "id": "creature_chain_lamp",
+      "owner": "character",
+      "sources": ["assets_src/creatures/chain_lamp/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/chain_lamp/*.glb", "assets/creatures/chain_lamp/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/chain_lamp/build_chain_lamp.py", "--", "--out", "assets/creatures/chain_lamp/chain_lamp.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "chain_lamp"]
+      ]
+    },
+    {
       "id": "creature_flat_engine",
       "owner": "character",
       "sources": ["assets_src/creatures/flat_engine/**", "assets_src/creatures/common/**"],
