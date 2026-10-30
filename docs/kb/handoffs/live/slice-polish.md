@@ -990,8 +990,10 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     none caught it.
   - **Fix (pushed; the human is playtesting, so I did not wait):** with a swap in progress, `_autostart` waits for
     `EventBus.scene_changed`, which the router emits right after placing the party. With no swap (tests), nothing
-    changes. zone_story 15, _thread 40, haluna 65, act1_route 3, scene_router 17, all 0 failed. Verifying render
-    running.
+    changes. zone_story 15, _thread 40, haluna 65, act1_route 3, scene_router 17, all 0 failed.
+  - **Viewed (`--log-player`, the real arrival):** Rhen stands at ScaleHull (-4.6, 0, 10.5) from the scene's first
+    frame. O02 is the over-the-shoulder as staged: Rhen in the right foreground with his lantern, the Scale-Man across
+    the counter. **MERGE-READY @ the branch head** (for big19; integration-qa to review).
   - **For integration-qa:** please review. A router-level test would catch any regression: a real change_scene with
     a spawn, plus an arrival that places elsewhere.
   - **For act1-chapters:** your Ch4–Ch9 arrival scenes have staged on the travel spawn until now. Re-view any arrival
