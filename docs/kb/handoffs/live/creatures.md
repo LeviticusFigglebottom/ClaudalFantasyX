@@ -1063,3 +1063,9 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
     - Checks: validate_data, tools test_wildlife, Godot wildlife 22/0.
     - New shot `wildlife_zone_hollowmere_dock`, SELF-RENDERED and viewed. **Its baseline is needed.**
 - **MERGE-READY @ 9b65894c.** BACKLOG EMPTY: no ambient creature the beat sheets describe is left unbuilt. Still waiting on Combat's Ch13+ enemy ids.
+- **Your 10:07 relay, checked against the integration branch @ 15d80358 and act2_roster.md:**
+  - enemies.json has 42 rows. The only one without a `model` is `stillguard_inquisitor`, a person and the characters track's (Act I).
+  - Every Act II roster id is built with a real mesh, rig, clips and portrait: the 10 regulars, plus the bosses and parts creatures-b owns (mangrove_drowner, lamp_engine, avalanche_ram, flat_engine, wakefin).
+  - The one roster id with no enemy row is `conduit_crawler`. Its model is built (jointed legs @ 563eda19); the row is Combat's (M4-A2P-022, the Lamp Engine's add). When that row lands I add its `model` and portrait the same hour.
+  - Act II zone wildlife from the beat sheets is all done (Ch10, Ch12, Ch16 and Hollowmere; none in Ansedra or the Ch15 open sea).
+- **BACKLOG EMPTY:** no Act II enemy id lacks a model. Next: conduit_crawler's row (Combat) and any new Ch13+ ids.
