@@ -125,3 +125,13 @@ def lacquer(color: tuple, *, undercoat: tuple = (0.0784, 0.0667, 0.0627)) -> dic
     pale = tuple(round(min(1.0, c * 0.75 + 0.04), 4) for c in color)
     return dict(LACQUER, col_bronze=color, col_worn=undercoat, col_patina=aged, col_patina_pale=pale,
                 patina_coverage=(0.05, 0.3))
+
+
+def pin_lod0(text: str, node_path: str, mesh: str, *, until_m: float = 2000.0) -> str:
+    """A written arena scene's text with the kit instance at `node_path` held at its LOD0 out to `until_m`. A kit's
+    import chain switches to LOD1 at its `end_m`, measured to the mesh's bounds centre. A big ground placed with its
+    centre far from the fight then draws its coarse LOD1 right behind the party (the PC's pass 3:
+    `coilspire_headland_path`'s backdrop read as a flat dark slab). Children are the glb's `<mesh>`, `<mesh>-lod1`."""
+    return text.rstrip("\n") + (
+        f'\n\n[node name="{mesh}" parent="{node_path}" index="0"]\nvisibility_range_end = {until_m}\n'
+        f'\n[node name="{mesh}-lod1" parent="{node_path}" index="1"]\nvisibility_range_begin = {until_m}\n')
