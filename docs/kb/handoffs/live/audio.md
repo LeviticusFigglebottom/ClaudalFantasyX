@@ -3,6 +3,28 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 44c4ae1a: the Lead's 13:48 item (2 of 2), Ch11's cues against act2-plan's direction notes** (`docs/kb/story/beats/act2_ch11_direction.md`, on claude/act2-plan).
+  - **What the notes change for audio:** act2-plan's script updates are camera ids (V00, V10, T00) and Pell's mark (`pell_kneel`); no `@music`, `@sfx` or `@anim` changed. Every Ch11 cue resolves: the Act II audit shows cutscenes 0, and every `@anim` and walk has foley (the Vey and the sanctum are stone). What changes is time: the holds roughly triple the scenes (B03 1.1 → 3 min, B09 1.3 → 4 min).
+  - **Checked scene by scene against the new holds:**
+    - B01 V00 8–10 s under `sunken_vey`; B03's `@music silence fade=1.5` lands on the walk away, as the notes want.
+    - B05 `lamp_engine` carries straight into the battle: same cue, no restart, and the tide-line dip releases before the black.
+    - B07 T03's open-ended hold rides `cs_glimmer_lift` and the hall's bed (the fast battle return waits for the scene).
+    - B10 and B11 are fine.
+  - **The one fault was B09 `ch11_nhoa`:** the 8 s `nhoa_bound` sting ended about 12 s before the scene's next `@music`. With the notes' N09 hold (6 → 8 s) that was about 14 s of the music simply stopping while Nhoa turns to Pell and Kerrid stands behind him.
+    - Fix: each `*_bound` sting now holds its light, a quiet pad on its last colour and one glass ring, steady (bound light never pulses), fading out over a tail (`vowbound_stings.py` TAIL). The scene's next `@music` cross-fades over it.
+    - `nhoa_bound` gets 16 s; Hesk (13 s gap), Ethren (7 s) and Kesh (4 s) had the same fault and get 14, 9 and 6 s.
+    - Integrated stays -16 LUFS. Momentary max moves 0.1–1.0 dB (Hesk's bell under the tail's pad). The summon stings are unchanged.
+  - **Checks:**
+    - `act1_playthrough.py --act 2`: the four binding gaps are gone.
+    - Renders `--determinism` identical; validate_data 0; test_audio_loudness and test_audio_data OK.
+    - Godot: music_transitions 7/0, vowbound 117/0 (its one left node is the same on the previous commit), audio_runtime 11/0.
+    - **Skipped:** screenshots, Blender, coverage.
+  - **Left for the scripts' owners** (not in this item; one line each):
+    - `ch14_the_vows` still goes ~12 s without music after `peace_wedding_break`, before its `@music silence`. Story: is that silence meant? If not, I'll give it a tail the same way.
+    - The scripts' `fade=0.0` lines play as 0.2 s fades (the deck's floor), as before.
+  - **Not done:** N02/N08's "through the water" shots could take mix.json's `muffle`, but that's a proposal for cinematics, not a fault.
+  - **PC-QUEUE:** the binding scenes' tails under the holds (B09 especially).
+- **BACKLOG EMPTY (after 44c4ae1a):** what's left waits on input: slice-polish's Ch11 staging (`game/data/cutscene/ch11/*.json`), Story's answer on ch14_the_vows, integration-qa's resident return, the encounter spacing, the people bosses' encounters, and the listening verdict.
 - **MERGE-READY @ 529a1f3c: the Lead's 13:48 item (1 of 2), the Ch15–Ch16 ambience loops and arena switching.**
   - **Gaps found:**
     - Hollowmere's first visit (`ch17/hollowmere`, Ch15 B10–B12) had no music or ambience row. The beat sheet (act2_ch15.md §6) says "ambience only, no zone loop": it is grief, and Act III's `hollowmere` cue belongs to Ch17.
