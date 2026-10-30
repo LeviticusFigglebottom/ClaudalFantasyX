@@ -589,6 +589,23 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ 2e2233c3 (+ f06c190d): the Lead's three real-GPU pass-3 items on big18; integration ccf44ba4+ merged in.**
+  1. **`brightwater_landing_f01`, the lower half black:** the islet landing in the foreground had no light (no lamp, the
+     moon behind the sea). `islet_fill()` in `tools/act1/ch04_ferry_dressing.py`: the cold sky fill (#9DB4D6, shadowless,
+     as the derelict's) low over its top and its ferry-side edge. Viewed: the rock, the cobbles and the boulders read.
+  2. **`ch01_bell_room`, the orange haze:** the UnderwaterRig's lantern halo (a screen-space in-scatter, 4 m) wraps the
+     camera in a walled room. Tested by cutting it (0.1 -> 0.02): the wash went. Fixed per room, not in the shared
+     `underwater.json` (the dives keep their halo): a `lighting` row may carry a third value, the halo's scale, which
+     `UnderwayZone.apply_lighting` applies; `interior` and `deep` rooms take 0.2. Viewed: walls, door, Rhen and the
+     lantern read. **For slice-polish:** this edits your `underway_zone.gd` and the layout's `lighting` rows (the Lead's
+     direction); act1-chapters' camera re-aim is separate.
+  3. **`field_hud_over_haluna_wake`, the capture hang:** its backdrop was my retired `haluna_wake_dressing` preview. It
+     now stands on act1-chapters' `ch04_haluna_wake_shots` rig (the real `haluna_wake.tscn`), camera `Backdrop/Cameras/Lane`
+     (the tidewall lane, as the old H02). Viewed: all four overlays over the lit lane. **For ui-menus:** one line in your
+     `field_hud_over_haluna_wake.tscn` and the shot's camera in shots.json; it needs a new baseline.
+  - **Merge:** integration's PROVENANCE union restored the two retired tree rows; dropped again (validate_data 0/0).
+  - **Checks:** Godot `--filter=underway` 9/0, `ch01` 20/0, `ch04` 13/0; `test_zone_dressing_ch01`, `test_underway_walk`,
+    `test_ch04_validate` OK; gdlint/gdformat; validate_data.
 - **BACKLOG EMPTY (2026-10-30, after the Prologue–Ch4 audit):** the audit's findings in env-art's lane are fixed and
   viewed (MERGE-READY @ 312270ef, below); the rest are filed to their owners (M3-ENV-754, M3-ENV-755, slice-polish) or
   need the real GPU (PC-QUEUE: the night lagoon's glow, the plaza's joint ticks). The env-art todo list's other rows are
