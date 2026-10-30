@@ -132,3 +132,61 @@ The foe form for the Ch20 release fight (act3_roster.md, "The Vowbound as foes")
 - **`release`** (3.4 s, its KO as a foe; the only clip added, every other clip samples identically): she straightens and opens her hands; the hanging strands of motes swing out and up round her hem (her Farewell-Tide's column shape, the only time her motes rise), arms raised and open, face lifted, held (1.3–1.9 s); then she rises with them 1.5 m up and 0.5 m back.
   Lowest vertex over every frame +0.15 m. GLB 1.77 → 1.89 MB.
 - Scene `game/creatures/nhoa/nhoa_held_battle.tscn` (the same GLB; `CreatureActor.material_dir` puts on `assets/creatures/nhoa/materials_held/`, written by write_materials.py from the `held` block in materials.json: 3 emissive slots glimmer_bound to glimmer_held `#7FC6D9` at the same energy, steady; the rest as they are). creatures.json row `nhoa_held`: no `vowbound` key, `ko` = `release`, `phases.release` = {clip `release`, `hold` true}, `stand_in.yaw_deg` 90 (facing the party), height 3.2 and radius 0.5 kept. Review shot `creature_nhoa_held` (not rendered yet). No enemies.json row (Combat's, with the chapter designer). The turn to `glimmer_lift` and the rising motes are presentation (battle VFX), not the model.
+
+## As built: the Act II final pass (M4-CRB-006, 2026-10-30)
+
+The Act I Vowbound bar (ADR 0041 §3, M3-CRB-013's move pass) for her Act II debut. She was audited from the battle
+camera with her standing on the party's `vowbound_slot` (a scratch fixture in an Act I arena) and up close.
+
+**Audit fixes (in budget: 15,672 triangles of 16k, 30 bones)**
+- **No crystals up close (ADR 0015).** Each bead was a pointed bipyramid with smoothed facet normals, so in a
+  close-up the swarm read as faceted teal crystals. Now every bead's five vertices share the bead's outward normal,
+  so it shades as one even point of light. The beads are flatter (pole heights 0.3/0.2 of the radius, from 0.5/0.3),
+  and the `motes` slot is rough with little specular (roughness 0.85, specular 0.1), so emission carries them.
+- **Dry, as the sheet says.** The inner body had a 0.4 wet mask and read as glossy black plastic up close. It's
+  now dry (wet 0) and matte (roughness 0.7, specular 0.25). The rim sheen stays, to hold her edge against bright
+  arenas.
+- **Grainy, not a tube.** Up close the neck and head read as a smooth dark tube with sparse flecks. The neck now has
+  230 motes and the head 120 (from 130 and 70), for 1,765 beads in all.
+- **The KO no longer lowers the crowns at the foes.** From the battle camera the KO's bow levelled the crowns into a
+  lance pointed at the enemy line. The head now counter-turns (−30°), so as she bows (the head drops 0.6 m) the crowns
+  stay 60° over level. The same fix went into the new Deep Well wind-up.
+
+**Rig.** Two unweighted anchors were added last, so every other bone keeps its index: `vfx_core` (her chest, y 1.6,
+on `spine_2`) and `vfx_keepsake` (the name-shell, on `neck_0`).
+
+**Every clip is played from idle's first frame.** The clips are authored from rest and offset by idle's first pose
+(`ck.in_pose`), so each one starts where the idle starts, and the one-shots that return end there too. `rise` starts
+folded (it is the call). `idle_b` is now made in the build (the kit's quick echo of the cast) so that it starts there
+too.
+
+**New clips.**
+| Clip | Length | Contact | What it shows |
+|---|---|---|---|
+| `deep_well` | 1.8 s | 1.0 s | she sinks 0.28 m with a shallow bow, arms wide and low, palms over the water, the strands fanned flat across it (lowest 0.10 m); then her arms sweep up from below and forward, she rises, and the strands stream after them |
+| `echo` | 1.4 s | 0.65 s | a mirror-still pause (0.3–0.5 s): the head cocked toward the foe, the near palm lifted toward it like a reflecting face; then the palm thrusts forward with the strands |
+
+**Farewell-Tide lifts.** `special` now raises her 0.2 m at the contact, and 0.23 m through the held column (from
+0.1 m), with the strands drawn up over the hem. It is still inside the battle camera's frame.
+
+**Lowest vertex over every clip:** 0.053 m (the KO's hanging strands). Deep Well's is 0.119 m. Nothing goes under the
+water.
+
+**The clip map for combat** (M4-A2P-024 pastes it into `nhoa` in creatures.json once the skills are in skills.json;
+validate_creatures rejects unknown skill ids before that):
+
+```json
+"clip_by_skill": {"silt_fall": "cast", "deep_well": "deep_well", "nhoa_echo": "echo", "farewell_tide": "special"}
+```
+
+The basic attack plays `attack` by kind. Contacts, already in creatures.json (`nhoa` and `nhoa_held`): attack 0.55,
+cast 0.8, deep_well 1.0, echo 0.65, special 1.45. Every wind-up is ≥ 0.45 s.
+
+**Tests:** tests/unit/test_creature_vowbound_act2.gd (`test_nhoa_...`) checks the clip set on both forms, the
+wind-ups, that the anchors are unweighted and placed, that every clip runs from idle's first frame, the Tide's lift,
+Deep Well's sink and sweep, and the echo's still pause and thrust.
+
+**Portraits** `nhoa` and `nhoa_held` are re-baked (the matte body and the denser neck show). **Open:** up close each
+bead still shows its triangular outline. It's a flat fleck now, not a lit crystal, but rounder beads (a hexagonal
+fleck, 12 triangles) would take the motes from 10.6k to about 21k triangles, past the 16k budget. That needs a
+budget call, or a shader-side soft edge.

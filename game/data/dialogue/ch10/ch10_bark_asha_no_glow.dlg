@@ -1,0 +1,8 @@
+// Ch10 B02 walk-past bark (act2_ch10.md §2 B02, bark 5): Asha stops on a root to look at the water. The
+// fen has no sea-glow: the Kirru's dead lift, so none drift down into it. Nobody answers her.
+title: ch10_bark_asha_no_glow
+location: ch10/ossa_fen
+---
+@anim asha look_at water
+Asha [worried]: No glow. #line:ch10_bark_glow_001 #tn:"She notices the water does not glow with the drowned's light, as the sea does."
+===

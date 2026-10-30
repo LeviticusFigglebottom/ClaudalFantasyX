@@ -1,0 +1,53 @@
+// Ch13 B10 "The pact" (C, 2.5 min) and B11 "Sefir closes the book" (C, 0.5 min). act2_ch13.md §2. A11: day
+// 4, the outer moorings, lamps on poles over still black water; Kerrid is standing where he always stands;
+// he turns when they come. A12: Tobin has followed his sister out; Liss tells him in a whisper; he refuses,
+// sincerely and not stupidly. A13: Kerrid watching the still water (he knows what it is to hold a gate past
+// the hour). A14: wide. B11 (R10): Sefir alone in the Archive squares Liss's row of pages, closes the
+// ledger, puts out the lamp. Not a gloat: a man tidying up, who expected this (rule 6).
+title: ch13_the_pact
+location: ch13/ansedra
+---
+@letterbox on
+@camera A11
+@music ansedra fade=2.0
+@anim kerrid look_at party
+@wait 2.0
+Liss [determined]: Tobin's married tomorrow. Then we get him out. Then we say it. All of it. Not before. #line:ch13_pact_001
+Toma [neutral]: If we say it before, they will not let him marry. They will not let him leave. #line:ch13_pact_002
+Rhen [neutral]: So we smile at the wedding. #line:ch13_pact_003
+Ysolde [cold]: We have all smiled at worse. #line:ch13_pact_004
+Asha [worried]: And the High Warden? #line:ch13_pact_005
+@wait 4.0
+@camera A12
+@mark tobin outer_moorings walk
+@anim liss whisper tobin
+@wait 3.0
+Tobin [determined]: No. #line:ch13_pact_006
+Tobin [tender]: If I run, there's no peace. Hollowmere's captains are here, Liss. They came because I said it was safe. #line:ch13_pact_007
+Tobin [tender]: If I run the night before, they're all hostages. If I marry her, they go home as family. #line:ch13_pact_008
+@wait 1.5
+Tobin [soft_smile]: Somebody has to go first. #line:ch13_pact_009
+Liss [grief]: Tobin. #line:ch13_pact_010
+Tobin [smile]: One day. Then you can get me out of whatever you like. #line:ch13_pact_011
+@camera A13
+@wait 3.0
+@camera A14
+@wait 4.0
+<<set $ch13_pact_of_silence = true>>
+<<jump ch13_sefir_closes_the_book>>
+===
+title: ch13_sefir_closes_the_book
+---
+@camera R10
+@music silence fade=2.0
+@mark sefir reading_table walk
+@wait 2.0
+@anim sefir square_pages
+@wait 2.0
+@anim sefir close_ledger
+@wait 1.5
+@light archive_lamp off 1.0
+@wait 2.0
+<<set $ch13_complete = true>>
+@letterbox off
+===

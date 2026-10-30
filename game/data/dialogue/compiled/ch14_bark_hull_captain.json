@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch14_bark_hull_captain",
+ "source": "game/data/dialogue/ch14/ch14_bark_hull_captain.dlg",
+ "start": "ch14_bark_hull_captain",
+ "nodes": {
+  "ch14_bark_hull_captain": {
+   "headers": {"location": "ch13/ansedra_lacquer_court"},
+   "ops": [
+    {"op": "line", "id": "ch14_bark_captain_001", "key": "DLG_CH14_BARK_CAPTAIN_001", "speaker": "hull_captain", "emotion": "neutral", "voice": "", "src": 5, "name_key": "DLG_NAME_HULL_CAPTAIN_HULL_CAPTAIN"}
+   ]
+  }
+ }
+}

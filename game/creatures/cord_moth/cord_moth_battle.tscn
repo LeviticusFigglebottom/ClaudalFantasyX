@@ -9,3 +9,4 @@ creature_id = &"cord_moth"
 metadata/hymn_battle_actor = true
 
 [node name="Model" parent="." instance=ExtResource("2_model")]
+transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, 0, 0, 0)

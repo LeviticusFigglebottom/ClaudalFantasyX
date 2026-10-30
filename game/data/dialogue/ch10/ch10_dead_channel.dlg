@@ -1,0 +1,24 @@
+// Ch10 B03 "The dead channel" (C, 1 min). F03: a still pool under a great dead mangrove: bare bleached
+// crown, black wet roots, nothing green. The egrets leave on the cut (sound only). O05: a dozen small pale
+// lights caught in the roots, HELD: cyan, perfectly still, neither sinking nor rising. Pell softly hums
+// the storm's note (his tell: overwhelmed). Then the roots move: the flow starts the Drowner's battle.
+title: ch10_dead_channel
+location: ch10/ossa_fen
+---
+@letterbox on
+@sfx egret_lift
+@camera F03
+@music silence fade=2.0
+@wait 2.5
+@camera O05
+@vfx glimmer_held at=drowner_roots count=12 rate=slow
+@wait 2.0
+@sfx pell_storm_note at=pell vol=0.4
+Pell [sad]: Three of the clutch. Drowned here. At the full moon before last. #line:ch10_channel_001
+Asha [worried]: They're still here. #line:ch10_channel_002
+Pell [neutral]: Held. #line:ch10_channel_003 #tn:"Kirru word for the dead who cannot lift: kept down, not resting."
+@wait 1.0
+@anim mangrove_drowner stir
+@wait 1.0
+@letterbox off
+===

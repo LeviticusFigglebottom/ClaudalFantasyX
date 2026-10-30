@@ -1,0 +1,19 @@
+{
+ "format": 1,
+ "scene": "ch14_talk_tobin",
+ "source": "game/data/dialogue/ch14/ch14_talk_tobin.dlg",
+ "start": "ch14_talk_tobin",
+ "nodes": {
+  "ch14_talk_tobin": {
+   "headers": {"location": "ch13/ansedra_lacquer_court"},
+   "ops": [
+    {"op": "line", "id": "ch14_tobin_001", "key": "DLG_CH14_TOBIN_001", "speaker": "tobin", "emotion": "smile", "voice": "", "src": 8},
+    {"op": "cue", "cue": "anim", "args": ["tobin", "look_at", "liss"], "kwargs": {}, "src": 9},
+    {"op": "line", "id": "ch14_tobin_002", "key": "DLG_CH14_TOBIN_002", "speaker": "tobin", "emotion": "soft_smile", "voice": "", "src": 10},
+    {"op": "cue", "cue": "anim", "args": ["tobin", "look_at", "rhen"], "kwargs": {}, "src": 11},
+    {"op": "line", "id": "ch14_tobin_003", "key": "DLG_CH14_TOBIN_003", "speaker": "tobin", "emotion": "tender", "voice": "", "src": 12},
+    {"op": "set", "flag": "ch14_spoke_with_tobin", "value": ["lit", true], "src": 13}
+   ]
+  }
+ }
+}

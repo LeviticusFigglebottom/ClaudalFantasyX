@@ -1,0 +1,24 @@
+{
+ "format": 1,
+ "scene": "ch12_cold_road",
+ "source": "game/data/dialogue/ch12/ch12_cold_road.dlg",
+ "start": "ch12_cold_road",
+ "nodes": {
+  "ch12_cold_road": {
+   "headers": {"location": "ch12/keth_pass"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "camera", "args": ["K01"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "music", "args": ["keth_pass"], "kwargs": {"fade": 2.0}, "src": 10},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "camera", "args": ["P01"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "pass_motes", "count": 4, "motion": "spiral_up", "rate": "fast"}, "src": 13},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 14},
+    {"op": "line", "id": "ch12_road_001", "key": "DLG_CH12_ROAD_001", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 15},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 18}
+   ]
+  }
+ }
+}

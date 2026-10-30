@@ -108,7 +108,7 @@ timeline. That keeps it to six clips, not thirty-six. In Act III's fight the six
   and rendering (the memory sequence); characters (living Kesh and young Sefir); battle-presentation (summon, Act III);
   audio (`kesh_bound`).
 
-## Open questions
+## Open questions (answered: ADR 0204, 2026-10-30; the drafts stand unless marked)
 
 1. Battle scale: 4.2 m (this draft) or larger with a summon-shot exception? Larger means a new shot for her alone.
 2. Is the element order the acquisition order (this draft), or something the bind's memory fixes?

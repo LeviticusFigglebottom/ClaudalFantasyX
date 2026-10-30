@@ -105,7 +105,7 @@ rocks (the barge's rock is staging): the feet follow the deck, never slide. **Th
   pressed-flat water and the ripples); audio (M4-A2P-092); narrative (his lines, if any; he names the heresy, not
   himself).
 
-## Open questions
+## Open questions (answered: ADR 0204, 2026-10-30; the drafts stand unless marked)
 
 1. Does Liss carry the break as her own skill (Ch14 kit) or as a lent set-piece skill? Draft: a lent skill, so her
    Act III kit doesn't carry a one-fight move.

@@ -1,5 +1,5 @@
 {
-  "_doc": "Ambient insect surfaces (docs/kb/art/wildlife.md, M3-CRE-616); write_materials.py writes assets/wildlife/insect/materials/<slot>.tres on game/world/wildlife/wildlife.gdshader. moth: matte and dusty (a fine, high detail noise for the fur and wing scales). dragonfly: the wetness channel carries the gloss (wings 0, body 0.35, eyes 0.8 in build_insect.py; wet_darken 1 so it only changes the shine), with a faint rim sheen so the wings glint. flutter_pivot is build_insect.py's wing root (*_WING_ROOT_X, *_WING_Y); flutter_split_z its DF_SPLIT_Z (the hind pair lies behind it and beats flutter_hind_lag radians later; the moth's pairs beat together).",
+  "_doc": "Ambient insect surfaces (docs/kb/art/wildlife.md, M3-CRE-616); write_materials.py writes assets/wildlife/insect/materials/<slot>.tres on game/world/wildlife/wildlife.gdshader. moth: matte and dusty (a fine, high detail noise for the fur and wing scales). dragonfly: the wetness channel carries the gloss (wings 0, body 0.35, eyes 0.8 in build_insect.py; wet_darken 1 so it only changes the shine), with a faint rim sheen so the wings glint. flutter_pivot is build_insect.py's wing root (*_WING_ROOT_X, *_WING_Y); flutter_split_z its DF_SPLIT_Z (the hind pair lies behind it and beats flutter_hind_lag radians later; the moth's pairs beat together). firefly (Ch10, M4-A2P-056): a matte dusky beetle whose lantern (the body behind glow_tail_z, build_insect.py FF_LANTERN_Z) glows glow_color at up to glow_energy, scaled per instance by its blink (mode 6: the flutter, with the blink in the mode parameter); lit, the lantern swells about glow_centre (the lantern's middle) from glow_radius (its own) toward glow_angle radians of the view at its distance, times the blink, so it reads as a point of light at any distance. glow_color is sun_gold mixed 30% toward palm_green: warm yellow-green, never a glimmer swatch (wildlife is never glimmer). Its hind wings beat under the still-raised wing covers (they share the flutter mask, so the covers beat too, a little: flutter_angle is low).",
   "slots": {
     "moth": {
       "roughness_dry": 0.95,
@@ -34,6 +34,28 @@
       "flutter_split_z": 0.015,
       "flutter_hind_lag": 1.6,
       "flutter_bob": 0.0006
+    },
+    "firefly": {
+      "roughness_dry": 0.7,
+      "roughness_wet": 0.3,
+      "specular": 0.35,
+      "wet_darken": 1.0,
+      "clearcoat_wet": 0.2,
+      "detail_scale": 2000.0,
+      "detail_albedo": 0.08,
+      "cavity_albedo": 0.3,
+      "cavity_ao": 0.4,
+      "flutter_pivot": [0.0008, 0.0016, 0.0],
+      "flutter_angle": 0.35,
+      "flutter_split_z": -1.0,
+      "flutter_hind_lag": 0.0,
+      "flutter_bob": 0.0004,
+      "glow_color": "#C5B867",
+      "glow_energy": 3.0,
+      "glow_tail_z": -0.0052,
+      "glow_centre": [0.0, 0.0008, -0.0072],
+      "glow_radius": 0.0017,
+      "glow_angle": 0.006
     }
   }
 }

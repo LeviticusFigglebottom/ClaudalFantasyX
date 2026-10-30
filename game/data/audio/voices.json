@@ -361,6 +361,20 @@
       "rate_ms": 60,
       "jitter": 0.05,
       "volume_db": 0.0
-    }
+    },
+    "owa": {"blips": ["voice_breathy"], "pitch": 0.82, "rate_ms": 80, "jitter": 0.04, "volume_db": 0.0},
+    "kirru": {"blips": ["voice_breathy"], "pitch": 0.92, "rate_ms": 75, "jitter": 0.04, "volume_db": 0.0},
+    "kirru_child": {"blips": ["voice_breathy"], "pitch": 1.1, "rate_ms": 65, "jitter": 0.04, "volume_db": 0.0},
+    "tobin": {"blips": ["voice_soft"], "pitch": 1.08, "rate_ms": 60, "jitter": 0.05, "volume_db": 0.0},
+    "merel": {"blips": ["voice_bright"], "pitch": 1.14, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0},
+    "malcor_venn": {"blips": ["voice_low"], "pitch": 0.76, "rate_ms": 70, "jitter": 0.04, "volume_db": 0.0},
+    "brannoc_hale": {"blips": ["voice_low"], "pitch": 0.8, "rate_ms": 70, "jitter": 0.04, "volume_db": 0.0},
+    "hull_captain": {"blips": ["voice_bright"], "pitch": 0.9, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0},
+    "aldous_varrow": {"blips": ["voice_low"], "pitch": 0.82, "rate_ms": 70, "jitter": 0.04, "volume_db": 0.0},
+    "hull_widow": {"blips": ["voice_bright"], "pitch": 1.0, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0},
+    "ullari": {"blips": ["voice_low"], "pitch": 0.94, "rate_ms": 70, "jitter": 0.04, "volume_db": 0.0},
+    "ullari_woman": {"blips": ["voice_bright"], "pitch": 1.0, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0},
+    "householder": {"blips": ["voice_bright"], "pitch": 1.1, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0},
+    "kesh": {"blips": ["voice_bright"], "pitch": 0.9, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0}
   }
 }

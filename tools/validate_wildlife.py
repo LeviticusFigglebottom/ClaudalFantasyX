@@ -3,11 +3,13 @@
 
 * game/data/world/wildlife/wildlife.json: the four kinds (gull, crab, fish, insect) with every tuning key
   WildlifeLayer reads, their scene, mesh names and material(s) that exist, [lo, hi] ranges in order, the budgets and
-  culling. The insect kind (M3-CRE-616) keeps its tuning in a `moth` and a `dragonfly` table, one material per mesh.
+  culling. The insect kind (M3-CRE-616) keeps its tuning in a `moth`, a `dragonfly` and (Ch10, M4-A2P-056) a
+  `firefly` table, one material per mesh.
 * game/data/world/wildlife/<zone>.json (every other file there) and the review stage's data: the `zone` id names
-  the file (ch02/haluna -> ch02_haluna.json) and is a locations.json location; flocks, beaches and shoals are
+  the file (ch02/haluna -> ch02_haluna.json) and is a locations.json location; flocks (and kingfisher flocks, Ch10),
+  beaches and shoals are
   well formed (unique ids, positive counts, perches inside the flock's radius, perched_at_start no more than the
-  perches), swarms too (type moth or dragonfly, perches only on a dragonfly patrol and inside its radius), and the
+  perches), herds (Ch12's woolbacks: [x, z] centre, radius, optional y), swarms too (type moth, dragonfly or firefly, perches only on a dragonfly patrol and inside its radius), and the
   zone's totals stay within the budgets.
 """
 
@@ -35,8 +37,16 @@ KIND_KEYS = {
     "fish": {"scale", "speed_mps", "dart_speed_mps", "spread_m", "follow_rate", "turn_rate", "wander_arrive_m",
              "wobble_m", "wobble_hz", "startle_radius_m", "startle_s", "swim_hz", "swim_hz_per_mps", "swim_amp",
              "bottom_clearance_m", "startle_follow_mult", "wobble_y_fraction"},
-    "insect": {"moth", "dragonfly"},  # tables: INSECT_KEYS
+    "insect": {"moth", "dragonfly", "firefly"},  # tables: INSECT_KEYS
 }
+# the kingfisher (Ch10, M4-A2P-056) is the gull's flock with its own tuning, meshes and rows
+KIND_KEYS["kingfisher"] = KIND_KEYS["gull"]
+# the woolback (Ch12, M4-A2P-056): skinned actors in herds (WildlifeHerd), its scene an actor .tscn, no meshes table
+KIND_KEYS["woolback"] = {"scale", "walk_speed_mps", "turn_rate", "graze_s", "look_chance", "look_s", "look_radius_m",
+                         "look_rate", "wander_m", "spacing_m", "arrive_m", "height_m", "bounds_pad_m"}
+SKINNED_KINDS = {"woolback"}
+# the rim ray (Ch16, M4-A2P-056) is the fish shoal with its own tuning, mesh and rows
+KIND_KEYS["ray"] = KIND_KEYS["fish"]
 # The insect kind's tables (WildlifeSwarm): every key, and the ones drawn once per insect from a [lo, hi] range
 # (the rest are read as plain numbers).
 INSECT_KEYS = {
@@ -47,22 +57,29 @@ INSECT_KEYS = {
                   "dart_amp", "perch_chance", "perch_s", "flee_radius_m", "flee_m", "flee_speed_mps", "turn_rate",
                   "amp_rate", "flutter_hz"},
 }
+# the firefly flies the moth's orbit, and blinks
+INSECT_KEYS["firefly"] = INSECT_KEYS["moth"] | {"blink_s", "blink_on_s", "glow_floor"}
 INSECT_RANGES = {
     "moth": {"scale", "orbit_fraction", "orbit_hz", "bob_hz", "jitter_s", "dart_s", "flutter_hz"},
     "dragonfly": {"scale", "hover_s", "drift_hz", "dart_m", "dart_speed_mps", "perch_s", "flutter_hz"},
 }
+INSECT_RANGES["firefly"] = INSECT_RANGES["moth"] | {"blink_s"}
 SWARM_TYPES = set(INSECT_KEYS)
-KIND_MESHES = {"gull": {"flying", "perched"}, "crab": {"body"}, "fish": {"body"}, "insect": {"moth", "dragonfly"}}
+KIND_MESHES = {"gull": {"flying", "perched"}, "crab": {"body"}, "fish": {"body"}, "insect": {"moth", "dragonfly", "firefly"},
+               "kingfisher": {"flying", "perched"}, "ray": {"body"}}
 KIND_COMMON = {"scene", "meshes", "material", "cast_shadow"}
-BUDGET_KEYS = {"gulls", "crabs", "fish", "insects", "draw_calls", "ms_per_frame"}
+BUDGET_KEYS = {"gulls", "kingfishers", "woolbacks", "crabs", "fish", "rays", "insects", "draw_calls", "ms_per_frame"}
 # zone row tables -> (budget key, required keys, optional keys)
 ROWS = {
     "flocks": ("gulls", {"id", "center", "radius_m", "altitude_m", "count", "perches"}, {"perched_at_start"}),
+    "kingfishers": ("kingfishers", {"id", "center", "radius_m", "altitude_m", "count", "perches"}, {"perched_at_start"}),
     "beaches": ("crabs", {"id", "center", "half_extents", "count"}, {"yaw_deg", "y"}),
     "shoals": ("fish", {"id", "center", "radius_m", "count"}, {"scale", "spread_m"}),
     "swarms": ("insects", {"id", "type", "center", "radius_m", "count"}, {"perches"}),
+    "rays": ("rays", {"id", "center", "radius_m", "count"}, {"scale", "spread_m"}),
+    "herds": ("woolbacks", {"id", "center", "radius_m", "count"}, {"y"}),
 }
-ZONE_KEYS = {"zone", "ground", "flocks", "beaches", "shoals", "swarms"}
+ZONE_KEYS = {"zone", "ground", "flocks", "kingfishers", "beaches", "shoals", "rays", "swarms", "herds"}
 
 
 def _num(v: object) -> bool:
@@ -95,10 +112,11 @@ def kinds_errors(doc: object, exists: Callable[[str], bool]) -> list[str]:
         if not isinstance(k, dict):
             errs.append(f"{w}: must be an object")
             continue
-        missing = (keys | KIND_COMMON) - set(k)
+        common = {"scene"} if kid in SKINNED_KINDS else KIND_COMMON
+        missing = (keys | common) - set(k)
         if missing:
             errs.append(f"{w}: missing {sorted(missing)}")
-        unknown = set(k) - keys - KIND_COMMON - {"_doc"}
+        unknown = set(k) - keys - common - {"_doc"}
         if unknown:
             errs.append(f"{w}: unknown keys {sorted(unknown)}")
         if kid == "insect":
@@ -111,6 +129,10 @@ def kinds_errors(doc: object, exists: Callable[[str], bool]) -> list[str]:
                     errs.append(f"{w}.{key}: must be a number or a [lo, hi] range")
         if not _res_exists(k.get("scene", ""), exists):
             errs.append(f"{w}.scene: {k.get('scene')!r} does not exist")
+        if kid in SKINNED_KINDS:
+            if not str(k.get("scene", "")).endswith(".tscn"):
+                errs.append(f"{w}.scene: must be the actor scene (.tscn)")
+            continue
         material = k.get("material", "")
         if isinstance(material, dict):  # one per mesh (the insects)
             if set(material) != KIND_MESHES[kid]:
@@ -225,7 +247,7 @@ def zone_errors(doc: object, where: str, budgets: dict, location_ids: set[str] |
 
 def _row_errors(table: str, row: dict, w: str) -> list[str]:
     errs: list[str] = []
-    if table == "flocks":
+    if table in ("flocks", "kingfishers"):
         if not _vec(row["center"], 2):
             return [f"{w}.center: must be [x, z]"]
         r = row["radius_m"]
@@ -264,6 +286,13 @@ def _row_errors(table: str, row: dict, w: str) -> list[str]:
                 errs.append(f"{w}.perches[{k}]: must be [x, y, z, yaw_deg]")
             elif ((p[0] - cx) ** 2 + (p[2] - cz) ** 2) ** 0.5 > r:
                 errs.append(f"{w}.perches[{k}]: outside the swarm's radius_m")
+    elif table == "herds":
+        if not _vec(row["center"], 2):
+            errs.append(f"{w}.center: must be [x, z]")
+        if not _num(row["radius_m"]) or row["radius_m"] <= 0:
+            errs.append(f"{w}.radius_m: must be positive")
+        if "y" in row and not _num(row["y"]):
+            errs.append(f"{w}.y: must be a number")
     elif table == "beaches":
         if not _vec(row["center"], 2):
             errs.append(f"{w}.center: must be [x, z]")

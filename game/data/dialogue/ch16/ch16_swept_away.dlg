@@ -1,0 +1,41 @@
+// Ch16 B10 "Swept away" (C, 1 min), B11 "Act break" (C, 1 min) and B12 "Act card" (C, 0.2 min).
+// act2_ch16.md §2. After the storm-wakes set piece (the flow sets ch16_line_held on its scripted escape).
+// S01: the storm here, swallowing the singers' heads. S02: Kerrid on the line at the dais's seaward edge;
+// Rhen hears a man humming a current-song inside the storm (rule 7: nothing more) and doesn't freeze this
+// time: he grabs Asha's hand. S03: the sea comes over the dais. Hard cuts, no slow-motion, no dialogue.
+// B11: black, the sea; then the Prologue's vigil frame at Iskarra, deeper again, the burner lower (no fire,
+// no circle). Rhen's VO, older, plain fact (the sheet's recommended line). B12: the act card. Act III stays
+// paused (ADR 0203/0205): Act II's playable content ends here.
+title: ch16_swept_away
+location: ch16/drowned_choir
+---
+@letterbox on
+@camera S01
+@music abiding_guard fade=0.0
+@sfx storm_wall
+@wait 3.0
+@camera S02
+@anim kerrid hold_line
+@sfx current_song_hum at=storm vol=0.3
+@anim rhen grab_hand asha
+@wait 2.5
+@camera S03
+@wait 1.5
+@music silence fade=0.0
+@fade out 0.5
+@camera S04
+@wait 3.0
+@camera P04
+@fade in 2.0
+@music act2_break fade=2.0
+@wait 3.0
+Narrator(rhen) [tender]: Everybody I loved had a reason to stay where they were. That night, all of us stopped. #line:ch16_break_001 #vo
+@wait 4.0
+@fade out 3.0
+@music silence fade=2.0
+<<set $ch16_act_two_complete = true>>
+@wait 1.5
+Act III\: The Unbinding #line:ch16_act_card_001 #tn:"The act card between Act II and Act III. Title case, as a chapter heading."
+@wait 2.0
+@letterbox off
+===

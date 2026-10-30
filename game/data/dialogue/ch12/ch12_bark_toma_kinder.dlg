@@ -1,0 +1,8 @@
+// Ch12 B08 bark: Toma, with Asha, looking at the pass-cord across Quellan's main lane.
+title: ch12_bark_toma_kinder
+location: ch12/quellan
+---
+Toma [neutral]: Three days, in Haluna. Sitting with them. #line:ch12_bark_kinder_001
+@wait 2.0
+Toma [sad]: I do not know anymore which is kinder. #line:ch12_bark_kinder_002
+===

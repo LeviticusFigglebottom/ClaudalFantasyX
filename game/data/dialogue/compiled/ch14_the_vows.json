@@ -1,0 +1,105 @@
+{
+ "format": 1,
+ "scene": "ch14_the_vows",
+ "source": "game/data/dialogue/ch14/ch14_the_vows.dlg",
+ "start": "ch14_the_vows",
+ "nodes": {
+  "ch14_the_vows": {
+   "headers": {"location": "ch13/ansedra_lacquer_court"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "camera", "args": ["W03"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "music", "args": ["peace_wedding"], "kwargs": {"fade": 1.0}, "src": 13},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "camera", "args": ["W04"], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch14_vows_001", "key": "DLG_CH14_VOWS_001", "speaker": "sefir", "emotion": "tender", "voice": "", "src": 16},
+    {"op": "line", "id": "ch14_vows_002", "key": "DLG_CH14_VOWS_002", "speaker": "sefir", "emotion": "soft_smile", "voice": "", "src": 17},
+    {"op": "cue", "cue": "camera", "args": ["W05"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 19},
+    {"op": "line", "id": "ch14_vows_003", "key": "DLG_CH14_VOWS_003", "speaker": "merel", "emotion": "tender", "voice": "", "src": 20},
+    {"op": "line", "id": "ch14_vows_004", "key": "DLG_CH14_VOWS_004", "speaker": "tobin", "emotion": "tender", "voice": "", "src": 21},
+    {"op": "cue", "cue": "anim", "args": ["tobin", "give_cord", "merel"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "camera", "args": ["W06"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "nudge", "liss"], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 26},
+    {"op": "set", "flag": "ch14_vows_spoken", "value": ["lit", true], "src": 27},
+    {"op": "jump", "node": "ch14_declaration", "src": 28}
+   ]
+  },
+  "ch14_declaration": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["W07"], "kwargs": {}, "src": 37},
+    {"op": "cue", "cue": "anim", "args": ["conclave", "stand"], "kwargs": {}, "src": 38},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 39},
+    {"op": "cue", "cue": "camera", "args": ["W08"], "kwargs": {}, "src": 40},
+    {"op": "cue", "cue": "music", "args": ["peace_wedding_break"], "kwargs": {"fade": 0.0}, "src": 41},
+    {"op": "line", "id": "ch14_decl_001", "key": "DLG_CH14_DECL_001", "speaker": "malcor_venn", "emotion": "cold", "voice": "", "src": 42, "name_key": "DLG_NAME_MALCOR_VENN_WARDEN_VENN"},
+    {"op": "cue", "cue": "anim", "args": ["stillguard", "close_on", "hull_captains"], "kwargs": {}, "src": 43},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 44},
+    {"op": "line", "id": "ch14_decl_002", "key": "DLG_CH14_DECL_002", "speaker": "malcor_venn", "emotion": "cold", "voice": "", "src": 45, "name_key": "DLG_NAME_MALCOR_VENN_WARDEN_VENN"},
+    {"op": "line", "id": "ch14_decl_003", "key": "DLG_CH14_DECL_003", "speaker": "malcor_venn", "emotion": "cold", "voice": "", "src": 46, "name_key": "DLG_NAME_MALCOR_VENN_WARDEN_VENN"},
+    {"op": "cue", "cue": "camera", "args": ["W09"], "kwargs": {}, "src": 47},
+    {"op": "cue", "cue": "anim", "args": ["liss", "look_at", "sefir"], "kwargs": {}, "src": 48},
+    {"op": "line", "id": "ch14_decl_004", "key": "DLG_CH14_DECL_004", "speaker": "liss", "emotion": "angry", "voice": "", "src": 49},
+    {"op": "cue", "cue": "camera", "args": ["W10"], "kwargs": {}, "src": 50},
+    {"op": "cue", "cue": "anim", "args": ["sefir", "look_at", "asha"], "kwargs": {}, "src": 51},
+    {"op": "line", "id": "ch14_decl_005", "key": "DLG_CH14_DECL_005", "speaker": "sefir", "emotion": "sad", "voice": "", "src": 52},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 53},
+    {"op": "line", "id": "ch14_decl_006", "key": "DLG_CH14_DECL_006", "speaker": "asha", "emotion": "determined", "voice": "", "src": 54},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 0.0}, "src": 55},
+    {"op": "set", "flag": "ch14_declared_heretics", "value": ["lit", true], "src": 56},
+    {"op": "jump", "node": "ch14_stand_aside", "src": 57}
+   ]
+  },
+  "ch14_stand_aside": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["W11"], "kwargs": {}, "src": 65},
+    {"op": "cue", "cue": "mark", "args": ["stillguard", "dais_approach", "walk"], "kwargs": {}, "src": 66},
+    {"op": "cue", "cue": "mark", "args": ["toma", "before_asha", "walk"], "kwargs": {}, "src": 67},
+    {"op": "cue", "cue": "anim", "args": ["toma", "shield_up"], "kwargs": {}, "src": 68},
+    {"op": "cue", "cue": "mark", "args": ["brannoc_hale", "dais_foot", "walk"], "kwargs": {}, "src": 69},
+    {"op": "line", "id": "ch14_aside_001", "key": "DLG_CH14_ASIDE_001", "speaker": "brannoc_hale", "emotion": "sad", "voice": "", "src": 70, "name_key": "DLG_NAME_BRANNOC_HALE_COMMANDER_HALE"},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 71},
+    {"op": "line", "id": "ch14_aside_002", "key": "DLG_CH14_ASIDE_002", "speaker": "toma", "emotion": "determined", "voice": "", "src": 72},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 73},
+    {"op": "line", "id": "ch14_aside_003", "key": "DLG_CH14_ASIDE_003", "speaker": "toma", "emotion": "determined", "voice": "", "src": 74},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 75},
+    {"op": "set", "flag": "ch14_toma_refused", "value": ["lit", true], "src": 76},
+    {"op": "cue", "cue": "camera", "args": ["W12"], "kwargs": {}, "src": 77},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "remove_pin"], "kwargs": {}, "src": 78},
+    {"op": "cue", "cue": "sfx", "args": ["level_pin_ring"], "kwargs": {}, "src": 79},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 80},
+    {"op": "line", "id": "ch14_aside_004", "key": "DLG_CH14_ASIDE_004", "speaker": "ysolde", "emotion": "cold", "voice": "", "src": 81},
+    {"op": "jump", "node": "ch14_tobin", "src": 82}
+   ]
+  },
+  "ch14_tobin": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["W13"], "kwargs": {}, "src": 94},
+    {"op": "cue", "cue": "mark", "args": ["merel", "hull_captains", "run"], "kwargs": {}, "src": 95},
+    {"op": "line", "id": "ch14_tobin_fall_001", "key": "DLG_CH14_TOBIN_FALL_001", "speaker": "merel", "emotion": "angry", "voice": "", "src": 96},
+    {"op": "cue", "cue": "anim", "args": ["stillguard", "spear_turn", "merel"], "kwargs": {}, "src": 97},
+    {"op": "cue", "cue": "camera", "args": ["W14"], "kwargs": {}, "src": 98},
+    {"op": "cue", "cue": "mark", "args": ["tobin", "tobin_falls", "run"], "kwargs": {}, "src": 99},
+    {"op": "cue", "cue": "anim", "args": ["tobin", "shield_merel"], "kwargs": {}, "src": 100},
+    {"op": "cue", "cue": "anim", "args": ["tobin", "sit_down"], "kwargs": {}, "src": 101},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "tobin_falls", "count": 6, "rate": "slow"}, "src": 102},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 103},
+    {"op": "line", "id": "ch14_tobin_fall_002", "key": "DLG_CH14_TOBIN_FALL_002", "speaker": "tobin", "emotion": "exhausted", "voice": "", "src": 104},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 105},
+    {"op": "cue", "cue": "camera", "args": ["W15"], "kwargs": {}, "src": 106},
+    {"op": "cue", "cue": "mark", "args": ["liss", "tobin_falls", "run"], "kwargs": {}, "src": 107},
+    {"op": "line", "id": "ch14_tobin_fall_003", "key": "DLG_CH14_TOBIN_FALL_003", "speaker": "liss", "emotion": "grief", "voice": "", "src": 108},
+    {"op": "cue", "cue": "anim", "args": ["toma", "lift", "liss"], "kwargs": {}, "src": 109},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 110},
+    {"op": "set", "flag": "ch14_tobin_killed", "value": ["lit", true], "src": 111},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 112},
+    {"op": "event", "name": "start_battle", "args": ["ch14_water_steps"], "src": 113}
+   ]
+  }
+ }
+}

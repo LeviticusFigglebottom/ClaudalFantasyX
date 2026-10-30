@@ -1,0 +1,7 @@
+// Ch12 B02 bark: Ysolde at a pass-cord, touching a knot without meaning to; she takes her hand away quickly.
+title: ch12_bark_ysolde_knot
+location: ch12/keth_pass
+---
+Ysolde [neutral]: Each knot is a name. They are read by touch. #line:ch12_bark_knot_001
+@anim ysolde withdraw_hand
+===

@@ -2,9 +2,8 @@
 id: M4-A2P-010
 title: "Ch10 playable at final quality: story wired, Pell out of Reedhollow, the Drowner's encounter"
 role: cinematics
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "act1-chapters → chapters (claude/act1-chapters; ADR 0205)"
 depends_on: [M4-C10-01, M4-C10-02, M4-C10-03, M4-A2P-001, M4-A2P-020, M4-A2P-040]
 reviewer: combat
 milestone: M4

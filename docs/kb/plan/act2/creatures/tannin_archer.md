@@ -35,4 +35,4 @@ Its own build (no base). The fen's water is y 0: it sits in the water plane like
 Meets the bar on the clip sheet: a clear fish body, bars and fins; slightly simple. Its 8 cm dip is the root's ends under the water by design.
 
 ## Work at the gate (after `act1-complete`)
-Add the enemy `model` key; a battle shot in its arena; its `tannin_jet` effect (battle VFX, test_battle_act1_ability_vfx lists it).
+~~enemy `model` key~~ (done 2026-10-30); a battle shot in its arena; its `tannin_jet` effect (battle VFX, test_battle_act1_ability_vfx lists it).

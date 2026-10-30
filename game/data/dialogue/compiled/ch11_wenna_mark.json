@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch11_wenna_mark",
+ "source": "game/data/dialogue/ch11/ch11_wenna_mark.dlg",
+ "start": "ch11_wenna_mark",
+ "nodes": {
+  "ch11_wenna_mark": {
+   "headers": {"location": "ch11/lowlight"},
+   "ops": [
+    {"op": "line", "id": "ch11_wenna_001", "key": "DLG_CH11_WENNA_001", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "set", "flag": "ch11_found_wenna_mark", "value": ["lit", true], "src": 8}
+   ]
+  }
+ }
+}
