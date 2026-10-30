@@ -1332,3 +1332,9 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - byte-identical build, PROVENANCE, portrait, shot `creature_hull_rasp` (viewed);
   - tools test_creatures OK (floor and sink exemptions as the hullgnaw's); Godot creature 160/0.
 - **MERGE-READY @ 63c6157ef.** Next: M5-A3P-1800, the wick crawler (claimed; a new build from its sheet).
+- **M5-A3P-1800, the wick crawler @ 8cc959b6e:**
+  - the sheet as written: 5.6k triangles, 44 bones; feet pinned; KO eased (only the collapse slide flags);
+  - byte-identical build, PROVENANCE, portrait, shot `creature_wick_crawler` (viewed);
+  - tools test_creatures OK; Godot creature 160/0.
+  - `clip_by_skill` waits for Combat's skill ids.
+- **MERGE-READY @ 8cc959b6e.** Next: M5-A3P-1801, the chain lamp (claimed).

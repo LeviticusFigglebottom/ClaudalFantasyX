@@ -211,6 +211,12 @@
       "contact": {"attack": 0.45, "cast": 1.0, "idle_b": 0.6},
       "portrait": {"yaw_deg": 40.0, "pitch_deg": 20.0}
     },
+    "wick_crawler": {
+      "scene": "res://game/creatures/wick_crawler/wick_crawler_battle.tscn",
+      "contact": {"attack": 0.5, "cast": 0.95},
+      "stand_in": {"yaw_deg": 90.0},
+      "portrait": {"yaw_deg": 50.0, "pitch_deg": 18.0}
+    },
     "ridge_lynx": {
       "scene": "res://game/creatures/ridge_lynx/ridge_lynx_battle.tscn",
       "contact": {"attack": 0.7, "cast": 0.75},

@@ -1180,6 +1180,16 @@
       ]
     },
     {
+      "id": "creature_wick_crawler",
+      "owner": "character",
+      "sources": ["assets_src/creatures/wick_crawler/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/wick_crawler/*.glb", "assets/creatures/wick_crawler/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/wick_crawler/build_wick_crawler.py", "--", "--out", "assets/creatures/wick_crawler/wick_crawler.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "wick_crawler"]
+      ]
+    },
+    {
       "id": "creature_flat_engine",
       "owner": "character",
       "sources": ["assets_src/creatures/flat_engine/**", "assets_src/creatures/common/**"],

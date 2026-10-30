@@ -2,8 +2,8 @@
 id: M5-A3P-1801
 title: "Ch19: the chain lamp, a hanging lamp-cage whose beam sweeps on a fixed beat (act3/chain_lamp.md)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "creatures (claude/creatures)"
 depends_on: []
 milestone: M5
 reviewer: character

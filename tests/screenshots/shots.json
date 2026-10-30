@@ -10331,6 +10331,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_wick_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_wick_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }
