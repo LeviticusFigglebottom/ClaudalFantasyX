@@ -654,3 +654,36 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** dlgc 0/0 · taskboard clean · Godot `dialogue` 87/0 · tools music-sync test OK.
 - MERGE-READY Act II emotional pass @ 270c32419
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1011; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act II read-through, Ch14–Ch16 on paper (Lead)
+- **Read:** every Ch14–Ch16 script in the beat sheets' order, against the sheets, the ADRs and the earlier chapters.
+- **The required facts hold:**
+  - Kerrid sits only at K05, and the confession matches its RULE 4;
+  - the Hush is told only in Kesh's memory; no "revenant";
+  - the one `glimmer_lift` is the sheet's;
+  - no ice; Tobin, Merel and the lamp are right;
+  - Imra, Dace and Kerrid are never grouped; Pell has no battle kit.
+- **No leak** (one possible: Kerrid's "Nobody, if she does it right." in the Ch15 camp implied the Act III premise; now "I don't know. Somebody always has.").
+- **Story fixes (my scripts and sheets):**
+  - **Repeats:**
+    - the Ch14 camp repeated Ch15's deck beat and the "volunteered" line. It keeps the wick-tool and "I want it to cost them", and moves to `ch15/open_sea`.
+    - Tobin's Ch13 "volunteered" is now "Peace has to start with somebody's wedding." (Ch14 carries the line).
+    - Liss's and Merel's Ch14 talks are reworded.
+  - **Flags now paid:**
+    - the supper reads `ch14_spoke_with_tobin` (Aldous asks; Rhen: "He said nobody had to be chosen. He volunteered.");
+    - the barge reads `ch14_vows_spoken` (Liss says Tobin's vow back, "I'll learn your quiet.").
+  - **Order:**
+    - the pyre-raft now ends on Pell's turn;
+    - three Hollowmere barks wait for the news (`ch15_toma_carried_tobin`), with arrival lines before it.
+  - **Continuity:**
+    - Ysolde and Pell board the ship;
+    - 13 zone headers named `ch14/lacquer_court` or `ch15/hollowmere`, which don't exist, and now name the real zones;
+    - "after the bells" is now "after the vows";
+    - Dace's hull is "years after" his first visit.
+  - **Docs:** kerrid.md and act2_ch14 "sat out" are now "stood out"; Pell is out of two boss role-answers.
+- **Filed:**
+  - **M4-A2P-1012 → act1-chapters:** the Ch14–16 flows play no scene; the dock-master on arrival; four missing encounters (`ch14_water_steps`, `ch14_malcor_venn`, `ch16_abiding_guard`, `ch16_storm_wakes`); the battle chaining.
+  - **M4-A2P-1013 → slice-polish:** Warden Dask on the steps (L09); the lamp-bearers' entrance and the oar-pin (W03/W05); two ship marks.
+- **Checks:** dlgc 0/0 · validate_data 0/0 · taskboard clean · tools dlgc, sfx and flag-reach tests OK · check_drafts 73/0 · Godot `dialogue` 87/0. It was 1 red until a fresh `--import` rebuilt the translations for the two new supper lines.
+- MERGE-READY Ch14–16 read-through @ e8825bce8
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1013; M4-A2P-112 items 3, 5 and 6.
