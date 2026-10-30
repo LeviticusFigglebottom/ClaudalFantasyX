@@ -783,3 +783,147 @@ Merged `origin/gpu/gate-big14-shots` and the integration branch, then fixed on t
   - The crowd GLBs already ran their category script (`crowd_post_import.gd`, set in each .glb.import). The crowd category (`game/data/import/crowd.json`) exists, but test_post_import's `KINDS` list lacked `crowd`, so every crowd GLB read as "in no import category". `crowd` is added; no import needed regenerating.
   - The integration branch is merged in.
   - Checks: post_import 21/0, villager 35/0, crowd 7/0.
+
+## FROM 2026-10-29 (new Lead session_01Bg3iP7cPGyjbX4CyniBahc; integration claude/new-session-mj8c3c)
+Merged `origin/claude/new-session-mj8c3c` (pc-gpu.md conflict: kept ours, the newer PC text) and **claude/characters @ 3346484b** (the head big17 carries). The crowd generator avoids the Haluna/Act I villager faces in `assets_src/characters/villagers/params`, so its output can only match on a tree with characters' new villagers.
+
+### big17 gate reds (mine): fixed
+- **test_npc:** characters' new Act I villagers (M3-CHR-512: three wrights and others) changed the faces the crowd must avoid. `gen_crowd.py` re-run: only **crowd_girl_teen** changes (now clears wright_child_a, ≥0.28). Rebuilt in Blender (+ the child clip library it owns). Verify: `crowd_girl_teen` 21 identical.
+- **test_post_import (tools):** `tools/tests/test_post_import.py` KINDS lacked `crowd` (the big15 fix only did the Godot test).
+- **Confirmed on big17 itself:** cherry-picked onto `origin/lead/gate-big17` in a scratch worktree: test_npc + test_post_import 33/0.
+- **Also:** dropped a stale `shrine_offering.glb` PROVENANCE row the characters merge re-added (big17 has none): validate_data 0/0.
+- **villager_shopkeeper_front (NO BASE):** SELF-RENDERED and viewed: a full Haluna shopkeeper in T-pose on the review stage, clean, no placeholder (characters' M3-CHR-512 villager). **LEAD-ASK: approve villager_shopkeeper_front's baseline at the gate (I wrote none).**
+- Checks: tools test_npc 27/0, test_post_import 6/0; Godot crowd 7/0, villager 35/0, post_import 21/0, npc 10/0; validate_data, lint, format.
+
+### M3-HER-1142: Corrow's storm figure (audit row, high): done, in review
+- The capsule `figure` in `corrow.tscn` is the cyan silhouette in the storm wall (act1_ch08 W22). It is now `corrow_storm_figure` in `zones/ch08_corrow.json`: the Oruvel diver's crowd body (`crowd_man_lean_a`) drawn as one `#5fd6e0` silhouette.
+  - New VillagerLayer row keys: `body` (a crowd body with no crowd person), `silhouette` (NpcSilhouette: an unshaded fresnel-rim shader that fades in from the feet, depth prepass, no shadow, no TIME, render priority 1 so the storm sea doesn't paint over it) and `tuning` (zeroes its glance and talk radii). Validator and docs (field_npc.md "Silhouette rows") updated.
+  - It rides inside the `figure` stage actor, so the layout's flags and the cutscene's `@mark figure figure_gone walk` drive it.
+- **New shots:** `npc_corrow_storm_figure` (from the wall, about 31 m) and `npc_corrow_storm_figure_near`.
+- **Still needed in game:** M3-CRE-657 (GreyboxZone adds the VillagerLayer; patch in `live/patches/`). Until then Corrow's crowd and the figure appear only where a layer is wired (the shot stages, tests).
+
+### GPU QA row 40: the Oil Slug's read at battle distance: done
+- Flank-on in battle (`stand_in.yaw_deg` 60) at 1.3× (its battle scene's Model). A lighter back, a stronger oil sheen, a body rim sheen, brighter cerata tips.
+- `LampGlow`: a small shadowless `oil_lamp` omni light over the cerata (the design's "the only warm light in the underway"), which lights its back and a pool of floor. CreatureActor now fades a creature's lights with its KO (test).
+- New shot `creature_oil_slug_battle` (its real ch01_oil_slug encounter). Portrait re-baked (margin 1.2: its head had always been cropped). Blender verify identical.
+
+### Primitive pass
+- Rendered the current builds of the shoal skipper, raid hound and hullgnaw: they read finished (the old baselines predate their rebuilds).
+- **The tide crawler read primitive** (a plain ellipsoid on smooth cone legs), so it's rebuilt, 4.8k tris, rig and clips unchanged:
+  - a crab's carapace: a low dome widest forward, a rim lip, grooved plates split by glowing seams, a dorsal ridge, brow teeth and mandible hooks;
+  - jointed legs with coxa, knee and ankle knobs, dull joint membranes, a glowing seam along each femur, femur spines;
+  - serrated scythe forelegs.
+  - The paused Act II rim crawler imports this build, so it was rebuilt (verify identical).
+
+### Checks (this batch)
+- tools: test_npc, test_post_import, test_creatures OK; validate_data 0/0; taskboard; gdlint and gdformat on game/tests clean.
+- Godot: creature 85/0, portrait 21/0, crowd 9/0, villager 37/0, npc 10/0, post_import 21/0.
+- Blender verify identical: crowd_girl_teen, creature_oil_slug, creature_tide_crawler, creature_rim_crawler.
+- Skipped: coverage (nothing in game/battle or game/progression changed), the full manifest.
+
+### SELF-RENDERED (all viewed; no baselines written)
+- villager_shopkeeper_front (NO BASE): a clean villager.
+- crowd_zone_pemakar, crowd_zone_brine_shoals: crowd bodies, no capsules.
+- crowd_lineup_a/b/c/back: every body present. A first render came out empty because I had edited field_npc.gd mid-capture before the class cache was re-imported; re-rendered after the import.
+- npc_corrow_storm_figure(_near) (new): one cyan man's shape in the storm sea.
+- creature_oil_slug, creature_oil_slug_battle (new): it reads; a warm glow and crest at battle distance.
+- creature_tide_crawler: drift expected (rebuilt).
+- creature_shoal_skipper, creature_raid_hound, creature_hullgnaw: current builds; the old baselines are stale.
+- **LEAD-ASK: at the gate, approve baselines for villager_shopkeeper_front, creature_oil_slug_battle, npc_corrow_storm_figure, npc_corrow_storm_figure_near (new), and re-approve creature_oil_slug, creature_tide_crawler, creature_rim_crawler, plus the stale creature_shoal_skipper, creature_raid_hound, creature_hullgnaw and creature_slag_tortoise. Crowd shots for crowd_girl_teen's zones (pemakar, brine_shoals, lineups) may drift slightly.**
+
+### PC-QUEUE
+- GPU QA row 40: recheck the Oil Slug in ch01_oil_slug on the RX 9070 XT (LampGlow on real GPU; the arena's lit floor patches are env-art-b's row 15).
+- The Corrow storm figure on real GPU (bloom on the rim; rain over it).
+
+### Primitive pass (continued)
+- Rendered the other 15 Act I regulars' current builds (ashwing, bottle hermit, flue moth, gull harrier, lantern eel, reef crab, sail leech, scuttler, squall wing, stormgull, tower limpet, vein sparker, wall polyp, wallcrab, wreck crab) and viewed them.
+- **The tower limpet read primitive** (a smooth striped cone), so it's rebuilt, 9.1k tris, rig and clips unchanged:
+  - sharp primary and secondary ribs running out into a scalloped margin, growth ledges, a worn pitted apex;
+  - the shutter as louvred slats in a frame with two rusted iron straps, the shell growing over its ends;
+  - barnacle clusters and a fringe of mantle tentacles round the foot.
+  - Portrait re-baked; verify identical. The doc's budget is raised to ≤10k (a lone foe).
+- **Read finished, left as they are:** the wall polyp's stone (worn, chipped, mortared laterite with the carved Watcher; its blockiness is masonry) and the reef crab family (7.9k of an 8k budget; shaped, banded legs, no blockiness at battle distance). The rest read finished.
+- Battle suite on this tree: 790 run, 3 failed, all on the known list (test_battle_act1_ability_vfx's Act II foe effects, test_battle_party_stand_ins' Liss tint, test_battle_result_motion), none from these changes.
+- **Add to the LEAD-ASK baseline list:** creature_tower_limpet (rebuilt).
+
+MERGE-READY @ (this push): the big17 gate reds (test_npc, test_post_import), M3-HER-1142 (the Corrow storm figure), GPU QA row 40 (the Oil Slug), and the primitive pass on the tide crawler and the tower limpet. Checks run: validate_data 0/0, taskboard, gdlint and gdformat (game, tests), tools test_npc, test_post_import and test_creatures; Godot creature 85/0, portrait 21/0, crowd 9/0, villager 37/0, npc 10/0, post_import 21/0, battle 790/3 (known); Blender verify identical for every changed job (crowd_girl_teen, oil_slug, tide_crawler, rim_crawler, tower_limpet). Skipped: coverage (no game/battle or game/progression change) and the full manifest.
+
+BACKLOG EMPTY: the Lead's four items are done.
+- No todo or request tasks for creatures on the board.
+- Every Act I regular reads final in fresh renders.
+- Open items are others': M3-CRE-657 (slice-polish adds the VillagerLayer to GreyboxZone; without it Corrow's crowd and the storm figure appear only in the stages), the baselines (the Lead, at the gate) and the PC-QUEUE (real GPU).
+
+### big17 red from the Lead (20:46): test_zone_cast::test_a_cast_actor_shows_its_model_and_idles_out_of_step: fixed
+- Reproduced on `lead/gate-big17` in a scratch worktree; it passes on my head, which doesn't have M3-CRE-657.
+- **Two causes, both from M3-CRE-657** (GreyboxZone wires the VillagerLayer after ZoneCast):
+  1. The test read ZoneCast's `Cast` model, but Tamsule's crowd rows replace it with the crowd person. The test now reads the body the actor wears through `HeroMotion.player_of(actor)`, as the cutscene sequencer does, and accepts a resting clip (idle or work). `tests/unit/test_zone_cast.gd` is act1-chapters' file: edited on the Lead's routing.
+  2. **A real bug of mine:** FieldNpc phased only the idle loop per villager, so the crowd fisher and boatman both started `haul` at 0.0 and hauled in step. Work and storm loops now start at a per-villager phase plus the clock (`FieldNpc.loop_phase`). New test in test_crowd_villagers.
+- Checks: on big17 with these files, zone_cast 3/0, crowd 10/0, villager 38/0; on my head, crowd 10/0, villager 38/0, npc 10/0, zone_cast 3/0; lint and format clean.
+- **Shots:** crowd zone shots where people work (crowd_work, crowd_market and the crowd_zone_* shots) will drift, because work clips now start at each person's own phase. Expected; re-approve at the gate.
+
+MERGE-READY @ (this push): the test_zone_cast fix (plus everything in the previous MERGE-READY).
+BACKLOG EMPTY (again): no other items.
+
+## The Lead's Act I final-quality audit (from 2026-10-29 23:10): regular foes, wildlife, villagers
+**Tools (new, tools/creatures/):**
+- `clip_audit.gd`: headless, every clip of every Act I regular foe and crowd body at 60 fps. It reports skinned contact-vertex slip, one-frame pops, loop seams, floor penetration, and any missing hit/KO/idle/talk/walk.
+- `foot_slip.py`: numpy, a build's own clips.
+- `clip_sheet.tscn`: a close-up plus idle/attack/hit/KO poses on one fixed camera over a checker floor.
+- `wildlife_audit.gd`, `wildlife_snap.gd` and `wildlife_apply.py`: placements checked and re-seated against the zone's visible meshes.
+
+**Findings and fixes:**
+- **Missing reactions:** none. All 44 actors have hit and KO (foes) or idle, talk and walk (villagers).
+- **Foot sliding: FIXED.** Planted feet slid up to 37 cm on legged foes' hit, attack and idle (`grounded()` kept feet on the floor but let them slide). New `grounding.pinned()`: a damped two-bone solve holds a planted foot where it touched down, floor-safe and byte-reproducible. Now ≤5 cm on every pinned clip (was 8–37):
+  - tide crawler (hit 22→0.2);
+  - the crab family: reef, wall, wreck and root (attack 14→0.5);
+  - raid hound (attack 37→2.7, its lunge now steps its forepaws);
+  - vein sparker (hit 20→5);
+  - bottle hermit (hit 14→3);
+  - shoal skipper's fins (its tail's sweep is a mudskipper's, kept).
+- **KOs that didn't read: FIXED.** The vein sparker's belly-flop looked like its idle (it now rolls onto its side), and the tide crawler's sink read as a crouch (now a dead spider's curl).
+- **Pops:** the crabs' crusher smash (17 cm a frame) is a deliberate 0.15 s strike; all others are within 8% of body size.
+- **Floor penetration:** fliers and burrowers read "under" only off their battle hover. The crowd's kneel and mend dip is skirt cloth under the floor, not visible (crowd_mourners and crowd_work viewed).
+- **Faceting and texture:** creatures carry no textures (vertex colour plus procedural detail); crowd heads are 512², bodies 256² (walking-distance LOD1). Faces read at close-up.
+- **Wildlife placement: FIXED in 10 of 11 zones.** Placements were still on greybox layouts:
+  - perches inside roofs or on air (Oruvel and Tamsule under awnings and roofs; Corrow 38 m off its relaid wall; Brightwater's rails gone);
+  - crabs on nothing (Pemakar's moved quay; the wake);
+  - all re-seated on the kits, Corrow's gulls on the Watchers' heads (none on the Breach's stretch).
+  - Crabs can follow uneven ground (`"ground": {"physics": true}`).
+  - The causeway's file is generated by `tools/causeway`, so its crab ground is request **M3-CRE-664** (environment).
+- **Ambient life:** fish added where the kits brought deep water (Oruvel's open sea, Tamsule's river, Pemakar's harbour, Corrow's sea). Left without, by reason:
+  - Brightwater (its sea is 0.4 m deep) and Brine Shoals (dry flats);
+  - Ashcrown (a volcanic forge under ash-fall);
+  - the bell galleries, the shell shrine and the prologue (interiors or a cutscene);
+  - Corrow by night (the strand of the drowned: animals among the shrouds would undercut it, pillar 1; the motes are its life).
+- In progress: battle-distance renders of all 16 Act I encounters with a regular (arena silhouette and value).
+
+### The Act I audit: finished
+- **Battle-distance renders of all 16 Act I encounters with a regular, viewed.** Fixed in my lane:
+  - **The ashwing** read as two small pale slivers: 1.35× in battle, hover 1.86 so its KO still lands. test_creatures now reads a battle scene's Model scale.
+  - **The sail leech** was seen edge-on as glowing dashes on the Ch4 night deck: it hangs lower (hover 1.26, its KO's fall matched, `KO_DROP`), at 1.3×, with brighter slits and a salt-pale canvas edge. The paused fen leech pins its own fall.
+  - **The Oil Slug, the tower limpet:** re-rendered, they read.
+  - **Request M3-CRE-665 (combat):** in two-foe openings the back foe stands hidden behind the front one (the vein sparker behind the slag tortoise, the shoal skipper behind the wreck crab).
+- **Villagers and wildlife moving: `tools/creatures/life_audit.tscn`** loads every Act I zone with villagers or wildlife. **All 14 zones: no frozen villager, wildlife moving everywhere** (culling off; a 4-second run).
+- **Final clip audit:** 44 actors, none missing a reaction. The legged foes' worst residual slides are the raid hound's attack 8 cm (was 37), the tide crawler's hit 6 cm (was 22) and the vein sparker's hit_b 10 cm (was 27).
+- **Checks:**
+  - Godot: creature 85/0, wildlife 15/0, crowd 10/0, villager 38/0, npc 10/0, zone_cast 3/0, portrait 21/0, battle 790/3 (the known three).
+  - tools test_creatures, test_wildlife, test_npc, test_post_import OK; validate_data 0/0; gdlint and gdformat clean; taskboard ok.
+  - Blender verify identical: 49 creature jobs after `pinned`, then sail_leech, fen_leech, ashwing.
+- Integration merged (c789b9a9): test_zone_cast kept mine (it accepts a work clip as the resting clip; integration's version requires `idle`, which Tamsule's crowd fisher on `haul` fails); shots.json rebuilt by hand (merge_union couldn't parse the base); the three stale wake-dressing PROVENANCE rows dropped again.
+- **SELF-RENDERED (viewed, no baselines written):** creature_tide_crawler, creature_tower_limpet, creature_oil_slug(_battle), npc_corrow_storm_figure(_near), crowd_mourners, crowd_work, crowd_lineup_*. The 16 encounter renders were scratch shots in a worktree, not committed.
+- **LEAD-ASK: baselines at the gate.** Add creature_tower_limpet, creature_sail_leech, creature_ashwing, creature_reef_crab, creature_wallcrab, creature_wreck_crab, creature_raid_hound, creature_vein_sparker, creature_bottle_hermit, creature_shoal_skipper and creature_rim_crawler (all rebuilt or rescaled) to the earlier list.
+
+MERGE-READY @ (this push): the Act I final-quality audit (planted feet, KOs, the ashwing, the sail leech, the wildlife re-seated, fish, crab ground, M3-CRE-664/665, the audit tools).
+
+### Act II preparation, docs only (ADR 0203; the Lead, 2026-10-30 01:08)
+- **`docs/kb/plan/act2/creatures/`, all `draft: pre-gate`.** README plus 11 regular foes and 4 wildlife proposals: silhouette, materials, rig, clips, the battle-distance read, reuse of existing generators, and the state against the bar (measured with clip_audit and clip_sheet).
+- **All 11 regulars exist and are built.** Meeting the bar: tannin archer, root crab, rime urchin (but its KO), cord moth, scree crawler, glass skate. Close: conduit crawler. Below it:
+  - ridge lynx (paws slide 18–29 cm; plain legs);
+  - fen leech and gallery ray (edge-on or pale-on-pale reads);
+  - rim crawler (chalk on white).
+- **None of the ten enemy rows has a `model` key.**
+- **Wildlife proposals:** fen kingfisher (never a heron: the Kirru), fen fireflies (never glimmer), woolback (the ram's build at 0.3 scale), rim rays (fish-sized, always moving, unlike the glass skate).
+- **LEAD-ASK: Ansedra has "no seabirds" (bible §5.8, ansedra.md). M4-A2P-056's "still-city birds (Ch13)" contradicts canon. Drop it from the task (I proposed no Ansedra wildlife, by design).**
+- PC rows (the Oil Slug, the storm figure) come first when the PC reports on gpu/act1-qa-3.
+
+BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are written (docs only until `act1-complete`). The rest waits on others: M3-CRE-664 (environment), M3-CRE-665 (combat), the PC's QA pass, the Lead's baselines.

@@ -6,7 +6,7 @@ extends Node
 ##   godot-render --path . --audio-driver Dummy --fixed-fps 60 --disable-vsync --rendering-driver vulkan \
 ##     res://tools/vfx/boss_camera_sheet.tscn -- --out=<abs dir> [--lead=0.7] [--only=<encounter>]
 ##     [--moment=phase|fall]   (M3-BPR-426: each fight's camera moment instead, mid-hold)
-##     [--entry]               (M3-BPR-1325: the Climb's camera cut and its stair effects)
+##     [--entry]               (M3-BPR-1325: the Climb's camera cut and its stair effects; M3-BPR-406: the Kirru's)
 
 const SCENE := "res://game/battle/scene/battle_sandbox.tscn"
 const PARTY: Array[StringName] = [&"rhen", &"asha", &"toma"]
@@ -98,40 +98,51 @@ func _run() -> void:
 
 
 ## The stair hold's Climb: the entry camera's stair hint held, the stair-aimed effects playing on the Climb's mark.
-## Saves <out>/ch08_stair_hold_1_entry.png.
+## Saves <out>/ch08_stair_hold_1_entry.png. M3-BPR-406: then wave 3's Kirru sounding Storm-Call, the cut out to the
+## storm held: <out>/ch08_stair_hold_3_kirru.png.
 func _entry(out: String) -> void:
+	await _entry_cut(out, &"ch08_stair_hold_1", &"ward", &"climb_up", [&"climb_up", &"grip_the_stair", &"hand_closes"])
+	await _entry_cut(out, &"ch08_stair_hold_3", &"guest", &"storm_call_sound", [], "kirru")
+
+
+func _entry_cut(
+	out: String, enc: StringName, role: StringName, skill: StringName, effects: Array, tag: String = "entry"
+) -> void:
 	var ctl := (load(SCENE) as PackedScene).instantiate() as BattleController
 	ctl.auto_start = false
 	ctl.persist_progress = false
 	ctl.show_damage_numbers = false
 	add_child(ctl)
 	ctl.pacing_scale = 0.0
-	ctl.set_meta(BattleBossIntro.META_PLAYED, "ch08_stair_hold_1")
-	ctl.start_battle(PARTY, [], &"ch08_stair_hold_1", 20261028)
+	ctl.set_meta(BattleBossIntro.META_PLAYED, String(enc))
+	ctl.start_battle(PARTY, [], enc, 20261028)
 	for i in SETTLE_FRAMES:
 		await get_tree().process_frame
 	var choreo := ctl.stage.choreo
 	choreo.force_play = true
 	choreo.reduced_motion = false
 	choreo.skip = false
-	var climb: BattleCombatant = null
+	var who: BattleCombatant = null
 	for c in ctl.engine.entries:
-		if c.entry_role == &"ward":
-			climb = c
+		if c.entry_role == role:
+			who = c
 	var cam := choreo.get_node(^"BattleEntryCamera") as BattleEntryCamera
 	var vfx := ctl.stage.get_node(^"BattleVfx") as BattleVfx
 	var r := ActionResult.new()
-	r.actor_id = climb.id
+	r.actor_id = who.id
+	r.skill_id = skill
 	choreo.contact.emit(r)
 	choreo.advance(float(cam.cfg.get("in_sec", 0.0)) + 0.2)
-	for eid: StringName in [&"climb_up", &"grip_the_stair", &"hand_closes"]:
-		vfx.play(eid, climb.id)
+	for eid: StringName in effects:
+		vfx.play(eid, who.id)
 	await get_tree().create_timer(0.3).timeout
 	await RenderingServer.frame_post_draw
 	var img := get_viewport().get_texture().get_image()
 	img.convert(Image.FORMAT_RGB8)
-	img.save_png(out.path_join("ch08_stair_hold_1_entry.png"))
-	print("BOSS_CAMERA_SHEET entry %s" % [cam.cut_for])
+	img.save_png(out.path_join("%s_%s.png" % [enc, tag]))
+	print("BOSS_CAMERA_SHEET %s %s %s" % [tag, enc, cam.cut_for])
+	remove_child(ctl)
+	ctl.queue_free()
 
 
 ## Plays the boss's --moment (phase or fall) and saves <out>/<encounter>_<moment>.png once it is in and held.

@@ -265,6 +265,11 @@ func _set_party(join: Dictionary) -> void:
 
 func _autostart() -> void:
 	if is_inside_tree() and get_tree().current_scene == _zone:
+		# M3-CIN-1234: the router puts the party on the travel spawn the frame after the swap (then emits scene_changed),
+		# so an arrival's own `place` step must run after it or be undone (Ch1's ScaleHull: Rhen stayed at Surface and
+		# O02's over-the-shoulder framed an empty deck; most Act I arrivals place the party somewhere else).
+		if SceneRouter.is_busy():
+			await EventBus.scene_changed
 		active = true
 		await begin()
 

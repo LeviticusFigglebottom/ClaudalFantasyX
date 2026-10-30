@@ -9,7 +9,7 @@ extends Node3D
 @export var spacing_m: Vector2 = Vector2(16.0, 18.0)
 @export var per_row: int = 6
 ## Pieces placed on their own (huge or tiny ones are skipped or scaled for the sheet).
-@export var skip: PackedStringArray = PackedStringArray(["shell_shrine_massing", "dock_haluna", "banyan_placeholder"])
+@export var skip: PackedStringArray = PackedStringArray(["shell_shrine_massing", "dock_haluna", "banyan_hero"])
 @export var sheet_scale: Dictionary = {"lintel_gull_a": 4.0, "lintel_gull_b": 4.0, "lintel_gull_c": 4.0}
 
 

@@ -5,6 +5,10 @@ blender --background --factory-startup --python assets_src/creatures/tower_limpe
 
 A cartwheel-sized limpet whose ribbed cone grew over a fallen window shutter: the slats break the ribs on one side.
 A dark wet foot shows as a lip at the base.
+
+Primitive pass (2026-10-29, ADR 0041): sharp radial ribs into a scalloped margin, growth ledges, a worn pitted apex,
+the shutter as louvred slats in a frame with two rusted iron straps, barnacle clusters, and a fringe of mantle
+tentacles round the foot. Rig and clips unchanged.
 """
 
 from __future__ import annotations
@@ -40,58 +44,135 @@ def build_rig() -> ck.Rig:
     return rig
 
 
-def shell(mesh: ck.Mesh, rig: ck.Rig) -> None:
-    rings, segs = 20, 96
+RIBS = 13  # primary radial ribs (a secondary rib runs between each pair)
+LEDGES = 7  # growth ledges from apex to rim
+BARNACLES = 12
+TENTACLES = 40  # the pallial tentacles round the foot's lip
+SLATS = 14  # the shutter's louvres, counted down the slope
+STRAPS = (0.3, 0.7)  # the shutter's two iron straps (across its arc: 0 one edge .. 1 the other)
+STILE = 0.1  # the shutter's side frames (a share of its arc)
+
+
+def _shell_profile(rings: int) -> list[tuple[float, float]]:
     prof = []
     for i in range(rings + 1):
         t = i / rings  # 0 apex .. 1 rim
-        r = R_BASE * (t ** 0.75)
-        y = 0.10 + (H - 0.10) * (1.0 - t) ** 1.25
-        prof.append((r, y))
+        prof.append((R_BASE * (t ** 0.75), 0.10 + (H - 0.10) * (1.0 - t) ** 1.25))
+    return prof
+
+
+def _on_shell(az: float, t: float) -> tuple[np.ndarray, np.ndarray]:
+    """A point on the (untilted, undisplaced) cone and its outward normal, for things set on the shell."""
+    r = R_BASE * t ** 0.75
+    y = 0.10 + (H - 0.10) * (1.0 - t) ** 1.25
+    p = np.array([r * math.sin(az), y, r * math.cos(az)])
+    radial = np.array([math.sin(az), 0.0, math.cos(az)])
+    n = radial * 0.6 + np.array([0.0, 0.8, 0.0])
+    return p, n / np.linalg.norm(n)
+
+
+def shell(mesh: ck.Mesh, rig: ck.Rig) -> None:
+    """The cone (primitive pass, 2026-10-29): sharp radial ribs, with secondaries between, that run out past the rim
+    into a scalloped margin; stepped growth ledges; a worn, pitted apex; on one side the shutter (louvred slats in a frame,
+    two rusted iron straps across them), the shell growing over their ends (the spawn_wound seam where they meet)."""
+    rings, segs = 28, 96
+    prof = _shell_profile(rings)
     P, T = ck.lathe(prof, segs)
     az = np.arctan2(P[:, 0], P[:, 2])
     t = np.sqrt(P[:, 0] ** 2 + P[:, 2] ** 2) / R_BASE
-    in_shutter = (az > SHUTTER[0]) & (az < SHUTTER[1]) & (t > 0.35)
-    ribs = 0.5 + 0.5 * np.cos(az * 22.0)
-    growth = 0.5 + 0.5 * np.cos(t * 55.0)
-    slat = 0.5 + 0.5 * np.sign(np.sin(t * 40.0)) * np.minimum(np.abs(np.sin(t * 40.0)) * 6.0, 1.0)
+    wobble = 0.25 * ck.fbm(P * 3.0, SEED + 7)  # ribs are not ruler-straight
+    primary = np.abs(np.cos((az + wobble) * RIBS * 0.5)) ** 4
+    secondary = np.abs(np.cos((az + wobble) * RIBS * 0.5 + 0.5 * math.pi)) ** 6
+    ribs = np.maximum(primary, 0.45 * secondary)
+    phase = t * LEDGES + 0.4 * ck.fbm(P * 4.0, SEED + 8)
+    ledge = ck.smoothstep(0.75, 0.95, phase - np.floor(phase))  # each year's growth ends in a raised ledge
+    # the shutter, with the shell growing over its ends (a ragged border, not a cut)
+    border = 0.12 * ck.fbm(P * 6.0, SEED + 9)
+    in_shutter = (az > SHUTTER[0] + border) & (az < SHUTTER[1] - border) & (t > 0.32 + border)
+    louvre = t * SLATS - np.floor(t * SLATS)  # 0 at a slat's top edge .. 1 where it tucks under the next
+    gap = ck.smoothstep(0.82, 1.0, louvre)  # the shadow under each slat's lower edge
+    across = (az - SHUTTER[0]) / (SHUTTER[1] - SHUTTER[0])
+    stile = np.maximum(ck.smoothstep(STILE, STILE * 0.6, across), ck.smoothstep(1.0 - STILE, 1.0 - STILE * 0.6, across))
+    strap = np.zeros(len(P))
+    for u in STRAPS:
+        strap = np.maximum(strap, ck.smoothstep(0.035, 0.015, np.abs(across - u)))
+    strap *= 1.0 - stile
     radial = np.column_stack([P[:, 0], np.zeros(len(P)), P[:, 2]])
     radial /= np.maximum(np.linalg.norm(radial, axis=1, keepdims=True), 1e-6)
-    up = np.array([0.0, 1.0, 0.0])
-    n_out = radial * 0.6 + up * 0.8
+    n_out = radial * 0.6 + np.array([0.0, 0.8, 0.0])
     n_out /= np.linalg.norm(n_out, axis=1, keepdims=True)
-    disp = np.where(in_shutter, 0.012 * slat, 0.022 * ribs * t + 0.004 * growth)
-    disp += 0.01 * ck.fbm(P * 8.0, SEED)
-    rim_jag = 0.03 * ck.smoothstep(0.9, 1.0, t) * np.sin(az * 9.0 + 1.0)
-    P = P + n_out * disp[:, None]
-    P[:, 1] += rim_jag * 0.5
-    # the cone clings to a slope: tilt it a little
+    apex = ck.smoothstep(0.18, 0.0, t)
+    pits = ck.smoothstep(0.55, 0.8, ck.value_noise(P * 60.0, SEED + 10)) * apex
+    disp_shell = 0.04 * ribs * (0.3 + t) + 0.012 * ledge - 0.02 * apex - 0.004 * pits
+    disp_wood = np.where(stile > 0.5, 0.022, 0.004 + 0.03 * louvre * (1.0 - gap) - 0.008 * gap) + 0.006 * strap
+    disp = np.where(in_shutter, disp_wood, disp_shell) + 0.006 * ck.fbm(P * 8.0, SEED)
+    # the margin: scalloped where the ribs run out, each rib's end proud of the rim
+    margin = ck.smoothstep(0.88, 1.0, t)
+    P = P + n_out * disp[:, None] + radial * (0.03 * margin * ribs)[:, None]
+    P[:, 1] -= 0.025 * margin * (1.0 - ribs)
     P = ck.transform(P, ck.rot_x(TILT))
-    shell_col = ck.mix(PAL["coral_stone_weathered"], PAL["bone"], (0.35 * growth + 0.2 * ribs)[:, None])
+    P[:, 1] = np.maximum(P[:, 1], 0.0)
+    shell_col = ck.mix(PAL["coral_stone_weathered"] * 0.85, PAL["bone"], (0.55 * ribs + 0.35 * ledge)[:, None])
     shell_col *= (0.85 + 0.15 * ck.fbm(P * 5.0, SEED + 1))[:, None]
-    wood = ck.mix(PAL["timber_weathered"], PAL["sand_dry"], (0.45 * slat)[:, None])
+    shell_col = ck.mix(shell_col, PAL["bone"] * 1.05, (0.7 * apex)[:, None])  # the apex worn back to pale nacre
+    shell_col = ck.mix(shell_col, PAL["lacquer_black"], (0.6 * pits)[:, None])
+    grain = 0.5 + 0.5 * np.sin(az * 140.0 + 6.0 * ck.fbm(P * 3.0, SEED + 11))
+    wood = ck.mix(PAL["timber_weathered"] * 0.9, PAL["sand_dry"] * 0.8, (0.05 + 0.2 * grain)[:, None])
+    wood = ck.mix(wood, PAL["timber_weathered"] * 0.55, (0.6 * stile)[:, None])  # the darker frame
+    wood = ck.mix(wood, PAL["lacquer_black"], (0.9 * gap)[:, None])
+    wood = ck.mix(wood, PAL["sand_dry"] * 0.9, (0.35 * ck.smoothstep(0.0, 0.2, louvre) * ck.smoothstep(0.45, 0.2, louvre))[:, None])  # each slat's salt-bleached top edge
+    wood = ck.mix(wood, PAL["tortoiseshell"] * 0.7, (0.9 * strap)[:, None])  # rusted iron
     col = np.where(in_shutter[:, None], wood, shell_col)
-    edge = np.minimum(np.abs(az - SHUTTER[0]), np.abs(az - SHUTTER[1]))
-    seam = ck.smoothstep(0.08, 0.0, edge) * (t > 0.35)
+    edge = np.minimum(np.abs(az - SHUTTER[0] - border), np.abs(az - SHUTTER[1] + border))
+    seam = ck.smoothstep(0.035, 0.0, edge) * (t > 0.35)
     col = ck.mix(col, PAL["spawn_wound"] * 0.6, (0.9 * seam)[:, None])
-    algae = ck.smoothstep(0.15, 0.45, ck.fbm(P * 3.0, SEED + 2)) * ck.smoothstep(0.6, 1.0, t)
-    col = ck.mix(col, PAL["foliage_shadow"], (0.5 * algae)[:, None])
-    cavity = np.where(in_shutter, 0.6 * (1 - slat), 0.4 * (1 - ribs))
-    ck.finish(mesh, P, T, "shell", col, rig.rigid("shell"), wet=0.3 + 0.5 * t, cavity=cavity, emission=seam)
+    algae = ck.smoothstep(0.2, 0.5, ck.fbm(P * 3.0, SEED + 2)) * ck.smoothstep(0.55, 1.0, t) * (1.0 - ribs)
+    col = ck.mix(col, PAL["foliage_shadow"], (0.6 * algae)[:, None])
+    cavity = np.where(in_shutter, 0.8 * gap + 0.3 * strap, 0.5 * (1 - ribs) + 0.3 * pits)
+    ck.finish(mesh, P, T, "shell", col, rig.rigid("shell"), wet=np.where(in_shutter, 0.25, 0.3 + 0.5 * t),
+              cavity=np.clip(cavity, 0.0, 1.0), emission=seam)
     # the inside of the cone: a thick, dark, wet lining, so it is never paper-thin when it lifts or tips
     inner = [(r * 0.9, y - 0.035) for r, y in prof]
-    Pi, Ti = ck.lathe(inner, segs)
+    Pi, Ti = ck.lathe(inner[::2], 48)
     Pi = ck.transform(Pi, ck.rot_x(TILT))
     Pi[:, 1] = np.maximum(Pi[:, 1], 0.0)  # inside the foot: the lining's front never dips under the floor
     ck.finish(mesh, Pi, ck.flip(Ti), "foot", PAL["tortoiseshell"] * 0.5, rig.rigid("shell"), wet=1.0, cavity=0.4)
-    lip_o = [prof[-1]]
     Pl, Tl = ck.lathe([(prof[-1][0] + 0.005, prof[-1][1] + 0.005), (inner[-1][0], inner[-1][1])], segs)
     Pl = ck.transform(Pl, ck.rot_x(TILT))
     Pl[:, 1] = np.maximum(Pl[:, 1], 0.0)
     ck.finish(mesh, Pl, Tl, "shell", PAL["bone"] * 0.8, rig.rigid("shell"), wet=0.7, cavity=0.2)
+    barnacles(mesh, rig)
+
+
+def barnacles(mesh: ck.Mesh, rig: ck.Rig) -> None:
+    """Barnacles in two clusters on the shell's low flank (off the shutter): little white volcanoes, dark-mouthed."""
+    rng = np.random.default_rng(SEED + 12)
+    for k in range(BARNACLES):
+        az = (math.radians(150.0) if k < BARNACLES // 2 else math.radians(250.0)) + rng.uniform(-0.35, 0.35)
+        t = rng.uniform(0.62, 0.9)
+        size = rng.uniform(0.022, 0.04)
+        p, n = _on_shell(az, t)
+        prof = [(size, 0.0), (size * 0.95, size * 0.35), (size * 0.6, size * 0.75), (size * 0.35, size * 0.8),
+                (size * 0.25, size * 0.5)]
+        Pb, Tb = ck.lathe(prof, 8)
+        # stand it on its outward normal, then tilt with the shell
+        up = np.array([0.0, 1.0, 0.0])
+        axis = np.cross(up, n)
+        ang = math.acos(float(np.clip(np.dot(up, n), -1.0, 1.0)))
+        if np.linalg.norm(axis) > 1e-6:
+            axis /= np.linalg.norm(axis)
+            K = np.array([[0, -axis[2], axis[1]], [axis[2], 0, -axis[0]], [-axis[1], axis[0], 0]])
+            R = np.eye(3) + math.sin(ang) * K + (1 - math.cos(ang)) * K @ K
+        else:
+            R = np.eye(3)
+        Pb = ck.transform(ck.transform(Pb, R, p + n * 0.02), ck.rot_x(TILT))
+        mouth = np.repeat([0.0, 0.0, 0.2, 0.6, 1.0], 8)
+        col = ck.mix(PAL["bone"] * 0.95, PAL["lacquer_black"], (0.8 * mouth)[:, None])
+        ck.finish(mesh, Pb, Tb, "shell", col, rig.rigid("shell"), wet=0.5, cavity=0.3 + 0.5 * mouth)
 
 
 def foot(mesh: ck.Mesh, rig: ck.Rig) -> None:
+    """The wet muscle under the shell, its lip fringed with short pale tentacles feeling the stone."""
     prof = [(0.0, 0.12), (R_BASE * 0.93, 0.12), (R_BASE * 0.97, 0.07), (R_BASE * 0.96, 0.02), (R_BASE * 0.90, 0.0), (0.0, 0.0)]
     P, T = ck.lathe(prof, 64)
     P = ck.transform(P, ck.rot_x(TILT))
@@ -99,6 +180,19 @@ def foot(mesh: ck.Mesh, rig: ck.Rig) -> None:
     ripple = 0.5 + 0.5 * np.sin(np.arctan2(P[:, 0], P[:, 2]) * 14.0)
     col = ck.mix(PAL["tortoiseshell"], PAL["lacquer_black"], (0.4 * ripple)[:, None])
     ck.finish(mesh, P, T, "foot", col, rig.rigid("foot"), wet=1.0, cavity=0.3 * ripple)
+    rng = np.random.default_rng(SEED + 13)
+    for k in range(TENTACLES):
+        az = 2.0 * math.pi * (k + rng.uniform(-0.3, 0.3)) / TENTACLES
+        out = np.array([math.sin(az), 0.0, math.cos(az)])
+        base = out * R_BASE * 0.97 + np.array([0.0, 0.05, 0.0])
+        length = rng.uniform(0.04, 0.075)
+        tip = base + out * length + np.array([0.0, -0.035, 0.0])
+        path = ck.transform(ck.bezier([base, base + out * length * 0.6, tip], 3), ck.rot_x(TILT))
+        path[:, 1] = np.maximum(path[:, 1], 0.004)
+        Pt, Tt = ck.tube(path, np.array([0.008, 0.006, 0.002]), 4)
+        pale = np.concatenate([np.repeat([0.2, 0.5, 0.85], 4), [0.2, 0.85]])  # paler toward the tip
+        col = ck.mix(PAL["tortoiseshell"] * 1.4, PAL["bone"] * 0.8, pale[:, None])
+        ck.finish(mesh, Pt, Tt, "foot", col, rig.rigid("foot"), wet=1.0)
 
 
 def build_clips() -> list[ck.Clip]:

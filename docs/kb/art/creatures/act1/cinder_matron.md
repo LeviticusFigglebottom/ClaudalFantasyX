@@ -119,3 +119,28 @@ with cavity), and two fine cracks sunk from the centre to the rim across the cel
 cell: 24,988 (body 18,292, crust 6,696), within the 25k boss budget (was 24,836). The rng sequence of the other cells
 is untouched (the crack direction is hashed), so every other cell, crack and drip is where it was. Bones, clips,
 contacts and anchors unchanged.
+
+## Move pass (M3-CRB-013)
+
+Each skill has its own clip now (creatures.json `clip_by_skill`, `contact`). Every clip except the loops and the intro
+is authored from rest and played from idle's first frame (`ck.in_pose`), so it starts and ends exactly on `idle`. She
+rocks on the edge of her hem (`rock`: the root turns about the hoop's edge that stays on the floor, so the skirt never
+slides or sinks).
+
+- **`attack` (Ladle Swing, contact 0.85):** unchanged apart from starting on idle's first frame.
+- **`slag_pour` (2.2 s, contact 1.15):** she sinks to take the weight, heaves the ladle up in front of her at chest
+  height, leaning back under it and turned to her left (0.35-0.95 s), then tips the bowl toward the party and turns at the
+  waist, so the slag pours in an arc across the lane. The tongs go out wide for balance.
+- **`bank_the_fire` (2.0 s, contact 1.0, a buff):** the tongs go up over her head (seen above her from any camera),
+  then she bows and drives them down at the firebox door, draws them out and drives them in again; she straightens,
+  chest swelling (the heart port's flare is VFX).
+- **`recrust_gather` (2.2 s, contact 1.1, the two-turn telegraph):** she hunches deep over her fire with her arms drawn
+  in, rocking forward on her hem while her plates grind; she holds, then rises a little.
+- **`recrust` (1.8 s, contact 0.8, the payoff when `Crust` returns):** she draws in, then heaves upright and rocks back
+  with her arms pressed down and out while her plates grind and seal.
+- **`hit` / `hit_b`:** the blow rocks her back onto the back of her hem (peak 0.1 s), the head snaps aside and the arms
+  swing back; the front comes down with a thud. `hit_b` is authored mirrored and heavier.
+- **`phase_change` (2.2 s, contact 0.85, the burst):** she hunches with her arms drawn in, plates shuddering, then heaves
+  up and back on her hem with her arms flung out wide and her head thrown back; she holds, trembling, and settles. The
+  crust still goes at the phase's start (`hide`); the burst is VFX at `vfx_phase`.
+- Kept: `idle`, `ready`, `intro`, `ko`, `cast` (now unused by her skills, kept for the clip contract and `idle_b`).

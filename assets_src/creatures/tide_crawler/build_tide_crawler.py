@@ -6,6 +6,10 @@ blender --background --factory-startup --python assets_src/creatures/tide_crawle
 The Undertow's foot soldier at Corrow: a grotesque echo of a shore crab (bible: grotesque echoes of sea animals). A
 wet black lacquer carapace split by glimmer wounds, too many legs (six a side) arching higher than the body, and two
 long striking forelegs. Built for waves of them on the Fisher Stair, so it is cheap.
+
+Primitive pass (2026-10-29, ADR 0041): the carapace is a crab's (a low dome widest forward, a rim lip, plates in
+grooves that split open into glowing seams, teeth on the brow, mandible hooks); the legs have coxa, knee and ankle
+knobs with dull joint membranes, glowing femur seams and femur spines; the forelegs end in serrated scythe blades. Rig and clips unchanged.
 """
 
 from __future__ import annotations
@@ -29,13 +33,16 @@ PAL = {k: ck.hexrgb(v) for k, v in {
 BODY = np.array([0.0, 0.42, 0.0])
 NLEG = 6
 # The KO (M3-CRE-631): the body's drop (metres) and roll, and each leg's hip and knee turn at the end (degrees, the
-# left side's sign): the knees sink and the shins splay out flat.
-KO_DROP, KO_ROLL = 0.22, 4.0
-KO_LEG = (-10.0, 30.0)
+# left side's sign): the body drops to its belly and the legs draw up and curl in, a dead spider's curl (the Act I
+# audit: the old sink-and-splay read as a crouch at battle distance).
+KO_DROP, KO_ROLL = 0.26, 4.0
+KO_LEG = (65.0, -60.0)  # the audit: a dead spider's curl (the legs drawn up and in), not a crouch
 # The limbs kept on the floor: (bone, rest axis, the side's sign, the most it may turn). A leg turns up about z at
 # its hip, a striking leg up about x.
 GROUNDED_LIMBS = [(f"leg_{t}{i}_a", 2, 1.0 if t == "l" else -1.0, 75.0) for t in "lr" for i in range(NLEG)] + [
     (f"strike_{t}", 0, -1.0, 60.0) for t in "lr"]
+# The planted legs held where they touch down (common/grounding.py pinned(); the audit's foot sliding).
+PINNED_LEGS = [(f"leg_{t}{i}_a", f"leg_{t}{i}_b", 2, 1.0 if t == "l" else -1.0) for t in "lr" for i in range(NLEG)]
 
 
 def leg_pts(side: float, i: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -60,34 +67,154 @@ def build_rig() -> ck.Rig:
     return rig
 
 
+CARAPACE = (0.32, 0.17, 0.36)  # the dome's half-width, height and half-length (m)
+FRONT_WIDEN = 0.18  # a crab's carapace is widest forward
+RIM_TEETH = (-52.0, -34.0, -16.0, 16.0, 34.0, 52.0)  # the front rim's teeth (degrees from +z)
+
+
+def _carapace_shape(U: np.ndarray) -> np.ndarray:
+    """The unit sphere's points pressed into a crab's carapace: a low, full-shouldered dome over a shallow belly,
+    widest forward, with a lip round its rim."""
+    x, y, z = U[:, 0], U[:, 1], U[:, 2]
+    yy = np.where(y > 0, CARAPACE[1] * np.abs(y) ** 0.75, -0.6 * CARAPACE[1] * np.abs(y) ** 0.6)
+    lip = np.exp(-(y / 0.12) ** 2)
+    widen = 1.0 + FRONT_WIDEN * np.clip(z, 0.0, 1.0) * (1.0 - 0.5 * np.abs(x))
+    xx = CARAPACE[0] * x * widen * (1.0 + 0.07 * lip)
+    zz = CARAPACE[2] * z * (1.0 + 0.07 * lip)
+    return np.column_stack([xx, yy, zz])
+
+
+def _rim_point(deg: float) -> np.ndarray:
+    a = math.radians(deg)
+    return _carapace_shape(np.array([[math.sin(a), 0.0, math.cos(a)]]))[0]
+
+
 def body(mesh: ck.Mesh, rig: ck.Rig) -> None:
-    P, T = ck.ellipsoid(BODY, (0.3, 0.17, 0.36), 10, 18)
-    n = ck.fbm(P * 7.0, SEED)
-    wound = ck.smoothstep(0.92, 1.0, np.abs(np.sin((P[:, 0] * 1.3 + P[:, 2]) * 18.0 + n * 3.0))) * ck.smoothstep(
-        BODY[1] - 0.02, BODY[1] + 0.08, P[:, 1])
-    col = ck.mix(PAL["lacquer_black"], PAL["abyss_navy"], ck.smoothstep(-0.2, 0.4, n)[:, None])
+    """The carapace: wet black lacquer in plates (a median groove, two transverse sulci, the branchial grooves),
+    split along its grooves by glowing spawn_wound seams; teeth on the front rim; a pale-slate belly; a cluster of
+    small glowing eyes; mandible hooks under the brow (primitive pass, 2026-10-29)."""
+    U, T = ck.ellipsoid((0.0, 0.0, 0.0), (1.0, 1.0, 1.0), 14, 28)
+    P = _carapace_shape(U)
+    nrm = ck.vertex_normals(P, T)
+    top = ck.smoothstep(0.05, 0.5, U[:, 1])
+    ux, uz = U[:, 0], U[:, 2]
+    median = np.exp(-(ux / 0.07) ** 2) * ck.smoothstep(-0.7, -0.4, uz)
+    sulci = np.maximum(np.exp(-((uz - 0.38 + 0.35 * ux ** 2) / 0.05) ** 2),
+                       np.exp(-((uz + 0.12 + 0.3 * ux ** 2) / 0.05) ** 2)) * ck.smoothstep(0.08, 0.3, np.abs(ux) + 0.2)
+    branchial = np.exp(-((np.abs(ux) - 0.55 - 0.25 * uz) / 0.06) ** 2) * ck.smoothstep(0.5, -0.1, uz)
+    groove = np.clip(np.maximum(np.maximum(median, sulci), branchial) * top, 0.0, 1.0)
+    grain = ck.fbm(U * 9.0, SEED + 3)
+    ridge = np.exp(-(ux / 0.12) ** 2) * ck.smoothstep(-0.6, 0.2, uz) * top  # a raised spine down the back
+    P = P + nrm * (-0.014 * groove + 0.008 * grain * top + 0.018 * ridge * (1.0 - median))[:, None]
+    n = ck.fbm(U * 4.0, SEED)
+    split = ck.smoothstep(0.2, 0.45, ck.fbm(U * 2.5, SEED + 5))  # where the plates have split open
+    wound = ck.smoothstep(0.35, 0.8, groove) * split
+    belly = ck.smoothstep(0.0, -0.4, U[:, 1])
+    lip = np.exp(-(U[:, 1] / 0.1) ** 2)
+    col = ck.mix(PAL["lacquer_black"], PAL["abyss_navy"], ck.smoothstep(-0.2, 0.5, n)[:, None])
+    col = ck.mix(col, PAL["storm_slate"] * 0.8, (0.35 * lip)[:, None])  # the rim catches the light
+    col = ck.mix(col, PAL["storm_slate"] * 0.55, (0.8 * belly)[:, None])
+    col = ck.mix(col, PAL["lacquer_black"] * 0.5, (0.6 * groove)[:, None])
     col = ck.mix(col, PAL["spawn_wound"] * 0.55, wound[:, None])
-    ck.finish(mesh, P, T, "carapace", col, rig.rigid("body"), wet=1.0, cavity=0.2, emission=wound)
+    ck.finish(mesh, P + BODY, T, "carapace", col, rig.rigid("body"), wet=1.0 - 0.3 * belly,
+              cavity=np.clip(0.2 + 0.7 * groove, 0.0, 1.0), emission=wound)
+    for deg in RIM_TEETH:  # short, forward-leaning teeth along the brow
+        a = math.radians(deg)
+        base = _rim_point(deg)
+        out = np.array([math.sin(a), 0.15, math.cos(a) + 0.4])
+        out /= np.linalg.norm(out)
+        length = 0.07 if abs(deg) > 45 else 0.045
+        Pt, Tt = ck.tube(np.array([base - out * 0.012, base + out * length * 0.5, base + out * length]),
+                         np.array([0.02, 0.011, 0.002]), 5)
+        ck.finish(mesh, Pt + BODY, Tt, "carapace", ck.mix(PAL["lacquer_black"], PAL["storm_slate"], 0.25),
+                  rig.rigid("body"), wet=1.0, cavity=0.3)
     for s in (-1.0, 1.0):
         for k in range(3):  # a cluster of small glowing eyes
             Pe, Te = ck.ellipsoid(BODY + np.array([s * (0.05 + 0.04 * k), 0.12 - 0.02 * k, 0.32 - 0.02 * k]),
                                   (0.018,) * 3, 4, 6)
             ck.finish(mesh, Pe, Te, "carapace", PAL["spawn_wound"], rig.rigid("body"), wet=1.0, emission=1.0)
+        hook = BODY + np.array([[s * 0.05, -0.06, 0.3], [s * 0.06, -0.11, 0.37], [s * 0.025, -0.13, 0.41]])
+        Pm, Tm = ck.tube(ck.bezier(hook, 4), np.array([0.016, 0.012, 0.007, 0.002]), 5)
+        ck.finish(mesh, Pm, Tm, "carapace", PAL["lacquer_black"], rig.rigid("body"), wet=1.0, cavity=0.4)
+
+
+# Leg sections (radius per ring, hip to knee and knee to tip): knobs at the coxa, the knee and the ankle.
+LEG_A_R = np.array([0.04, 0.05, 0.032, 0.028, 0.027, 0.03, 0.044, 0.035])
+LEG_B_R = np.array([0.036, 0.025, 0.021, 0.02, 0.027, 0.016, 0.009, 0.003])
+LEG_SEGS = 6
+LEG_SQUASH = 0.8  # a crab leg's section is flattened
+FEMUR_SPINES = (0.45, 0.72)  # where on the femur its two spines stand
+
+
+def _ring_t(K: int, segs: int, caps: int = 2) -> np.ndarray:
+    """Each tube vertex's place along the tube (0 at the start, 1 at the end), caps included."""
+    return np.concatenate([np.repeat(np.linspace(0.0, 1.0, K), segs), [0.0, 1.0][:caps]])
+
+
+def _spine(mesh: ck.Mesh, at: np.ndarray, out: np.ndarray, length: float, radius: float, bone: int) -> None:
+    out = out / np.linalg.norm(out)
+    P, T = ck.tube(np.array([at - out * radius, at + out * length * 0.5, at + out * length]),
+                   np.array([radius, radius * 0.5, radius * 0.1]), 4)
+    ck.finish(mesh, P, T, "carapace", PAL["lacquer_black"], bone, wet=1.0)
 
 
 def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
+    """Twelve walking legs in three visible segments (a coxa knob, the femur arching up to a knee knob, the tibia and
+    dactyl down to a needle tip), the joints a dull, dry membrane, two spines on each femur; the two striking forelegs
+    end in flattened, serrated scythe blades."""
+    base = ck.mix(PAL["lacquer_black"], PAL["storm_slate"], 0.2)
+    membrane = PAL["storm_slate"] * 0.75  # a dull, dry joint between the lacquered segments
     for s, tag in ((1.0, "l"), (-1.0, "r")):
         for i in range(NLEG):
             hip, knee, tip = leg_pts(s, i)
-            for seg, p0, p1, r0, r1 in (("a", hip, knee, 0.03, 0.024), ("b", knee, tip, 0.022, 0.004)):
+            for seg, p0, p1, radii, joints in (("a", hip, knee, LEG_A_R, (0.12, 1.0)),
+                                               ("b", knee, tip, LEG_B_R, (0.0, 0.6))):
                 mid = (p0 + p1) / 2 + np.array([s * 0.04, 0.04 if seg == "a" else 0.0, 0.0])
-                P, T = ck.tube(ck.bezier([p0, mid, p1], 6), np.linspace(r0, r1, 6), 6)
-                ck.finish(mesh, P, T, "carapace", ck.mix(PAL["lacquer_black"], PAL["storm_slate"], 0.2),
-                          rig.rigid(f"leg_{tag}{i}_{seg}"), wet=1.0)
+                path = ck.bezier([p0, mid, p1], len(radii))
+                P, T = ck.tube(path, radii, LEG_SEGS, squash=LEG_SQUASH)
+                t = _ring_t(len(radii), LEG_SEGS)
+                joint = np.maximum(np.exp(-((t - joints[0]) / 0.045) ** 2), np.exp(-((t - joints[1]) / 0.045) ** 2))
+                col = ck.mix(base, membrane, (0.5 * joint)[:, None])
+                col = ck.mix(col, PAL["lacquer_black"] * 0.6, ck.smoothstep(0.75, 1.0, t)[:, None] * (seg == "b"))
+                # a wound seam split along the femur's top, glowing like the carapace's
+                side = np.concatenate([np.tile(np.cos(np.arange(LEG_SEGS) * 2.0 * math.pi / LEG_SEGS), len(radii)),
+                                       [0.0, 0.0]])
+                seam = (seg == "a") * ck.smoothstep(0.75, 1.0, side) * ck.smoothstep(0.2, 0.35, t) * ck.smoothstep(
+                    0.85, 0.7, t)
+                col = ck.mix(col, PAL["spawn_wound"] * 0.55, seam[:, None])
+                bone = rig.rigid(f"leg_{tag}{i}_{seg}")
+                ck.finish(mesh, P, T, "carapace", col, bone, wet=1.0 - 0.6 * joint, cavity=0.35 * joint,
+                          emission=seam)
+                if seg == "a":
+                    for u in FEMUR_SPINES:
+                        k = int(round(u * (len(path) - 1)))
+                        tan = path[min(k + 1, len(path) - 1)] - path[max(k - 1, 0)]
+                        up = np.array([s * 0.5, 1.0, 0.0])
+                        up -= tan * np.dot(up, tan) / np.dot(tan, tan)
+                        _spine(mesh, path[k], up, 0.035, 0.008, bone)
         for seg in ("", "_b"):
             b = rig.bones[rig.index(f"strike_{tag}{seg}")]
-            P, T = ck.tube(ck.bezier([b.head, b.tail], 6), np.linspace(0.04, 0.012 if seg else 0.03, 6), 7)
-            ck.finish(mesh, P, T, "carapace", PAL["lacquer_black"], rig.rigid(f"strike_{tag}{seg}"), wet=1.0)
+            head, tail = np.asarray(b.head), np.asarray(b.tail)
+            bone = rig.rigid(f"strike_{tag}{seg}")
+            if seg == "":
+                radii = np.array([0.04, 0.044, 0.038, 0.035, 0.034, 0.04])
+                P, T = ck.tube(ck.bezier([head, tail], len(radii)), radii, 7, squash=LEG_SQUASH)
+                t = _ring_t(len(radii), 7)
+                col = ck.mix(PAL["lacquer_black"], membrane, (0.7 * np.exp(-((t - 1.0) / 0.1) ** 2))[:, None])
+                ck.finish(mesh, P, T, "carapace", col, bone, wet=1.0)
+                continue
+            d = tail - head
+            path = ck.bezier([head, head + d * 0.4 + np.array([0.0, 0.1, 0.05]), tail + np.array([0.0, 0.09, 0.02]),
+                              tail], 8)
+            radii = np.array([0.036, 0.034, 0.03, 0.025, 0.019, 0.012, 0.006, 0.0015])
+            P, T = ck.tube(path, radii, 7, squash=0.42)  # a blade: thin across, deep in its own plane
+            t = _ring_t(len(radii), 7)
+            edge = ck.smoothstep(0.3, 1.0, t)
+            col = ck.mix(PAL["lacquer_black"], PAL["storm_slate"] * 0.9, (0.3 * edge)[:, None])
+            ck.finish(mesh, P, T, "carapace", col, bone, wet=1.0)
+            _tan, nrm, _bin = ck.frames_along(path)
+            for k in (2, 3, 4, 5):  # serrations along the blade's inner edge
+                _spine(mesh, path[k] - nrm[k] * radii[k] * 0.8, -nrm[k] + 0.4 * _tan[k], 0.03, 0.007, bone)
 
 
 def build_clips() -> list[ck.Clip]:
@@ -130,7 +257,8 @@ def build_mesh(rig: ck.Rig, name: str = "tide_crawler") -> ck.Mesh:
 def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
     """The clips kept off the floor (M3-CRE-631, common/grounding.py): a planted foot stays on the ground while the
     body rears, heaves or skitters over it (each leg turns up about its hip), and the striking legs ride over it."""
-    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
+    pinned = gr.pinned(rig, mesh, gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS), PINNED_LEGS)
+    return gr.reground(rig, mesh, pinned, GROUNDED_LIMBS)  # a held foot's toes back above the floor
 
 
 def main() -> None:

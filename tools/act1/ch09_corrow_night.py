@@ -123,6 +123,7 @@ def dressing() -> dict:
         pieces.append({"piece": "watcher_head_fallen", "at": [cf.r3(x), cf.r3(z)], "y": 1.2 + 0.7 * k,
                        "yaw_deg": cf.yaw_norm(a + dyaw), "block": "Rocks"})
     pieces += strand_pieces() + iskarra_pieces() + strand_kit_pieces()
+    pieces += flood_debris_pieces(pieces)
     for p in pieces:  # the night's rubble: dry broken laterite, not the wet black cw_rubble (GPU QA row 28's spheres)
         if p["piece"] in RUBBLE_PIECES and not p.get("kit_dir"):
             p["material_paths"] = dict(APRON_NIGHT)
@@ -267,6 +268,41 @@ def strand_kit_pieces() -> list[dict]:
     (x0, y0, z0), (x1, _y1, z1) = r["from"], r["to"]
     out.append({"piece": "mole_bridge", "at": [x0, z0], "y": y0,
                 "yaw_deg": cf.r3(-math.degrees(math.atan2(z1 - z0, x1 - x0)))})
+    return out
+
+
+# The low town flooded to the eaves (act1_ch09.md §9 Environment 1): the Corrow kit's flood_debris (M3-ENV-708: planks,
+# a door, a shutter, a basket, a cloth) adrift on the lake between the drowned houses: HOUSE_CLEAR_M to HOUSE_NEAR_M
+# from the nearest house's centre (their roofs stand out of the water). Seeded, so the dressing is reproducible.
+DEBRIS_COUNT = 12
+DEBRIS_SEED = 909
+HOUSE_CLEAR_M = 5.0
+HOUSE_NEAR_M = 12.0
+DEBRIS_EDGE_M = 6.0  # in from the lake's edges (the wall's apron on one side, the town's rise on the others)
+
+
+def flood_debris_pieces(pieces: list[dict]) -> list[dict]:
+    import random  # noqa: PLC0415
+
+    layout = json.loads(LAYOUT.read_text(encoding="utf-8"))
+    lake = next(b for b in layout["blocks"] if b["id"] == "LowTownLake")
+    (cx, cy, cz), (sx, _sy, sz) = lake["pos"], lake["size"]
+    water_y = next(w["pos"][1] for w in c8.story_waters(LAYOUT, ("LowTownLake",)))
+    houses = [p["at"] for p in pieces if p["piece"].startswith("lowtown_house")]
+    rng = random.Random(DEBRIS_SEED)
+    out: list[dict] = []
+    for _ in range(DEBRIS_COUNT * 50):
+        if len(out) == DEBRIS_COUNT:
+            break
+        x = cx + rng.uniform(-sx * 0.5 + DEBRIS_EDGE_M, sx * 0.5 - DEBRIS_EDGE_M)
+        z = cz + rng.uniform(-sz * 0.5 + DEBRIS_EDGE_M, sz * 0.5 - DEBRIS_EDGE_M)
+        near = min(math.hypot(x - hx, z - hz) for hx, hz in houses)
+        if not HOUSE_CLEAR_M <= near <= HOUSE_NEAR_M:  # in the open water among the houses (the plane runs on under
+            continue  # the bastion and the wall's apron, where nothing shows)
+        if any(math.hypot(x - o["at"][0], z - o["at"][1]) < HOUSE_CLEAR_M for o in out):
+            continue
+        out.append({"piece": "flood_debris", "at": [cf.r3(x), cf.r3(z)], "y": cf.r3(water_y),
+                     "yaw_deg": cf.r3(rng.uniform(0.0, 360.0)), "block": "LowTownLake"})
     return out
 
 

@@ -49,7 +49,7 @@ For eleven years he has walked the coasts. Wherever the sea takes someone (a swa
 - **IP note:** no hat, no coat worn off one arm, no eyewear, no gourd, **no mask or high collar over the face, and no eye effect** ([ADR 0020](../../decisions/0020-kerrid-restaging.md)). He carries no Order insignia and no title ([ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md)). Keep him clear of existing archetypes in this genre.
 
 ## Battle Tie-in
-Kerrid breaks things: Armor Break, Power Break, and heavy high-rank blows that cost a lot of time but end fights. As one of the dead, he can later learn a skill that ignores the Zombie status and one that **trades his own HP for allies' Regen** ("Spend the Light"). **Suggested Swell input:** a *weighted swing*, a single long charge you release at the right moment, more power the longer you dare.
+Kerrid breaks things: Sundered, Weakened, and heavy high-rank blows that cost a lot of time but end fights. As one of the dead, he can later learn a skill that ignores the Zombie status and one that **trades his own HP for allies' Regen** ("Spend the Light"). **Suggested Swell input:** a *weighted swing*, a single long charge you release at the right moment, more power the longer you dare.
 
 ## Relationships
 - **Asha:** the daughter of the woman who went down his stair for a stranger, and whom he got up it so that the Order could spend her.
@@ -57,3 +57,8 @@ Kerrid breaks things: Armor Break, Power Break, and heavy high-rank blows that c
 - **Toma:** a former Stillguard who came to the Corrow wall in 1002, at twenty-one, and served seven years there hearing the watch tell its captain's story. He never saw the man.
 - **Sefir:** the head of the Order that would Still him on sight. Sefir never knew his face and didn't kill him. Their confrontation at the Choir is fury with no shouting and no steel, and it is for Imra.
 - **Imra and Dace:** the Cantor he opened his gate for and the diver whose line he held. They were strangers to each other until his stair, and they were the last two he got up it. Both are in the storm.
+
+## Narrative answers for the art sheet (2026-10-29, [decisions_log N-27](../decisions_log.md))
+- **No breath** (no idle cycle, no sighs, no fog; he speaks without a visible intake) and **no tears** (the unrisen
+  don't weep).
+- **The anchor's shackle ring as the pommel:** welcome. **Skin desaturation:** keep 0.06, a pallor, never a monster.

@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3]
+[gd_scene load_steps=45 format=3]
 
 [ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_pemakar.gdshader" id="2_r"]
@@ -36,6 +36,7 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/paddy_tread_4m.glb" id="34_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/votive_lamp.glb" id="35_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_far_lights.gdshader" id="36_r"]
+[ext_resource type="Script" path="res://game/levels/act1/kit_slot_swaps.gd" id="slot_swaps"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -2683,3 +2684,7 @@ transform = Transform3D(0.490261, 0.0662764, -0.869052, -0, 0.997105, 0.076042, 
 
 [node name="lanternfall_low" type="Marker3D" parent="CameraHints"]
 transform = Transform3D(0.983282, -0.0262482, -0.180187, -0, 0.989556, -0.14415, 0.182089, 0.14174, 0.973012, -2, 0.6, 5.5)
+
+[node name="KitSlotSwaps" type="Node" parent="."]
+script = ExtResource("slot_swaps")
+paths = {"kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres", "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres", "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres", "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres", "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres", "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres"}

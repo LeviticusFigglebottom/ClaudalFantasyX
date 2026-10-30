@@ -21,7 +21,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
-import b_trial  # noqa: E402
+import b_spire_trial  # noqa: E402
 import cs_arena  # noqa: E402
 import cs_common as cs  # noqa: E402
 import cs_headland  # noqa: E402
@@ -31,7 +31,7 @@ import cs_tiers  # noqa: E402
 
 kc = cs.kc
 MAX_GLB_BYTES = 5 * 1024 * 1024  # ADR 0005
-MODULES = (cs_spire, cs_tiers, cs_hut, cs_headland, cs_arena, b_trial)  # cs_arena: M3-ENV-713; b_trial: env-art-b
+MODULES = (cs_spire, cs_tiers, cs_hut, cs_headland, cs_arena, b_spire_trial)  # cs_arena: M3-ENV-713; b_spire_trial: env-art-b
 
 
 def targets() -> dict:

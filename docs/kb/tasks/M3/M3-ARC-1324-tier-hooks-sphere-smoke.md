@@ -2,8 +2,8 @@
 id: M3-ARC-1324
 title: "Request: GraphicsRuntime.apply_system_tiers should also set WaterSphereRig's and SmokeColumn's tier"
 role: architect
-status: todo
-owner_session: ""
+status: review
+owner_session: "integration-qa (claude/hero-integration; architect seat)"
 depends_on: [M3-RND-26, M3-RND-21]
 milestone: M3
 request-from: rendering (env-art-b)
@@ -20,7 +20,13 @@ GlimmerField and UnderwaterRig, but not of two Rendering nodes that already have
 `game/core/**` is the Architect's (integration-qa's since the Lead's 2026-10-28 owners), so this is a request.
 
 ## Acceptance criteria
-- [ ] Two branches in `apply_system_tiers` (as `UndertowStorm`'s: `if n.get_quality() != preset and n.set_quality(preset)`).
-- [ ] A test in the existing graphics-runtime tests that a scene with both nodes follows a preset change.
+- [x] Two branches in `apply_system_tiers` (as `UndertowStorm`'s: `if n.get_quality() != preset and n.set_quality(preset)`).
+- [x] A test in the existing graphics-runtime tests that a scene with both nodes follows a preset change.
+
+## Notes
+- integration-qa, 2026-10-29: `apply_system_tiers` has the two branches, shaped like UndertowStorm's (each counts as
+  a change only when its tier moves; a preset with no quality row leaves it as it is). New
+  `tests/unit/test_graphics_runtime_system_tiers.gd`: both follow low → ultra, a repeat changes nothing, and an
+  unknown preset leaves both alone. Reviewer: rendering (env-art-b, the requester).
 
 ## Review log

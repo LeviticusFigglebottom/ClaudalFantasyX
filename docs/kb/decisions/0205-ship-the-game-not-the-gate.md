@@ -27,6 +27,12 @@ A batch was taking 10–12 hours, mostly a 6–8 h full screenshot capture on la
    Quality is not lowered: every open row still gets fixed properly.
 4. **Act II starts per track, not all at once.** A track starts Act II content (not just docs) as soon as it has **no open Act I row**. Its Act I rows always come first if new ones appear. Ownership rows and briefs from act2_tracks.md apply per track as each one starts. Act III stays paused.
 
+## Amendment (2026-10-30 02:55)
+big19's "shots the batch can affect" came to 254: one shared model (Asha's glb) reaches 45 shots. Capturing them blocked the merge for hours again, which is what the human ruled out.
+- **Screenshots never block a merge.** The batch merges once its blocking checks pass.
+- The affected shots are captured after the merge, in parallel, and the Lead views every one.
+- A visual regression found there becomes a FAST-TRACK for its owner.
+
 ## Consequences
 - A batch takes about an hour instead of half a day.
 - Rare visual regressions outside a batch's touched shots are caught by the daily full capture or by the PC's passes, and fixed as FAST-TRACKs.

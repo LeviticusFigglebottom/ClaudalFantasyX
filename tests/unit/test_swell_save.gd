@@ -267,8 +267,8 @@ func test_field_menus_list_and_choose_modes_from_the_saved_record() -> void:
 	assert_eq(rows.map(func(r: Dictionary) -> bool: return r["current"]), [false, false, true])
 	assert_true(BattleSwellCarry.set_mode(&"rhen", &"ballast", st))
 	assert_eq(st.party_vitals, {}, "back to the default: no entry")
-	assert_false(BattleSwellCarry.set_mode(&"kerrid", &"wake", st), "no Swell row")
-	assert_eq(BattleSwellCarry.mode_rows(&"kerrid", st), [] as Array[Dictionary])
+	assert_false(BattleSwellCarry.set_mode(&"no_such_hero", &"wake", st), "no Swell row")
+	assert_eq(BattleSwellCarry.mode_rows(&"no_such_hero", st), [] as Array[Dictionary])
 	Game.state.swell = {"unlocked": ["salve"]}
 	assert_true(BattleSwellCarry.rules().unlocked.has(&"salve"), "defaults to the live Game.state")
 	_done()

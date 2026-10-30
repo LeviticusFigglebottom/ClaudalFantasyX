@@ -4,7 +4,8 @@ extends TestCase
 ## hands off to the end card. Once sworn, the villagers' barks are their night blessings.
 
 const ZONE := "res://game/levels/ch02/haluna/haluna.tscn"
-const END_CARD := "res://game/flow/end_card.tscn"
+## B11 goes on into Ch4 through its chapter card (M3-CIN-1233), no longer the demo end card.
+const END_CARD := "res://game/flow/chapter_card.tscn"
 
 var zone: HalunaZone
 var story: HalunaStory

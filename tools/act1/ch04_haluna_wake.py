@@ -60,6 +60,7 @@ SPAWNS = {
     "DockEnd": dock(36.0) + (DOCK_OUT_YAW,),
     "DockShore": dock(4.0) + (DOCK_IN_YAW,),
     "WallDawn": (-12.5, -118.0, WALL_FACE_YAW),
+    "InkLamp": (-12.2, -118.6, 45.0),  # C4-07: Rhen beside H15, just behind its lens, turned to Ysolde at the gap
     "Shrine": (-67.0, 44.3, 180.0),  # the dressing's SaveShrine (haluna_shrine) respawns here, as on ch02/haluna
 }
 MARKS = {

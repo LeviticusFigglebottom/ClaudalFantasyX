@@ -33,6 +33,12 @@ WING = 3  # bones per wing
 THICK = 0.07  # the body's thickness over its middle (the underside is 0.6 of it)
 DOME = 0.04  # the back's camber across the span
 FRILL = 0.022  # the edge frill's ripple (the sail-like canvas edge)
+# The KO's fall (model metres) = the battle hover over the battle scene's scale: it hangs at 1.26 m in battle, at 1.3x,
+# below the battle camera, so the camera looks down onto its face and its pale canvas edge (the Act I audit: hung at eye
+# height it was seen edge-on, a row of glowing dashes on the night deck)
+KO_DROP = 0.97
+CANVAS_FROM = 0.74  # where the pale canvas edge begins (share of the radius)
+CANVAS = ck.hexrgb("#B9B1A0")  # old salt-bleached sailcloth
 FRILL_WAVES = 14.0
 SLIT_Z = (0.18, 0.11)  # the first wound slit's z and the step back to the next (four slits)
 EYE = (0.09, 0.29, 0.38)  # x, y and z of the eyes
@@ -141,14 +147,16 @@ def wing_body(mesh: ck.Mesh, rig: ck.Rig) -> None:
         batten = ck.smoothstep(0.55, 0.95, np.cos(A * BATTENS)) * ck.smoothstep(0.12, 0.3, R)
         batten = batten * (1 - ck.smoothstep(0.88, 0.99, R))
         P[:, 1] += (0.009 if top else -0.004) * batten
-        rim = ck.smoothstep(0.82, 0.98, R)
+        rim = ck.smoothstep(CANVAS_FROM, 0.98, R)
         if top:
             col = ck.mix(PAL["lacquer_black"], PAL["abyss_navy"], ck.smoothstep(-0.2, 0.4, n)[:, None])
             col = ck.mix(col, PAL["storm_slate"], (0.5 * batten)[:, None])
         else:
             col = np.tile(ck.mix(PAL["storm_slate"], PAL["deep_teal_shadow"], 0.4), (len(P), 1))
             col = ck.mix(col, PAL["lacquer_black"], (0.4 * batten)[:, None])
-        col = ck.mix(col, PAL["storm_slate"] * 1.5, (0.85 * canvas * rim)[:, None])  # the canvas-pale frill
+        # the canvas-pale frill: salt-white old sailcloth, the edge that draws the kite against a night deck (the Act I
+        # audit: storm slate fell to black in the Ch4 derelict's lantern-light)
+        col = ck.mix(col, CANVAS, (0.85 * canvas * rim)[:, None])
         col = ck.mix(col, PAL["lacquer_black"], (canvas * ck.smoothstep(0.97, 1.0, R))[:, None])  # a dark hem
         ck.finish(mesh, P, T, "carapace", col, skin, wet=1.0 - 0.8 * canvas * rim, cavity=0.25 * batten + 0.1)
 
@@ -294,8 +302,10 @@ def build_clips() -> list[ck.Clip]:
         hit.key("root", t, (10.0 * c, 0, 0), (0, -0.1 * c, -0.1 * c))
         for b, s, k in wings:
             hit.key(b, t, (0, 0, -18.0 * c * s))
-    ko = ck.Clip("ko", 1.6)  # it falls like a wet sheet to the deck (the hover is about 1.4 m)
-    for t, drop, fold in ((0.0, 0, 0), (0.4, 0.2, 0.5), (1.0, 1.25, -0.4), (1.3, 1.36, 0.2), (1.6, 1.38, 0.0)):
+    ko = ck.Clip("ko", 1.6)  # it falls like a wet sheet to the deck, from its hover (KO_DROP)
+    k = KO_DROP / 1.38  # the keys were drawn for a 1.38 m fall
+    for t, drop, fold in ((0.0, 0, 0), (0.4, 0.2 * k, 0.5), (1.0, 1.25 * k, -0.4), (1.3, 1.36 * k, 0.2),
+                          (1.6, KO_DROP, 0.0)):
         ko.key("root", t, (8.0 * min(t, 1.0), 0, 0), (0, -drop, 0))
         for b, s, k in wings:
             ko.key(b, t, (0, 0, -20.0 * fold * s))

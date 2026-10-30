@@ -25,6 +25,22 @@ def _arena_scenes():
     return mod
 
 
+
+def _zone_looks():
+    """tools/act1/ch05_09_zone_looks.py: the zones' slot looks, which the arena wears too (KitSlotSwaps, M3-ENV-1326)."""
+    path = Path(__file__).resolve().parents[4] / "tools" / "act1" / "ch05_09_zone_looks.py"
+    spec = importlib.util.spec_from_file_location("ch05_09_zone_looks", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _brine_looks(out: Path) -> None:
+    zl = _zone_looks()
+    gen = zl.load_generator("ch06_brine_shoals_dressing")
+    paths = {slot: gen.RES_ZONE + name for slot, (name, _) in gen.KIT_LOOKS.items()}
+    out.write_text(zl.add_kit_slot_swaps(out.read_text(encoding="utf-8"), paths), encoding="utf-8")
+
 def main(out_dir: Path | None = None) -> int:
     sys.path.insert(0, str(HERE))
     import b_smoke_columns
@@ -34,6 +50,7 @@ def main(out_dir: Path | None = None) -> int:
         AS.OUT_DIR = out_dir
     out = AS.write_arena(AS.SHOALS)
     print(f"ARENA {out.name} ({b_smoke_columns.swap(out)} smoke columns)")
+    _brine_looks(out)
     return 0
 
 

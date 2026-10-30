@@ -4,8 +4,9 @@ extends Node
 ## out inside one synchronized stream (the Drownbell's phase 2), a resume point per cue, and a hold that silences
 ## the bed while something else (a cutscene) owns the music. Time passes only through advance(delta).
 ## Changes land on the beat (M3-AUD-864): a new cue or a stop with a fade waits for the next beat of the cue sounding
-## (grid_of: the row's `beat`, else its file's .loop.json), so the old cue fades from a beat and the new one enters on it; a resumed cue picks
-## up on a beat of its own. A beat longer than beat_max_wait_sec is halved until it fits, so no change waits longer.
+## (grid_of: the row's `beat`, else its file's .loop.json), so the old cue fades from a beat and the new one enters
+## on it; a resumed cue picks up on a beat of its own. A beat longer than beat_max_wait_sec is halved until it fits,
+## so no change waits longer.
 
 signal cue_started(cue: StringName)
 

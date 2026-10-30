@@ -1,0 +1,109 @@
+# Gate session live log: big18
+
+The big18 cloud gate session (`session_01UPFyEAXofxWazWNnRTzFGJ`) builds `lead/gate-big18`, runs every check and
+publishes the shots to `lead/gate-big18-shots`. It never writes or approves baselines; the Lead views and approves
+every shot. Same process as big17 (`gate.md` on `lead/gate-big17`).
+
+## big18
+
+GATE-BUILT big18 @ 782be497 (branch `lead/gate-big18`), from `claude/new-session-mj8c3c` @ 96222b30 (big17).
+
+Pinned heads, merged with `--no-ff` in this order:
+1. claude/env-art @ d63eeea3: PROVENANCE by merge_union; pc-gpu.md kept ours (newer); M3-ENV-750's task file took
+   theirs (a superset: done, the reviewer's line).
+2. claude/env-art-b @ 0e9db81d: ownership.md kept both rows (append-only).
+3. claude/characters @ 9fe30416: pc-gpu.md ours. `oruvel_layout.json` scaleman: ours' position (m2-slice) with
+   theirs' new `scaleman_actor.tscn` model. `test_fp_prologue.gd` took theirs (Pell and Liss both have bodies now).
+4. claude/creatures @ 93829b74: shots.json by hand with merge_union's `merge_rows` (the criss-cross virtual base held
+   conflict markers, so merge_union crashed; base = f6846325, creatures' big17 head). `test_zone_cast.gd` took theirs
+   (creatures' fix of big17's known red "the fisher idles / out of step").
+5. claude/creatures-b @ 4d0150e3: clean.
+6. claude/battle-presentation @ b1316ebb: pc-gpu.md ours.
+7. claude/act1-chapters @ e7b065b4:
+   - `oruvel_layout.json` per key against the base: kell and O09 from theirs (only act1-chapters changed them, GPU QA
+     row 23); scaleman, O02, O07, O10, skipper_sadi and sabe from ours (changed on ours; Ch1 is m2-slice's).
+   - `oruvel_underway_layout.json` U03: both sides re-aimed it independently (m2-slice 70169542 "Rhen in the right
+     third", act1-chapters cb97a0cf "stepped clear of the post"); kept ours (Ch1's owner). See LEAD-ASK below.
+   - `ashcrown_layout.json`: theirs (act1-chapters owns Ch5 NPC placement: Kahre's actor, cameras) with ours'
+     `"cast": "tender"` (characters' M3-CHR-519 named NPCs).
+   - `coilspire_layout.json`: ours' casts (fenn, tender) plus theirs' new `virel` actor.
+   - `tools/act1/ch08_coilspire_dressing.py`: a comment-only conflict, kept ours (env-art-b owns it).
+   - M3-ENV-744's task: ours' `status: done` (the reviewer closed it as superseded), both review lines.
+8. claude/ui @ 3b792de6: shots.json by the same best-single-base `merge_rows` (base b2118f76); pc-gpu.md ours.
+9. claude/hero-integration @ b0ec6ffd: `test_hero_field_actor.gd` took theirs (hero-integration owns HeroFieldActor;
+   its check follows the data, so it holds with Pell's model in); pc-gpu.md ours.
+10. claude/m2-slice @ 8aa6f6a6: union files only.
+11. claude/audio @ 1cb9654d: no new commits since big17, not merged.
+
+Merge fallout fix (782be497): PROVENANCE's line union re-added 6 rows for deleted assets: the Haluna
+banyan/windbreak placeholders (M3-ENV-750), the ch04 wake dressing's 3 files (M3-ENV-744) and an old
+`shrine_offering.glb` row claude/ui still carries. Removed.
+
+Checks at the build: validate_data 0 errors 0 warnings; taskboard --check ok; gdlint and gdformat --check clean;
+no duplicate loc keys, PROVENANCE rows or shot ids (619 shots); no conflict markers; no `docs/kb/qa/gate-runs/**`
+images.
+
+LEAD-ANSWERED: Coilspire may show Virel twice. env-art-b's M3-ENV-1320 (22b289bf, already in big17) put her model in
+the crown chamber as a dressing piece (`coilspire_dressing.json` "piece": "virel"). act1-chapters' M3-CRE-627
+(ed235044) adds a ZoneCast `virel` actor on her coil, which hides after the binding. big18 keeps both, per ownership.
+One of them should go, probably the dressing piece, since the actor handles the after-binding state. Route to
+env-art-b and act1-chapters?
+LEAD-ANSWERED: Ch1 U03 (Oruvel Underway) and O02/scaleman (Oruvel) were re-framed by both m2-slice and act1-chapters (GPU
+QA row 23). big18 keeps m2-slice's (Ch1's owner). Check the shots; if act1-chapters' framing is wanted, it needs a
+follow-up on m2-slice's side.
+(Lead, 21:48: keep both Virels in big18; env-art-b drops the dressing piece on its branch for big19. Keeping
+m2-slice's Ch1 framing is right; the Lead judges the shots at review.)
+
+### big18 checks in progress (on 4ee3a7b8)
+- 2026-10-29 21:36 UTC: every non-shot step started (HYMN_STEP_TIMEOUT=10800, own HYMN_LOG_DIR and XDG_DATA_HOME;
+  each step runs even if an earlier one fails). Data 0/0; audio, manifest ok.
+- **Tool suite: 186 units, 1930 tests, 3 failing units** (big17: 4 failing). Fixed since big17: test_freed_cast_lint,
+  test_npc, test_post_import.
+  - test_screenshots: `villager_shopkeeper_front` has no baseline. **Known on big17.**
+  - **NEW, branch content:** test_zone_map_pois: "ch01/oruvel/kell (actor:kell): at [31.0, -7.5] but the source is
+    at [29.0, -7.0]". act1-chapters' cb97a0cf (GPU QA row 23) moved Kell without moving her zone-map POI. It's red
+    on `claude/act1-chapters` @ e7b065b4 alone too. Route to act1-chapters.
+  - **NEW, merge fallout, fixed (4ee3a7b8):** test_glimmer_forms: `glimmer_forms.json` was stale. m2-slice's forms
+    (green on its own head) sample creatures' rebuilt models. Regenerated with `tools/cutscene/glimmer_forms.py`
+    (two coordinates moved by under 0.01).
+- Blender: 78 jobs touched since `origin/lead/gate-big17` (1bdaea53): heroes, villagers, crowd, creatures and 7
+  zone kits. As on big17, they run after the timing-sensitive suite.
+- 22:06 UTC: Godot import clean (pass 2). **Suite: 3271 run, 5 failed** (4330 s), plus the known parse error.
+  big17's routed reds are all green now (ch04 wake camera, Iskarra VigilLights, zone_cast idles, Pell's portrait).
+  - Known on big17: test_cutscene_vfx_hosts.gd parse error (`CutsceneMotes` doesn't exist, ADR 0041's 93c1aa2d).
+  - **NEW, two fixes contradict:** test_battle_party_stand_ins::test_liss_names_her_battle_wrapper...: "expected
+    <#7A8C5A> got <#7A8F6A> her timeline tint". The Lead's big14 fix 0875dc95 set the test to #7A8C5A (her landed
+    actor's row); claude/ui's M3-HER-1120 (c2d3a9b7) put `battle_sandbox.json` back to the spec's #7A8F6A, and its
+    own test says #7A8F6A. The merge kept the Lead's test and ui's data. Not fixed on the gate: which tint is right?
+  - **NEW, cross-branch:** test_cutscene_directives::test_every_cue_key_has_code_behind_it: "@vfx follow= / anchors=
+    is in cues.json but no cutscene code reads it". m2-slice's new guard (f8f4d802) meets hero-integration's
+    M3-ARC-1326 keys (5f59e287), which `cutscene_vfx_hosts.gd` hands to hosts whole and never names. Each branch
+    is green alone. Route to m2-slice and hero-integration (UNSUPPORTED_KWARGS or name the keys in the host).
+  - **NEW, branch content:** test_slice_shots::test_every_slice_shot_boots_its_rig: "slice_dock_night_yes holds a line
+    of its scene (ch03_dock_007)". m2-slice's f7a5f332 gave the shot `hold_line` but it plays a `story_call` with
+    no `scene_id`, so the test reads `compiled/.json`. The shot and test are identical on `claude/m2-slice`. Route
+    to m2-slice.
+  - **NEW:** test_qa_threads::test_every_thread_plays_through_clean: in every chapter thread (ch01, 04–09, fp),
+    "an unexplained warning: WaterSurface <zone>/Water: another WaterSurface already publishes hymn_water_level".
+    Neither water_surface.gd nor the thread test changed since big17. Probing which branch brings it (below).
+- Boot smoke: no ERROR lines.
+- Coverage, report-only: `--filter=battle` aborted with no numbers (the Liss tint red fails under instrumentation
+  too). `--filter=progression` matches no test file (0 run), so it aborted; re-running as `--filter=lattice`
+  (game/progression's lattice tests), and battle in a scratch copy with only the Liss assertion changed.
+- test_qa_threads, traced further:
+  - Alone on big18 it has no water warnings but fails on 5 "CutsceneGrade: no grade 'ch02' / 'ch03' / 'ch03_steps' /
+    'ch03_shrine_int' / 'ch03_boss' in the zones' grade tables (M3-ENV-106)". **Red on `claude/m2-slice` @ 8aa6f6a6
+    alone too** (f8f4d802's grades), so branch content: route to m2-slice. In the full suite those warnings don't fire
+    (an earlier test loads the grade tables), which is why the full run shows the water warnings instead.
+  - The water warnings ("another WaterSurface already publishes hymn_water_level") come from test order. The battle
+    tests emit the same 5 on big17 and big18, and the ch01 thread alone is clean on big17, ui and big18. So a
+    publisher left by an earlier test reaches the threads. Still being narrowed (`--filter=test_qa_`).
+- Blender (78 jobs since big17): 46 identical so far. brine_shoals_kit FAIL, 3 DIFF, **also red on big17**:
+  `camp_tent_burned.glb` (env-art's 02d8d671, M3-ENV-1316, changed the tent's sag without rebuilding the burned
+  tent; route to env-art), plus `bs_fire_core.tres` and `bs_fire_outer.tres` "committed but not produced by the build"
+  (red on `claude/env-art-b` alone too; route to env-art-b).
+
+**PLAN CHANGE (Lead, 2026-10-30 01:29 UTC):** big18's screenshots are skipped. big19 = big18 + the integration
+branch (ADRs 0202–0204, the Act II plan, the 187 approved big17 baselines) + the current track heads. It is built,
+checked and captured instead; see `gate-big19.md`. big18's Blender run and the water probe finish and are logged
+here for the comparison; there is no GATE-DONE for big18.

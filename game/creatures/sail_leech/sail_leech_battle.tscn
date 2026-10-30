@@ -9,3 +9,4 @@ creature_id = &"sail_leech"
 metadata/hymn_battle_actor = true
 
 [node name="Model" parent="." instance=ExtResource("2_model")]
+transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0)
