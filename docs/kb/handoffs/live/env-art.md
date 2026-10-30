@@ -589,6 +589,24 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ 6afe97f1: the Lead's pass-3 rows (`act1_gpu_qa.md` on `gpu/act1-qa-3`), each self-rendered and viewed.**
+  - **Row 59 (`ch01_o10_gull`, a crude faceted bird on a plain box): env-art's, fixed.** It is the Oruvel kit's
+    `lintel_gull_open` (`village.lintel_gull`, not creatures'). A `fine` carving for the O10 close-up: 16-sided lofts on
+    17 rings (was 9 x 9) under finer adze facets, three feather grooves raised along each wing, oiled eyes, a moulded
+    perch with carved feet; it stands on the new `gull_post` (5331498f), not the greybox block. Budget 3600 (2960 tris).
+    Haluna's lintel gulls keep the plain carving (haluna_kit rebuilt byte-identical). Viewed: O10 reads as carved wood.
+  - **Rows 25 / 47, f01 and the landing pier (pure black):** fixed by `islet_fill()` in 2e2233c3 (after pass 3's
+    84422d11); the islet's new rock dressing (312270ef) gives it relief. Viewed: f01's lower half and the Landing spawn's
+    views read. **FerryAft (the camera in the cabin, against Rhen):** the field camera at a spawn, not geometry:
+    hero-integration's (field camera) with act1-chapters (the spawn). **LEAD-ASK:** route it.
+  - **Row 24 (the wake walk: DockShore's camera inside Rhen; FeastEdge, InkLamp, WallDawn looking straight down):** field
+    camera behaviour at spawns too (the wake's `camera_volumes` are act1-chapters'). No wall or piece is in the lens.
+    **LEAD-ASK:** route to hero-integration / act1-chapters.
+  - **Row 43 (`field_hud_over_haluna_wake`):** fixed in f06c190d (the real wake rig; ui-menus re-baselines).
+  - **The bell-room haze:** fixed in 2e2233c3.
+  - **Checks:** `test_oruvel_kit`, `test_haluna_kit`, `test_zone_dressing_ch01` OK; validate_data; Blender haluna_kit
+    (identical) and oruvel_kit (only `lintel_gull_open` and the manifest changed). Drift: `ch01_o10_gull`, the Oruvel
+    shots that see a ridge gull.
 - **MERGE-READY @ 2e2233c3 (+ f06c190d): the Lead's three real-GPU pass-3 items on big18; integration ccf44ba4+ merged in.**
   1. **`brightwater_landing_f01`, the lower half black:** the islet landing in the foreground had no light (no lamp, the
      moon behind the sea). `islet_fill()` in `tools/act1/ch04_ferry_dressing.py`: the cold sky fill (#9DB4D6, shadowless,
