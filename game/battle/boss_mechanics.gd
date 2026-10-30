@@ -168,6 +168,7 @@ static func after_action(engine: BattleEngine, actor: BattleCombatant, sk: Dicti
 		if t.weak_hits >= int(t.weak_point.get("hits", 1)):
 			var broken := t.charge_skill
 			t.clear_charge()
+			BattleParts.on_charge_broken(t, broken)  # M4-A2P-022: a declared part stays broken
 			hit["charge_broken"] = broken
 			engine.charge_broken.emit(t, broken)
 	_cleanse_and_react(engine, sk, result)

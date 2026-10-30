@@ -125,6 +125,11 @@ var damage_immune := false
 var glides := false
 var ambushes := false
 var covered := false
+## M4-A2P-022 (BattleParts): enemies.json "parts" (the charge skills that are breakable parts), the ones broken now
+## (oldest first; a restores_part skill mends the first), and whether the party has landed a blow on it yet.
+var parts: Array[StringName] = []
+var broken_parts: Array[StringName] = []
+var struck := false
 ## enemies.json "hp_floor_pct": hits never take it below this share of max HP (the Reach can't fall
 ## before its last phase begins). -1 = none.
 var hp_floor_pct := -1
@@ -164,6 +169,8 @@ static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> Ba
 	c.delay_immune = bool(d.get("delay_immune", false))
 	c.glides = bool(d.get("glide", false))
 	c.ambushes = bool(d.get("ambush", false))
+	for p: Variant in d.get("parts", []):
+		c.parts.append(StringName(str(p)))
 	c.phases = (d.get("phases", []) as Array).duplicate(true)
 	c.weak_point = (d.get("weak_point", {}) as Dictionary).duplicate(true)
 	c.field = StringName(str(d.get("field", "")))

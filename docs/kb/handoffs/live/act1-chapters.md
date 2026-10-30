@@ -604,6 +604,16 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Next: M4-A2P-022, part repair (the Lamp Engine's answer). It unblocks the Lamp Engine's role band.
 - MERGE-READY @ 42e34dcbe
 
+- **M4-A2P-022 part repair (combat seat): the engine is in.**
+  - BattleParts: lasting broken parts, `restores_part`, and the AI keys `ally_part_broken`, `ally_struck` and
+    `broken_ally`. Tests and validator added.
+  - The data (the Lamp Engine's rings, the conduit crawler) waits on battle-presentation's `lamp_engine` row reaching
+    integration.
+  - Requested the stage relight from battle-presentation (M3-BPR-441).
+  - Checks: battle_parts, battle_engine, boss, set_piece, sim, validate, lint and format.
+  - Next: M4-A2P-023, part-break targeting (the flat-engine).
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.

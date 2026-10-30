@@ -7,10 +7,13 @@ extends RefCounted
 ## Conditions: self_hp_below_pct:int, turn_mod:[n, r], foe_has_status:String,
 ##             allies_alive_below:int, field_active:String (a field in BattleEngine.fields),
 ##             ward_has_status:String (the battle's ward entry has it: a Squall Wing dives a hauled
-##             rope; M3-CMB-01)
+##             rope; M3-CMB-01), ally_part_broken:bool and ally_struck:bool (M4-A2P-022, BattleParts:
+##             a living ally, itself included, has a broken part / has been struck by the party)
 ## Targets:    random_foe, lowest_hp_foe, highest_hp_foe, self, random_ally, all_foes, all_allies,
 ##             largest_ally (the living ally with the highest max HP: a boss its adds tend),
-##             ward (the battle's ward entry, for a skill whose target is "ward"; M3-CMB-01)
+##             ward (the battle's ward entry, for a skill whose target is "ward"; M3-CMB-01),
+##             broken_ally (the first living ally with a broken part; M4-A2P-022)
+## An option whose charge is a part broken on the actor is never picked (BattleParts.silenced).
 ## turn_mod counts the actor's turns since its current phase began (BossMechanics).
 ## A Provoked enemy's single-foe skills always target its provoker (formulas.md § Statuses).
 
@@ -23,6 +26,8 @@ static func choose(engine: BattleEngine, actor: BattleCombatant) -> Dictionary:
 			if option.is_empty():
 				continue
 			var skill_id := StringName(str(option["skill"]))
+			if BattleParts.silenced(engine, actor, skill_id):
+				continue
 			var selector := StringName(str(option.get("target", "random_foe")))
 			var targets := select_targets(engine, actor, selector)
 			if targets.is_empty():
@@ -62,6 +67,10 @@ static func select_targets(
 			var w := engine.ward()
 			if w != null:
 				out.append(w)
+		&"broken_ally":
+			var b := BattleParts.broken_ally(engine, actor)
+			if b != null:
+				out.append(b)
 		&"all_foes":
 			out = foes
 		&"all_allies":
@@ -111,8 +120,9 @@ static func predicted_skill(engine: BattleEngine, actor: BattleCombatant, ahead:
 		var best: Dictionary = {}
 		for o: Variant in r.get("pick", []) as Array:
 			var opt: Dictionary = o
-			var row := engine.db.skill(StringName(str(opt["skill"])))
-			if int(opt.get("weight", 1)) <= 0 or row.is_empty():
+			var sid := StringName(str(opt["skill"]))
+			var row := engine.db.skill(sid)
+			if int(opt.get("weight", 1)) <= 0 or row.is_empty() or BattleParts.silenced(engine, actor, sid):
 				continue
 			if best.is_empty() or _rank(row) < _rank(best):
 				best = row
@@ -158,6 +168,10 @@ static func _holds(engine: BattleEngine, actor: BattleCombatant, key: StringName
 		&"ward_has_status":
 			var w := engine.ward()
 			ok = w != null and w.has_status(StringName(str(arg)))
+		&"ally_part_broken":
+			ok = (BattleParts.broken_ally(engine, actor) != null) == bool(arg)
+		&"ally_struck":
+			ok = BattleParts.ally_struck(engine, actor) == bool(arg)
 		_:
 			push_error("EnemyAI: unknown condition '%s'" % key)
 			ok = false

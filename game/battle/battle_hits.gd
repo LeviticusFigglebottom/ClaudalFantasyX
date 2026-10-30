@@ -8,9 +8,9 @@ extends RefCounted
 ## The hit dictionary for `sk` from `actor` landing on `target` (after Reflect):
 ## {target_id, hit, crit, amount (HP lost; < 0 heals), statuses_added, element}, plus "read" for
 ## Read, "delay_ticks" when it pushes the target back, "drained" (the HP its user won back, M4-CMB-1001)
-## for a drain, "rooted" (own turns it can't be swapped out, M4-A2P-020) for a root, and "absorbed"
-## (the HP the target's absorb affinity drank, before the max-HP cap: ADR 0027 A1, the Vowbound
-## gauge) when it absorbs.
+## for a drain, "part_restored" (the part a restores_part skill mended, M4-A2P-022), "rooted" (own
+## turns it can't be swapped out, M4-A2P-020) for a root, and "absorbed" (the HP the target's absorb
+## affinity drank, before the max-HP cap: ADR 0027 A1, the Vowbound gauge) when it absorbs.
 static func resolve(
 	engine: BattleEngine, actor: BattleCombatant, target: BattleCombatant, sk: Dictionary
 ) -> Dictionary:
@@ -72,6 +72,11 @@ static func resolve(
 		_:
 			push_error("BattleEngine: unknown skill kind '%s'" % kind)
 	_drain(actor, hit, sk)
+	if actor.team != target.team and int(hit["amount"]) > 0:
+		target.struck = true  # M4-A2P-022: a tender wakes once its keeper is struck (EnemyAI ally_struck)
+	var mended := BattleParts.restore(engine, target, sk)
+	if mended != &"":
+		hit["part_restored"] = mended
 	added.append_array(_inflict(engine, actor, target, sk))
 	hit["statuses_added"] = added
 	var delay_ranks := int(sk.get("delay_ranks", 0))

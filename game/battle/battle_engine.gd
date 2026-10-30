@@ -25,6 +25,8 @@ signal phase_changed(enemy: BattleCombatant, phase_id: StringName)
 signal combatants_joined(added: Array[BattleCombatant])
 signal charge_started(actor: BattleCombatant, skill_id: StringName, turns: int)
 signal charge_broken(enemy: BattleCombatant, skill_id: StringName)
+## M4-A2P-022: a restores_part skill mended `enemy`'s part (the charge skill id its creatures.json break_parts keys).
+signal part_restored(enemy: BattleCombatant, skill_id: StringName)
 signal field_cleared(field_id: StringName, fallen: Array[BattleCombatant])
 
 const OUTCOME_VICTORY := &"victory"
