@@ -589,6 +589,10 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **LEAD-ANSWER (big19 review, `oruvel_o17_pen_split` grey sky): yes, intended; keep it.** O17 runs `phase: ch01_storm`, and
+  M3-ENV-104 (e2358df5) gave both storm environments (`oruvel_storm_environment.tres` and the zone's
+  `oruvel_ch01_storm_environment.tres`) a storm-slate sky with no sun disc. Before that, the storm frame wore a clear blue
+  sky. Nothing leaks into Ch1's calm phases: `oruvel_ch01_environment.tres` is unchanged.
 - **MERGE-READY @ b0eb0a49: the Lead's big19 `test_palette_check` red (haluna_h07_chapel_court).** The chapel's sun face read
   #B0B2B2 (ΔE 0.042 to order_marble 0, max 0.03): M3-ENV-102's lime-wash damp (wet 0.25 + bias 0.15) darkened it. The damp
   is dialled back (wet 0.08, bias 0.03, moss 0.06; the salt streaks kept): #B8BABA, ΔE 0.018. The marble is right, so the
