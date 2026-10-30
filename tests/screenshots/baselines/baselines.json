@@ -1883,12 +1883,6 @@
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
   },
-  "slice_end_card": {
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
-    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_driver": "vulkan",
-    "rendering_method": "forward_plus"
-  },
   "slice_end_card_voice": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
