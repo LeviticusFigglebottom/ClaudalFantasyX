@@ -1,12 +1,12 @@
 {
-  "_doc": "The gallery ray's surfaces (docs/kb/art/creatures/act2/gallery_ray.md). Slots are the glTF material names; write_materials.py writes assets/creatures/gallery_ray/materials/<slot>.tres on game/shaders/creature/creature.gdshader. body is the pale disc (a salt_glass back mottled toward cumulus_shadow and freckled, a bone belly, by vertex colour), its keel, eye sockets, brow ridges and spiracle rims, the tail, its barb and the pelvic lobes, whose emission mask is the one small closed spawn_wound lens on the camera-side spiracle's shut valve (the weak point, ADR 0151); margin is the outer band of the wings, the same pale skin carrying the ray's own faint sea_glow (its light, not glimmer: a low energy and a slow swell), with a rim sheen; eye is wet lacquer_black. Colours are palette.json swatches.",
+  "_doc": "The gallery ray's surfaces (docs/kb/art/creatures/act2/gallery_ray.md). Slots are the glTF material names; write_materials.py writes assets/creatures/gallery_ray/materials/<slot>.tres on game/shaders/creature/creature.gdshader. body is the dusky disc (a cumulus_shadow back mottled toward lacquer_black, freckled with salt_glass, a bone belly, by vertex colour; a low clearcoat, since a wet sheen at the battle camera's grazing angle washed the back white), its keel, eye sockets, brow ridges and spiracle rims, the tail, its barb and the pelvic lobes, whose emission mask is the one small closed spawn_wound lens on the camera-side spiracle's shut valve (the weak point, ADR 0151); margin is the outer band of the wings, the same skin carrying the ray's own faint sea_glow (its light, not glimmer: a slow swell, brighter since the Act II plan so the disc's outline reads on salt-glass), with a rim sheen; eye is wet lacquer_black. Colours are palette.json swatches.",
   "slots": {
-    "body": {"roughness_dry": 0.4, "roughness_wet": 0.15, "specular": 0.55, "wet_darken": 0.35, "clearcoat_wet": 0.6,
+    "body": {"roughness_dry": 0.55, "roughness_wet": 0.15, "specular": 0.4, "wet_darken": 0.35, "clearcoat_wet": 0.25,
              "detail_scale": 40.0, "detail_albedo": 0.06, "detail_bump": 0.12, "cavity_albedo": 0.5,
              "emission_color": "#3FE0C8", "emission_energy": 1.8, "emission_pulse_hz": 0.3, "emission_pulse_depth": 0.4},
     "margin": {"roughness_dry": 0.35, "roughness_wet": 0.15, "specular": 0.55, "wet_darken": 0.35, "clearcoat_wet": 0.6,
                "detail_scale": 40.0, "detail_albedo": 0.04, "detail_bump": 0.06, "rim_sheen": 0.5,
-               "emission_color": "#1C6B78", "emission_energy": 0.8, "emission_pulse_hz": 0.12, "emission_pulse_depth": 0.3},
+               "emission_color": "#1C6B78", "emission_energy": 1.6, "emission_pulse_hz": 0.12, "emission_pulse_depth": 0.3},
     "eye": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "clearcoat_wet": 1.0, "detail_albedo": 0.0,
             "detail_bump": 0.0}
   }

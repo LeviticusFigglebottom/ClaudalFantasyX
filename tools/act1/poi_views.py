@@ -31,6 +31,15 @@ RIGS = {
     "ch06/brine_shoals": "ch06_brine_shoals_shots", "ch07/tamsule": "ch07_tamsule_shots",
     "ch07/tamsule_bell_galleries": "ch07_bell_shots", "ch08/corrow": "ch08_corrow_shots",
     "ch08/coilspire": "ch08_coilspire_shots", "ch09/corrow_night": "ch09_corrow_night_shots",
+    "ch10/ossa_fen": "ch10_ossa_fen_shots", "ch10/reedhollow": "ch10_reedhollow_shots",  # M4-A2P-010 (ADR 0205)
+    "ch11/sunken_vey": "ch11_sunken_vey_shots", "ch11/lowlight": "ch11_lowlight_shots",  # M4-A2P-011
+    "ch12/keth_pass": "ch12_keth_pass_shots", "ch12/quellan": "ch12_quellan_shots",  # M4-A2P-012
+    "ch12/cloudloom": "ch12_cloudloom_shots",
+    "ch13/ansedra": "ch13_ansedra_shots", "ch13/sanctum": "ch13_sanctum_shots",  # M4-A2P-013
+    "ch13/lamp_archive": "ch13_lamp_archive_shots",
+    "ch13/ansedra_lacquer_court": "ch14_lacquer_court_shots",  # M4-A2P-014
+    "ch15/open_sea": "ch15_open_sea_shots", "ch17/hollowmere": "ch15_hollowmere_shots",  # M4-A2P-015
+    "ch16/pale_rim": "ch16_pale_rim_shots", "ch16/drowned_choir": "ch16_drowned_choir_shots",  # M4-A2P-016
 }
 RIG_DIR = "game/levels/_tests/act1_zones"
 PREVIEW = ROOT / RIG_DIR / "_preview"

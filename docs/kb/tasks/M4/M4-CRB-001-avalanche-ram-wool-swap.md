@@ -2,8 +2,7 @@
 id: M4-CRB-001
 title: "Avalanche Ram wool swap: no ice on the Ch12 boss (ADR 0015), matted snow-caked wool and stone instead"
 role: character
-status: blocked
-blocked-by: ADR 0203
+status: done
 owner_session: "creatures-b"
 depends_on: []
 reviewer: rendering
@@ -35,3 +34,6 @@ stone** (snow on the pass is weather, so caked snow is allowed; nothing is froze
   sheets' README, not part of this task.
 
 ## Review log
+- 2026-10-30, creatures-b: closed as a duplicate of the Lead's M4-A2P-059 (filed the same day by the act2-plan track),
+  which carries the work. Its "wet, matted, seep-lit wool" reading replaces this task's "snow-caked" one where they
+  differ; the snow-and-grit reading stays for the Ch12 regulars (M4-CRE-701).

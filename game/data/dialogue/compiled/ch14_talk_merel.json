@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch14_talk_merel",
+ "source": "game/data/dialogue/ch14/ch14_talk_merel.dlg",
+ "start": "ch14_talk_merel",
+ "nodes": {
+  "ch14_talk_merel": {
+   "headers": {"location": "ch13/ansedra_lacquer_court"},
+   "ops": [
+    {"op": "line", "id": "ch14_merel_001", "key": "DLG_CH14_MEREL_001", "speaker": "merel", "emotion": "soft_smile", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

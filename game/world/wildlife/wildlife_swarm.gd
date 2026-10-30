@@ -1,21 +1,25 @@
 class_name WildlifeSwarm
 extends RefCounted
-## One group of ambient insects (M3-CRE-616, docs/kb/art/wildlife.md), of one of two types:
+## One group of ambient insects (M3-CRE-616, docs/kb/art/wildlife.md), of one of three types:
 ## - moth: a few moths looping round a point (a lamp), each on its own tilted, bobbing orbit, with a jitter that is
 ##   re-drawn every fraction of a second and, now and then, a dart (a sudden larger jitter, chased fast). Moths
 ##   ignore the player.
 ## - dragonfly: a few dragonflies holding a hover (a slight drift), then darting in a straight, eased line to a new
 ##   spot within the area; now and then one darts to a free perch (if the row has `perches`) and sits there with
 ##   its wings still. A player within flee_radius_m makes a dragonfly dart away, perched or not.
+## - firefly (Ch10, M4-A2P-056): the moth's orbit, slower and lower, each with a lantern that flashes once every
+##   blink_s (its own period and phase), rising and falling over blink_on_s, and between flashes keeps a faint
+##   glow_floor. The blink is the instance's mode parameter (the shader's mode 6).
 ## Every insect stays inside the area: within radius_m of the centre and height_m of its y (a perch excepted).
 ## The wing beat is the shader's flutter (mode 5), driven by each insect's phase. Headless and deterministic (the
-## seed and the frame deltas). Tuning is the `insect` kind of wildlife.json (its `moth` and `dragonfly` tables);
-## placement is a zone file's `swarms` row.
+## seed and the frame deltas). Tuning is the `insect` kind of wildlife.json (its `moth`, `dragonfly` and `firefly`
+## tables); placement is a zone file's `swarms` row.
 
 enum State { HOVER, DART, PERCHED }
 
 const TYPE_MOTH := "moth"
 const TYPE_DRAGONFLY := "dragonfly"
+const TYPE_FIREFLY := "firefly"
 ## Numeric floors (not tuning): a zero distance or segment.
 const MIN_DISTANCE_M := 1e-4
 const MIN_SEGMENT_S := 0.01
@@ -55,6 +59,10 @@ class Insect:
 	var perch := -1
 	var drift_phase := 0.0
 	var drift_hz := 0.0
+	## Firefly: where it is in its blink cycle (seconds), the cycle's length, and the lantern now (0 .. 1).
+	var blink_t := 0.0
+	var blink_period := 1.0
+	var glow := 0.0
 
 
 var id := ""
@@ -86,8 +94,8 @@ func _init(row: Dictionary, kind: Dictionary, seed_value: int, count: int) -> vo
 		perches.append(Vector4(float(a[0]), float(a[1]), float(a[2]), deg_to_rad(float(a[3]))))
 		_occupied.append(false)
 	for i in count:
-		insects.append(_new_moth() if is_moth() else _new_dragonfly())
-	var pad := 0.0 if is_moth() else _f("drift_m") * DRIFT_REACH
+		insects.append(_new_moth() if is_orbiter() else _new_dragonfly())
+	var pad := 0.0 if is_orbiter() else _f("drift_m") * DRIFT_REACH
 	var ext := Vector3(radius + pad, height + pad, radius + pad)
 	bounds = AABB(center - ext, ext * 2.0)
 	for p in perches:
@@ -108,6 +116,15 @@ func count() -> int:
 
 func is_moth() -> bool:
 	return swarm_type == TYPE_MOTH
+
+
+func is_firefly() -> bool:
+	return swarm_type == TYPE_FIREFLY
+
+
+## Moths and fireflies fly the orbit; dragonflies hover and dart.
+func is_orbiter() -> bool:
+	return is_moth() or is_firefly()
 
 
 func perched_count() -> int:
@@ -138,9 +155,11 @@ func _random_point() -> Vector3:
 
 
 func step(delta: float, player: Vector3, has_player: bool) -> void:
-	if is_moth():
+	if is_orbiter():
 		for m in insects:
 			_step_moth(m, delta)
+			if is_firefly():
+				_step_blink(m, delta)
 		return
 	var pp := Vector2(player.x, player.z)
 	var flee_r := _f("flee_radius_m")
@@ -177,6 +196,10 @@ func _new_moth() -> Insect:
 	m.phase = _rng.randf() * TAU
 	m.amp = _f("flutter_amp")
 	m.dart_timer = _r("dart_s") * _rng.randf()
+	if is_firefly():
+		m.blink_period = _r("blink_s")
+		m.blink_t = _rng.randf() * m.blink_period
+		m.glow = _blink_glow(m)
 	m.pos = _moth_goal(m)
 	var turn := signf(m.omega)
 	m.yaw = atan2(-sin(m.theta) * turn, cos(m.theta) * turn)  # along the orbit
@@ -323,11 +346,32 @@ func _move_dragonfly(d: Insect, delta: float) -> void:
 	d.phase = fposmod(d.phase + TAU * d.flutter_hz * delta, TAU)
 
 
+# --- fireflies --------------------------------------------------------------------------------------------------
+## The lantern over its cycle: a flash that rises and falls over blink_on_s (a sine squared), then glow_floor.
+func _blink_glow(m: Insect) -> float:
+	var on := _f("blink_on_s")
+	var floor_glow := _f("glow_floor")
+	if m.blink_t >= on:
+		return floor_glow
+	var s := sin(PI * m.blink_t / on)
+	return maxf(s * s, floor_glow)
+
+
+func _step_blink(m: Insect, delta: float) -> void:
+	m.blink_t += delta
+	if m.blink_t >= m.blink_period:
+		m.blink_t -= m.blink_period
+		m.blink_period = _r("blink_s")
+	m.glow = _blink_glow(m)
+
+
 func transform_of(i: Insect) -> Transform3D:
 	return Transform3D(Basis(Vector3.UP, i.yaw).scaled(Vector3.ONE * i.scale), i.pos)
 
 
 func write(buf: WildlifeBuffer, base: int) -> void:
+	var glows := is_firefly()
 	for i in insects.size():
 		var it := insects[i]
-		buf.put(base + i, transform_of(it), it.phase, it.amp, WildlifeBuffer.MODE_FLUTTER, 0.0)
+		var mode := WildlifeBuffer.MODE_GLOW if glows else WildlifeBuffer.MODE_FLUTTER
+		buf.put(base + i, transform_of(it), it.phase, it.amp, mode, it.glow if glows else 0.0)

@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch14_bark_ysolde_smile",
+ "source": "game/data/dialogue/ch14/ch14_bark_ysolde_smile.dlg",
+ "start": "ch14_bark_ysolde_smile",
+ "nodes": {
+  "ch14_bark_ysolde_smile": {
+   "headers": {"location": "ch13/ansedra_lacquer_court"},
+   "ops": [
+    {"op": "line", "id": "ch14_bark_smile_001", "key": "DLG_CH14_BARK_SMILE_001", "speaker": "ysolde", "emotion": "cold", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

@@ -1,0 +1,7 @@
+// Ch12 B02 bark: Asha watching a mote go straight up.
+title: ch12_bark_asha_even_here
+location: ch12/keth_pass
+---
+@vfx glimmer_lift at=asha_gaze count=1 motion=spiral_up rate=fast
+Asha [soft_smile]: Even here. #line:ch12_bark_even_001
+===

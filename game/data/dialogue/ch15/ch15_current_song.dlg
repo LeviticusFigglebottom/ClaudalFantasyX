@@ -1,0 +1,45 @@
+// Ch15 B09 "The current-song" (C, 2 min) and B10 "The dock-master" (C, 2 min). act2_ch15.md §2 B09-B10.
+// H01: 05:40, thick grey fog, no horizon. Liss stands up from the bier for the first time since the court.
+// H02: she sings a Saltwright current-song (a sung chart of the sea's currents; ADR 0204 §10: Liss sings it
+// in `hollowmere_answers`), unaccompanied, rough from the night. It is Hollowmere's, NEVER Dace's
+// `current_song`. Rhen turns at the first phrase: the same FAMILY of song as the one in the storm. He says
+// nothing (a seed for Ch17). H03: silence; then an answer from the south, many voices singing the chart's
+// next phrase, and lashed hulls coming out of the white. Liss keeps singing until a line can be thrown.
+// B10 (H04-H06): Hollowmere at dawn, the first oil lamps on the hulls (rule 3 ends). Aldous Varrow, the
+// dock-master, at his hull-house door; he looks at the canopy, then at his daughter. H06: from the barge,
+// at a distance, Liss tells him. NO DIALOGUE IS HEARD in this beat: the errand is hers.
+title: ch15_current_song
+location: ch15/open_sea
+---
+@letterbox on
+@fade in 3.0
+@camera H01
+@mark liss barge_bow walk
+@wait 3.0
+@camera H02
+@music hollowmere_answers fade=0.0
+@anim liss sing
+@wait 3.0
+@anim rhen look_at liss
+@wait 4.0
+@camera H03
+@wait 8.0
+<<set $ch15_hollowmere_answered = true>>
+@camera H04
+@wait 4.0
+@camera H05
+@mark aldous_varrow fathers_door walk
+@anim aldous_varrow look_at tobin_bier
+@wait 2.0
+@anim aldous_varrow look_at liss
+@wait 2.0
+@camera H06
+@mark liss fathers_door walk
+@wait 6.0
+@anim aldous_varrow embrace liss
+@wait 4.0
+@music silence fade=3.0
+<<set $ch15_liss_told_father = true>>
+@letterbox off
+@camera release
+===

@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch13_bark_pilgrim",
+ "source": "game/data/dialogue/ch13/ch13_bark_pilgrim.dlg",
+ "start": "ch13_bark_pilgrim",
+ "nodes": {
+  "ch13_bark_pilgrim": {
+   "headers": {"location": "ch13/ansedra"},
+   "ops": [
+    {"op": "line", "id": "ch13_bark_pilgrim_001", "key": "DLG_CH13_BARK_PILGRIM_001", "speaker": "townsfolk", "emotion": "worried", "voice": "", "src": 5, "name_key": "DLG_NAME_TOWNSFOLK_PILGRIM"}
+   ]
+  }
+ }
+}

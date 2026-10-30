@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch10_bark_ysolde_egrets",
+ "source": "game/data/dialogue/ch10/ch10_bark_ysolde_egrets.dlg",
+ "start": "ch10_bark_ysolde_egrets",
+ "nodes": {
+  "ch10_bark_ysolde_egrets": {
+   "headers": {"location": "ch10/ossa_fen"},
+   "ops": [
+    {"op": "line", "id": "ch10_bark_egrets_001", "key": "DLG_CH10_BARK_EGRETS_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

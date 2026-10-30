@@ -1,0 +1,98 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch10/ch10_zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="3_tide"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_waves"]
+[ext_resource type="Material" path="res://game/levels/ch10/ossa_fen/ossa_fen_water_material.tres" id="6_mat"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="7_cast"]
+
+[node name="OssaFen" type="Node3D"]
+script = ExtResource("1_zone")
+location_id = &"ch10/ossa_fen"
+layout_path = "res://game/levels/ch10/ossa_fen/ossa_fen_layout.json"
+
+[node name="Cast" type="Node" parent="."]
+script = ExtResource("7_cast")
+
+[node name="Water" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = ExtResource("5_waves")
+material = ExtResource("6_mat")
+amplitude_scale = 0.08
+
+[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("3_tide")
+tide_line_y = -0.15
+water_height_y = -0.15
+water = NodePath("../Water")
+
+[node name="Dressing" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("2_dressing")
+layout_path = "res://game/levels/ch10/ossa_fen/ossa_fen_dressing.json"
+tide = NodePath("../Tide")
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="F01_channel" type="Camera3D" parent="Cameras"]
+fov = 62.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(0.41380, -0.04327, -0.90934, -0.00000, 0.99887, -0.04753, 0.91037, 0.01967, 0.41334, 40.0, 0.85, 6.0)
+
+[node name="F03_dead_tree" type="Camera3D" parent="Cameras"]
+fov = 72.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(0.93335, -0.15749, -0.32259, -0.00000, 0.89862, -0.43872, 0.35898, 0.40948, 0.83873, 108.0, 1.2, 4.0)
+
+[node name="FenEdge_arrival" type="Camera3D" parent="Cameras"]
+fov = 50.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(-0.03843, 0.01920, -0.99908, 0.00000, 0.99982, 0.01921, 0.99926, 0.00074, -0.03843, -12.0, 1.7, 0.5)
+
+[node name="Walk0_root_walk" type="Camera3D" parent="Cameras"]
+fov = 50.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(0.18429, 0.05426, -0.98137, -0.00000, 0.99848, 0.05520, 0.98287, -0.01017, 0.18401, 4.0, 1.7, 3.5)
+
+[node name="Walk1_bend" type="Camera3D" parent="Cameras"]
+fov = 50.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(0.49301, 0.02522, -0.86966, -0.00000, 0.99958, 0.02899, 0.87002, -0.01429, 0.49281, 25.0, 1.7, -0.5)
+
+[node name="Walk3_islands" type="Camera3D" parent="Cameras"]
+fov = 46.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(0.44721, 0.04660, -0.89321, -0.00000, 0.99864, 0.05210, 0.89443, -0.02330, 0.44661, 62.0, 2.4, 6.0)
+
+[node name="Pocket_side" type="Camera3D" parent="Cameras"]
+fov = 50.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(0.98639, 0.00630, -0.16428, -0.00000, 0.99927, 0.03833, 0.16440, -0.03781, 0.98567, 63.0, 1.7, -8.0)
+
+[node name="Clearing_wide" type="Camera3D" parent="Cameras"]
+fov = 56.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(0.55470, 0.02691, -0.83162, -0.00000, 0.99948, 0.03234, 0.83205, -0.01794, 0.55441, 98.0, 3.2, 8.0)
+
+[node name="Exit_onward" type="Camera3D" parent="Cameras"]
+fov = 50.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(-0.00000, 0.00769, -0.99997, 0.00000, 0.99997, 0.00769, 1.00000, 0.00000, -0.00000, 124.0, 1.7, 0.0)
+
+[node name="Overhead_channels" type="Camera3D" parent="Cameras"]
+fov = 55.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(1.00000, 0.00000, -0.00000, -0.00000, 0.85328, 0.52145, 0.00000, -0.52145, 0.85328, 60.0, 22.0, 30.0)

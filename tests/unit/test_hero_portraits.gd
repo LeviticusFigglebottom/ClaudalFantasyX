@@ -58,6 +58,16 @@ func before_each() -> void:
 	page = null
 
 
+func test_kerrid_has_the_guilty_face_for_his_reveal() -> void:
+	# docs/kb/plan/act2/ui/kerrid.md section 2: the reveal's rows are grief and guilty; a missing one falls to neutral.
+	for h: Dictionary in _json(MANIFEST).get("heroes", []):
+		if str(h["id"]) == "kerrid":
+			assert_true((h["emotions"] as Array).has("guilty"))
+			assert_true(FileAccess.file_exists(HeroPortraits.path_for(&"kerrid", &"guilty")))
+			return
+	assert_true(false, "Kerrid is in the manifest")
+
+
 func test_every_manifest_portrait_exists_with_a_provenance_row() -> void:
 	var manifest := _json(MANIFEST)
 	var heroes: Array = manifest.get("heroes", [])

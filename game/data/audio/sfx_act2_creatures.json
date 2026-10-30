@@ -1,0 +1,178 @@
+{
+  "version": 1,
+  "doc": "Act II's variant foes' own sets (M4-AUD-1001): root_crab, fen_leech, scree_crawler and rim_crawler, from assets_src/sfx/act2_variant_creature_sfx.py (plain git, ADR 0175). Same row format as sfx_creatures.json; creature_voices.json names them.",
+  "sfx": {
+    "cre_root_crab_idle": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/root_crab_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_root_crab_attack": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/root_crab_attack_1.ogg",
+        "res://assets/audio/act2/sfx/creatures/root_crab_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_root_crab_hurt": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/root_crab_hurt_1.ogg",
+        "res://assets/audio/act2/sfx/creatures/root_crab_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_root_crab_death": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/root_crab_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_root_crab_skitter": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/root_crab_skitter_1.ogg",
+        "res://assets/audio/act2/sfx/creatures/root_crab_skitter_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_fen_leech_idle": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/fen_leech_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_fen_leech_attack": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/fen_leech_attack_1.ogg",
+        "res://assets/audio/act2/sfx/creatures/fen_leech_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_fen_leech_hurt": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/fen_leech_hurt_1.ogg",
+        "res://assets/audio/act2/sfx/creatures/fen_leech_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_fen_leech_death": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/fen_leech_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_fen_leech_flap": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/fen_leech_flap_1.ogg",
+        "res://assets/audio/act2/sfx/creatures/fen_leech_flap_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_scree_crawler_idle": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/scree_crawler_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_scree_crawler_attack": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/scree_crawler_attack_1.ogg",
+        "res://assets/audio/act2/sfx/creatures/scree_crawler_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_scree_crawler_hurt": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/scree_crawler_hurt_1.ogg",
+        "res://assets/audio/act2/sfx/creatures/scree_crawler_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_scree_crawler_death": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/scree_crawler_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_scree_crawler_plod": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/scree_crawler_plod_1.ogg",
+        "res://assets/audio/act2/sfx/creatures/scree_crawler_plod_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_rim_crawler_idle": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/rim_crawler_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_rim_crawler_attack": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/rim_crawler_attack_1.ogg",
+        "res://assets/audio/act2/sfx/creatures/rim_crawler_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_rim_crawler_hurt": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/rim_crawler_hurt_1.ogg",
+        "res://assets/audio/act2/sfx/creatures/rim_crawler_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_rim_crawler_death": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/rim_crawler_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_rim_crawler_skitter": {
+      "files": [
+        "res://assets/audio/act2/sfx/creatures/rim_crawler_skitter_1.ogg",
+        "res://assets/audio/act2/sfx/creatures/rim_crawler_skitter_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    }
+  }
+}

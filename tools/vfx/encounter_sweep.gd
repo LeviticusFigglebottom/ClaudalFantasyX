@@ -10,7 +10,7 @@ extends Node
 ##              the command menu, the party panel, the timeline or the help line;
 ##   dead       the longest run of frames with nothing animating while the battle waits on no one.
 ## The party plays by a sweep policy: an unused action type first (a Swell is filled when the turn comes, a Vowbound
-## is made known when the encounter's chapter has bound it), else role_answer. After max_actions (default 18) the
+## is made known when the encounter's chapter has bound it), else role_answer. After max_actions (default 10) the
 ## fight finishes at fast pacing (the role_answer policy, every sequence finished) and the victory is shot.
 ## Run it like a capture:
 ##   godot-render --path . --audio-driver Dummy --fixed-fps 60 --disable-vsync --rendering-driver vulkan \
@@ -25,7 +25,7 @@ const BAG := {"ember_pot": 2, "salt_tonic": 3}
 const ITEM := &"ember_pot"
 const FAST_STEP_SEC := 30.0
 const MAX_FAST_STEPS := 4000
-const MAX_FRAMES := 60 * 240  # a fight that has not ended in 4 minutes of real pacing goes fast
+const MAX_FRAMES := 60 * 120  # a fight that has not ended in 2 minutes of real pacing goes fast
 const DEAD_MIN_SEC := 0.6
 const SCREEN_MARGIN := 0.02
 const OUTRO_AT_SEC := 0.55
@@ -134,7 +134,7 @@ func _sweep(enc: StringName, out: String) -> Dictionary:
 	var actions := 0
 	var frames := 0
 	var dead := 0.0
-	var max_actions := int(_opts.get("max_actions", 18))
+	var max_actions := int(_opts.get("max_actions", 10))
 	while engine.outcome == &"" and frames < MAX_FRAMES and actions < max_actions:
 		frames += 1
 		await get_tree().process_frame

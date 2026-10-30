@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://game/levels/ch01/oruvel/oruvel_zone.gd" id="1_zone"]
 [ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
 [ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_waves"]
 [ext_resource type="Material" path="res://game/levels/ch01/oruvel/oruvel_water_material.tres" id="6_water_mat"]
+[ext_resource type="Script" path="res://game/world/water/underwater/underwater_rig.gd" id="7_rig"]
 
 [node name="Oruvel" type="Node3D"]
 script = ExtResource("1_zone")
@@ -21,6 +22,10 @@ material = ExtResource("6_water_mat")
 [node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
 script = ExtResource("3_tide")
 water_height_y = -0.8
+water = NodePath("../Water")
+
+[node name="Underwater" type="Node3D" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("7_rig")
 water = NodePath("../Water")
 
 [node name="Dressing" type="Node3D" parent="." node_paths=PackedStringArray("tide")]

@@ -1,0 +1,33 @@
+// Ch11 B10 side scene (optional): "The Lamp Bench" (E, 3 min, ~25 words). act2_ch11.md §4. Rhen and Liss
+// repair a broken Lit Age lamp together in silence: the start of their truce. Three held inputs; the player
+// is the steady hand. The lamp is EMPTY of bound light: Rhen fits his own lantern's spare oil burner, and
+// Liss lights it. A wright's lamp with a diver's flame. No apology from either; Liss does NOT narrate the
+// repair (her narrating is her grief tell, and belongs to Ch14-15). Silence is the scene.
+title: ch11_lamp_bench
+location: ch11/lowlight
+---
+@camera T05
+@music silence fade=1.0
+@anim liss pick_up lamp_housing
+@mark rhen bench_end walk
+@wait 2.0
+<<event hold_input hold_steady>>
+@anim liss seat_burner_seat
+@wait 3.0
+<<event hold_input_end>>
+<<event hold_input turn_collar>>
+@anim liss turn_collar
+@wait 3.0
+<<event hold_input_end>>
+@anim rhen fit_oil_burner
+<<event hold_input seat_it>>
+@wait 3.0
+<<event hold_input_end>>
+@anim liss light lamp_housing
+@sfx lamp_seat
+@wait 3.0
+Liss [neutral]: Pair-built. #line:ch11_bench_001 #tn:"A wright's term for things made as a matching pair: said of the two lamps, meant of the two of them."
+Rhen [soft_smile]: Yeah. #line:ch11_bench_002
+@wait 3.0
+<<set $ch11_lamp_repaired = true>>
+===

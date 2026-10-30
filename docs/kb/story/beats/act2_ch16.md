@@ -129,7 +129,7 @@ Shot ids are proposed in §7 (W = the white wade, C = the Choir, K = Kesh's memo
 
 ### B04. Kesh (C, 2 min)
 - **C04:** Asha crosses to the dais. The others stay at the channel's edge, the guardians' place, as every party before them must have. Kerrid stands last behind them (ADR 0022 (h)).
-- **C05:** she sings the six verses she has. The sea in the bowl answers: **Kesh rises** from the amphitheatre's sunken floor, a colossal woman of **standing seawater**, her robe a hundred open choir-mouths, a **Lamplighter's lamp-key** at her belt (the keepsake; vowbound.md §7). She is bound light inside water: still, held, cyan (color script: "Kesh pale cyan"). She is enormous and very old, and her face is a woman's, tired beyond telling.
+- **C05:** she sings the six verses she has. The sea in the bowl answers: **Kesh rises** from the amphitheatre's sunken floor, a colossal woman of **standing seawater**, her robe a hundred open choir-mouths, a **Lamplighter's lamp-key** at her belt (the keepsake; vowbound.md §7). She is bound light inside water: still, held, cyan (color script: "Kesh pale cyan"). She is enormous and very old, and her face is a woman's, tired beyond telling. (ADR 0204 §7: she is colossal **only in the bind**. In battle, from Act III, she stands 4.2 m, in Kahre's summon frame, and her element order follows the order the party met the Vowbound.)
 - **C06 (the binding; M4-A2P-071):** **the seventh verse** comes out of the stones, not out of Kesh: the singers' mouths, all ten at once, sing it, a thousand years of it (Audio: `kesh_bound`). The verse-sleeve grows to **S7**: the seven verses of the Hush complete. Asha's sleeve is full.
 - **C07:** Kesh bends down to Asha, with her face close, water running, and puts a hand made of the sea flat on Asha's forehead. *(This isn't a rite performed on Asha. It's how Kesh shows her: a memory given by touch, which Narrative may keep or replace with a look.)* The world goes white. Sets `ch16_kesh_bound` (rule 6: she's bound; `kesh_summon` waits for Act III).
 
@@ -137,7 +137,7 @@ Shot ids are proposed in §7 (W = the white wade, C = the Choir, K = Kesh's memo
 **Staging:** Kesh's memory, from inside, a thousand years ago. **A new cinematic look** (M4-A2P-071): desaturated toward white, soft edges, sound underwater, and no UI. The same seven verses the player has heard all game, heard now from the other side. ~40 words in all, Kesh's voice only.
 
 - **K01:** Iskarra drowning, the First Rising: white towers in a black sea, a storm wider than the sky (bible §2). Brief, overwhelming.
-- **K02:** the Choir as it was, new and white, with six Lamplighters in a ring on the dais, singing, and **Kesh in the middle**, young, holding a lamp-key, unafraid. Among the six, a tall man with silver hair stands at her shoulder: **Sefir**, young, mortal, in love (sefir_aurane.md). The player who has seen him in Ch13 knows the face at once. Nobody names him.
+- **K02:** the Choir as it was, new and white, with the **six Lamplighters** (bible §2: Kesh is one of the six): **Kesh in the middle**, young, holding a lamp-key, unafraid, and the other five in a ring round her, singing. Among the five, a tall man with silver hair stands at her shoulder: **Sefir**, young, mortal, in love (sefir_aurane.md). The player who has seen him in Ch13 knows the face at once. Nobody names him.
 - **K03:** Kesh sings, and the storm comes down to her. She walks out into it, into the sea, singing.
 - **K04 (the truth, from inside):** **inside the storm.** Darkness lit by motes, millions, held, and Kesh at the centre of them with her arms out, and the light **closing round her**, holding to her, her own light becoming the thing that holds it all together. The storm goes quiet around her, not calmed but **held in place, by her**. *She is its heart.* (bible §2; ADR 0016: the singer becomes the storm's next heart.) Kesh's voice, the only words: *"It doesn't sleep. It holds on. To us."*
 - **K05:** time passing inside: forty years in a few seconds. Then another voice singing far above, a second Cantor at the Choir, and **Kesh is pushed out**: the new singer's light takes the heart, and Kesh's is shoved out of the storm, spent, drifting up out of the sea at the Choir, **lifting**: for one moment her light starts to go up (the only rising light in the chapter, and it's a memory: rule 5 holds for the present).
@@ -171,7 +171,7 @@ Shot ids are proposed in §7 (W = the white wade, C = the Choir, K = Kesh's memo
 - **C15: Ysolde denounces him** (her rage comes out quieter: voice guide; reads `ch13_read_cantor_roll`, `ch12_ysolde_confessed`): **"Forty-seven voices. Seven houses. Do the sum, High Warden. I already have."** (Beat.) *"Kept, Sanctum. To be spent at the next Calm. In your hand."* (If `ch12_ysolde_lied`: *"I lied once this year, for your sake. I am done."*)
   - Sefir, to her, kindly, his tell (he answers grief with logic): *"You loved him. So did I, in my way. He is kept."*
 - **C16: Kerrid** (ADR 0022 (h); **fixed; rule 3**). He has been standing last behind them all. He doesn't come forward and doesn't touch his cleaver. He looks at Sefir across the dais and says it without shouting: **"I carried her up so you could do this."**
-  - Sefir looks at him properly for the first time in the game, a long look at a dead fisher-watch captain whose face he never knew (sefir_aurane.md). *"Captain."* (He knows the cord. It's the only time Sefir acknowledges what Kerrid is, and he does it with a word of rank Kerrid never had in the Order. Kerrid doesn't answer.)
+  - Sefir looks at him properly for the first time in the game, a long look at a dead fisher-watch captain whose face he never knew (sefir_aurane.md). *"Captain."* (He knows the cord. It's the only time Sefir acknowledges what Kerrid is, and he does it with a word of rank Kerrid never had in the Order. Kerrid doesn't answer. ADR 0204 §14: the line stays.)
 - **C17:** Sefir, to Asha, one last time, sorrowful: *"Then I am sorry for what comes next. I would have given you a long life."* He steps back toward his barge and lifts one hand, and his guard come off the barge into the water.
 - **C18:** Asha stands up. Sets `ch16_refused_sefir`. ~230 words, of which Sefir's ~120.
 
@@ -237,7 +237,7 @@ The Pale Rim is a route and the Choir is not a town (SPEC §3.6's side-scene rul
 
 **The fight** (two waves in one battle; act2_finals.md: two stems, stem 2 is the storm):
 1. **The Veiled** (four guards): disciplined, paired. Two **Bulwark** casters and two halberdiers who Slow ("settle") a target, the Order's craft of stillness as tactics, an echo of Ethren's kit turned against the party. Ysolde's magic breaks the casters; Toma's counters punish the halberds.
-2. **The Captain of the Veil** (one, joins at the first wave's half): a duellist who reads the timeline. He **delays** the hero who just acted (pushes them back) and parries physical blows. Rhen's turn manipulation, and Pell's learned skills, are the answer.
+2. **The Veil-First** (one, joins at the first wave's half): a duellist who reads the timeline. (Not "captain": Sefir's one rank word, "Captain.", is Kerrid's alone in this scene.) He **delays** the hero who just acted (pushes them back) and parries physical blows. Rhen's turn manipulation, and Pell's learned skills, are the answer.
 - **Under the fight, the storm stirs:** every few rounds the singers' chord deepens and the held motes over the channel all drift south at once (a field cue, telegraphed on the timeline as "The Choir shudders"), a warning of B09.
 
 **Balance:** the Act II boss band (naive ≤ 3%, role_answer 55–80%, smart 70–90%, p90 ≤ 80) on the Ch16 loadout (M4-A2P-019). `scripted: true` (no Escape).
@@ -272,7 +272,7 @@ The Pale Rim is a route and the Choir is not a town (SPEC §3.6's side-scene rul
 | `drowned_choir` | B03, B04 (bed) | Zone loop (exists, M3-AUD-843) | The singers' wind-chord under it (diegetic). |
 | `kesh_bound` | B04 (C06) | **Sting** (not yet written; M4-A2P-091) | The seventh verse sung by **the stones**: ten mouths at once, an enormous slow chord, ending on *mir*. |
 | `kesh_memory` | B05 | **New, proposed** (~3 min; add to M4-A2P-090) | The memory sequence: everything heard from underwater. The Hush's seven verses as the player has heard them all game, now from inside, slowed, with the storm's held hum under them. Silence on K06 (Sefir's hands), and one breath of the **Letting's first cell** on K05 as Kesh's light starts to lift and is caught: the cell is cut off mid-phrase. |
-| `sefir_go_home` | B07 | **Cue**, ~2 min (not yet written: act2_finals.md; M4-A2P-090) | Sefir's motif at its warmest: the most consoling music in the act, over ORDER_HUM. It must be genuinely tempting. It stops dead on Ysolde's "Then who does it take?" and doesn't resume until his last line. |
+| `sefir_go_home` | B07 | **Cue**, ~2 min (not yet written: act2_finals.md; M4-A2P-090) | Sefir's motif at its warmest: the most consoling music in the act, over ORDER_HUM. **The Order sings ORDER_HUM here, once, as Sefir's lullaby** (ADR 0204 §10: a deliberate break from "the Order hums; only Cantors sing"; Narrative confirms in review). It must be genuinely tempting. It stops dead on Ysolde's "Then who does it take?" and doesn't resume until his last line. |
 | `abiding_guard` | B08 (stem 1), B09–B10 (stem 2) | **Boss, two stems** (not yet written; M4-A2P-092) | Stem 1: disciplined, gold, still. Stem 2: the storm waking, enormous, Undertow material (as `undertows_reach`). |
 | `act2_break` | B11 | **Cue**, ~90 s (not yet written; M4-A2P-090) | A bed for the Rhen VO, as Ch9's act break used the Hush's piano coda; here the coda again, a little lower. |
 
@@ -372,8 +372,8 @@ New shot ids for `ch16/pale_rim` and `ch16/drowned_choir` (to add to pale_rim.md
 ### Character Art (M4-A2P-051, M4-A2P-055, M4-A2P-057)
 1. **Sefir** in close-up for the temptation (C11–C17), and **young Sefir** for the memory (K02, K06–K07: younger, grief-grey, then smooth), a face variant.
 2. **Kesh** (sheet and model: M4-A2P-057): the colossal water-woman, and **young Kesh** as a woman for K02–K03 (a person, characters track).
-3. **The Abiding guard** (the Veiled and their captain): veiled gold lacquer, living, battle actors.
-4. **The Lamplighters** in the memory (K02: six figures, four of them the Cage in Act III; silhouettes are enough).
+3. **The Abiding guard** (the Veiled and the Veil-First): veiled gold lacquer, living, battle actors.
+4. **The Lamplighters** in the memory (K02: five figures round Kesh, four of them the Cage in Act III and the fifth Sefir; silhouettes are enough for the four).
 5. **Animation:**
    - the wade (a slow heavy walk in shin- to waist-deep water);
    - Kesh's rise and her hand;
@@ -394,7 +394,7 @@ New shot ids for `ch16/pale_rim` and `ch16/drowned_choir` (to add to pale_rim.md
 §5: the Abiding guard (living people; Bulwark, settle, delay, parry), the "Choir shudders" field cue, the storm-wakes set piece. Kesh's `vowbound.json` row with a `callable_from` flag of Act III (rule 6), and her element cycling (M4-A2P-025) for when she is called.
 
 ### Systems / Chapters (M4-A2P-016)
-1. **Speakers:** `kesh` (voice only), `hollowmere_captain`, `abiding_captain` (barks).
+1. **Speakers:** `kesh` (voice only), `hollowmere_captain`, `veil_first` (barks).
 2. The fixed follower order for Ch16's field (Kerrid last).
 3. Act II's end: `ch16_act_two_complete` ends playable content until Act III's gate (ADR 0203).
 
@@ -412,6 +412,6 @@ The memory sequence's look and pacing are yours: it is the act's revelation.
 
 1. **Kesh's touch (C07)** is how this sheet gives Asha the memory. If it reads as a rite performed on Asha, replace it with a look: Kesh bends down, their eyes meet, and the world goes white.
 2. **Why the storm wakes early** is left to the image: Imra's heart falters (act_outline). This sheet doesn't say why at the Choir and why now. One reading is that taking Kesh out of the stones loosened what Sefir built. Narrative should decide whether any line hints at it. The default is no line.
-3. **Sefir's "Captain."** (C16) is this sheet's addition: his one acknowledgment of what Kerrid is, with a word of rank Kerrid never held in the Order. It's said to the cord, not the man. If the Lead reads it as Sefir naming the dead (ADR 0016's watch against unmasking), cut it; Sefir's look alone can carry it.
+3. ~~Sefir's "Captain."~~: **stays (ADR 0204 §14).**
 4. **The act-break VO** (B11): the proposal and the alternate are both Narrative's to choose or replace.
-5. **act3_ending H03** says Sefir "raises Kesh from the stones" in Ch21, but this chapter binds her to Asha. Narrative should reconcile it in Act III: for example, Sefir takes her back from Asha in the heart, which would make the release fight his doing.
+5. ~~act3_ending H03 vs this binding~~: **on the Act III backlog (ADR 0204 §16)**; Act II's binding stands.

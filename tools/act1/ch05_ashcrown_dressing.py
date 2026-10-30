@@ -501,11 +501,16 @@ ZONE_AMBIENT_ENERGY = 1.8
 ZONE_GRADE_OVERRIDES = {"ambient_light_energy": str(ZONE_AMBIENT_ENERGY)}
 
 
+# The PC's pass 3 (10-30): the crown's benches and steps streaked on the GPU. Short rounded risers interpolate their
+# vertex normals toward +Y, so the triplanar base and the salt detail took the top-down projection on near-vertical
+# faces. The dressed stone uses the mesh's metre UVs (as ac_ashlar does), and neither copy takes salt: no salt
+# reaches a volcano's crown.
 # The kit's stone slots bake an occlusion (UV2) that keeps the tiers' faces in near-total shadow once the sun leaves
 # them: with the kit's ao_strength the sky's fill hardly reaches tens of metres of ashlar. The zone's copies keep
 # everything else and take the occlusion lighter.
-ZONE_STONES = {"ac_ashlar": ("ashcrown_ashlar_material.tres", {"ao_strength": "0.3"}),
-               "ac_dressed": ("ashcrown_dressed_material.tres", {"ao_strength": "0.35"})}
+ZONE_STONES = {"ac_ashlar": ("ashcrown_ashlar_material.tres", {"ao_strength": "0.3", "salt_coverage": "Vector2(0, 0)"}),
+               "ac_dressed": ("ashcrown_dressed_material.tres", {"ao_strength": "0.35", "base_triplanar": "false",
+                                                                "salt_coverage": "Vector2(0, 0)"})}
 
 
 def zone_grade() -> str:

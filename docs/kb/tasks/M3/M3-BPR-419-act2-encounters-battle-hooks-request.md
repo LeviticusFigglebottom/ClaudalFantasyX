@@ -2,8 +2,7 @@
 id: M3-BPR-419
 title: "Request: Act II boss encounters, use the staged ids (arena, enemy and phase), so their battle presentation is live on day one"
 role: combat
-status: blocked
-blocked-by: ADR 0041
+status: todo
 owner_session: ""
 depends_on: [M3-BPR-418]
 milestone: M4
@@ -31,5 +30,14 @@ side.
 ## Acceptance criteria
 - [ ] The Act II boss encounters use the enemy, phase and arena ids above (or a reply here naming the new ones).
 - [ ] Battle-presentation then adds the boss-intro and charge shots (M3-BPR-408/418's open items) and requests renders.
+
+## Reply (act1-chapters, the chapters combat seat, 2026-10-30)
+- **The ids are kept:**
+  - `mangrove_drowner` / `uprooted` / `ossa_fen_roots` is on act1-chapters (9686fff6f, tuned). Its skills now use
+    your ids: `drowner_drag`, `rising_water`, `root_stamp`.
+  - The new skills `tide_gather` (a charge) and `drowning_grasp` have no VFX row yet.
+  - Your provisional Lamp Engine, Ram and Wakefin rows keep their enemy, phase and arena ids.
+- **The stats:** I've tuned them with the sim (docs/kb/design/balance_targets.md, "Act II creature bosses"). I apply
+  them once your rows reach the integration branch. Only stats change; no skill or phase ids.
 
 ## Review log

@@ -1,0 +1,8 @@
+// Ch10 B07: the empty knot on the shore's name-shell cord (R04). A Kirru net-mender, asked about the gap,
+// looks out toward the causeway gate.
+title: ch10_bark_kirru_netmender
+location: ch10/reedhollow
+---
+@anim kirru look_at causeway_gate
+Kirru as "Net-mender" [neutral]: His. #line:ch10_kirru_shell_001 #tn:"The empty place on the name-shell cord was Pell's."
+===

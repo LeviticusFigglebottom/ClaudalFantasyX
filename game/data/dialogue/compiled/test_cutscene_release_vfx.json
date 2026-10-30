@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "test_cutscene_release_vfx",
+ "source": "game/data/dialogue/test/test_cutscene_release_vfx.dlg",
+ "start": "test_cutscene_release_vfx",
+ "nodes": {
+  "test_cutscene_release_vfx": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "spot", "count": 8, "drift": "down_seaward"}, "src": 5},
+    {"op": "cue", "cue": "wait", "args": [0.5], "kwargs": {}, "src": 6},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "spot", "release": 2.0}, "src": 7},
+    {"op": "cue", "cue": "wait", "args": [0.5], "kwargs": {}, "src": 8},
+    {"op": "line", "id": "test_cutscene_release_vfx_001", "key": "DLG_TEST_CUTSCENE_RELEASE_VFX_001", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 9}
+   ]
+  }
+ }
+}

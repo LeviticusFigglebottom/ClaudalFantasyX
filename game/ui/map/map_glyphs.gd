@@ -8,6 +8,7 @@ extends RefCounted
 ##   path    a raised chevron over a step              door  a tall door with its ring
 ##   pool    two ripples                               dock  a jetty (a plank on three posts)
 ##   home    a house (a gable over a wall)
+##   shrine_dark  the lamp flame hollow: an Order shrine gone dark for heretics (MapModel sets it; Act II)
 ## Every glyph sits on a dark backing disc, so it reads on sea, sand and roofs alike. The objective
 ## is a hollow gold diamond with a ring that swells outward from it; the player is a filled arrow
 ## pointing the way they face. Sizes come from zone_map_menu.json, colours from the theme.
@@ -21,6 +22,8 @@ const KIND_DOOR := &"door"
 const KIND_POOL := &"pool"
 const KIND_DOCK := &"dock"
 const KIND_HOME := &"home"
+## Not authored in zone_maps.json: MapModel turns an `order` shrine into it once the party are heretics.
+const KIND_SHRINE_DARK := &"shrine_dark"
 const KINDS: Array[StringName] = [
 	KIND_SHRINE, KIND_SHOP, KIND_INN, KIND_TALK, KIND_PATH, KIND_DOOR, KIND_POOL, KIND_DOCK, KIND_HOME
 ]
@@ -37,12 +40,11 @@ static func draw_poi(
 	var u := px * 0.5  # the glyph's half-size inside the disc
 	match kind:
 		KIND_SHRINE:
-			var flame := PackedVector2Array()
-			for i in CURVE_POINTS:
-				var a := PI * i / (CURVE_POINTS - 1)
-				flame.append(at + Vector2(cos(a) * u * 0.62, u * 0.35 + sin(a) * u * 0.62))
-			flame.append(at + Vector2(0.0, -u * 1.15))
-			ci.draw_colored_polygon(flame, ink)
+			ci.draw_colored_polygon(_flame(at, u), ink)
+		KIND_SHRINE_DARK:
+			var hollow := _flame(at, u)
+			hollow.append(hollow[0])
+			ci.draw_polyline(hollow, ink, line, true)
 		KIND_SHOP:
 			var r := Rect2(at - Vector2(u, u * 0.8), Vector2(u * 2.0, u * 1.6))
 			ci.draw_rect(r, ink, false, line)
@@ -148,3 +150,13 @@ static func draw_player(
 	closed.append(arrow[0])
 	ci.draw_polyline(closed, outline, edge * 2.0, true)
 	ci.draw_colored_polygon(arrow, fill)
+
+
+## The shrine's lamp flame: a teardrop, round end down, its tip up.
+static func _flame(at: Vector2, u: float) -> PackedVector2Array:
+	var flame := PackedVector2Array()
+	for i in CURVE_POINTS:
+		var a := PI * i / (CURVE_POINTS - 1)
+		flame.append(at + Vector2(cos(a) * u * 0.62, u * 0.35 + sin(a) * u * 0.62))
+	flame.append(at + Vector2(0.0, -u * 1.15))
+	return flame

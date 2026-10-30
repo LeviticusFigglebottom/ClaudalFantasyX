@@ -37,6 +37,8 @@ const MAP_BOOK_DRIVERS: Array[String] = [
 	"res://game/ui/map/shots/field_menu_map_ansedra.tscn",
 	"res://game/ui/bestiary/shots/bestiary_menu.tscn",
 	"res://game/ui/codex/shots/field_menu_codex.tscn",
+	"res://game/levels/_tests/document_reader/document_reader_three.tscn",
+	"res://game/levels/_tests/document_reader/document_reader_one.tscn",
 ]
 const TOWN_DRIVERS: Array[String] = [
 	"res://game/ui/shop/shots/shop_buy.tscn",
