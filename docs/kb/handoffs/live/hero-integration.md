@@ -1589,3 +1589,16 @@ Owners follow the Act I split until act2_tracks.md's ownership lands: env-art-b 
 - Checks: `--filter=qa_` 14/0 on this branch (the walk audit included), hero_ 114/0, tools tests (placeholder_audit
   14/0, act1_gate_check 3/0, taskboard, merge_union, trial_merge) green, gdlint/gdformat clean, validate_data 0/0.
 - Running: act1_gate_check.py on lead/gate-big18 (the Lead's first reading of criteria 1-2).
+
+### act1_gate_check.py on lead/gate-big18 @ d00d3284 (the first reading of ADR 0203 criteria 1-2), 2026-10-30
+- **1. Audit: FAIL.** 2 items, both low: env-art-b's `tb_drop_proxy.tres` and `reefball_drop_proxy.glb` (names only;
+  M3-HER-1141).
+- **2. Playthrough: FAIL**, for two reasons:
+  - the continuous title → Ch9 → title test doesn't exist yet (M3-CIN-1233, slice-polish / act1-chapters);
+  - qa_threads fails on 5 `CutsceneGrade: no grade …` warnings (ch02 in the Ch1 thread, plus ch03, ch03_steps,
+    ch03_boss and ch03_shrine_int in the slice). That's **already fixed on this branch @ dc88d2aee** (the known
+    pattern, M3-ENV-106), so it clears when this head is folded in.
+  - The rest pass with zero SCRIPT ERRORs: qa_encounters 1/0, fp_ 30/0, save_ 149/0.
+- So with this branch folded in, the remaining Act I gate work for criteria 1-2 is:
+  - env-art-b renames or replaces the two drop proxies;
+  - M3-CIN-1233 lands its flow fix and the continuous test.
