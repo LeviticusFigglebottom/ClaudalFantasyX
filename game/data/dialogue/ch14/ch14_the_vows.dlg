@@ -104,7 +104,7 @@ Merel [angry]: They're his people, they're my people now, let her go! #line:ch14
 Tobin [exhausted]: ...Your knots are terrible. #line:ch14_tobin_fall_002 #tn:"Said to Merel, gently, almost a joke between them: his last words."
 @wait 2.0
 @camera W15
-@mark liss tobin_falls run
+@mark liss liss_tobin run
 Liss [grief]: Hold it. Hold, hold, she'll hold, seat it, hold— #line:ch14_tobin_fall_003 #tn:"A wright's repair words ('seat it', 'she'll hold'), said to his wound as if it were a machine."
 @anim toma lift liss
 @wait 2.0
