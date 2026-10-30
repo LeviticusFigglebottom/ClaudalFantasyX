@@ -45,3 +45,25 @@ Merge fallout fixes (5a0eadff):
 Checks at the build: validate_data 0 errors 0 warnings; taskboard --check ok; dlgc --check 0/0; gdlint and
 gdformat --check clean; no duplicate loc keys, PROVENANCE rows or shot ids (623 shots); no conflict markers; no
 `docs/kb/qa/gate-runs/**` images.
+
+### big19 checks in progress (on eb3db1a8)
+- 2026-10-30 01:40 UTC: every non-shot step started (HYMN_STEP_TIMEOUT=10800, own HYMN_LOG_DIR and XDG_DATA_HOME, in
+  a worktree). Data 0/0; audio, manifest ok; Godot import clean.
+- **Tool suite: 190 units, 1960 tests, 5 failing units** (big18: 3). Fixed since big18: test_zone_map_pois (Kell's
+  POI), test_glimmer_forms (stays green). Each red re-run on the track heads:
+  - **NEW, branch content (characters):** test_asha: "68696 not less than or equal to 65000" (Asha's LOD0 over its
+    budget) plus test_part_budgets. test_villagers::test_kell_and_tavi_follow_the_sheet: "1.144 != 1.196". Both red on
+    `claude/characters` @ 36b06105 alone.
+  - **NEW, branch content (characters, with creatures' crowd):** test_npc: "crowd_elder_woman_a is too near reed_c
+    (0.243 < 0.28)" and the generator output differs from the committed json. The same message on `claude/characters`
+    alone. (big17 and the integration branch carry the older "crowd_girl_teen too near wright_child_a".)
+  - **NEW, from the integration branch (the Lead's big17 approvals):** test_palette_check: "haluna_h07_chapel_court
+    chapel sun face on order_marble 0: median #B0B2B2 ΔE_ok 0.042 (max 0.03)". Red on `claude/new-session-mj8c3c`
+    @ 4c116db4 itself.
+  - **CHANGED:** test_screenshots: "slice_end_card is approved: drop its pending_baseline key". The integration branch
+    approved `slice_end_card`; m2-slice's M3-CIN-1233 (782351c7, no demo card mid-Act I) changed what it shows and
+    marks it pending. big18's `villager_shopkeeper_front` (no baseline) is fixed by the approvals.
+LEAD-ASK: test_screenshots and test_palette_check come from the big17 approvals meeting the tracks. `slice_end_card`
+is approved, but m2-slice's M3-CIN-1233 marks it pending (new content), so either the approval goes or the pending key
+does. The approved `haluna_h07_chapel_court` fails its palette check (ΔE 0.042 > 0.03). I'm not changing either on
+the gate.
