@@ -1899,3 +1899,30 @@ MERGE-READY @ (this commit).
   (19 zones), qa_walk_audit 1/0, field_controller 5/0, hero_field 30/0, qa_party 3/0, fp_ 30/0, qa_encounters 1/0,
   save_ 153/0; gdlint and gdformat clean over game and tests; validate_data 0/0.
 MERGE-READY @ (this commit).
+- **MERGE-READY @ 99989c2bc** (for big24): the battle-return resident field (1,737 → 389 ms black on the causeway)
+  and the FieldShore water guard, with their tests.
+- **Jog speed (the Lead, 10-30 14:28): no pre-slowing.**
+  - When characters push the jog clip, I set the field run speed **in data** from the clip's own travel (root travel
+    per loop, else stride × cadence, as HeroClipGait measures it), within 2.3–3.6 m/s, so the feet plant.
+  - Then max_playback_scale comes back down and test_qa_walk_audit's foot-slide check confirms it.
+- **Next:** re-measure Haluna's cold entry and the battle return (`scene_swap_probe --encounter --return`) once big24
+  merges; the Act II items as before.
+
+### The field-camera rows verified on big23 (8fe3644b, a clean worktree), the Lead 10-30 15:08
+- `qa_field_camera` 2/0, `qa_party` 3/0, `camera_director` 56/0. qa_field_camera's spawn sweep now fails on a camera
+  in his face (under 1.5 m) or a director pitch steeper than 55°, so every spawn below is under it.
+  - **24 (DockShore) and 47 (FerryAft):** clean in the sweep (the standoff and widest_view in 0ffe9260d).
+  - **38 (Coilspire Encounter):** clean, with no KNOWN line. The Lead's big23 resolution of the Encounter fallback
+    (a layout's own, else the first spawn, at build) supersedes my place_at version (7e0f44802); I take integration's
+    side on my next merge. Tier4 is still KNOWN: its spawn stands inside the steps (M3-HER-1157, env-art-b).
+  - **37 (AfterHarrier):** the still on big23 shows Rhen clear at centre, with Asha and Toma at a reading scale
+    (camera_near_m 4.0).
+  - **66 (Ch4 opening):** real time with auto-advancing lines. In the 12 s after the release, the camera is never
+    nearer than 5.1 m and settles on NemeDoor at 9.8 m. Only 6 of 111 samples had Rhen out of frame or walled off,
+    all during the 1.2 s cross-town blend; there's no 10 s spell inside a wall.
+  - **21 (Haluna beach start):** real time. 0 of 121 samples with Rhen out of frame or walled off; it settles on
+    beach_shallows at 7.5 m.
+- **For the PC:** all six rows are fixed on big23 in the headless checks; please confirm them by hand on the next
+  pass.
+- **Next:** big24 (with characters' jog, b344b974, and my 99989c2bc), then the run speed from the jog's measured
+  travel and Haluna's cold entry.
