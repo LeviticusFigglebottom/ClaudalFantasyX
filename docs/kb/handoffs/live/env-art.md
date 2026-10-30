@@ -589,6 +589,14 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **LEAD (21:46), answered: the derelict's hold-hatch corner (M4-A2P-1403, review: qa). MERGE-READY @ b36f94ef.**
+  - The hatch's collider is now an octagon with 0.25 m chamfers (`derelict_hatch()` in
+    `tools/act1/ch04_ferry_dressing.py`); the mesh is unchanged.
+  - A headless probe walked along -x at the corner. At lateral offsets 0.0 and 0.1 m, the old square stopped the hero
+    after 0.5 m; the octagon slides him on 4.35 m. Walking into the flat face still stops him.
+  - Godot `--filter=ch04` is green; validate_data and taskboard --check are clean.
+  - Next: back to the Ch10–Ch12 beauty pass. M4-A2P-1402 covers the fen, Lowlight and the Vey; Reedhollow and the
+    Ch12 zones follow.
 - **CONFIRMED 21:06: the last Oruvel outrigger fix (M3-ENV-1391) is pushed.** It is 0de280e2 on origin/claude/env-art,
   MERGE-READY.
 - **LEAD (21:05), answered: the Act II Ch10–Ch12 beauty pass (M4-A2P-1402, review: art). MERGE-READY @ a60417fc.**
