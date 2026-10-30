@@ -803,7 +803,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Checks: field_camera, ch08, snaps, zone_story.
   - The Ch10 dressing check is also done: F04 and R03–R06 viewed. R03's roost backdrop is the child's own home, and
     R06's sky is the scripted tilt up with the motes.
-- MERGE-READY @ (this push)
+- MERGE-READY @ 1529927af
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
