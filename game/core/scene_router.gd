@@ -323,6 +323,16 @@ func resident_path() -> String:
 	return _resident_path
 
 
+## PC row 85 (a shutdown that looped `Parameter "material" is null` into a 59 GB log): the resident zone and the
+## parked return live off the tree, so the tree's own teardown never frees them, and the engine's last cleanup frees
+## their materials after the RenderingServer is gone. They go here, as the tree quits, while it is still up.
+func _exit_tree() -> void:
+	return_park.drop()
+	if _resident != null and is_instance_valid(_resident):
+		_resident.free()
+	drop_resident()
+
+
 ## Frees the resident field zone, if one is kept.
 func drop_resident() -> void:
 	if not is_busy():
