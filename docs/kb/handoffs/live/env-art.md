@@ -589,6 +589,19 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **Noted (the Lead, 05:22):** env-art-b makes rows 79, 80 and 62 (M3-ENV-1331 to 1333) in my kit, and I review them.
+  I'm not redoing them.
+- **M5-A3P-1403 (Act III, Ch18 K04): the shell-carver's place at Reedhollow. MERGE-READY @ b95d1b39** (review: art).
+  - `shellcarver_mat` stands behind the clutch on Reedhollow's shore. It's present in Ch10 too, where the carver's
+    bark plays.
+  - Viewed close and from the clutch. Two fixes after viewing: the shells first read as hollow rings, and the mat was
+    moved off the ground's fallen poles.
+  - **Checks:**
+    - Tools: test_haluna_kit and the ch10/fen tests OK.
+    - Godot `--filter=ch10`: 3/0.
+    - validate_data and taskboard --check clean.
+  - **Baselines that move (none written):** kitrow_fen_reedhollow_walks if it frames the shore.
+  - **Next:** Ch19's full Iskarra dusk (the Prologue city revisited at its own dusk: I01–I02).
 - **PC pass 7 rows 24 and 47 (the Lead, 04:43; they block the Act I sign-off): MERGE-READY @ 8f0b0188.**
   - **24, the DockShore spawn too dark:**
     - The wake night's lamps stopped at the causeway head, so the dock was unlit. The Ch4 wake story set

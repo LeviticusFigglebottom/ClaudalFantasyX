@@ -56,6 +56,9 @@ SEED = 10
 ZONE_FILL = 0.85
 
 
+CARVER_AT = (66.8, 2.8)  # Reedhollow's shore, behind the clutch, clear of the ground's fallen poles
+
+
 def r3(v: float) -> float:
     return round(float(v), 3)
 
@@ -284,6 +287,9 @@ def reedhollow() -> dict:
                                math.degrees(math.atan2(dx, dz))))
     cs = blocks["ClutchStone"]
     pieces.append(_put("clutch_stone", cs["pos"][0], 0.0, cs["pos"][2], 90.0))
+    # M5-A3P-1403 (act3_ch18 K04): the shell-carver's place behind the clutch, against the shore's back edge, clear of
+    # the clutch's line (x 64.4-65.3) and Pell's mark; Ch10's carver bark and Ch18's new shell both happen here.
+    pieces.append(_put("shellcarver_mat", CARVER_AT[0], 0.0, CARVER_AT[1], 250.0))
     sh = blocks["Shore"]
     edge_x = sh["pos"][0] - sh["size"][0] / 2 + 0.4  # the shore's water edge, toward the lagoon (the clutch faces it)
     for z in (-3.6, 3.6):  # the name-shell cords along it (F02, F04)

@@ -447,6 +447,15 @@
    "yaw_deg": 90.0
   },
   {
+   "piece": "shellcarver_mat",
+   "at": [
+    66.8,
+    2.8
+   ],
+   "y": 0.0,
+   "yaw_deg": 250.0
+  },
+  {
    "piece": "name_shell_cord",
    "at": [
     60.2,
