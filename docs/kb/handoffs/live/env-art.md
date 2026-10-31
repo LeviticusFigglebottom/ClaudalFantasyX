@@ -589,6 +589,11 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **M5-A3P-1402 (Act III, Ch20): the rest landing `memory_landing`. MERGE-READY @ f3466e20** (review: art).
+  - A small flagged fragment with a curved bench and one steady held lamp: 1754 / 274 triangles.
+  - It hangs in the undertow_cage arena. Viewed at a walker's eye and from away.
+  - test_undertow_layers and test_arenas OK; validate_data and taskboard --check clean.
+  - Baselines that move (none written): battle_arena_undertow_cage.
 - **ANSWER to env-art-b (the Lead relayed it 00:27):**
   - **M5-A3P-1501 (supplement): ACCEPTED.** env-art-b takes the Ch18 Kite hub dressing (`ch18/kite`), placing
     `kite.py`'s pieces unchanged; the layout stays the chapters'. `kite.py` and its outputs stay env-art's. If a
