@@ -620,3 +620,45 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   - a per-clip fist for a free hand (Rhen's knock);
   - binary .res libraries for Asha and Rhen, which are at the 4 MiB text bound.
   Act III (M5-A3P-1980…1999) comes after.
+- **Checks:** test_rig_integrity OK (492 tests). These failed on the new clips at first and were fixed in the clips:
+  - turn_back is now a neck-and-head turn (the torso turn opened Asha's shoulder seam and put Pell's staff into him);
+    Pell turns to his right, away from his staff;
+  - the raises are routed out to the side (Asha's touch and touch_hair_stop; Ysolde's remove_pin);
+  - Liss has her own pick_up; Rhen's knock and take_pole are lower;
+  - Sefir's table work has no hyperextended elbow;
+  - the Stillguard's hand stays at his side in withdraw_wounded;
+  - Ysolde has a laugh without the shrug.
+  One allowance has a written reason, in rig_checks.json: Ysolde's Body limit is 47.5 for remove_pin (47.1 mm, covered
+  by the raised sleeve, viewed). test_hero_clips, test_hero_battle_clips, test_villagers, test_stillguard, test_kirru,
+  test_pell and test_sefir pass. M3-CHR-1000 is in review (cinematics).
+
+## 2026-10-31, PC pass 7 (real GPU): the jog's torso, and rows 46, 54 and 55 (row 56 still open)
+- **The jog** ("brisk, yes; organic, mostly"; the upper body read stiff):
+  - _RUN's chest now counter-turns 9 deg against a 5 deg pelvis (was 3.5 against 4);
+  - the head takes back 95% of the chest's turn (a steady head) and the nod is halved;
+  - Asha's chest turns 6 deg: at 9 her staff hand turned in and the staff crossed the skirt's front panel.
+  Sheets (side / front / 3-4, viewed): docs/kb/qa/characters/jog_2026-10-31/{asha,rhen,toma}_run_pass7.jpg. The
+  before sheets are in jog_2026-10-30/.
+- **Row 46, moll_face_yield:** the hard shadow was the nose's cast shadow on the right cheek in the yield's head turn.
+  Moll's face stage now gives its key light a soft penumbra (light_angular_distance 2.5, shadow_opacity 0.8).
+  moll_face shares the stage, so its baseline changes too.
+- **Row 54, Sefir's hair:**
+  - the front falls are a closed sheet: full texture slots only (the sparse wisps showed the neck through), cards
+    16-24 mm wide (were 12-18), cohesion 1.0, a root spread of 8 deg (was 10);
+  - the hair material's alpha_boost is 2.5 (was 1.5; the dither left mid-alpha cards part-covered) and its
+    transmission 0.3 (was 0.6; the strands were lit through);
+  - he is at 61,210 tris (target 62k).
+- **Row 55, Fenn and Sabe:**
+  - Fenn's cap was skin showing through his scalp paint (scalp_density 0.6 blended it toward bare skin). He is now a
+    white short crop: full density, a light underpaint, a soft 0.45 feather, white colours and denser cards. The
+    villager hair material takes an optional `alpha_boost` (Fenn's is 1.6).
+  - Sabe has a light underpaint and the soft feather.
+- **Checks:** sefir, villager_fenn and villager_sabe are identical on 3 numpy paths. The rig probes for asha, rhen,
+  toma and sefir are clean. test_hero_clips and test_hero_battle_clips pass. The shots were viewed: sefir_face,
+  sefir_back, villager_fenn_face, villager_fenn_front, villager_sabe_face, moll_face_yield.
+- **Row 56 is still open.** Asha's skirt is solved per frame against the legs, so at full stride the panels over the
+  striding leg flare to clear the knee and the hem has no momentum: it reads as a rigid bell.
+  - I tried letting the neighbouring panels hang in (lag_deg_per_45 40 -> 60). It moved them only about 5 deg and let
+    the staff cross panel 13 in the run, so it is reverted.
+  - The fix is a hem that trails: the bake carries a share of each lowest panel's previous swing (secondary motion),
+    clamped by the leg clearance. That threads time through local_pose, so it is the next item.
