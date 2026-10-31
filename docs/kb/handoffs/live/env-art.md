@@ -595,8 +595,15 @@ Read this section first; everything below it is history. The branch is `claude/e
     piece needs changing, open a request task to env-art and I'll turn it round.
   - **The split this settles:** env-art-b has Ch17 Hollowmere and the Ch18 Kite dressing. env-art has Ch18's
     Reedhollow revisit, Ch19 (Iskarra and the Spire), Ch20 (the Undertow) and the ending.
-  - **M4-A2P-1501 (env-art-b's request: flicker on Ch11's open flames): TAKING IT NOW.** It's Act II, so it comes
-    before my next Act III item.
+  - **M4-A2P-1501 (env-art-b's request: flicker on Ch11's open flames): ANSWERED, nothing to change.**
+    - Every fire light in both Ch11 dressings is the bound teal (#4FB3B0): Lowlight's 19 (the Engine's twelve
+      trimmed lamps, the conduits, the upwelling) and the Vey's one. Neither zone has an open flame, so the request's
+      own rule keeps them steady.
+    - The optional `drift` rows on the Vey's lanes wait until env-art-b's ZoneKitDressing `drift` reaches
+      integration and this branch, since `zone_kit_dressing.gd` here has no drift yet. I'll add three tide_debris
+      rows then.
+- **CLAIM M5-A3P-1402 (Act III, Ch20): `memory_landing`, the rest landing between the layers** (R1, R2; the chapters'
+  M5-A3P-1011 lists "the two rests"). For the well (U00), `heart_eyewall` can be used scaled down; no new piece.
 - **M5-A3P-1401 (Act III, Ch19): the Lamp Spire's tier kit. MERGE-READY @ d6f51ad3** (review: art).
   - **New pieces:**
     - `spire_tier` (stacks every 4.2 m): flags on a bed whose underside is the ceiling below, the stairwell open where
