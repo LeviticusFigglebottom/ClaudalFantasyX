@@ -1,0 +1,15 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/creature/creature.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "leather"
+shader = ExtResource("1_shader")
+shader_parameter/cavity_albedo = 0.5
+shader_parameter/detail_albedo = 0.16
+shader_parameter/detail_bump = 0.55
+shader_parameter/detail_scale = 26
+shader_parameter/metallic = 0
+shader_parameter/roughness_dry = 0.7
+shader_parameter/roughness_wet = 0.32
+shader_parameter/specular = 0.35

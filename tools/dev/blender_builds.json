@@ -511,6 +511,26 @@
       ]
     },
     {
+      "id": "creature_tide_matron",
+      "owner": "character",
+      "sources": ["assets_src/creatures/cinder_matron/**", "assets_src/creatures/tide_matron/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/tide_matron/*.glb", "assets/creatures/tide_matron/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/cinder_matron/build_cinder_matron.py", "--", "--tide", "--out", "assets/creatures/tide_matron/tide_matron.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "tide_matron"]
+      ]
+    },
+    {
+      "id": "creature_old_shoal",
+      "owner": "character",
+      "sources": ["assets_src/creatures/old_shoal/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/old_shoal/*.glb", "assets/creatures/old_shoal/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/old_shoal/build_old_shoal.py", "--", "--out", "assets/creatures/old_shoal/old_shoal.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "old_shoal"]
+      ]
+    },
+    {
       "id": "creature_shoal_skipper",
       "owner": "character",
       "sources": ["assets_src/creatures/shoal_skipper/**", "assets_src/creatures/common/**"],

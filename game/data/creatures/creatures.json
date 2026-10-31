@@ -363,6 +363,20 @@
       "contact": {"attack": 0.55, "cast": 0.8, "stop": 0.9, "ward": 0.8, "special": 1.45},
       "phases": {"release": {"clip": "release", "hold": true}},
       "stand_in": {"yaw_deg": 90.0, "height": 2.5, "radius": 0.6}
+    },
+    "tide_matron": {
+      "scene": "res://game/creatures/tide_matron/tide_matron_battle.tscn",
+      "ko": "bank",
+      "contact": {"attack": 1.0625, "tide_pour": 1.4375, "bank_the_tide": 1.25, "regrow_gather": 1.375, "regrow": 1.0,
+                  "phase_change": 1.1},
+      "loop": ["idle", "ready"]
+    },
+    "old_shoal": {
+      "scene": "res://game/creatures/old_shoal/old_shoal_battle.tscn",
+      "ko": "settle",
+      "contact": {"attack": 1.5, "cast": 2.2, "bite": 1.2},
+      "loop": ["idle", "ready"],
+      "stand_in": {"height": 3.8, "radius": 3.2}
     }
   }
 }

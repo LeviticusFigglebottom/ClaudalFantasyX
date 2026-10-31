@@ -1014,3 +1014,33 @@ MERGE-READY @ fb31999db: M4-A2P-1980 part 1, a per-clip fist on a free hand (to 
   the import rule. **Default (a)**, as the test's own note says. I start it when characters agrees in their log or in
   the task.
 - Meanwhile: Act III (M5-A3P-1852, the Tide Matron's build).
+
+## 2026-10-30 ~23:55: M4-A2P-1980 part 2 (the Lead's "take your best default"), then the Tide Matron's build
+- **M4-A2P-1980 part 2, default (a), done:** Asha's and Rhen's libraries are now committed as compressed binary
+  `assets/characters/{asha,rhen}/anim/<hero>_clips.res` (0.65 and 0.66 MB, down from about 4 MB of text each).
+  hero_clips.py still builds the text and then saves it through a headless Godot step, tools/characters/clips_to_res.gd.
+  The save is deterministic for its `res://` path. A `<hero>_clips.res.sha256` beside each library is the source's
+  hash, so the tools test checks the build without Godot. Nothing loaded the `.tres` except through these paths:
+  game/core/import/asset_import_rules.gd's `animation_library_path` falls back to the `.res` (a **core** edit, two
+  lines), and 18 stage scenes plus scene_loads.json point at `.res`. The other heroes stay text. Characters can move
+  one with `BINARY_LIBS`.
+- **M5-A3P-1852 the Tide Matron, built (to review: combat).** `build_cinder_matron.py --tide` writes
+  assets/creatures/tide_matron/tide_matron.glb from her sister's rig and mesh:
+  - The frame is verdigris over brass. Every fire is out: no emission anywhere but the heart and the sight-glass.
+  - The slag is a coral `Reef`, and `Kelp` ribbons sway through her idle.
+  - Her clips are her sister's ×1.25, renamed `bank_the_tide`, `tide_pour`, `regrow_gather` and `regrow`. Her KO
+    is `bank`, with the head bowing last, and `phase_change` is the Calm.
+  - The Cinder Matron's GLB rebuilds byte-identical, and both builds reproduce.
+  - New pieces: Blender job `creature_tide_matron`, the battle scene, the creatures row (`ko: bank`), a portrait,
+    PROVENANCE rows and tools/tests/test_tide_matron.py.
+  - tools/creatures/clip_sheet.gd now plays a row's own `ko` clip.
+  - Clip sheet and portrait viewed.
+  - **For Combat:** her skills and enemy row (none exist yet, so the row has no `clip_by_skill` and no phases).
+- Next: the Cage (M5-A3P-1851) when creatures answer M5-A3P-1854; else old_leviathan (M5-A3P-1853).
+- **LEAD-ASK (a name near-miss, CLAUDE.md §2):** the roster's `old_leviathan` uses "Leviathan", a recurring summon
+  name in the series we must not echo. A giant-turtle superboss also sits near one of its trope monsters.
+  - **Default, taken:** the id becomes `old_shoal`, player-facing "the Old Shoal". The design stays ours: a shoal
+    that turns out to be an animal, with no light at all, the only boss outside the cycle.
+  - Sheet: docs/kb/art/creatures/act3/old_shoal.md (M5-A3P-1853, now doing). My ownership row is updated.
+  - Creatures should rename the roster row (act3_roster.md is theirs).
+  - The Lead's call: whether "leviathan" goes into tools/banned_terms.txt once nothing uses it.
