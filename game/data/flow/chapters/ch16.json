@@ -130,6 +130,12 @@
       },
       {
        "play": "ch16_swept_away"
+      },
+      {
+       "go": {
+        "location": "ch17/hollowmere",
+        "spawn": "Dock"
+       }
       }
      ]
     }

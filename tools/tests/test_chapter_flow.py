@@ -80,6 +80,16 @@ class ChapterFlowTest(unittest.TestCase):
         del c["zones"]["zone_story_a"]["beats"]["gate"]
         self.assertTrue(any("names no beat 'gate'" in e for e in self._errs(c)))
 
+    def test_a_shared_zones_beat_may_be_another_chapters(self) -> None:
+        """M5-A3P-1001: Hollowmere is Ch15's and Ch17's; one layout, two chapter files, either may own a beat."""
+        c = copy.deepcopy(self.chapter)
+        del c["zones"]["zone_story_a"]["beats"]["gate"]
+        self.ctx.zone_beats = {"zone_story_a": {"gate"}}
+        try:
+            self.assertFalse(any("names no beat 'gate'" in e for e in self._errs(c)))
+        finally:
+            self.ctx.zone_beats = {}
+
     def test_layout_shapes_and_flags(self) -> None:
         lay = copy.deepcopy(self.layout_a)
         bad_block = len(lay["blocks"])

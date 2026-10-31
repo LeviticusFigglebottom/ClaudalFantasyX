@@ -12,7 +12,7 @@ still water, the highest contrast of Act II).
 
 x is east, north is -Z. Shares Ch10's and Ch11's builders.
 
-    python3 tools/act1/ch14_greybox.py
+    python3 tools/act2/ch14_greybox.py
 """
 from __future__ import annotations
 
@@ -73,7 +73,7 @@ def lacquer_court() -> dict:
     blocks.append(box("EntryStep", cx + hx + 1.5, -0.25, cz + 9.5, 3.0, 0.5, 3.0, color=COL_STONE))
     blocks.append(box("EntryBound", cx + hx + 3.25, 1.0, cz + 9.5, 0.5, 2.0, 3.0, color=COL_STONE))
     return {
-        "doc": "M4-C14-02 greybox (tools/act1/ch14_greybox.py; do not edit by hand): the Lacquer Court at dusk "
+        "doc": "M4-C14-02 greybox (tools/act2/ch14_greybox.py; do not edit by hand): the Lacquer Court at dusk "
         "(colour script ch14). The court's floor under a red-lacquered colonnade, the wedding dais (vows: Sefir "
         "officiates), the guests' galleries, the Conclave's gallery (north-west), the water-steps down (a ramp; "
         "kerrid_steps: he holds them) to the bridal barge (barge_deck; the barge trigger runs the escape out across the "
