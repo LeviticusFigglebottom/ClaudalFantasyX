@@ -27,6 +27,10 @@ uniform float emission_pulse_hz = 0.0;
 uniform float emission_pulse_depth : hint_range(0.0, 1.0) = 0.0;
 // A thin back-lit sheen on a translucent edge (fins, frills): 0 = none.
 uniform float rim_sheen : hint_range(0.0, 1.0) = 0.0;
+// Row 61 (creatures-b): a dark body's rim reads dark on dark, since the sheen is its own albedo. rim_tint mixes
+// the sheen toward rim_color (0, the default, leaves every material as it was).
+uniform vec3 rim_color : source_color = vec3(1.0);
+uniform float rim_tint : hint_range(0.0, 1.0) = 0.0;
 
 float hash2(vec2 p) {
 	p = fract(p * vec2(123.34, 456.21));
@@ -82,6 +86,6 @@ void fragment() {
 	EMISSION = emission_color * emission_energy * clamp(UV2.y, 0.0, 1.0) * pulse;
 	if (rim_sheen > 0.0) {
 		float f = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 3.0);
-		EMISSION += base * f * rim_sheen;
+		EMISSION += mix(base, rim_color, rim_tint) * f * rim_sheen;
 	}
 }

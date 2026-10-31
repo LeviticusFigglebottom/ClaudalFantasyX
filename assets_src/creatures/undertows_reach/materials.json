@@ -1,5 +1,5 @@
 {
-  "_doc": "The Undertow's Reach (act1/undertows_reach.md; final pass M3-CRB-007): water (the forearm, the palm and the digits' cores: black storm-water, slate streaks, foam crests, the door-sized wounds), crust (the crust plates, claws and keel spurs, barnacles, the drowned spawn bodies), wreck (masts, yard, planks, the wheel, chain, rope, the lantern). wet_darken 0.55 on water (was 0.2, which crushed the vertex colours to black). The storm's own water look is the PC GPU session's; this is the creature-shader stand-in. Polish: crust is a dry, rough shell (roughness 0.8 dry / 0.32 wet, specular 0.35, clearcoat 0.3, a finer, deeper grain: detail scale 12, albedo 0.38, bump 2.0; was 0.45 / 0.15 / 0.5 / 0.8 and 5 / 0.3 / 1.2, which read as polished black facets), its wetness pooled in the plates' grooves and low ground by the vertex data. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "_doc": "The Undertow's Reach (act1/undertows_reach.md; final pass M3-CRB-007): water (the forearm, the palm and the digits' cores: black storm-water, slate streaks, foam crests, the door-sized wounds), crust (the crust plates, claws and keel spurs, barnacles, the drowned spawn bodies), wreck (masts, yard, planks, the wheel, chain, rope, the lantern). wet_darken 0.55 on water (was 0.2, which crushed the vertex colours to black). The storm's own water look is the PC GPU session's; this is the creature-shader stand-in. Polish: crust is a dry, rough shell (roughness 0.8 dry / 0.32 wet, specular 0.35, clearcoat 0.3, a finer, deeper grain: detail scale 12, albedo 0.38, bump 2.0; was 0.45 / 0.15 / 0.5 / 0.8 and 5 / 0.3 / 1.2, which read as polished black facets), its wetness pooled in the plates' grooves and low ground by the vertex data. write_materials.py on game/shaders/creature/creature.gdshader. Row 61 (PC pass 7, battle-presentation's request; creatures-b): against the night sky at its rest frame the Reach read dark on dark, because its rim_sheen was its own near-black albedo. The water and crust slots now tint the rim to glimmer_held #7FC6D9 (the Undertow's held light; rim_tint, creature.gdshader), and the crust's wound light is up from 2.4 to 3.0.",
   "slots": {
     "water": {
       "roughness_dry": 0.12,
@@ -14,7 +14,9 @@
       "emission_color": "#3FE0C8",
       "emission_energy": 3.0,
       "emission_pulse_hz": 0.4,
-      "emission_pulse_depth": 0.35
+      "emission_pulse_depth": 0.35,
+      "rim_color": "#7FC6D9",
+      "rim_tint": 1.0
     },
     "crust": {
       "roughness_dry": 0.8,
@@ -27,10 +29,13 @@
       "cavity_albedo": 0.5,
       "cavity_ao": 0.6,
       "emission_color": "#3FE0C8",
-      "emission_energy": 2.4,
+      "emission_energy": 3.0,
       "emission_pulse_hz": 0.4,
       "emission_pulse_depth": 0.35,
-      "wet_darken": 0.75
+      "wet_darken": 0.75,
+      "rim_sheen": 0.45,
+      "rim_color": "#7FC6D9",
+      "rim_tint": 1.0
     },
     "wreck": {
       "roughness_dry": 0.7,
