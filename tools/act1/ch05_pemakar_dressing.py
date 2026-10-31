@@ -294,13 +294,16 @@ def swapped(p: dict) -> dict:
 WEIR_STONE = "kit_weir_stone"  # in the kit's materials folder, so the kit preview (which names slots) can take it
 # The PC's pass 5 (row 62 still flat grey): each block takes its own value (variation 0.4), the relief and the cavities
 # are stronger, and the salt crust and the algae band are wider, so the courses read as separate wet stones.
+# The PC's pass 7 (row 62 still flat: the courses read as smooth dark pillows): a finer stone grain (0.45 m), more
+# relief, a softer specular (its streaks smoothed every face), and the soak darkens less.
 WEIR_STONE_OVERRIDES = {"col_tint": "Color(0.9, 0.88, 0.86, 1)", "use_algae": "true", "salt_coverage": "Vector2(0.2, 0.6)",
-                        "normal_strength": "1.7", "cavity_darken": "0.6", "variation_value": "0.4",
-                        "variation_warmth": "0.06", "detail_scale_m": "0.3", "salt_band_m": "Vector2(0.4, 10000)"}
+                        "normal_strength": "2.3", "cavity_darken": "0.7", "variation_value": "0.45",
+                        "variation_warmth": "0.06", "detail_scale_m": "0.2", "salt_band_m": "Vector2(0.4, 10000)",
+                        "tile_m": "Vector2(0.45, 0.45)", "specular_base": "0.25"}
 # Soaked stone keeps its relief and most of its value (the shader's defaults, 0.6 flatten and x0.55, made the whole
 # wet weir one smooth dark face).
 WEIR_STONE_ADDED = {"algae_band_m": "Vector2(-0.9, 0.35)", "algae_coverage": "Vector2(0.5, 0.95)",
-                    "wet_darken": "0.75", "wet_flatten": "0.15", "wet_roughness": "0.3",
+                    "wet_darken": "0.85", "wet_flatten": "0.1", "wet_roughness": "0.45",
                     "col_algae": "Color(0.239, 0.29, 0.161, 1)"}
 # ... and the water arriving over the crest runs (the kit's flowing spill water), not the channels' still near-mirror,
 # which read as a flat pale panel on the crest under a grey sky
