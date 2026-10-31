@@ -833,3 +833,4 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
   - Godot `ch17_thread` 3/0, `ch18` 5/0, `ch19` 1/0, `ch20` 1/0, `act3` and `kite_landings` 1/0.
   - `qa_threads`: only the `.ogg` imports fail (LFS pointers). `qa_capsules`: zones clean; the Act II foes' bodies are the known red.
   - validate_data, taskboard, gdlint and gdformat clean; `kite_revisit_check` 0 problems.
+- MERGE-READY Ch19 (M5-A3P-1007) and Ch20 (M5-A3P-1011) wired up to combat's fights @ ee6cd6f5f
