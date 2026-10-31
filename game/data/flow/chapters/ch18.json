@@ -192,6 +192,12 @@
      "steps": [
       {
        "play": "ch18_iskarra"
+      },
+      {
+       "go": {
+        "location": "ch19/iskarra_spire",
+        "spawn": "Plaza"
+       }
       }
      ]
     }
