@@ -1,4 +1,4 @@
-# big39: 223 shots: 97 PASS, 98 DRIFT (0 size mismatch), 28 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big39: 262 shots: 107 PASS, 103 DRIFT (0 size mismatch), 52 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 NO-BASELINE slice_end_card (pending_baseline)
 DRIFT battle_hud_preview rmse 0.06883 (limit 0.00800)
 DRIFT battle_swap_menu rmse 0.06883 (limit 0.00800)
@@ -221,4 +221,43 @@ DRIFT creature_lamp_engine_opened rmse 0.05482 (limit 0.00800)
 PASS npc_wake_feast rmse 0.00200 (limit 0.00800)
 DRIFT creature_avalanche_ram rmse 0.02548 (limit 0.00800)
 DRIFT creature_wakefin rmse 0.02191 (limit 0.00800)
+NO-BASELINE slice_beach_standing (pending_baseline)
 DRIFT slice_haluna_villagers_village rmse 0.13457 (limit 0.00800)
+DRIFT slice_causeway_head rmse 0.09513 (limit 0.00800)
+DRIFT slice_causeway_harrier_view rmse 0.09766 (limit 0.00800)
+PASS slice_verse_steps rmse 0.00000 (limit 0.00800)
+NO-BASELINE slice_verse_threshold (pending_baseline)
+NO-BASELINE slice_verse_c08 (pending_baseline)
+NO-BASELINE kerrid_front
+NO-BASELINE kerrid_three_quarter
+NO-BASELINE kerrid_face
+NO-BASELINE kerrid_confession_guilty (pending_baseline)
+NO-BASELINE kerrid_confession_burns (pending_baseline)
+DRIFT kerrid_silhouette_lineup rmse 0.01776 (limit 0.00800)
+NO-BASELINE kerrid_clip_collar_haul
+DRIFT moll_face_yield rmse 0.16063 (limit 0.00800)
+NO-BASELINE kerrid_battle_idle
+PASS stillguard_a_front rmse 0.00000 (limit 0.00800)
+PASS stillguard_a_three_quarter rmse 0.00000 (limit 0.00800)
+PASS stillguard_b_front rmse 0.00000 (limit 0.00800)
+PASS stillguard_b_clip_level_spear rmse 0.00000 (limit 0.00800)
+PASS stillguard_d_clip_shield_up rmse 0.00000 (limit 0.00800)
+NO-BASELINE stillguard_lineup
+PASS stillguard_c_front rmse 0.00000 (limit 0.00800)
+DRIFT stillguard_c_face rmse 0.17567 (limit 0.00800)
+NO-BASELINE venn_three_quarter (pending_baseline)
+NO-BASELINE venn_face (pending_baseline)
+NO-BASELINE venn_clip_attack (pending_baseline)
+NO-BASELINE venn_clip_defend (pending_baseline)
+NO-BASELINE abiding_halberd_front (pending_baseline)
+NO-BASELINE abiding_halberd_face (pending_baseline)
+NO-BASELINE abiding_bulwark_front (pending_baseline)
+NO-BASELINE abiding_captain_front (pending_baseline)
+NO-BASELINE ivo_front
+NO-BASELINE ivo_three_quarter
+NO-BASELINE ivo_face_laugh
+NO-BASELINE ivo_clip_hug_lift
+NO-BASELINE ivo_clip_talk
+PASS stillguard_a_clip_walk_torch rmse 0.00000 (limit 0.00800)
+PASS stillguard_a_clip_kneel_palms_flat rmse 0.00000 (limit 0.00800)
+PASS ch05_pemakar_harbour rmse 0.00677 (limit 0.00800)
