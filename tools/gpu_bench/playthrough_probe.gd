@@ -313,8 +313,9 @@ func _battle_step(ctl: FieldBattle, result_at: float, t: float) -> float:
 			ctl.hud.result.accept()
 			return t + 1000.0
 		return result_at
-	if int(t / TAP_S) != int((t - 0.02) / TAP_S) and ctl.state not in [BattleController.STATE_TARGET]:
-		_tap(&"ui_accept")
+	if int(t / TAP_S) != int((t - 0.02) / TAP_S):
+		# A tap that opened target selection on a party turn is backed out of, so the command step acts.
+		_tap(&"ui_cancel" if ctl.state == BattleController.STATE_TARGET else &"ui_accept")
 	return result_at
 
 

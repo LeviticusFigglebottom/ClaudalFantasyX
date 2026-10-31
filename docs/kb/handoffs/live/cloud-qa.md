@@ -122,6 +122,24 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## STATUS (05:00): big36 fresh New Game → Ch6; the stuck fights were the probe
+| commit | piece | reached | ERROR lines while playing | at exit |
+|---|---|---|---|---|
+| 1983de0a2 (big36) | fresh New Game → Ch6 | ch06/brine_shoals, 2328 s (ARRIVED) | **7** | 8 (normal quit) |
+
+- **The 7:** six fire as Ashcrown loads (`ch05_zone.gd:83 apply_variant` → `_swap_environment`), and one from
+  `scene_router.gd:657 _instantiate` as Pemakar loads. They're the same class as the Ch6 run's six from
+  `character_shader_tiers.gd:147`: material null, uninitialized or wrong RID, `mem` null. I suspect the headless dummy
+  renderer; a lavapipe load of Ashcrown and post-beacon Corrow will settle it (next).
+- **Ch1 → Ch4: 0 ERROR lines** on this commit, and on big34 too.
+- **Probe limits, not game faults:**
+  - The Shell Shrine basins and the Ashcrown stair tiers were skipped (PLAY_SKIP). The stair objectives' targets
+    carry y 0, and the stair runs from y −81 to 42, so the probe's teleport ray misses it.
+- **`ch08_stair_hold_1` never ending was the probe.**
+  - On F8 Ch8 the moth fight showed state `target` on Rhen's turn for minutes. A ui_accept tap had opened target
+    selection, and the probe neither acts nor taps there.
+  - It now taps ui_cancel in target selection. F8 Ch8 → end card is re-running.
+
 ## STATUS (04:25): big36 (1983de0a2) F8 Ch6 → end card
 | commit | piece | reached | ERROR lines while playing | at exit |
 |---|---|---|---|---|
