@@ -12,3 +12,10 @@ PHASE_HULL_RASP_BREAKING,The Ribs Break
 ENC_CH17_MOORINGS_SCUTTLERS,The Outer Moorings
 ENC_CH17_MOORINGS_RASP,A Moored Keel
 FIELD_PROMPT_CH17_MOORINGS,Look over the outer moorings
+OBJ_CH17_DRYDOCK,Walk out along the dock to the dry-dock jetty.
+OBJ_CH17_HULL,Go aboard the hull on the last berth.
+OBJ_CH17_CHOICE,Go back aboard the hull. The others are waiting on deck.
+OBJ_CH17_LAMP,Help Liss fit the hull's first lamp by the engine.
+OBJ_CH17_TABLE,Go to the dock-master's house. Ysolde has spread her work over his table.
+OBJ_CH17_BOARD,Board the hull when you are ready.
+OBJ_CH17_SIDE_BERTH,The dock-master is standing at an empty berth.

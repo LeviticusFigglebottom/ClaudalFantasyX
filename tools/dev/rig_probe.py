@@ -523,6 +523,7 @@ def clip_poses(rig: Rig, every: int, clips: list | None = None, max_samples: int
         trail = loop and clip in getattr(hero_clips, "SKIRT_TRAIL_CLIPS", ()) and bool(getattr(sk, "skirt", None)) \
             and rig.hero in hero_clips.LOCO_GAIT
         sk.skirt_trail = {} if trail else None
+        sk.skirt_loco = clip in getattr(hero_clips, "LOCO_CLIPS", ()) and rig.hero in hero_clips.LOCO_GAIT  # row 56
         keep = set(frames)
         for f in (range(n + 1) if trail else frames):
             t = f / hero_clips.FPS
@@ -535,6 +536,7 @@ def clip_poses(rig: Rig, every: int, clips: list | None = None, max_samples: int
             if f in keep:
                 out.append(Pose(f"{clip}@{f}", local, hips, "clip", float(hold.get("_down", 0.0))))
         sk.skirt_trail = None
+        sk.skirt_loco = False
     return out
 
 

@@ -2311,3 +2311,22 @@ MERGE-READY @ (this commit).
   - **Fix (my test):** each spawn is settled 0.5 s with no input first. One with no floor in this state is skipped and printed. Hollowmere's HullDeck, Cabin, EngineBay and Berths are skipped. 1/0, with 23 zones that have water walked.
   - **Coverage gap:** those four spawns go unwalked. A pass with each zone's later flags set would cover them; it's not done.
 MERGE-READY @ (this commit).
+
+### 2026-10-31: the Lead's three asks: Hollowmere's skipped spawns, row 88 (memory), and Haluna's ~12 s first entry
+- **Hollowmere's 4 skipped spawns are walked now.** qa_dock_edges retries an unfloored spawn under each story variant of its zone and walks it under the first that floors it. HullDeck, Cabin, EngineBay and Berths are all walked with `ch17_started` set, and they're clean. 1/0, 23 zones that have water.
+- **Row 88: no leak found headless.**
+  - New `game/core/debug/memory_walk_probe.tscn` changes through Haluna → causeway → shrine → Drownbell (with its parked return) → Haluna → Wake → ferry → Pemakar → Brine Shoals → Tamsule → Corrow → Haluna → Corrow.
+  - Godot's own allocations come back between zones: Haluna 1,050 → 1,080 → 1,089 MB across three visits, Corrow 1,634 → 1,634 MB.
+  - In the Drownbell fight: 709 MB and 5,022 orphan nodes (the resident shrine plus the parked Haluna, by design). After the return: 0 orphans.
+  - The park adds nothing measurable at the fight: about 1,030 MB with or without `--no-park`.
+  - So the PC's 5.8–7 GB private is outside what Godot counts (driver memory, GPU staging, the shader cache). A Windows/driver-level look on the PC is the next step.
+- **Haluna's cold first entry: 16.9 s → 7.8–9.3 s headless.**
+  - **Cause:** ResidentLoads loads every field hero for the session (`party_only: false`, ADR 0111), and the swap's hold waited for all of them. For about 700 frames, Liss's, Sefir's, Kerrid's and Pell's LOD1 models filled the four load slots, and only 2 of 427 loads finished.
+  - **Fix (`game/core/resident_loads.gd`):** the paths a change needs (the zone's own loads plus the party's heroes, via `party_data`) load first. The hold, the prewarm's wait and ReturnPark wait only for those (`needed_ready()`). The other heroes load once the router is idle.
+  - Letting them load during the change instead made the instantiate 1.9 → 10 s, because they shared the loader.
+  - Now: instantiate 1.7–1.9 s, prewarm wait 351–397 frames (was 1,491), worst hidden frame 748–1,112 ms (one noisy run over 1 s; before 778–833 ms).
+  - Tests: resident_loads 13/0 (+2), shader_prewarm 22/0, return_park 3/0, battle_return 2/0, scene_router 17/0.
+  - ui-menus' data (`resident_loads.json`) is unchanged.
+- **Headless crash seen once in a return_probe run:** the M3-HER-1151 race again (a WeatherClock global write, "wrong RID", then `material is null`, then signal 11).
+  - I believe the dummy renderer's RID owners aren't thread-safe while the PC's RenderingDevice ones are, so threaded instantiates can race headless only. It's unverified, and an engine-level detail. The PC's row 68 segfaults need their own backtraces.
+MERGE-READY @ (this commit).

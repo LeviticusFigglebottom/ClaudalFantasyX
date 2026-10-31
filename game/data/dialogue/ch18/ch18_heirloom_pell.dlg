@@ -1,0 +1,10 @@
+// M5-A3P-1003. Ch18 §5, one hero's heirloom errand. Split from ch18_heirloom_rhen.dlg, whose header has the rules: ZoneStory plays one scene file
+// per beat or bark.
+title: ch18_heirloom_pell
+location: ch10/reedhollow
+---
+// Reedhollow: Ressa's reed-spear, given by Owa. Needs ch18_pell_named (the flow gates it).
+Owa as "The eldest" [neutral]: Ressa's. We kept it with her name. Now you have yours, take hers. #line:ch18_heir_013
+Pell [tender]: I will carry it the right way round. #line:ch18_heir_014
+<<set $ch18_heirloom_pell = true>>
+===

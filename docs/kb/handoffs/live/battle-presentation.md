@@ -4,6 +4,20 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+### 2026-10-31 ~06:30: the Act II readability pass is DONE (MERGE-READY @ the branch head, 8cf83d11+)
+- **All 14 Act II fights** (Ch10–12 and Ch16 regulars; the Drowner, the Lamp Engine with its crawlers, the Ram and the
+  Wakefin) at 1920x1080. Text 1.3 for all of them; 1.0 too for the four Ch10–11 fights.
+  - No label overflows and no float over a HUD panel. The target pick and the hit viewed for each.
+  - Nothing needed a code change: the Act I fixes (d58eb032, 3999100f, 78342f98) already hold for Act II.
+- **Noted for creatures (contrast, not the HUD; not changed):**
+  - The Fen Leech is dark on the fen's dark mud.
+  - The Glass Skate is pale on the Pale Rim's pale floor.
+  - In both, the target ring, the cursor and the turn order still mark them.
+- **Checked, fine:** on the Pale Rim's white fog the damage numbers read at full size (4 px dark outline). A
+  downscaled contact sheet had suggested otherwise.
+- **Next (ADR 0207):** the paused Act I sweep's choreography stills (Ch6, Ch8; their HUD readability is done), then
+  Act III production (battle VFX, boss intros, the finale camera; M5-A3P-1900..1949).
+
 ### 2026-10-31 ~05:40: the Lead's 04:43 (row 61 still open in the big38 sign-off): the Reach is lit
 **MERGE-READY @ 519cbf4b** (0afcaf44): full `--filter=battle` 866/0.
 - **Why:** framing alone (34bb40ca) left the Reach a dark mass on the GPU.

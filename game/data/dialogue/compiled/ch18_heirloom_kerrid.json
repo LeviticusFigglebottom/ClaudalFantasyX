@@ -1,0 +1,19 @@
+{
+ "format": 1,
+ "scene": "ch18_heirloom_kerrid",
+ "source": "game/data/dialogue/ch18/ch18_heirloom_kerrid.dlg",
+ "start": "ch18_heirloom_kerrid",
+ "nodes": {
+  "ch18_heirloom_kerrid": {
+   "headers": {"location": "ch08/corrow"},
+   "ops": [
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "stair_foot", "walk"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 8},
+    {"op": "line", "id": "ch18_heir_011", "key": "DLG_CH18_HEIR_011", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "lift", "stair_anchor"], "kwargs": {}, "src": 10},
+    {"op": "line", "id": "ch18_heir_012", "key": "DLG_CH18_HEIR_012", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 11},
+    {"op": "set", "flag": "ch18_heirloom_kerrid", "value": ["lit", true], "src": 12}
+   ]
+  }
+ }
+}

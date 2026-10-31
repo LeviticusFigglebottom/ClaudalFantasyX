@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch18_heirloom_ysolde",
+ "source": "game/data/dialogue/ch18/ch18_heirloom_ysolde.dlg",
+ "start": "ch18_heirloom_ysolde",
+ "nodes": {
+  "ch18_heirloom_ysolde": {
+   "headers": {"location": "ch18/kite"},
+   "ops": [
+    {"op": "line", "id": "ch18_heir_007", "key": "DLG_CH18_HEIR_007", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 8},
+    {"op": "line", "id": "ch18_heir_008", "key": "DLG_CH18_HEIR_008", "speaker": "ysolde", "emotion": "tender", "voice": "", "src": 9},
+    {"op": "set", "flag": "ch18_heirloom_ysolde", "value": ["lit", true], "src": 10}
+   ]
+  }
+ }
+}

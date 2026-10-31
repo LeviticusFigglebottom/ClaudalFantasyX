@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch17_bark_ysolde_asleep",
+ "source": "game/data/dialogue/ch17/ch17_bark_ysolde_asleep.dlg",
+ "start": "ch17_bark_ysolde_asleep",
+ "nodes": {
+  "ch17_bark_ysolde_asleep": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "sleep_over", "keth_cord"], "kwargs": {}, "src": 6},
+    {"op": "line", "id": "ch17_bark_006", "key": "DLG_CH17_BARK_006", "speaker": "liss", "emotion": "soft_smile", "voice": "", "src": 7}
+   ]
+  }
+ }
+}

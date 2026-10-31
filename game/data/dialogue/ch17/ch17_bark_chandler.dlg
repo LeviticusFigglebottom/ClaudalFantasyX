@@ -1,0 +1,7 @@
+// M5-A3P-1000. Ch17 B02/B12, one of Hollowmere's field barks. Split from ch17_bark_lookout.dlg, whose header has the rules: ZoneStory plays one scene file
+// per beat or bark.
+title: ch17_bark_chandler
+location: ch17/hollowmere
+---
+Vendor as "Chandler" [neutral]: Oil, rope, glass. Tobin used to fetch the glass. Take what you need. #line:ch17_bark_004
+===

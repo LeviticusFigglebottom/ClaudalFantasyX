@@ -15,9 +15,15 @@ SILENCE = "silence"
 # Cues the scripts name that audio has not delivered yet. Empty since M3-AUD-819..822 landed; a new script id must
 # get a cue, or join this set on purpose while one is being made (it may only shrink). Act II's two people-boss and
 # memory gaps were on it until audio delivered them (big21, big22).
-MUSIC_TODO: set[str] = set()
+# M5-A3P-1002/1005/1008/1012/1016 (act2-plan's audio requests): Act III's script cues still being made.
+MUSIC_TODO: set[str] = {"engine_down", "haluna_lifting", "kite_first_lamp", "memory_ansedra", "memory_coilspire",
+    "memory_lanternfall", "memory_lowlight", "memory_oruvel", "memory_tidecup", "thank_you", "the_cage", "the_choice",
+    "the_eye", "undertow_descent"}
 # The same for `@sfx`: Act II script cues audio is making (M4-A2P-107). Empty since big22 delivered all eleven.
-SFX_TODO: set[str] = set()
+# M5-A3P-1002/1005/1008/1012/1016: Act III's script sfx still being made.
+SFX_TODO: set[str] = {"clutch_hum", "engine_hum_stops", "hull_meets_water", "kite_engine_strains", "kite_engines_stop",
+    "kite_settles", "kite_touches_floor", "match_struck", "names_murmured", "pell_farewell_tide", "rope_creak",
+    "rope_slips", "sails_fill", "sea_flat_lap", "shell_into_water", "velamir_lullaby_hum", "wind_in_sails"}
 
 
 def sfx_dir() -> Path:

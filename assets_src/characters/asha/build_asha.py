@@ -193,6 +193,7 @@ def unwrap_faces(ob: bpy.types.Object, mats: set[str], seams: set | None = None,
 
 HAND_FOOT_RATIO = 0.3  # the donor's hands and feet are dense (~10.7k tris); cut for the LOD0 budget
 UNDER_LEG_SHARE = 0.6  # GPU QA row 56 (pass 5): the underskirt hem's share of the legs' own weights
+OUTER_LEG_SHARE = 1.0  # GPU QA row 56 (big38, real GPU): the outer skirt hem's share of the legs' own weights
 UNDER_SKIRT_RATIO = 0.10  # M1-CHR-15: the legs and hips kept whole under the skirts, cut for the LOD0 budget (0.25 until the denser skirt of the big17 review)
 
 
@@ -766,6 +767,17 @@ def main() -> int:
                                               float(bone_head(skel, "DEF-shin.L")[2]),
                                               float(bone_head(skel, "DEF-foot.L")[2]), lm.S, W_legs,
                                               nearest_distance(Pc[hang], V[legs]))
+        # GPU QA row 56 (big38, real GPU: "a rigid cone, no legs showing; she seems to slide"): the panels only swing
+        # out to clear the legs, so the hem stayed one bell round both. Below the knee the outer skirt leans toward the
+        # leg-following weights too (OUTER_LEG_SHARE at the hem; each side's cloth on its own leg), so the front and
+        # back of the hem go with the leg under them and the stride shows the legs apart
+        outer_m = np.array(is_outer, bool)
+        if outer_m.any():
+            pos_o = np.searchsorted(np.nonzero(hang)[0], np.nonzero(outer_m)[0])
+            z_knee_o = float(bone_head(skel, "DEF-shin.L")[2])
+            z_o = Pc[outer_m, 2]
+            a_o = OUTER_LEG_SHARE * np.clip((z_knee_o - z_o) / max(z_knee_o - float(z_o.min()), 1e-6), 0.0, 1.0)
+            Wc[outer_m] = (1.0 - a_o[:, None]) * Wc[outer_m] + a_o[:, None] * W_legs[pos_o]
         # big17 review (a flat white wedge under the skirt): the underskirt takes the weights of the outer skirt over
         # it (its nearest vertex), so the two layers move as one and the inner never fans out on its own
         inner = np.array(is_inner, bool)
