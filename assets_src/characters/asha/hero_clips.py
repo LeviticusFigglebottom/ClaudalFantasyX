@@ -2833,6 +2833,20 @@ SKIRT_TRAIL_CLIPS = {"walk", "run"}
 # legs' own weights (build_asha OUTER_LEG_SHARE), so in the locomotion clips (LOCO_CLIPS: the cycles and their starts,
 # stops and turns, so they still join) the knee and hem panels swing out only this share of the clearance solve
 SKIRT_LOCO_SWING = 0.35
+SKIRT_LOCO_BACK = -0.2  # the back panels (their outward direction's +Z below this) keep the full clearance: the back of
+# the hem spans both legs (half on each), so a heel kicked back would pass through it
+
+
+def skirt_loco_weight(clip: str, u: float) -> float:
+    """How far a locomotion clip's frame takes the reduced knee and hem swing: all of it in the walk and run cycles,
+    eased in over a start and out over a stop (so each joins the idle and the cycle exactly), none elsewhere."""
+    if clip in SKIRT_TRAIL_CLIPS:
+        return 1.0
+    if clip.endswith("_start") and clip in LOCO_CLIPS:
+        return smooth(u)
+    if clip.endswith("_stop") and clip in LOCO_CLIPS:
+        return 1.0 - smooth(u)
+    return 0.0
 SKIRT_TRAIL_FRONT = 0.3  # panels facing further forward than this (about 72 deg either side) keep the plain solve
 SKIRT_TRAIL_STAFF_X, SKIRT_TRAIL_STAFF_Z = -0.6, -0.4  # and the panels out on the staff hand's side, short of the back
 
@@ -2902,8 +2916,10 @@ def helper_pose(sk: "Skeleton", g: dict, out: dict, hips=None) -> None:
     rq_h = sk.rest_q[HIPS]
     scales = out.setdefault(SCALE_KEY, {})
     sk.last_skirt = skirt_solve(sk, g, hips)  # prop_pivot poses the cloth from the same solve
-    if getattr(sk, "skirt_loco", False):  # row 56: in the locomotion clips the legs' own weights carry the hem
-        sk.last_skirt = {h: (ax, (an[0],) + tuple(x * SKIRT_LOCO_SWING for x in an[1:]), sc)
+    w = float(getattr(sk, "skirt_loco", 0.0))
+    if w > 0.0:  # row 56: in the locomotion clips the legs' own weights carry the front and sides of the hem
+        k = 1.0 - w * (1.0 - SKIRT_LOCO_SWING)
+        sk.last_skirt = {h: (ax, an if -float(ax[0]) < SKIRT_LOCO_BACK else (an[0],) + tuple(x * k for x in an[1:]), sc)
                          for h, (ax, an, sc) in sk.last_skirt.items()}
     if getattr(sk, "skirt_trail", None) is not None:  # row 56: the hem's momentum in the walk and run cycles
         sk.last_skirt = _skirt_trail(sk, sk.last_skirt)
@@ -5209,13 +5225,13 @@ def build(hero: str, names: list | None = None) -> str:
         keys_pq: list = []  # and its pivot in the fist (prop_pivot)
         keys_g: dict = {}  # and the grip
         sk.skirt_trail = None
-        sk.skirt_loco = clip in LOCO_CLIPS
         if loop and clip in SKIRT_TRAIL_CLIPS and sk.skirt and hero in LOCO_GAIT:
             # row 56: the trail starts at rest on the first frame (the plain solve, which the start and stop
             # transitions join exactly); by the cycle's end what it carries back to that frame is negligible
             sk.skirt_trail = {}
         for t in times:
             tt = (t % length) if loop else t
+            sk.skirt_loco = skirt_loco_weight(clip, tt / length) if hero in LOCO_GAIT else 0.0  # row 56
             pose = staff_hold(pose_at(clip, tt, length, sk, persona), persona)
             turns = {b: qeuler(v) for b, v in pose.items() if b != "hips"}
             local = sk.local_pose(turns, pose.get("hips"), hook_hold(hero, clip, tt / length))
@@ -5234,7 +5250,7 @@ def build(hero: str, names: list | None = None) -> str:
                 keys_h[b][0].append((t, local[POS_KEY][b]))
                 keys_h[b][1].append((t, local[b]))
             keys_p.append((t, sk.rest_t[HIPS] + np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)))
-        sk.skirt_loco = False
+        sk.skirt_loco = 0.0
         if sk.skirt_trail is not None:  # row 56: the trailed cycle closes on its own first frame exactly
             for b in sk.helpers:
                 keys_q[b][-1] = (keys_q[b][-1][0], keys_q[b][0][1])
