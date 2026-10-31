@@ -424,6 +424,10 @@ def story_pieces() -> list[dict]:
 # back over the vent with the crater's far rim and the sky round it, and the vent's glow lights it from below.
 PLUME_SCALE_XZ = 0.75
 VENT_GLOW = {"at": [0.0, -40.0, -70.0], "energy": 8.0, "range": 110.0, "color": "#FF7A3A"}
+# The PC's pass 7 (row 78): the brazier figure was lost against the court's black pillars. Two warm, shadowless bounce
+# lights down the nave (the braziers' light off the floor) edge the pillars and the figures between them. (The loggia's
+# flat grey opening is the plume's own look: PLUME_LOOK below; the plume's shader takes no omni light.)
+HALL_BOUNCE = [{"at": [0.0, -1.2, z], "energy": 0.9, "range": 10.0, "color": "#FFB070"} for z in (4.0, -8.0)]
 # The plume's day look as played (the beauty pass, 10-30): the kit's ac_plume_day read as a cold blue-grey, lumpy wall
 # (a rock face, not ash) against the overcast. The zone's copy is a warm ash grey-brown, its billows softer and
 # feathered at the edges, the sun catching its rim.
@@ -432,7 +436,10 @@ PLUME_NAME = "ashcrown_plume_day_material.tres"
 RES_ZONE_PLUME = "res://game/levels/ch05/ashcrown/" + PLUME_NAME
 PLUME_LOOK = {"col_body": "Color(0.52, 0.49, 0.46, 1)", "col_body_top": "Color(0.62, 0.59, 0.55, 1)",
               "col_shade": "Color(0.63, 0.61, 0.6, 1)", "detail_bump": "0.55", "near_detail": "0.6", "mottle": "0.3",
-              "edge_soft": "0.75", "alpha_mottle": "0.12", "back_scatter": "0.7", "rim_energy": "0.35"}
+              "edge_soft": "0.75", "alpha_mottle": "0.12", "back_scatter": "0.7", "rim_energy": "0.35",
+              # the PC's pass 7 (row 78): the crater's fire reaches up the column to the loggia's height, and its shade
+              # side keeps its shadow, so the court's opening shows fire-lit ash, not a flat grey void
+              "ember_energy": "0.6", "ember_height": "0.18", "vent_glow_height": "0.16", "shade_lift": "0.15"}
 
 
 def preview_pieces() -> tuple[list[dict], list[dict]]:
@@ -464,7 +471,7 @@ def preview_pieces() -> tuple[list[dict], list[dict]]:
             row["block"] = "CrownGate"  # the causeway head's gate (not the Tenders' gate)
             del row["block"]
         pieces.append(row)
-    return pieces, pv["lights"] + [VENT_GLOW]
+    return pieces, pv["lights"] + [VENT_GLOW] + HALL_BOUNCE
 
 
 # --- the zone's own metal and lacquer looks and its grade (M3-ENV-1325) ---------------------------------------------

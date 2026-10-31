@@ -18,6 +18,8 @@ extends RefCounted
 ## The battle-side loads must be in before the instantiate (the zone's load() on a worker thread waits on a threaded
 ## load of the same file in flight: PC pass 4 row 67); past this many frames the build goes on without them.
 const LOADS_WAIT_MAX_FRAMES := 1800
+const ARG_NO_PARK := "--no-park"
+const ARG_NO_PREWARM := "--no-park-prewarm"
 
 ## The parked root (off the tree) and its scene, or null / "".
 var node: Node = null
@@ -26,6 +28,10 @@ var path := ""
 var building := ""
 ## True once the parked scene's pipelines were sent to the shader prewarm (the router's swap-in then skips its own).
 var prewarmed := false
+## A/B switches for the PC's real-GPU bisects (row 74, big37): `-- --no-park` turns the park off, `-- --no-park-prewarm`
+## keeps it but leaves its shader prewarm to the swap-in, as before amendment 1 of ADR 0209.
+var enabled := true
+var prewarm_in_fight := true
 ## Bumped by drop(): a build in flight from before it frees its node when it finishes.
 var _generation := 0
 var _tree: SceneTree
@@ -33,6 +39,9 @@ var _tree: SceneTree
 
 func _init(tree: SceneTree) -> void:
 	_tree = tree
+	var args := OS.get_cmdline_user_args()
+	enabled = not args.has(ARG_NO_PARK)
+	prewarm_in_fight = not args.has(ARG_NO_PREWARM)
 
 
 ## Starts building `scene_path` off the tree (see the class comment). `loads` is the session's ResidentLoads, or null

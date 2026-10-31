@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3]
+[gd_scene load_steps=34 format=3]
 
 [ext_resource type="Script" path="res://game/levels/_tests/oruvel_kit/oruvel_preview.gd" id="1_rig"]
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="2_tide"]
@@ -44,18 +44,26 @@ amplitude_scale = 1.0
 [sub_resource type="Resource" id="Swell0"]
 script = ExtResource("6_comp")
 direction_deg = 0.0
-wavelength_m = 34.0
-amplitude_m = 0.16
-steepness = 0.45
+wavelength_m = 31.0
+amplitude_m = 0.09
+steepness = 0.3
 phase_rad = 0.0
 
 [sub_resource type="Resource" id="Swell1"]
 script = ExtResource("6_comp")
-direction_deg = 22.0
-wavelength_m = 17.0
+direction_deg = 38.0
+wavelength_m = 23.0
 amplitude_m = 0.08
-steepness = 0.55
+steepness = 0.35
 phase_rad = 1.7
+
+[sub_resource type="Resource" id="Swell3"]
+script = ExtResource("6_comp")
+direction_deg = 317.0
+wavelength_m = 19.0
+amplitude_m = 0.07
+steepness = 0.35
+phase_rad = 4.6
 
 [sub_resource type="Resource" id="Swell2"]
 script = ExtResource("6_comp")
@@ -75,7 +83,7 @@ phase_rad = 0.8
 
 [sub_resource type="Resource" id="StormWaves"]
 script = ExtResource("5_set")
-components = Array[ExtResource("6_comp")]([SubResource("Swell0"), SubResource("Swell1"), SubResource("Swell2"), SubResource("Chop0")])
+components = Array[ExtResource("6_comp")]([SubResource("Swell0"), SubResource("Swell1"), SubResource("Swell3"), SubResource("Swell2"), SubResource("Chop0")])
 amplitude_scale = 1.0
 
 [sub_resource type="Resource" id="ShotO01"]

@@ -579,7 +579,7 @@ def section_pose(name: str, amount: float, t: float = 0.0) -> tuple[np.ndarray, 
 # edge, gaps where they fell, so the skyline is a row of broken towers. Deterministic by position (no rng draw, so the
 # rest of the piece is unchanged); the step is coarser at LOD1, which is what 300 m sees. The windows grow to read.
 CROWN_WINDOW_HALF = (0.5, 0.75, 0.03)
-PARAPET_STEP_M = (1.4, 3.0)  # LOD0, LOD1
+PARAPET_STEP_M = (1.4, 4.5)  # LOD0, LOD1
 PARAPET_T = 0.35
 
 
@@ -602,6 +602,35 @@ def _broken_parapet(mb, mat: int, cx: float, cz: float, hx: float, hz: float, h:
                 px, pz = cx + (hx - PARAPET_T * 0.5) * (1 if side == 1 else -1), cz + t
                 half = (PARAPET_T * 0.5, hh * 0.5, length / n_seg - 0.03)
             kc.rounded_block(mb, (px, h + hh * 0.5, pz), half, mat, radius=0.04, seg=1, weather=STORM)
+
+
+# PC pass 7 row 77, re-measured on the GPU (big37): even with broken parapets the crowns stood 1.4-5.8 m over the
+# water, a few pixels tall at O17's 300 m, and still read as low slabs. A drowned city's skyline is its towers: from
+# each crown's floor one to three broken shafts rise 6-15 m (the storeys above, gutted), with their tops cut off at a
+# slant and a stepped neighbour, a few dark window slots up their faces. Deterministic by position (no rng draw).
+SHAFT_H_M = (6.0, 15.0)
+SHAFT_HALF_W_M = (0.7, 1.4)
+
+
+def _tower_shafts(mb, mat: int, dark: int, cx: float, cz: float, hx: float, hz: float, h: float, lod: bool) -> None:
+    n = 1 + int(abs(math.sin(cx * 0.53 + cz * 0.17)) * 2.99)
+    for k in range(n):
+        u = math.sin(cx * 1.31 + k * 2.39 + cz * 0.7)
+        v = math.cos(cx * 0.77 + k * 1.93 - cz * 0.4)
+        px = cx + u * (hx - 1.8)
+        pz = cz + v * (hz - 1.8) * 0.6
+        tall = SHAFT_H_M[0] + (SHAFT_H_M[1] - SHAFT_H_M[0]) * (0.5 + 0.5 * math.sin(cx * 0.91 + k * 3.1))
+        w = SHAFT_HALF_W_M[0] + (SHAFT_HALF_W_M[1] - SHAFT_HALF_W_M[0]) * (0.5 + 0.5 * v)
+        kc.rounded_block(mb, (px, h + tall * 0.5, pz), (w, tall * 0.5, w * 0.8), mat, radius=0.05, seg=1, weather=STORM)
+        # The broken top: a slanted cap block and a lower stepped neighbour, so the outline is ragged, not square.
+        kc.rounded_block(mb, (px + w * 0.35, h + tall + 0.6, pz), (w * 0.55, 0.6, w * 0.75), mat,
+                         rot=kc.rot_z(0.35 * (1 if u > 0 else -1)), radius=0.05, seg=1, weather=STORM)
+        if not lod:  # LOD1 (past 600 m) keeps the shaft and its slanted cap
+            kc.rounded_block(mb, (px - w * 1.15, h + tall * 0.35, pz), (w * 0.45, tall * 0.35, w * 0.7), mat,
+                             radius=0.05, seg=1, weather=STORM)
+            for j in range(int(tall // 3.0)):  # window slots up the seaward face
+                kc.rounded_block(mb, (px, h + 2.0 + 3.0 * j, pz + w * 0.8 + 0.02), (w * 0.3, 0.6, 0.03), dark,
+                                 seg=1, radius=0.01)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -644,6 +673,7 @@ def build_reef_edge_far(seed: int = 788) -> list[kc.MeshBuilder]:
             kc.polygon_prism(mb, outline, -1.0, h, crown, col=np.array([0.0, 0.2, 0.8, 0.6]),
                              uv2=np.array([0.8, float(rng.random())]))
             _broken_parapet(mb, crown, cx, cz, hx, hz, h, stub, lod)
+            _tower_shafts(mb, crown, dark, cx, cz, hx, hz, h, lod)
             if lod:
                 continue
             for sgn in (-1.0, 1.0):  # window rows on the long faces, one floor down from the top
