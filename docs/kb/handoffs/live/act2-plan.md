@@ -795,3 +795,4 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
   - `qa_threads`: the only failures are `.ogg` imports (LFS pointers in this container).
   - `qa_capsules`: zones clean. Its one red is Act II battle foes with no body (`abiding_*`, `court_stillguard`): not mine.
   - Tools: chapter_flow, ch10_fen_dressing, ch15_hollowmere_dressing, qa_flag_reach, locations, kite and loc tests all OK.
+- MERGE-READY Ch17 wired (M5-A3P-1001) + Ch18 critical path (M5-A3P-1004 part 1) @ a1c190305
