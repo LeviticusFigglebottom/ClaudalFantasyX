@@ -239,6 +239,13 @@
       "spawn": "Plaza",
       "name_key": "LOCATION_CH19_ISKARRA_SPIRE",
       "_note": "M5-A3P-1007: drowned Iskarra's plaza and the Lamp Spire (act3_ch19.md), a greybox zone (Ch19Zone) from tools/act3/ch19_greybox.py: the plaza, the spire's four tiers, the antechamber and the crown."
+    },
+    {
+      "id": "ch20/undertow_layers",
+      "scene": "res://game/levels/ch20/undertow_layers/undertow_layers.tscn",
+      "spawn": "FirstFloor",
+      "name_key": "LOCATION_CH20_UNDERTOW_LAYERS",
+      "_note": "M5-A3P-1011: inside the Undertow (act3_ch20.md), a greybox zone (Ch05Zone) from tools/act3/ch20_greybox.py: the first floor with the Kite, the six memory layers, the two rests and the Cage's floor round the well."
     }
   ],
   "shrines": [
