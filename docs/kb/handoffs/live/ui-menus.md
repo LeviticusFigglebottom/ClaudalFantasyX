@@ -1517,3 +1517,16 @@ MERGE-READY @ a27a38bc0: M5-A3P-1708, the Vowbound answers (Ch17 B09).
   - **Mounts in the cinematics lane:** M5-A3P-1704 (revisit flags) and M5-A3P-1707 (the ledger page).
   - **For combat (M5-A3P-1013):** `released_flag` in vowbound.json.
 MERGE-READY @ 9807c2d55: M4-A2P-1708 (KNOWN_EMPTY dropped) and M5-A3P-1709 (request), docs and tests only.
+
+- **Act I and II requests, which come before Act III (ADR 0207):**
+  - **M3-HER-1153:** BattleChoreo checks a leaving stand-in is valid before the cast. Its freed-cast lint row is
+    gone (freed_cast_lint: 0 new); choreo 58/0.
+  - **M3-UI-1242, answered:** the Act II objective rows were rewritten (M4-A2P-109). None ends on a later chapter's
+    start; qa_threads 1/0.
+  - **M4-A2P-1004, answered:** F1, F5 and F8 were already fixed in the first-hour pass; the task names the tests.
+  - **M4-A2P-1007:**
+    - A20: a new-Swell-mode tip on the first field after play unlocks a mode.
+    - A8: Echo's help names its copy and reads as it.
+    - A13: a cure names what it cures, so Cord Lift lists all seven.
+    - The other rows are answered: A5 and A9 wait on M3-UI-1240/1241; A1, A2, A18 and A19 are already met.
+    - Tests: tutorial_tips 10/0 and battle_help_lines 2/0.
