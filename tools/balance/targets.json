@@ -1739,6 +1739,40 @@
       "p90_turns_max": 80,
       "loadout": "ch16_rim",
       "swell": "good"
+    },
+    {
+      "id": "ch19_abiding_wardens",
+      "chapter": "Ch19 boss (Warden Hesper Oan and her scribe Ilsabet Rue on the Lamp Spire's crown; the watch-roll: Ysolde breaks Ilsabet's roll, Kerrid answers Hesper; act3_ch19.md §5, the Act III boss band, smart report only with an ease floor as ch05_cinder_matron and the Act II bosses; tuned by the chapters combat seat; the ch19_iskarra loadout, M4-A2P-019's shape)",
+      "kind": "boss",
+      "encounter": "ch19_abiding_wardens",
+      "active": [
+        "kerrid",
+        "ysolde",
+        "asha"
+      ],
+      "reserve": [
+        "rhen",
+        "toma"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          2
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          50,
+          75
+        ],
+        "smart": null,
+        "ward_guard": null
+      },
+      "p90_turns_max": 90,
+      "loadout": "ch19_iskarra",
+      "swell": "good",
+      "mean_turns_min": {
+        "smart": 30
+      }
     }
   ]
 }
