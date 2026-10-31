@@ -414,6 +414,9 @@ func _build_camera_volumes() -> void:
 		shot.look_at = _vec3(v.get("look_at", [0, 0, -1]))
 		shot.fov_deg = float(v.get("fov", setting("shot_fov_deg")))
 		shot.target_offset = Vector3(0.0, float(_merged("camera").get("target_height", 0.0)), 0.0)
+		if v.has("aim_node"):  # GPU QA row 18: a frame about something else (C07's harrier) is not turned to the leader
+			shot.aim_node = NodePath(str(v["aim_node"]))
+			shot.aim_offset = _vec3(v.get("aim_offset", [0, 0, 0]))
 		if v.has("dolly"):
 			shot.dolly_path = NodePath("%s/%s_dolly" % [RAILS, id])
 			rails.add_child(_path(id + "_dolly", v["dolly"]))

@@ -4724,7 +4724,11 @@
             "spawn": "Village",
             "flags": [
               "prologue_seen",
-              "ch02_met_asha"
+              "ch02_met_asha",
+              "tut_objective_seen",
+              "tut_field_menu_seen",
+              "tut_menu_save_seen",
+              "tut_swell_seen"
             ]
           }
         }
@@ -4755,7 +4759,11 @@
               "prologue_seen",
               "ch02_met_asha",
               "ch02_tideline_won",
-              "ch02_ate_at_nemes"
+              "ch02_ate_at_nemes",
+              "tut_objective_seen",
+              "tut_field_menu_seen",
+              "tut_menu_save_seen",
+              "tut_swell_seen"
             ]
           }
         }
@@ -4786,7 +4794,11 @@
               "prologue_seen",
               "ch02_met_asha",
               "ch02_tideline_won",
-              "ch02_ate_at_nemes"
+              "ch02_ate_at_nemes",
+              "tut_objective_seen",
+              "tut_field_menu_seen",
+              "tut_menu_save_seen",
+              "tut_swell_seen"
             ]
           }
         }
@@ -4814,7 +4826,11 @@
             "level_path": "res://game/levels/ch03/first_verse/first_verse.tscn",
             "scene_id": "ch03_the_first_verse",
             "flags": [
-              "ch02_met_asha"
+              "ch02_met_asha",
+              "tut_objective_seen",
+              "tut_field_menu_seen",
+              "tut_menu_save_seen",
+              "tut_swell_seen"
             ],
             "hold_line": "ch03_verse_014"
           }
@@ -4845,7 +4861,11 @@
             "level_path": "res://game/levels/ch03/first_verse/first_verse.tscn",
             "scene_id": "ch03_the_first_verse",
             "flags": [
-              "ch02_met_asha"
+              "ch02_met_asha",
+              "tut_objective_seen",
+              "tut_field_menu_seen",
+              "tut_menu_save_seen",
+              "tut_swell_seen"
             ],
             "hold_line": "ch03_verse_030"
           }
@@ -4876,7 +4896,11 @@
             "level_path": "res://game/levels/ch03/first_verse/first_verse.tscn",
             "scene_id": "ch03_the_first_verse",
             "flags": [
-              "ch02_met_asha"
+              "ch02_met_asha",
+              "tut_objective_seen",
+              "tut_field_menu_seen",
+              "tut_menu_save_seen",
+              "tut_swell_seen"
             ],
             "hold_line": "ch03_verse_031"
           }
@@ -4907,7 +4931,11 @@
             "level_path": "res://game/levels/ch03/first_verse/first_verse.tscn",
             "scene_id": "ch03_the_first_verse",
             "flags": [
-              "ch02_met_asha"
+              "ch02_met_asha",
+              "tut_objective_seen",
+              "tut_field_menu_seen",
+              "tut_menu_save_seen",
+              "tut_swell_seen"
             ],
             "hold_line": "ch03_verse_060"
           }
@@ -5749,7 +5777,11 @@
               "ch02_met_asha",
               "ch02_tideline_won",
               "ch02_ate_at_nemes",
-              "ch03_drownbell_defeated"
+              "ch03_drownbell_defeated",
+              "tut_objective_seen",
+              "tut_field_menu_seen",
+              "tut_menu_save_seen",
+              "tut_swell_seen"
             ],
             "hold_line": "ch03_dock_007"
           }
@@ -5860,7 +5892,11 @@
             "level_path": "res://game/levels/ch03/first_verse/first_verse.tscn",
             "scene_id": "ch03_the_first_verse",
             "flags": [
-              "ch02_met_asha"
+              "ch02_met_asha",
+              "tut_objective_seen",
+              "tut_field_menu_seen",
+              "tut_menu_save_seen",
+              "tut_swell_seen"
             ]
           }
         },
@@ -7498,7 +7534,11 @@
             "flags": [
               "prologue_seen",
               "ch02_met_asha",
-              "ch02_tideline_won"
+              "ch02_tideline_won",
+              "tut_objective_seen",
+              "tut_field_menu_seen",
+              "tut_menu_save_seen",
+              "tut_swell_seen"
             ],
             "scene_id": "ch02_nemes_table",
             "hold_line": "ch02_nemes_table_002"
@@ -8667,7 +8707,11 @@
             "level_path": "res://game/levels/ch03/first_verse/first_verse.tscn",
             "scene_id": "ch03_the_first_verse",
             "flags": [
-              "ch02_met_asha"
+              "ch02_met_asha",
+              "tut_objective_seen",
+              "tut_field_menu_seen",
+              "tut_menu_save_seen",
+              "tut_swell_seen"
             ],
             "hold_cue": "vfx glimmer_bound"
           }
