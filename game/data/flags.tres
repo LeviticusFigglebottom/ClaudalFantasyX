@@ -424,5 +424,15 @@ flags = {
 "ch20_nhoa_beaten": "Ch20 (M5-A3P-1011): the party won Nhoa's fight (ch20_nhoa); the return plays ch20_nhoa_release.",
 "ch20_ethren_beaten": "Ch20 (M5-A3P-1011): the party won Ethren's fight (ch20_ethren); the return plays ch20_ethren_release.",
 "ch20_rest_one": "Ch20 R1 (M5-A3P-1011): the first rest has played; the flight down to the Tidecup layer opens.",
-"ch20_rest_two": "Ch20 R2 (M5-A3P-1011): the second rest has played; the flight down to the Cage's floor opens."
+"ch20_rest_two": "Ch20 R2 (M5-A3P-1011): the second rest has played; the flight down to the Cage's floor opens.",
+"ch21_started": "Ch21 H01 (M5-A3P-1015): the last layer has played; the party is in the heart.",
+"ch21_kesh_beaten": "Ch21 H03 (M5-A3P-1015): the party won Kesh's fight (ch21_kesh); the return plays her release.",
+"ch21_kesh_released": "Ch21 H03 (M5-A3P-1015): Kesh has lifted (ch21_kesh_release); R1, the Choir-stone, follows.",
+"ch21_warden_beaten": "Ch21 H04 (M5-A3P-1015): Sefir's first phase is won (ch21_sefir_warden); the return plays H05.",
+"ch21_heart_beaten": "Ch21 H06 (M5-A3P-1015): Sefir's second phase is won (ch21_sefir_heart); the return plays the Letting.",
+"ch21_letting_sung": "Ch21 H07 (M5-A3P-1015): the Eighth Verse is sung whole (ch21_sefir_letting); the return plays H08 and H09.",
+"ending_imra_gone": "Ending E1 (M5-A3P-1015): Imra's goodbye and its rest have played aboard the Kite.",
+"ending_dace_gone": "Ending E2 (M5-A3P-1015): Dace's goodbye and its rest have played.",
+"ending_kerrid_gone": "Ending E3 (M5-A3P-1015): Kerrid's goodbye and its rest have played.",
+"ending_landed": "Ending E4 (M5-A3P-1015): Liss has brought the Kite down by hand and nothing came; the flow goes to Haluna's dock at night."
 }
