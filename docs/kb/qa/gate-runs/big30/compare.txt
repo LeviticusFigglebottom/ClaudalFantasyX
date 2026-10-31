@@ -1,4 +1,4 @@
-# big30: 572 shots: 174 PASS, 180 DRIFT (0 size mismatch), 216 NO-BASELINE, 2 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big30: 576 shots: 174 PASS, 180 DRIFT (0 size mismatch), 218 NO-BASELINE, 4 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 NO-BASELINE slice_end_card (pending_baseline)
 PASS glimmer_dusk rmse 0.00000 (limit 0.00800)
 PASS glimmer_night_held rmse 0.00000 (limit 0.00800)
@@ -570,4 +570,8 @@ NO-BASELINE battle_boss_intro_wakefin
 NO-BASELINE battle_arena_pale_rim_shallows
 NO-BASELINE ch10_edge_o02 (pending_baseline)
 FAILED-TO-CAPTURE ch10_causeway_r03 [capture rc=124 nopng 1500s]
+FAILED-TO-CAPTURE ch10_tide_f02 [capture rc=124 nopng 1501s]
+FAILED-TO-CAPTURE ch10_tide_t04 [capture rc=124 nopng 1500s]
 FAILED-TO-CAPTURE ch10_outside_r07 [capture rc=124 nopng 1500s]
+NO-BASELINE ch01_sadi_mooring (pending_baseline)
+NO-BASELINE ch11_mark_admission (pending_baseline)
