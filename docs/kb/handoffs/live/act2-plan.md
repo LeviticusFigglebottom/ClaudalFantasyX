@@ -834,3 +834,18 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
   - `qa_threads`: only the `.ogg` imports fail (LFS pointers). `qa_capsules`: zones clean; the Act II foes' bodies are the known red.
   - validate_data, taskboard, gdlint and gdformat clean; `kite_revisit_check` 0 problems.
 - MERGE-READY Ch19 (M5-A3P-1007) and Ch20 (M5-A3P-1011) wired up to combat's fights @ ee6cd6f5f
+
+## 2026-10-31: Ch21 and the Ending wired (M5-A3P-1015, supplementing); merged integration
+- **Ch21:**
+  - `ch21/heart` on env-art's Heart kit (`tools/act1/ch21_greybox.py` writes the layout and the scene; `Ch21Zone`).
+  - `ch21.json`: H01–H02 on arrival from Ch20 → Kesh on a touch → each fight's return plays the next stage (Kesh's release and R1, H05, H07, then H08–H09) → the Kite.
+- **The Ending:** `ch21.json`'s `ch18/kite` block (chapter 21) plays E1–E5. The Kite's greybox now stages E01–E10 and the goodbyes' marks. Then the end card.
+  - Still open: the credits roll needs a scene (M5-A3P-1700); E6 and the beach rite need Haluna (M5-A3P-1019); E7 needs Oruvel (M5-A3P-1018).
+- **New flags:** `ch21_started`, four victory flags (Kesh, warden, heart, Letting) and `ending_landed`.
+- **qa_known.json:** `unset_flags` lists the three Sefir victory flags under combat's M5-A3P-1017. Nothing sets them until the encounters exist.
+- **Merging integration (act1-chapters' M4-A2P-1012 Hollowmere work):**
+  - The Hollowmere generator now keeps both sides: their Ch15 triggers inside `hollowmere()`, my dry-dock after it.
+  - `hollowmere_act3()` blocks every Ch15 story trigger with no `blocked_by_flag` on `ch17_started` (barks, the jetty, the ship); the shrine and the shop stay. Their lines are unedited.
+  - The layout and dressing were regenerated.
+- **Every Act III thread is wired.** Godot ch14_16 1/0, ch17 3/0, ch18 5/0, ch19 1/0, ch20 1/0, ch21 1/0, `chapter_registry` 4/0, `zone_story` 20/0. The fights are the one gap left; each task names the battle step to add.
+- **Checks:** validate_data, dlgc, taskboard, gdlint and gdformat clean. Tools: hollowmere dressing, chapter_flow, kite_revisit_check, act3_rules, dlgc, loc and qa_flag_reach OK.

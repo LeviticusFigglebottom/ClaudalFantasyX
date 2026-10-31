@@ -69,5 +69,10 @@
     "ch15_complete": "As ch15_liss_told_father: a Ch15 row in the shared ch17/hollowmere zone (M4-A2P-1012).",
     "ch18_pell_named": "Ch18's objective rows for its return to ch10/reedhollow (prefix ch10) are counted for test_ch10_thread; test_ch18_thread raises them (M5-A3P-1004).",
     "ch18_learned_farewell_tide": "As ch18_pell_named: Ch18's return to the shared ch10/reedhollow zone; test_ch18_thread raises it (M5-A3P-1004)."
+  },
+  "unset_flags": {
+    "ch21_warden_fought": "M5-A3P-1017 (combat): the victory flag of Sefir's first phase, ch21_sefir_warden; the battle step goes into ch21.json when the encounter exists",
+    "ch21_heart_fought": "M5-A3P-1017 (combat): the victory flag of Sefir's heart phase, ch21_sefir_heart",
+    "ch21_letting_fought": "M5-A3P-1017 (combat): the victory flag of the Letting's phase, ch21_sefir_letting"
   }
 }
