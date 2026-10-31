@@ -304,10 +304,10 @@
         6000,
         1500
       ],
-      "bytes": 527464,
+      "bytes": 629060,
       "lods": {
-        "reef_edge_far": 4590,
-        "reef_edge_far-lod1": 1274
+        "reef_edge_far": 5550,
+        "reef_edge_far-lod1": 1310
       }
     },
     "salvage_heap": {
