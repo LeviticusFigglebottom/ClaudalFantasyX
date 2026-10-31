@@ -9625,6 +9625,646 @@
         }
       ],
       "note": "The crawler tends the engine: a small brass ring at its feet; it pays the party no mind."
+    },
+    "flat_pulse": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#1D1916",
+          "swatches": [
+            "glimmer_bound",
+            "lacquer_black"
+          ],
+          "amount": 44,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 1.4,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Venn's flat engine pulses: a ring of steady bound light flattening out across the court floor."
+    },
+    "engine_churn": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#B08D57",
+          "color_end": "#1D1916",
+          "swatches": [
+            "brass",
+            "lacquer_black"
+          ],
+          "amount": 20,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.6,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The flat engine churns between pulses: a small brass ring at its base."
+    },
+    "venn_sentence": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#7A1712",
+          "swatches": [
+            "glimmer_bound",
+            "lacquer_red_deep"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Malcor Venn reads the sentence: bound light and red lacquer breaking on the target."
+    },
+    "grapnel_line": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#B08D57",
+          "color_end": "#1D1916",
+          "swatches": [
+            "brass",
+            "lacquer_black"
+          ],
+          "amount": 46,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "Venn's grapnel line bites: brass and black lacquer."
+    },
+    "rod_sweep": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#1D1916",
+          "color_end": "#B08D57",
+          "swatches": [
+            "lacquer_black",
+            "brass"
+          ],
+          "amount": 58,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#7A1712",
+          "color_end": "#EFDDB4",
+          "swatches": [
+            "lacquer_red_deep",
+            "sand_dry"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Venn's measuring rod sweeps the steps: lacquer chips thrown out low."
+    },
+    "still_hand": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#1D1916",
+          "color_end": "#4FB3B0",
+          "swatches": [
+            "lacquer_black",
+            "glimmer_bound"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.4,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "Venn's still hand settles on a hero: the Level's weight pressing down."
+    },
+    "level_guard": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#7A1712",
+          "color_end": "#4FB3B0",
+          "swatches": [
+            "lacquer_red_deep",
+            "glimmer_bound"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.9,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Venn levels himself: a ring of red lacquer and bound light round him (a ward)."
+    },
+    "seize_the_line": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#1D1916",
+          "color_end": "#C9B48E",
+          "swatches": [
+            "lacquer_black",
+            "sand_cloth"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "A Stillguard seizes Merel's line: a jerk of rope and lacquer."
+    },
+    "close_ranks": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#6F7E8E",
+          "color_end": "#4FB3B0",
+          "swatches": [
+            "overcast_slate",
+            "glimmer_bound"
+          ],
+          "amount": 36,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 1.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Abiding close ranks: a slate-grey ring drawn round the guard."
+    },
+    "hook_thrust": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#6F7E8E",
+          "color_end": "#B08D57",
+          "swatches": [
+            "overcast_slate",
+            "brass"
+          ],
+          "amount": 44,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "An Abiding hook thrusts: grey iron and brass."
+    },
+    "hook_sweep": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#6F7E8E",
+          "color_end": "#B08D57",
+          "swatches": [
+            "overcast_slate",
+            "brass"
+          ],
+          "amount": 58,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#EFDDB4",
+          "color_end": "#6F7E8E",
+          "swatches": [
+            "sand_dry",
+            "overcast_slate"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The First's hook sweeps the rim: grit and iron thrown out low."
+    },
+    "hook_draw": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#B08D57",
+          "color_end": "#6F7E8E",
+          "swatches": [
+            "brass",
+            "overcast_slate"
+          ],
+          "amount": 48,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "The First draws a hero in on the hook."
+    },
+    "storm_bearing": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#6F7E8E",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "overcast_slate",
+            "deep_teal_shadow"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 1.3,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The First takes the storm's bearing: the Abiding braced round a ring of grey."
+    },
+    "storm_drag": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#0E4A55",
+          "color_end": "#6F7E8E",
+          "swatches": [
+            "deep_teal_shadow",
+            "overcast_slate"
+          ],
+          "amount": 54,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The undertow drags at the line: dark water hauled back across the rim."
     }
   },
   "map": {
@@ -9777,7 +10417,21 @@
       "the_seven": "the_seven",
       "brush_jab": "brush_jab",
       "crawler_mend": "crawler_mend",
-      "crawler_tend": "crawler_tend"
+      "crawler_tend": "crawler_tend",
+      "flat_pulse": "flat_pulse",
+      "engine_churn": "engine_churn",
+      "venn_sentence": "venn_sentence",
+      "grapnel_line": "grapnel_line",
+      "rod_sweep": "rod_sweep",
+      "still_hand": "still_hand",
+      "level_guard": "level_guard",
+      "seize_the_line": "seize_the_line",
+      "close_ranks": "close_ranks",
+      "hook_thrust": "hook_thrust",
+      "hook_sweep": "hook_sweep",
+      "hook_draw": "hook_draw",
+      "storm_bearing": "storm_bearing",
+      "storm_drag": "storm_drag"
     },
     "items": {
       "bitterleaf": "bitterleaf",
