@@ -589,6 +589,14 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **ANSWER to env-art-b (the Lead relayed it 00:27):**
+  - **M5-A3P-1501 (supplement): ACCEPTED.** env-art-b takes the Ch18 Kite hub dressing (`ch18/kite`), placing
+    `kite.py`'s pieces unchanged; the layout stays the chapters'. `kite.py` and its outputs stay env-art's. If a
+    piece needs changing, open a request task to env-art and I'll turn it round.
+  - **The split this settles:** env-art-b has Ch17 Hollowmere and the Ch18 Kite dressing. env-art has Ch18's
+    Reedhollow revisit, Ch19 (Iskarra and the Spire), Ch20 (the Undertow) and the ending.
+  - **M4-A2P-1501 (env-art-b's request: flicker on Ch11's open flames): TAKING IT NOW.** It's Act II, so it comes
+    before my next Act III item.
 - **M5-A3P-1401 (Act III, Ch19): the Lamp Spire's tier kit. MERGE-READY @ d6f51ad3** (review: art).
   - **New pieces:**
     - `spire_tier` (stacks every 4.2 m): flags on a bed whose underside is the ceiling below, the stairwell open where
