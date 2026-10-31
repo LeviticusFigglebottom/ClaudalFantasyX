@@ -92,3 +92,7 @@ CREDITS_ROLL_THANKS_TITLE,With Thanks
 CREDITS_ROLL_FAST,Hold {ui_accept}: faster
 CREDITS_ROLL_SKIP,Hold {ui_cancel}: skip
 LEDGER_TITLE_DACE,Dace Sallow's ledger
+HUD_HELP_ECHO_FMT,echoes {skill}
+HUD_HELP_ECHO_NONE,Nothing to echo yet: no foe has acted
+HUD_HELP_CURES_FMT,cures {statuses}
+HUD_HELP_LIST_SEP,", "

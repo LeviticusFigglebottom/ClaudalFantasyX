@@ -4,6 +4,7 @@ extends TestCase
 
 var flags: Dictionary = {}
 var on := true
+var swell_unlocked := false
 var made: Array[Node] = []
 
 
@@ -13,6 +14,7 @@ func before_each() -> void:
 	UiSettings.set_shared(UiSettings.new())
 	flags = {}
 	on = true
+	swell_unlocked = false
 
 
 func test_each_trigger_raises_its_tip_once_per_save() -> void:
@@ -157,6 +159,22 @@ func test_act2_tips_come_once_at_their_moment() -> void:
 	_done()
 
 
+## M4-A2P-1007 A20: the new-Swell-mode tip comes on the first field after play unlocks a fill mode, once.
+func test_the_swell_mode_tip_waits_for_an_unlock() -> void:
+	var t := _tips()
+	for f in [&"tut_objective_seen", &"tut_field_menu_seen", &"tut_menu_save_seen", &"tut_swell_seen"]:
+		flags[f] = true
+	t.raise_field_ready()
+	assert_false(_ids(t).has(&"swell_mode"), "nothing unlocked yet")
+	swell_unlocked = true
+	t.raise_field_ready()
+	assert_eq(_ids(t), [&"swell_mode"], "the first field after an unlock")
+	t.take()
+	t.raise_field_ready()
+	assert_true(t.queue.is_empty(), "once")
+	_done()
+
+
 ## A tip fades out when the player presses what it teaches: the menu tip does not wait out a visit to the menu and
 ## then ask again for what was just done.
 func test_pressing_what_a_tip_teaches_dismisses_it() -> void:
@@ -195,7 +213,8 @@ func _tips() -> TutorialTips:
 	return TutorialTips.new(
 		func(f: StringName) -> bool: return bool(flags.get(f, false)),
 		func(f: StringName) -> void: flags[f] = true,
-		func() -> bool: return on
+		func() -> bool: return on,
+		func() -> bool: return swell_unlocked
 	)
 
 
