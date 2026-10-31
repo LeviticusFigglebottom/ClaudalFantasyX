@@ -8,7 +8,7 @@
 // prologue_dead_city_001. T-07 / M4-A2P-111: the Prologue's "glimmer rises around him" is NOT repeated (nothing rises
 // before H09). RULE 2: nothing names Imra, Dace and Kerrid together.
 title: ch19_the_vigil
-location: prologue
+location: ch19/iskarra
 ---
 @anim kerrid vigil_stand
 @anim pell turn_back sea

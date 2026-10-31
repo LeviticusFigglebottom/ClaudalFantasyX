@@ -9,7 +9,7 @@ location: ch10/reedhollow
 ---
 @letterbox on
 @camera K05
-@music reedhollow_return fade=2.0
+@music reedhollow fade=2.0
 @mark pell pell_gate walk
 @wait 3.0
 @mark pell clutch walk

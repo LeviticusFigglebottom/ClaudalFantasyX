@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch17_hull_tool_rack",
+ "source": "game/data/dialogue/ch17/ch17_hull_tool_rack.dlg",
+ "start": "ch17_hull_tool_rack",
+ "nodes": {
+  "ch17_hull_tool_rack": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "cue", "cue": "anim", "args": ["rhen", "pick_up", "diving_hooks"], "kwargs": {}, "src": 6},
+    {"op": "line", "id": "ch17_hull_003", "key": "DLG_CH17_HULL_003", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 8},
+    {"op": "line", "id": "ch17_hull_004", "key": "DLG_CH17_HULL_004", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 9}
+   ]
+  }
+ }
+}

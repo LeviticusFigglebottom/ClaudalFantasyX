@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch18_heirloom_pell",
+ "source": "game/data/dialogue/ch18/ch18_heirloom_pell.dlg",
+ "start": "ch18_heirloom_pell",
+ "nodes": {
+  "ch18_heirloom_pell": {
+   "headers": {"location": "ch10/reedhollow"},
+   "ops": [
+    {"op": "line", "id": "ch18_heir_013", "key": "DLG_CH18_HEIR_013", "speaker": "owa", "emotion": "neutral", "voice": "", "src": 7, "name_key": "DLG_NAME_OWA_THE_ELDEST"},
+    {"op": "line", "id": "ch18_heir_014", "key": "DLG_CH18_HEIR_014", "speaker": "pell", "emotion": "tender", "voice": "", "src": 8},
+    {"op": "set", "flag": "ch18_heirloom_pell", "value": ["lit", true], "src": 9}
+   ]
+  }
+ }
+}

@@ -764,3 +764,103 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
 - **Next for this track:** Act III objective text once 1001/1004/1007/1011/1015 land flags and POIs, the word-budget growth if the Lead says so (LEAD-ASK above), and any FAST-TRACK first.
 - MERGE-READY Act III Ch21 + Ending (M5-A3P-1014) @ ac9bc6521
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1015; M4-A2P-112 items 3, 5 and 6; M5-A3P-1001/1002/1004/1005/1007/1008/1009/1011/1012/1013/1015/1016/1017.
+
+## 2026-10-31: Act III wired. Ch17 and the Ch18 critical path play (Lead 23:26: "continue Act III production, plus the requests")
+- **Word budget:** answered ("lean is fine; fill out where a beat feels thin"). No beat felt thin once staged, so no lines were added.
+- **Supplementing** act1-chapters and cinematics on M5-A3P-1001 and 1004, per the Lead's message. Each task file names `claude/act2-plan` as `owner_session` and says it is supplementing. The owner tracks keep the paths and the review.
+- **Engine, small:**
+  - `ChapterRegistry.zone()` picks a shared zone's block by `Game.state.chapter`: the first file whose chapter is the current one or later, else the first. It has a unit test, `tools/chapter_flow_check.py` takes every file's beats for a zone, and `chapter_flow.md` has a "Shared zones" section. Act I/II behave as before: no zone was in two files.
+  - `Ch05Zone` has an optional held input (`hold_field_path` → `CutsceneHoldGate`), with every Act III prompt in `game/data/flow/act3_field.json`.
+- **One file per bark:** ZoneStory plays scene files, not nodes. The hull's three interactables, Hollowmere's five barks and the seven heirlooms are now one file each; flags and requests were updated to match.
+- **M5-A3P-1001, Ch17 (review):**
+  - Greybox (`hollowmere_drydock()` and `hollowmere_act3()` in `tools/act1/ch15_16_greybox.py`):
+    - the dry-dock jetty, quay, first berth, and Dace's hull (deck, cabin, engine, tool rack, masts, sails);
+    - 21 marks, shots D01–D18, 16 triggers, and light variants for noon, dusk, night and morning;
+    - stand-ins cast as villagers (aldous, clerk, vendor, fisher).
+  - `ch17.json` and its objectives (7 rows, 3 POIs).
+  - `test_ch17_thread`: out of Ch16 Hollowmere is Ch17's, Ch15 keeps its own, and the chapter runs to boarding.
+  - The Hollowmere dressing was regenerated (env-art-b's generator, unchanged) for the new jetty.
+- **M5-A3P-1004, Ch18 (doing):**
+  - New zone `ch18/kite` (`tools/act1/ch18_greybox.py`, `Ch18Zone`, `kite.tscn`, location, zone map).
+  - Reedhollow's Act III block (`reedhollow_act3()` in `tools/act1/ch10_greybox.py`): marks, K05–K12, Owa and the name-carver cast as Kirru, the child cast, day light.
+  - `ch18.json`: maiden flight → chart table (sets `kite_flying`, the world map) → Reedhollow (gate, farewell-tide) → night aboard → Iskarra, then the end card until Ch19's Iskarra exists.
+  - Ch18 objectives and `test_ch18_thread`.
+  - Still to do: the revisits in Oruvel, Pemakar, Tamsule, Corrow, Quellan and Hollowmere. Haluna needs a HalunaStory hook (ADR 0035): a tech question.
+- **qa_known.json (appended):**
+  - an Act III staging row (`M5-A3P-1001`; the party's heroes have no stage actor headless, as with Act II's M4-A2P-075);
+  - five "unraised" reasons for objective rows in shared zones: Ch15's three in `ch17/hollowmere`, Ch18's two in `ch10/reedhollow`.
+- **Checks:**
+  - validate_data, dlgc and taskboard clean; gdlint and gdformat clean on `game` and `tests`.
+  - Godot threads after merging integration: ch10, 11, 12, 13, 14_16, 17 and 18 are all green, as are `chapter_registry` 4/0, `zone_story` 19/0, `objective` 18/0, `act3` and `act2_dialogue`.
+  - `qa_threads`: the only failures are `.ogg` imports (LFS pointers in this container).
+  - `qa_capsules`: zones clean. Its one red is Act II battle foes with no body (`abiding_*`, `court_stillguard`): not mine.
+  - Tools: chapter_flow, ch10_fen_dressing, ch15_hollowmere_dressing, qa_flag_reach, locations, kite and loc tests all OK.
+- MERGE-READY Ch17 wired (M5-A3P-1001) + Ch18 critical path (M5-A3P-1004 part 1) @ a1c190305
+
+## 2026-10-31: Ch18 revisits (M5-A3P-1004, continued)
+- **K07 and K08 on one arrival.** The night aboard, the rest, then Iskarra at the chart table in the morning. Nobody is stranded ashore with no way back to the deck, and the dead `k_iskarra` objective row is removed.
+- **Revisits wired, each a `ch18.json` block for its zone:**
+  - **Hollowmere:** the dock-master at work, Dace's hooks, Tobin's drawings. Ch17's hull triggers are now blocked by `ch17_complete`.
+  - **Corrow** (its hand-kept layout, append-only): daylight, the low town drained, Marra's watch at the stair head, Toma's and Kerrid's heirlooms, K21.
+  - **Tamsule** (K20), **Pemakar** (K19) and **Quellan** (`quellan_act3()`).
+- **Requests filed:**
+  - **M5-A3P-1018 → environment:** Oruvel after the storm (Kell must not be seen in Act III, and Ch01Zone can't hide its cast), plus a Kite destination.
+  - **M5-A3P-1019 → architect:** a HalunaStory hook for Toma's lifting and Asha's heirloom (ADR 0035).
+- **Known gap:** older zones' Act I field barks may still play on a Ch18 visit where their flags allow. Each zone's owner can gate them with `blocked_by_flag: ch18_started`.
+- **Checks:**
+  - validate_data, dlgc, taskboard, gdlint and gdformat clean.
+  - Godot `ch18_thread` 5/0; ch05 4/0, ch07 5/0, ch08 6/0, ch10, ch12 2/0, ch17 3/0.
+  - Tools: chapter_flow, corrow_kit, pemakar_kit, ch12_keth_dressing, keth OK. The dressing generators re-run with no change to their output.
+- MERGE-READY Ch18 revisits (M5-A3P-1004 part 2) @ 8f35b42ab
+- **Fix to MERGE-READY @ 8f35b42ab:** hero-integration's guard M5-A3P-1981 (`tools/act3/kite_revisit_check.py`) found 6 Ch18 `arrive` rows that would replay on every Kite landing. They only placed the party and re-applied the zone's light, which the landing and the zone's own `_ready` already do. They are removed; each zone keeps its `ch18.json` block, with only beats, so the earlier chapter's arrival can't play. The check now reports 0 problems; `test_kite_revisit_check` OK; Godot `kite_landings` 1/0 and `ch18_thread` 5/0.
+- MERGE-READY Ch18 revisit-replay fix @ 984ed93c6
+
+## 2026-10-31: Ch19 and Ch20 wired, up to combat's fights (M5-A3P-1007 and M5-A3P-1011, supplementing)
+- **Ch19:**
+  - Two zones on env-art's Iskarra kit (`Ch19Zone`; `tools/act1/ch19_greybox.py`):
+    - `ch19/iskarra` instances the Prologue's own `iskarra_city.tscn`, so the vigil is its frame. P01 and P02 are copied from `prologue.tscn`.
+    - `ch19/iskarra_spire` instances `spire_crown_floor` and `anchor_engine`, with a greybox antechamber.
+  - `ch19.json`: I01 → the vigil → the hitch (night, the rest, morning) → the words → the spire (the signatures) → the lever once `ch19_abiding_beaten` → down the eye.
+  - The four plaza scenes now say `location: ch19/iskarra`. Ch18's Iskarra beat goes here.
+- **Ch20:**
+  - `ch20/undertow_layers` on env-art's Undertow kit. `tools/act1/ch20_greybox.py` writes the layout and the scene, which instances `memory_island` and the six rooms.
+  - `ch20.json`: U00, then six layers. Each plays its scene on a touch, then the fight, then on the return the release and the next floor (R1 after Virel, R2 after Ethren). Then the Cage and the thank-yous; the end card until Ch21.
+  - Six new victory flags, `ch20_<vowbound>_fought`.
+- **Fights:** each waits on combat (M5-A3P-1009 Wardens, 1013 the Vowbound and the Cage). The exact battle step to add is in each task file. The threads set the victory flags by hand as stand-ins.
+- **Paths:** the greybox generators live in `tools/act1/ch18_greybox.py`, `ch19_greybox.py` and `ch20_greybox.py`, beside every other chapter's. Env-art claims `tools/act3/ch19_*` and `ch20_*` for its dressing. The greybox story points are the chapters track's (ownership.md).
+- **qa_known.json:** an Act III row for `place_actor` on headless heroes.
+- **Checks:**
+  - Godot `ch17_thread` 3/0, `ch18` 5/0, `ch19` 1/0, `ch20` 1/0, `act3` and `kite_landings` 1/0.
+  - `qa_threads`: only the `.ogg` imports fail (LFS pointers). `qa_capsules`: zones clean; the Act II foes' bodies are the known red.
+  - validate_data, taskboard, gdlint and gdformat clean; `kite_revisit_check` 0 problems.
+- MERGE-READY Ch19 (M5-A3P-1007) and Ch20 (M5-A3P-1011) wired up to combat's fights @ ee6cd6f5f
+
+## 2026-10-31: Ch21 and the Ending wired (M5-A3P-1015, supplementing); merged integration
+- **Ch21:**
+  - `ch21/heart` on env-art's Heart kit (`tools/act1/ch21_greybox.py` writes the layout and the scene; `Ch21Zone`).
+  - `ch21.json`: H01–H02 on arrival from Ch20 → Kesh on a touch → each fight's return plays the next stage (Kesh's release and R1, H05, H07, then H08–H09) → the Kite.
+- **The Ending:** `ch21.json`'s `ch18/kite` block (chapter 21) plays E1–E5. The Kite's greybox now stages E01–E10 and the goodbyes' marks. Then the end card.
+  - Still open: the credits roll needs a scene (M5-A3P-1700); E6 and the beach rite need Haluna (M5-A3P-1019); E7 needs Oruvel (M5-A3P-1018).
+- **New flags:** `ch21_started`, four victory flags (Kesh, warden, heart, Letting) and `ending_landed`.
+- **qa_known.json:** `unset_flags` lists the three Sefir victory flags under combat's M5-A3P-1017. Nothing sets them until the encounters exist.
+- **Merging integration (act1-chapters' M4-A2P-1012 Hollowmere work):**
+  - The Hollowmere generator now keeps both sides: their Ch15 triggers inside `hollowmere()`, my dry-dock after it.
+  - `hollowmere_act3()` blocks every Ch15 story trigger with no `blocked_by_flag` on `ch17_started` (barks, the jetty, the ship); the shrine and the shop stay. Their lines are unedited.
+  - The layout and dressing were regenerated.
+- **Every Act III thread is wired.** Godot ch14_16 1/0, ch17 3/0, ch18 5/0, ch19 1/0, ch20 1/0, ch21 1/0, `chapter_registry` 4/0, `zone_story` 20/0. The fights are the one gap left; each task names the battle step to add.
+- **Checks:** validate_data, dlgc, taskboard, gdlint and gdformat clean. Tools: hollowmere dressing, chapter_flow, kite_revisit_check, act3_rules, dlgc, loc and qa_flag_reach OK.
+- MERGE-READY Ch21 and the Ending wired (M5-A3P-1015) + integration merged @ 399ad0998
+
+- 2026-10-31: **MERGE-READY @ e95f41752**: objectives for Ch19 to Ch21 (`i_*`, `s_engine`, `u_*`, `h_centre`); zone maps and route rows for ch18/kite, ch19/iskarra and ch19/iskarra_spire. The Undertow and the Heart have no map (void zones; their objectives carry no zone). Touched UI's tests: `test_zone_map` greybox count 27→30 and the route's end is now the spire; `test_objective_tracker` route size 30→33. Also carries fdd7612df (Act III cue mapping). Gates: validate_data, taskboard, gdlint/gdformat, test_zone_map_pois, Godot filters objective/zone_map/ch18–ch21 all green.
+
+- 2026-10-31: **MERGE-READY @ 8af9bde3c** (Lead decision: act1-chapters' Ch17 stands). Integration (big36) merged; my Ch17 (a2bc108d) dropped, theirs taken whole (ch17.json, Ch17Zone, hollowmere layout/dressing/tscn, test_ch17_thread). Ch18 rebased on it: `ChapterRegistry.zone_pinned` (a pinned chapter file gives way to a later chapter's file for that zone once the story is past the pin; unit-tested), `act3_ch18_revisit()` appended to their Hollowmere triggers (the only layout diff from theirs: 3 triggers), hm_* POIs on their points. Also: flow_audit seeds later chapters' flags; MUSIC_TODO/SFX_TODO list Act III cues still being made; tally keeper clip fix. Gates: validate_data, dlgc, taskboard, chapter_flow_check, kite_revisit_check, gdlint/gdformat, Godot ch14_16/ch17/ch18/ch19/ch20/ch21/chapter_registry/zone_story/objective/zone_map green; tools suite green apart from LFS audio/rig/screenshot tests, `test_battle_vfx_coverage` (combat, red on integration too) and `test_cutscene_sfx_files::plays_as_the_sequencer_finds_it` (audio's delivered Act III cues have no sequencer.json music_stand_ins rows; red on integration too). qa_ run pending.
+- **LEAD-ASK (act1-chapters, ADR 0207):** Ch17's `aboard` beat sets ch17_complete but hands off nowhere, so Ch18 can't be reached in play. I did not edit their ch17.json; M5-A3P-1020 carries the one-step patch (go ch18/kite, Deck). Please route it to them or OK me to apply it.
+- **LEAD-ASK (audio/cinematics FAST-TRACK):** 19 delivered Act III music cues (credits_suite, dace_ledger, the_kite, hollowmere, sefir_heart, …) are in music.json but the cutscene sequencer can't find them (no music_stand_ins row; files live under assets/audio/act3/music and assets/audio/music/act3).
+- qa_ for the big36 merge: `qa_threads` fails only on `.ogg` (LFS pointers in this container, environmental); `qa_capsules` only on the known combat foes (abiding_first, abiding_guard, court_stillguard). No other findings.
+- 2026-10-31 (Lead: M5-A3P-1020 is with act1-chapters; not applied here): Act III .dlg and loc are fully in production. Ch17–Ch21 and the Ending are in `game/data/dialogue/ch17..ch21/` and `ending/`. Every scene named in `docs/kb/story/act3/drafts/README.md` and `act3_ch17..20.md` exists, and no draft is left outside the game. Nothing new to mark MERGE-READY; the last one stands.
+
+## 2026-10-31: clean lane cut (Lead decision: act1-chapters own Ch10–Ch21 and the Ending's levels and flows; ownership.md 2f9cf3af)
+- claude/act2-plan's tree is now integration @ 2f9cf3af9 plus only my lane: the Act III .dlg and compiled scenes (Ch17–Ch21 and the Ending, including the per-file splits: Ch17's hull and barks, and the Ch18 heirlooms), the regenerated `dialogue.csv`, the `OBJ_CH17..CH21` objective text in `loc/ch17..ch21.csv`, the Act III cue TODO sets in `tools/tests/test_cutscene_sfx_files.py`, and my request tasks (1002/1005/1008 narrowed, 1018, 1019, 1020, and the new **1021**). My Ch18–Ch21 flows, layouts, generators, zone roots, ChapterRegistry pin rule, objective rows, map/route rows, music zone rows and thread tests are out. History is kept: the clean commit is joined to the old branch by an `ours` merge, so the branch fast-forwards with nothing rewritten, and integration's merge of it takes only the lane diff.
+- **M5-A3P-1021 → act1-chapters:** the scenes no owned flow plays yet (Ch17's B03/B06, the hull's rack and chart wall, four Ch17 barks, the Ch18 heirlooms, `ch18_child_older`, `ch18_backs_to_the_water`, three Ending scenes), plus my 20 objective rows as a proposal. M5-A3P-1020 (the Ch17→Kite hand-off) is still theirs.
+- Gates on the clean tree: validate_data, dlgc --check, taskboard, the tools tests for dialogue, loc, Act III rules, Lamptongue, villagers and cues all green except `test_cutscene_sfx_files::plays_as_the_sequencer_finds_it` (audio's delivered cues lack sequencer stand-ins; red on integration too). Godot: ch17 3/0, ch18 1/0, ch19 2/0, ch20 4/0, ch21 4/0, objective 18/0; `dialogue` 88/1, the one failure being `ullari_woman` with no portrait (an Act II villager, not in my diff; red on integration).
+- **MERGE-READY @ 6e72d20fc** (the clean lane cut; diff vs integration 2f9cf3af9: 61 files, dialogue/loc/tasks/live log/cue TODO sets only).

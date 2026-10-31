@@ -1,0 +1,9 @@
+// M5-A3P-1000. Ch17 B04, one of Dace's hull's three interactables. Split from ch17_hull_sails.dlg, whose header has the rules: ZoneStory plays one scene file
+// per beat or bark.
+title: ch17_hull_chart_wall
+location: ch17/hollowmere
+---
+@anim ysolde look_at chart_wall
+Ysolde [neutral]: Corrow, circled. Three times, in three inks. #line:ch17_hull_005
+Kerrid [neutral]: That's my stair. #line:ch17_hull_006
+===

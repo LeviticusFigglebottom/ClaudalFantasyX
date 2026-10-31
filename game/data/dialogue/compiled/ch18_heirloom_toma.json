@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch18_heirloom_toma",
+ "source": "game/data/dialogue/ch18/ch18_heirloom_toma.dlg",
+ "start": "ch18_heirloom_toma",
+ "nodes": {
+  "ch18_heirloom_toma": {
+   "headers": {"location": "ch08/corrow"},
+   "ops": [
+    {"op": "line", "id": "ch18_heir_005", "key": "DLG_CH18_HEIR_005", "speaker": "marra", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "line", "id": "ch18_heir_006", "key": "DLG_CH18_HEIR_006", "speaker": "toma", "emotion": "sad", "voice": "", "src": 8},
+    {"op": "set", "flag": "ch18_heirloom_toma", "value": ["lit", true], "src": 9}
+   ]
+  }
+ }
+}

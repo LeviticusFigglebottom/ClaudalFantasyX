@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch18_heirloom_liss",
+ "source": "game/data/dialogue/ch18/ch18_heirloom_liss.dlg",
+ "start": "ch18_heirloom_liss",
+ "nodes": {
+  "ch18_heirloom_liss": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "line", "id": "ch18_heir_009", "key": "DLG_CH18_HEIR_009", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "line", "id": "ch18_heir_010", "key": "DLG_CH18_HEIR_010", "speaker": "liss", "emotion": "soft_smile", "voice": "", "src": 8},
+    {"op": "set", "flag": "ch18_heirloom_liss", "value": ["lit", true], "src": 9}
+   ]
+  }
+ }
+}

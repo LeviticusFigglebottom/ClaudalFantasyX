@@ -65,3 +65,5 @@ SKILL_LANTERN_STING,Sting
 SKILL_LANTERN_DRAW,Draw the Light
 ENC_CH20_LAYER_LANTERNS,Drowned Lanterns
 ENC_CH20_LAYER_SHOAL,The Drowned Gallery
+OBJ_CH20_DOWN,"Go down, one memory at a time."
+OBJ_CH20_CAGE,Go down to the founders' floor.

@@ -1,0 +1,11 @@
+// M5-A3P-1003. Ch18 §5, one hero's heirloom errand. Split from ch18_heirloom_rhen.dlg, whose header has the rules: ZoneStory plays one scene file
+// per beat or bark.
+title: ch18_heirloom_ysolde
+location: ch18/kite
+---
+// Ansedra, by courier (she can't land): Corran's recipe book, bound as her folding book.
+Ysolde [neutral]: Corran's recipes. He was a terrible cook. #line:ch18_heir_007
+@wait 2.0
+Ysolde [tender]: He wrote them all down anyway. In case one came out. #line:ch18_heir_008
+<<set $ch18_heirloom_ysolde = true>>
+===

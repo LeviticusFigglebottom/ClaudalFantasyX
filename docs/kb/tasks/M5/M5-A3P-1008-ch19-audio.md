@@ -11,6 +11,10 @@ request-from: narrative
 ---
 ## Goal
 The Ch19 scripts (M5-A3P-1006) name cues that don't exist yet. Briefs: act3_ch19.md §6.
+- **Resolved (2026-10-31, act2-plan):**
+  - `kerrid_hitch` → `kerrid_last_night` (M3-AUD-858);
+  - zone rows `ch19/iskarra` → `iskarra_ruins`, `ch19/iskarra_spire` → `iskarra_spire` (M3-AUD-856).
+- **Still asked:** `engine_down`, `the_eye`, and the sounds `kite_settles`, `rope_slips`, `engine_hum_stops`.
 - **Music:**
   - `kerrid_hitch` (the hitch);
   - `the_eye` (I10);
