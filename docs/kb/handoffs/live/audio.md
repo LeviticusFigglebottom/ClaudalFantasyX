@@ -3,6 +3,14 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 713f7f6dd: the Lead's 04:43 item, act1-chapters' audio loudness red (`test_audio_loudness`, on integration too). The cause was audio's test, not their branch.**
+  - **Reproduced** on act1-chapters @ e4a23926 in a worktree checked out without LFS content (`GIT_LFS_SKIP_SMUDGE=1`, as a cloud checkout that never ran `git lfs pull`). The test handed a Git LFS pointer (music/act2/avalanche_ram_p1.ogg) to ffmpeg and errored.
+  - **Fix 1, pointers:** unfetched LFS files (193 in that checkout) are skipped and counted in the output; they are measured where LFS is pulled (the PC). A pointer on a plain-git path fails a new test (`test_no_pointer_outside_lfs`): that would be a missing file. The every-file-has-a-target check still covers all of them, since it needs no audio.
+  - **Fix 2, memory**, found on the way: with the cache cold, the test's whole-file 4x FFT true peak of `credits_suite` (5.6 min) used 7.2 GB and was OOM-killed (dmesg, memcg). True peak is now measured in 24 s blocks that overlap by 4096 samples. It matches the whole-file value to 0.001 dB (unbinding_swell -1.162, goodbye_kerrid -3.059), and the credits suite measures -1.60.
+  - **`test_tell_check`** skips, with its reason, when Act I's LFS battle sounds aren't fetched.
+  - **Checks:**
+    - My tree, cold cache (all files measured): audio_loudness 4/0 and tell_check 2/0, in 257 s.
+    - The no-LFS checkout: 4 passed and 2 skipped, where before it errored.
 - **MERGE-READY @ 5537dc6e8: the Lead's 01:41 FAST-TRACK (cloud-qa's 32 `used` reconnect ERRORs).**
   - **Is the first fix on integration?** Yes. 4d4fbd50 merged in big34 (9317c6b6, `Merge lead/gate-big34: UiAudio/unbind ERROR fixes`). I merged integration (big35 included) into claude/audio for this check.
   - **The repro** (M3-HER-1169's: scene_swap_probe `--encounter=ch03_causeway_shore --return=...saltgrass_causeway.tscn`, a resident return) logs **0** "already connected" on current integration.

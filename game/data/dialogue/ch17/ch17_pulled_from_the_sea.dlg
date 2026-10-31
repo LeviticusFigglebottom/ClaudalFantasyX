@@ -21,7 +21,7 @@ location: ch17/hollowmere
     @sfx current_song at=fog vol=0.4
     @wait 3.0
 <<endif>>
-@music hollowmere_morning fade=4.0
+@music hollowmere fade=4.0
 @camera D02
 @anim kerrid hold_rope
 @wait 2.0

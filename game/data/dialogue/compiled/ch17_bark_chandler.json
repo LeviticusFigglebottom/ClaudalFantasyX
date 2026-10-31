@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch17_bark_chandler",
+ "source": "game/data/dialogue/ch17/ch17_bark_chandler.dlg",
+ "start": "ch17_bark_chandler",
+ "nodes": {
+  "ch17_bark_chandler": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "line", "id": "ch17_bark_004", "key": "DLG_CH17_BARK_004", "speaker": "vendor", "emotion": "neutral", "voice": "", "src": 6, "name_key": "DLG_NAME_VENDOR_CHANDLER"}
+   ]
+  }
+ }
+}

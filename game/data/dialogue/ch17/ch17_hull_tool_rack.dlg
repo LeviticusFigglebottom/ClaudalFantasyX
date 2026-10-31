@@ -1,0 +1,10 @@
+// M5-A3P-1000. Ch17 B04, one of Dace's hull's three interactables. Split from ch17_hull_sails.dlg, whose header has the rules: ZoneStory plays one scene file
+// per beat or bark.
+title: ch17_hull_tool_rack
+location: ch17/hollowmere
+---
+@anim rhen pick_up diving_hooks
+Rhen [neutral]: Same make as mine. #line:ch17_hull_003
+@wait 1.5
+Rhen [neutral]: Same nick in the left one. #line:ch17_hull_004
+===

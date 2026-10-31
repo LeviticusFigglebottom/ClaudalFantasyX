@@ -9113,6 +9113,11 @@
       "scene": "res://game/ui/kite/shots/kite_log.tscn"
     },
     {
+      "id": "kite_flight",
+      "pending_baseline": true,
+      "scene": "res://game/ui/kite/shots/kite_flight.tscn"
+    },
+    {
       "id": "ledger_reader",
       "pending_baseline": true,
       "scene": "res://game/ui/ledger/shots/ledger_reader.tscn"
@@ -10531,6 +10536,36 @@
         960,
         540
       ]
+    },
+    {
+      "id": "npc_held_shapes_market",
+      "scene": "res://game/levels/_tests/npc/held_shapes_undertow.tscn",
+      "camera": "Cameras/Market",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240
+    },
+    {
+      "id": "npc_held_shapes_terrace",
+      "scene": "res://game/levels/_tests/npc/held_shapes_undertow.tscn",
+      "camera": "Cameras/Terrace",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240
+    },
+    {
+      "id": "npc_held_shapes_gallery",
+      "scene": "res://game/levels/_tests/npc/held_shapes_undertow.tscn",
+      "camera": "Cameras/Gallery",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240
     }
   ]
 }

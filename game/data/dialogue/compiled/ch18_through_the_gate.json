@@ -9,7 +9,7 @@
    "ops": [
     {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 10},
     {"op": "cue", "cue": "camera", "args": ["K05"], "kwargs": {}, "src": 11},
-    {"op": "cue", "cue": "music", "args": ["reedhollow_return"], "kwargs": {"fade": 2.0}, "src": 12},
+    {"op": "cue", "cue": "music", "args": ["reedhollow"], "kwargs": {"fade": 2.0}, "src": 12},
     {"op": "cue", "cue": "mark", "args": ["pell", "pell_gate", "walk"], "kwargs": {}, "src": 13},
     {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 14},
     {"op": "cue", "cue": "mark", "args": ["pell", "clutch", "walk"], "kwargs": {}, "src": 15},

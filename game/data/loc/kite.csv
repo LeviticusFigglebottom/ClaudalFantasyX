@@ -69,3 +69,4 @@ KITE_LOG_FOUND_YSOLDE,"Corran's recipe book, bound as her folding book."
 KITE_LOG_FOUND_LISS,A launcher built from Tobin's tide-wheel drawings.
 KITE_LOG_FOUND_KERRID,The stair-watch's anchor.
 KITE_LOG_FOUND_PELL,"Ressa's reed-spear, from Owa's hands."
+KITE_FLIGHT_BOUND_FMT,Bound for {place}

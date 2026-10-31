@@ -4,6 +4,71 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+### 2026-10-31 ~06:30: the Act II readability pass is DONE (MERGE-READY @ the branch head, 8cf83d11+)
+- **All 14 Act II fights** (Ch10–12 and Ch16 regulars; the Drowner, the Lamp Engine with its crawlers, the Ram and the
+  Wakefin) at 1920x1080. Text 1.3 for all of them; 1.0 too for the four Ch10–11 fights.
+  - No label overflows and no float over a HUD panel. The target pick and the hit viewed for each.
+  - Nothing needed a code change: the Act I fixes (d58eb032, 3999100f, 78342f98) already hold for Act II.
+- **Noted for creatures (contrast, not the HUD; not changed):**
+  - The Fen Leech is dark on the fen's dark mud.
+  - The Glass Skate is pale on the Pale Rim's pale floor.
+  - In both, the target ring, the cursor and the turn order still mark them.
+- **Checked, fine:** on the Pale Rim's white fog the damage numbers read at full size (4 px dark outline). A
+  downscaled contact sheet had suggested otherwise.
+- **Next (ADR 0207):** the paused Act I sweep's choreography stills (Ch6, Ch8; their HUD readability is done), then
+  Act III production (battle VFX, boss intros, the finale camera; M5-A3P-1900..1949).
+
+### 2026-10-31 ~05:40: the Lead's 04:43 (row 61 still open in the big38 sign-off): the Reach is lit
+**MERGE-READY @ 519cbf4b** (0afcaf44): full `--filter=battle` 866/0.
+- **Why:** framing alone (34bb40ca) left the Reach a dark mass on the GPU.
+- **The fix:** a boss with an effects.json `boss_rim_lights` row gets OmniLight3Ds at spawn (BattleBossLight). They
+  are children of its stand-in, placed along the lens-to-boss line from its body's centre, in a light_color palette
+  swatch, with no shadows.
+  - The Reach gets a rim behind it (energy 10) and a key on the lens's side (energy 12), both moon_blue, the Act II
+    night key.
+  - The battle stage and the arena previews both call it.
+- **SELF-RENDERED battle_arena_seawall_stairhead_surge (lavapipe):** the hand and arm read in cool moonlight against
+  the wall, and the teal seams are kept. A rim alone barely changed the frame; the key did.
+  - Tests: test_battle_boss_light 2/0, arena 23/0.
+- **PC-QUEUE:** row 61 on the GPU. If the key is too strong there, it's one number:
+  effects.json `boss_rim_lights.undertows_reach.lights[1].energy`.
+- creatures-b's rim-light ask above is now optional. A seam glow on the model would still help.
+
+### 2026-10-31 ~03:30: the Act I readability pass is DONE (MERGE-READY @ the branch head)
+- **Every Act I fight (33) at 1920x1080, text 1.3** (the sweep covered 1.0): no label overflow, no float over a HUD
+  panel, and the target pick and the hit viewed for each.
+- **Fixes in this pass:**
+  - d58eb032: the "Acting now" caption stayed inside its chip.
+  - 3999100f and 78342f98: damage floats clear the boss read-out, the help line, the timeline, the party panel and
+    the command menu.
+- **Noted, not changed:**
+  - At 1.3 the timeline shortens long foe names ("Glassfry S…") by ui-menus' fit-then-ellipsis. The diamond icon
+    and the foe colour still say who acts.
+  - The Reach is dark against the night sky at the rest frame (the rim-light ask to creatures-b, above).
+  - A Limpet hit still caught a later turn: a capture-timing slip in the tool, not a game issue.
+- **Next:** the same pass for the Act II fights. readability_sheet's --only now takes any encounters.
+
+### 2026-10-31 ~02:40: the Lead's 02:22 (PC row 87: a 176 ms frame in the Quellan Avalanche Ram fight)
+- **Not row 64's pattern.** Row 64's fix (7c3307df) already frames every boss intro at the first turn, behind the
+  fade, Act II's included. The Ram's framing is cheap anyway (bdc5ef22 turned its hero search off).
+- **Measured headless** (shared CPU):
+  | Boss | `_frame_boss` | `start_battle` (loading, behind the fade) |
+  |---|---|---|
+  | Avalanche Ram | 3 ms | 7.3 s |
+  | Mangrove Drowner | 9 ms | 4.2 s |
+  | Lamp Engine | 57 ms | 4.7 s |
+  | Wakefin | 0 ms | 4.1 s |
+- **So the 176 ms frame is something else.** Candidates, which only a GPU trace can tell apart:
+  1. First-draw pipeline compiles of the Ram's actor materials. Actors are instanced from enemies.json at runtime,
+     so ShaderPrewarm's scene harvest can't see them.
+  2. Its first effects: snow and grit in the ramped particle variants, which are warmed since 65e776af.
+  3. A fight started without the router's fade (from a cutscene), which leaves nothing behind the reveal.
+- **LEAD-ASK / PC-QUEUE:** row 87 needs a frame trace of the 176 ms frame (pipeline compiles or script). If it is
+  the Ram's materials, the fix is prewarm entries for Act II boss actors (creatures-b's materials plus
+  prewarm_materials.json), and I'll pair on it.
+  - If the fight opens without a fade, BattleBossIntro already frames at the first turn. The fix then is to put that
+    turn behind the cutscene's cut.
+
 ### 2026-10-31 ~01:30: the Lead's 00:44 (PC pass 7 row 61 still open)
 **MERGE-READY @ 34bb40ca.** The Reach's rest frame looks up its arm.
 - **Why ef997f3d wasn't enough:** the rest frame kept the authored look point, so the lens looked down into the
@@ -485,6 +550,8 @@ element (voice_glimmer, level_hand, still_water).
     sky; that is the arena's light.
 
 ### PC-QUEUE
+- Row 61 (0afcaf44, the Reach lit with a moon_blue rim and key): battle_arena_seawall_stairhead_surge and the undertows_reach fight; for the Act I sign-off.
+- Row 87: a frame trace of the Ram fight's 176 ms frame (pipeline compiles or script). The boss framing measures 3 ms headless.
 - Row 61 re-check (34bb40ca: the Reach's rest frame 8 m back, its look raised 2.4 m): battle_arena_seawall_stairhead_surge.
 - Row 64 re-measure (7c3307df, the search behind the fade): the 60 frames after the fade at tideline, causeway, the Drownbell, the Hermit and Moll; and the Drownbell's phase and fall moments.
 - GPU QA row 36 (the Reach): re-check in live play on the RX 9070 XT (M3-BPR-425's rest frame).

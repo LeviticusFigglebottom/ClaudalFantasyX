@@ -49,6 +49,13 @@ LAMP_STANDS = [(-3.4, 0.8, -20.0), (3.4, 0.8, -20.0)] + [(sx * 10.7, 0.6, z) for
 LAMP_COLOR = "#FFB16E"
 LAMP_ENERGY = 1.4
 LAMP_RANGE_M = 7.0
+# The PC's row 86 (Act II first look, real GPU): with the sunset low behind them (the layout's sun, yaw -90, from the
+# west), the party read as near-black silhouettes in the orange hall. A cool sky fill from the east on the faces the
+# entry and the dais views see, and a soft top fill; both shadowless, so the sunset keeps the shadows and the rim.
+COURT_FILLS = [
+    {"pitch_deg": -25.0, "yaw_deg": 90.0, "color": "#8E9CC8", "energy": 0.4, "specular": 0.2},
+    {"pitch_deg": -65.0, "yaw_deg": 180.0, "color": "#C8A890", "energy": 0.15, "specular": 0.1},
+]
 LAMP_FLICKER = 0.15  # the ambient-life pass (10-30): the lamp-stands' flames stir; the court itself stays still
 FLAME_Y = 1.75  # ansedra.FLAME_Y: the flame over the stand's foot
 RACK = (-9.0, -23.4, 0.0)
@@ -107,6 +114,7 @@ def dressing() -> dict:
         "environment": RES_ZONE + ENV_NAME,
         "time_of_day_h": 18.5,
         "greybox": {"hide_all": True, "keep": []},
+        "fill_lights": [dict(f) for f in COURT_FILLS],
         "fire_light_color": LAMP_COLOR,
         "fire_lights": [{"at": [x, round(y + FLAME_Y + 0.1, 3), z], "energy": LAMP_ENERGY, "range": LAMP_RANGE_M,
                          "flicker": LAMP_FLICKER}

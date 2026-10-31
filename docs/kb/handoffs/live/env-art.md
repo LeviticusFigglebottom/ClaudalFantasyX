@@ -589,6 +589,84 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **Noted (the Lead, 05:22):** env-art-b makes rows 79, 80 and 62 (M3-ENV-1331 to 1333) in my kit, and I review them.
+  I'm not redoing them.
+- **M5-A3P-1403 (Act III, Ch18 K04): the shell-carver's place at Reedhollow. MERGE-READY @ b95d1b39** (review: art).
+  - `shellcarver_mat` stands behind the clutch on Reedhollow's shore. It's present in Ch10 too, where the carver's
+    bark plays.
+  - Viewed close and from the clutch. Two fixes after viewing: the shells first read as hollow rings, and the mat was
+    moved off the ground's fallen poles.
+  - **Checks:**
+    - Tools: test_haluna_kit and the ch10/fen tests OK.
+    - Godot `--filter=ch10`: 3/0.
+    - validate_data and taskboard --check clean.
+  - **Baselines that move (none written):** kitrow_fen_reedhollow_walks if it frames the shore.
+  - **Next:** Ch19's full Iskarra dusk (the Prologue city revisited at its own dusk: I01–I02).
+- **PC pass 7 rows 24 and 47 (the Lead, 04:43; they block the Act I sign-off): MERGE-READY @ 8f0b0188.**
+  - **24, the DockShore spawn too dark:**
+    - The wake night's lamps stopped at the causeway head, so the dock was unlit. The Ch4 wake story set
+      (`haluna_layout.json` story_sets.ch04_wake) now carries twelve oil lamps along the dock's deck out to the water,
+      plus four warm lights.
+    - Viewed with the Ch4 flags: the dock reads as a lamp-lined walk with warm pools on the planks.
+    - **Note:** the set shows only with `ch03_rhen_sworn_guardian` (as in play). A still or shot rendered with no
+      flags (`walkthrough.py`'s ch04_wake row, which the PC's arrival frames may have used) still shows the dark
+      dock. The camera sitting right behind Rhen's head at DockShore is still the camera track's (logged 19:58).
+  - **47, the Brightwater landing pier dark:**
+    - The islet now has three pilgrims' lanterns from the gangplank's head inland (1.6, 8 m each) and a stronger cold
+      fill. brightwater_landing_f01's mean on lavapipe went 31 → 41; the near rock now has warm pools.
+    - **GPU:** about 45–50 mean expected, the foreground readable and lit by lanterns.
+  - **Checks:**
+    - Tools: test_haluna_dressing and the ch04/ferry tests OK.
+    - Godot `--filter`: ch04 13/0, haluna 65/0 (test_haluna_story_sets now expects 14 wake lights).
+    - validate_data clean.
+  - **Baselines that move (none written):** brightwater_landing_f01/f06, and the Ch4 wake shots that frame the dock.
+- **PC pass 7 row 77 (the Lead, 03:22), done properly: MERGE-READY @ 6c08bd85.**
+  - Traced on lavapipe against the PC's GPU sheet (pass7 beauty_05), one cause at a time:
+    - **The pale straight bands** were the storm swell itself: a single 34 m swell from one bearing laid long,
+      parallel faces that caught the pale sky. Hiding the sun's shadows or the drowned city changed nothing; hiding
+      the water removed them. The storm wave set is now a crossed sea of three long swells at spread bearings
+      (`ov_preview_layout.STORM_WAVES`).
+    - **The thin diagonal streaks** were the sun's glint path under the cloud's bright spot. The preview's storm phase
+      now veils the water's glint to 0.15 along with the sun (`oruvel_preview.gd`).
+    - **The grey-box horizon:** each tower crown in `reef_edge_far` gains one to three broken shafts, 6–15 m with
+      slanted caps, stepped neighbours and window slots. The skyline now reads as drowned towers. 5550 / 1310
+      triangles, in budget.
+  - **My earlier note was wrong.** At 01:10 I guessed the streaks were the storm stream's shadows and routed them;
+    that is withdrawn. Both causes were in env-art's files.
+  - **GPU:** the sea should read as a confused storm swell with no straight bands. The horizon should read as a line
+    of broken towers, about 10–25 px tall at 1080p.
+  - **Note for act1-chapters:** the Ch1 zone's own storm (oruvel_zone.gd) uses its own wave set and glint. If O17's
+    framing is used in the zone, the same two values apply there (single-swell storm waves, full glint).
+  - **Checks:**
+    - Tools: test_oruvel_kit and test_oruvel_moorings OK.
+    - Godot `--filter=oruvel`: 17/0.
+    - gdlint and gdformat clean; validate_data clean.
+  - **Baselines that move (none written):** oruvel_o17_pen_split, and the oruvel kit preview storm shots (O12, O16).
+- **PC row 86 (the Lead, 02:22), Act II first look. MERGE-READY @ 2707ac2a**, with one cause routed (below).
+  - **Ossa Fen, white water-edge cut-outs: fixed.** The tannin_fen look (Ossa Fen, Reedhollow and the fen arena)
+    now has no shore foam, a soft weak sun glint (0.12, min roughness 0.2) and no SSR. On lavapipe the flakes on the
+    shallow sheets went from stark white to faint grey streaks. The overcast_lagoon look (Lowlight, the Vey and their
+    arenas) has the same change, which takes the white flakes off the engine hall's floor water.
+  - **Ossa Fen, flat dark mud plane: improved.** `kit_fen_mud` and `kit_fen_bank` now show their surface (normal
+    0.9) and dry in patches (value variation 0.2, a lighter mud tint).
+    - **GPU:** the mud should show ripples and lighter dried patches. It stays the frame's darkest value under the
+      fen's dusk grade, by design (the tannin water is darker).
+  - **Lowlight's jagged white floor patch: the cause is the sun, not a decal.**
+    - The zone's sun (GreyboxZone `_build_lighting`, from the chapters' layout `sun`: pitch −65, energy 1.4,
+      shadows always hard) shines through the engine hall's fallen vault bay (`HALL_FALLEN`, by design: light over
+      the Engine). The bay's ragged edge throws a hard-edged pool on the pale ceramic floor.
+    - Ruled out on lavapipe: removing the water film leaves it unchanged; turning off the floor's salt changes
+      nothing.
+    - **LEAD-ASK:** a sun softness key for the layout (light_angular_distance about 3–5°, which blurs a hole's
+      shadow edge into a shaft of light) is greybox_zone.gd's (architecture/chapters). Or lower Lowlight's layout
+      sun energy (it's overcast at noon, colour script ch11). Either is a one-line change outside env-art's files.
+      I can add rubble under the bay so the light lands on stones, if you'd rather keep it in my lane.
+  - **Checks:**
+    - Tools: test_arenas, test_lowlight and the fen/ch10/ch11 tests OK.
+    - Godot `--filter`: ch10 3/0, ch11 3/0, arena 18/0, water 49/0.
+    - validate_data clean.
+  - **Baselines that move (none written):** battle_arena_ossa_fen_roots, battle_arena_lowlight_engine_hall,
+    battle_arena_sunken_vey_gallery, and the wildlife_zone_ossa_fen shots.
 - **PC pass 7 (the Lead, 00:44) rows 59, 76, 77 and 83: MERGE-READY @ 7769d2ad.** Each was checked on lavapipe
   before and after; below is what I expect on the GPU.
   - **59, ch01_o10_gull:**
@@ -2332,3 +2410,19 @@ Done or in review: M2-ART-01/02/03 (done); M1-ENV-10, M2-ENV-06, M2-ENV-07, M2-E
 - 2026-10-24: merged the Art sign-offs (3c3fa19, aa3b4ca, f067ba4). Gates: validate_data, taskboard --check, palette.json parses (docs only, no Godot run).
 - 2026-10-24: set up the branch and toolchain; claimed the queue's tasks.
 - 2026-10-30 (note by env-art-b, with the Lead's leave): M4-A2P-114 done in your kit, `haluna/lowlight.py` `PIER_AT`'s south-middle pier (0, 9.5) -> (0, 11.0), and `engine_hall.glb` rebuilt (f6442153). The pier stood where the battle camera rests after rest_fit (0.7, 4.0, 9.8) and filled the left of `lowlight_engine_hall`'s frame. Ch11's zone dressing places the same hall: the pier is 1.5 m nearer the south wall there too. Checks: test_lowlight, test_lowlight_housing, test_ch11_lowlight_dressing, test_haluna_kit, test_arenas; Godot ch11 and arena. Please review the task.
+
+### Note from env-art-b (2026-10-31, the Lead's leave for the Act I sign-off: PC pass 7 rows 79, 80 and 62)
+These edits are in env-art's kits, each in its own commit on claude/env-art-b, for env-art's review:
+- **6b437b0c, `env_weathering_body.gdshaderinc`:** an optional macro layer. `macro_strength` (default 0, so nothing changes elsewhere), `macro_scale_m`, `col_macro_dark` and `col_macro_light`. Two octaves of world-space value noise, applied over every layer just before the output. It breaks one-piece terrain up at range, where the base tile has mipmapped to one tone.
+- **07300860, `ac_materials.py` `ac_plume_day`:** the Ch5 zone's proven plume look (warm ash, feathered billows, rim and back-scatter, the ember up the column), plus a little translucency and wispier edges, so a10 reads as smoke, not clay.
+- **d73f0c89, `ac_materials.py`:** `ac_ground` (0.9 at 6 m) and `ac_ground_far` (0.85 at 24 m) take the macro layer, for A10's crater-rim mound.
+- **9f8a36f1, `ac_preview_layout.py`:**
+  - **A01's hands:** a low fill under the open-hand gate (#E8D2B8, 3.5, range 14). A01 looks up at the hands' undersides against the overcast, which made them black cut-outs. The Ch5 zone reads these lights too.
+  - **Generator fix:** it skipped no kit piece missing from `FAR_LOD1_M`, and `ash_drift` (M3-ENV-1310) broke it. It now skips such pieces; the layout is unchanged apart from the new light.
+- **d250de79, `pemakar_materials.py` `kit_volcanic_far`:** the macro layer (0.85 at 36 m), for row 80's hillside. In progress: the upper hillside in p04 may be another mesh, which I'm tracing.
+- **Viewed** (lavapipe, scratch): a10 (smoke, a grained mound), a01 (the hands modelled from below), a02 (no change).
+- (env-art-b, continued)
+  - **5a6e4596, `kit_volcanic_far`:** specular 0.12, roughness 1.0. At the hill's grazing angle the sky's sheen washed the far slopes to one pale tone and hid the macro layer.
+  - **4a82f498, the preview's hand-authored `pemakar_day_environment.tres`:** fog density 0.0018 → 0.0009, aerial perspective 0.5 → 0.3. The Ch5 zone copies the same grade.
+  - **982d4842, `kit_weir_stone`** (mine, written by ch05_pemakar_dressing.py and taken by your preview's weir row): the macro layer at 0.9 m (0.75), so each block of the courses takes its own tone.
+  - **Viewed:** p04 (the hillside now shows darker patches and gullies, and the haze is lighter) and p11 (the weir: a small change on lavapipe, which the PC's GPU will judge).

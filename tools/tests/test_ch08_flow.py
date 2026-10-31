@@ -91,7 +91,7 @@ class Ch08FlowTest(unittest.TestCase):
             dialogue={p.stem for p in (ROOT / "game/data/dialogue/compiled").glob("*.json")},
             encounters={r["id"] for r in enc["encounters"]},
             heroes={r["id"] for r in chars["characters"]},
-            locations={"ch08/corrow": "", "ch08/coilspire": "", "ch09/corrow_night": ""},
+            locations={"ch08/corrow": "", "ch08/coilspire": "", "ch09/corrow_night": "", "ch18/kite": ""},
             layouts=dict(self.layouts, **{"ch09/corrow_night": None}),
             scene_exists=lambda res: True,
         )

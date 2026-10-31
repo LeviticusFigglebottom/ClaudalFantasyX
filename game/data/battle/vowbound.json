@@ -6,6 +6,7 @@
       "name_key": "VOWBOUND_ILUN",
       "caller": "asha",
       "bound_flag": "ch03_ilun_bound",
+      "released_flag": "ch20_ilun_released",
       "call_rank": 3,
       "base": {"hp": 60, "mp": 10, "strength": 4, "magic": 4, "defense": 14, "magic_defense": 14,
                "agility": 4, "accuracy": 4, "evasion": 2, "luck": 4},
@@ -20,6 +21,7 @@
       "name_key": "VOWBOUND_KAHRE",
       "caller": "asha",
       "bound_flag": "ch05_kahre_bound",
+      "released_flag": "ch20_kahre_released",
       "call_rank": 3,
       "base": {"hp": 50, "mp": 10, "strength": 6, "magic": 6, "defense": 8, "magic_defense": 8,
                "agility": 4, "accuracy": 4, "evasion": 2, "luck": 4},
@@ -36,6 +38,7 @@
       "call_bark_key": "BARK_CALL_VIREL",
       "caller": "asha",
       "bound_flag": "ch08_virel_bound",
+      "released_flag": "ch20_virel_released",
       "call_rank": 3,
       "base": {
         "hp": 50,
@@ -75,9 +78,9 @@
       },
       "_note": "M3-CMB-01 PROVISIONAL (Virel, the Fire Vowbound, bound in Ch8 B06; vowbound.md §3): fast fire that delays foes on the timeline, and Flare Line, which lights the wall (clears storm_dark). Its full kit is a combat request. Banded in the undertows_reach suite."
     },
-    {"id": "nhoa", "name_key": "VOWBOUND_NHOA", "caller": "asha", "bound_flag": "ch11_nhoa_bound", "call_rank": 3, "base": {"hp": 55, "mp": 10, "strength": 4, "magic": 8, "defense": 10, "magic_defense": 12, "agility": 8, "accuracy": 4, "evasion": 4, "luck": 4}, "scale_pct": {"hp": 100, "mp": 50, "strength": 50, "magic": 100, "defense": 75, "magic_defense": 100, "agility": 75, "accuracy": 100, "evasion": 50, "luck": 100}, "skills": ["attack", "silt_fall", "deep_well", "nhoa_echo"], "affinities": {"ice": "absorb", "fire": "weak"}, "swell": {"rate": 150, "technique": "farewell_tide"}, "_note": "M4-A2P-024 PROVISIONAL (plan/act2/bosses/nhoa.md): the Ice Vowbound, who copies the last enemy action, bound at ch11_nhoa_bound. Banded with the Act II boss suites once Asha calls them."},
-    {"id": "hesk", "name_key": "VOWBOUND_HESK", "caller": "asha", "bound_flag": "ch12_hesk_bound", "call_rank": 3, "base": {"hp": 55, "mp": 10, "strength": 4, "magic": 8, "defense": 10, "magic_defense": 12, "agility": 8, "accuracy": 4, "evasion": 4, "luck": 4}, "scale_pct": {"hp": 100, "mp": 50, "strength": 50, "magic": 100, "defense": 75, "magic_defense": 100, "agility": 75, "accuracy": 100, "evasion": 50, "luck": 100}, "skills": ["attack", "knot_light", "cord_lift", "hesk_mending"], "affinities": {"holy": "absorb"}, "swell": {"rate": 150, "technique": "pass_cord"}, "_note": "M4-A2P-024 PROVISIONAL (plan/act2/bosses/hesk.md): the Holy Vowbound, who cleanses and mends, bound at ch12_hesk_bound. Banded with the Act II boss suites once Asha calls them."},
-    {"id": "ethren", "name_key": "VOWBOUND_ETHREN", "caller": "asha", "bound_flag": "ch13_ethren_bound", "call_rank": 3, "base": {"hp": 55, "mp": 10, "strength": 4, "magic": 8, "defense": 10, "magic_defense": 12, "agility": 8, "accuracy": 4, "evasion": 4, "luck": 4}, "scale_pct": {"hp": 100, "mp": 50, "strength": 50, "magic": 100, "defense": 75, "magic_defense": 100, "agility": 75, "accuracy": 100, "evasion": 50, "luck": 100}, "skills": ["attack", "level_hand", "hold_the_hour", "lacquer_screen"], "affinities": {"glimmer": "absorb"}, "swell": {"rate": 150, "technique": "still_water"}, "_note": "M4-A2P-024 PROVISIONAL (plan/act2/bosses/ethren.md): the Glimmer Vowbound, who slows, stops and wards, bound at ch13_ethren_bound. Banded with the Act II boss suites once Asha calls them."},
+    {"id": "nhoa", "name_key": "VOWBOUND_NHOA", "caller": "asha", "bound_flag": "ch11_nhoa_bound", "released_flag": "ch20_nhoa_released", "call_rank": 3, "base": {"hp": 55, "mp": 10, "strength": 4, "magic": 8, "defense": 10, "magic_defense": 12, "agility": 8, "accuracy": 4, "evasion": 4, "luck": 4}, "scale_pct": {"hp": 100, "mp": 50, "strength": 50, "magic": 100, "defense": 75, "magic_defense": 100, "agility": 75, "accuracy": 100, "evasion": 50, "luck": 100}, "skills": ["attack", "silt_fall", "deep_well", "nhoa_echo"], "affinities": {"ice": "absorb", "fire": "weak"}, "swell": {"rate": 150, "technique": "farewell_tide"}, "_note": "M4-A2P-024 PROVISIONAL (plan/act2/bosses/nhoa.md): the Ice Vowbound, who copies the last enemy action, bound at ch11_nhoa_bound. Banded with the Act II boss suites once Asha calls them."},
+    {"id": "hesk", "name_key": "VOWBOUND_HESK", "caller": "asha", "bound_flag": "ch12_hesk_bound", "released_flag": "ch20_hesk_released", "call_rank": 3, "base": {"hp": 55, "mp": 10, "strength": 4, "magic": 8, "defense": 10, "magic_defense": 12, "agility": 8, "accuracy": 4, "evasion": 4, "luck": 4}, "scale_pct": {"hp": 100, "mp": 50, "strength": 50, "magic": 100, "defense": 75, "magic_defense": 100, "agility": 75, "accuracy": 100, "evasion": 50, "luck": 100}, "skills": ["attack", "knot_light", "cord_lift", "hesk_mending"], "affinities": {"holy": "absorb"}, "swell": {"rate": 150, "technique": "pass_cord"}, "_note": "M4-A2P-024 PROVISIONAL (plan/act2/bosses/hesk.md): the Holy Vowbound, who cleanses and mends, bound at ch12_hesk_bound. Banded with the Act II boss suites once Asha calls them."},
+    {"id": "ethren", "name_key": "VOWBOUND_ETHREN", "caller": "asha", "bound_flag": "ch13_ethren_bound", "released_flag": "ch20_ethren_released", "call_rank": 3, "base": {"hp": 55, "mp": 10, "strength": 4, "magic": 8, "defense": 10, "magic_defense": 12, "agility": 8, "accuracy": 4, "evasion": 4, "luck": 4}, "scale_pct": {"hp": 100, "mp": 50, "strength": 50, "magic": 100, "defense": 75, "magic_defense": 100, "agility": 75, "accuracy": 100, "evasion": 50, "luck": 100}, "skills": ["attack", "level_hand", "hold_the_hour", "lacquer_screen"], "affinities": {"glimmer": "absorb"}, "swell": {"rate": 150, "technique": "still_water"}, "_note": "M4-A2P-024 PROVISIONAL (plan/act2/bosses/ethren.md): the Glimmer Vowbound, who slows, stops and wards, bound at ch13_ethren_bound. Banded with the Act II boss suites once Asha calls them."},
     {"id": "kesh", "name_key": "VOWBOUND_KESH", "caller": "asha", "bound_flag": "ch16_kesh_bound", "call_rank": 3, "base": {"hp": 60, "mp": 10, "strength": 4, "magic": 8, "defense": 10, "magic_defense": 14, "agility": 8, "accuracy": 4, "evasion": 4, "luck": 4}, "scale_pct": {"hp": 100, "mp": 50, "strength": 50, "magic": 100, "defense": 75, "magic_defense": 100, "agility": 75, "accuracy": 100, "evasion": 50, "luck": 100}, "skills": ["attack", "voice_water", "voice_lightning", "voice_fire", "voice_ice", "voice_holy", "voice_glimmer"], "cycle": ["voice_water", "voice_lightning", "voice_fire", "voice_ice", "voice_holy", "voice_glimmer"], "affinities": {"water": "absorb"}, "swell": {"rate": 150, "technique": "the_seven"}, "_note": "M4-A2P-025 PROVISIONAL (plan/act2/bosses/kesh.md): the Glimmer Vowbound, bound in Ch16 C4 (ch16_kesh_bound), called from Act III. She cycles her six voices in the order the pilgrimage met them (BattleCycle): only this turn's voice may be used, and the timeline shows the next. Not used in an Act II fight; banded with her Act III suite."}
   ]
 }

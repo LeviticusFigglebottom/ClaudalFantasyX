@@ -1,0 +1,13 @@
+{
+  "kite_flight": {
+    "doc": "The flight card (KiteFlightCard, M5-A3P-1711; the Lead's 10-31 note, the Kite's flight HUD; SPEC §6.6). When the Kite flies (KiteMapMenu: Fly), a card names where it is bound while the scene changes: 'The Kite' (KITE_TITLE) over 'Bound for {place}' and the place's region, centred in `rect` (x, y, w, h at the 1920 x 1080 reference). It lives under the SceneRouter, so the change does not free it, on canvas_layer: above the router's fade (FADE_LAYER 128), so it reads on the black. Its opacity follows the fade (0 clear, 1 covering). Once the fade has covered the screen and lifted again, or after max_sec in any case, it frees itself. On landing the area title names the place as it always does; the card is only the crossing.",
+    "canvas_layer": 129,
+    "rect": [480, 432, 960, 216],
+    "title_height": 54,
+    "line_height": 60,
+    "region_height": 42,
+    "covered_alpha": 0.99,
+    "lifted_alpha": 0.01,
+    "max_sec": 20.0
+  }
+}

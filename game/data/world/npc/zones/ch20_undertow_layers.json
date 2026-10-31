@@ -1,0 +1,437 @@
+{
+  "version": 1,
+  "doc": "M5-A3P-1809 (act3_roster.md Ch20, \"held shapes\"; act3_ch20.md rule 3: \"people in the memories are held motes in human shapes; they don't speak to the party\"): the remembered townsfolk of the memory layers as held light, crowd bodies in the silhouette mode (glimmer_held, no faces, no tints), still to the party (no glance, no talk), posed in their layer's activity on the greybox's floors (tools/act3/ch20_greybox.py), on the left of each floor, clear of the fight at (0, centre - 3) and the stair: Oruvel's market buying and selling (U01), the Lanternfall terrace watching the lanterns go down the channel (U02), a Corrow kitchen at work (U03). `far`: the Tidecup gallery's remembered Reefball crowd (U04), 30 shapes cheering, drawn by CrowdFar (flipbook MultiMeshes, built off the main thread).",
+  "zone": "ch20/undertow_layers",
+  "villagers": [
+    {
+      "npc_id": "held_market_0",
+      "body": "crowd_man_medium_a",
+      "silhouette": "#7FC6D9",
+      "stand_in": "CrowdSpots/held_market_0",
+      "at": [-5.6, -3.0, -21.0, 60.0],
+      "tuning": {
+        "glance": {
+          "radius_m": 0.0
+        },
+        "look_around": {
+          "yaw_deg": 0.0
+        },
+        "stop_radius_m": 0.0,
+        "face_radius_m": 0.0,
+        "release_radius_m": 0.0,
+        "clips": {
+          "work": "mend"
+        }
+      }
+    },
+    {
+      "npc_id": "held_market_1",
+      "body": "crowd_woman_medium",
+      "silhouette": "#7FC6D9",
+      "stand_in": "CrowdSpots/held_market_1",
+      "at": [-4.2, -3.0, -24.2, -20.0],
+      "tuning": {
+        "glance": {
+          "radius_m": 0.0
+        },
+        "look_around": {
+          "yaw_deg": 0.0
+        },
+        "stop_radius_m": 0.0,
+        "face_radius_m": 0.0,
+        "release_radius_m": 0.0,
+        "clips": {
+          "work": "carry"
+        }
+      }
+    },
+    {
+      "npc_id": "held_market_2",
+      "body": "crowd_elder_woman_a",
+      "silhouette": "#7FC6D9",
+      "stand_in": "CrowdSpots/held_market_2",
+      "at": [-6.8, -3.0, -22.6, 90.0],
+      "tuning": {
+        "glance": {
+          "radius_m": 0.0
+        },
+        "look_around": {
+          "yaw_deg": 0.0
+        },
+        "stop_radius_m": 0.0,
+        "face_radius_m": 0.0,
+        "release_radius_m": 0.0,
+        "clips": {
+          "work": "fold"
+        }
+      }
+    },
+    {
+      "npc_id": "held_market_3",
+      "body": "crowd_man_lean_b",
+      "silhouette": "#7FC6D9",
+      "stand_in": "CrowdSpots/held_market_3",
+      "at": [-5.0, -3.0, -23.0, -120.0],
+      "tuning": {
+        "glance": {
+          "radius_m": 0.0
+        },
+        "look_around": {
+          "yaw_deg": 0.0
+        },
+        "stop_radius_m": 0.0,
+        "face_radius_m": 0.0,
+        "release_radius_m": 0.0
+      }
+    },
+    {
+      "npc_id": "held_market_4",
+      "body": "crowd_woman_lean_b",
+      "silhouette": "#7FC6D9",
+      "stand_in": "CrowdSpots/held_market_4",
+      "at": [-5.6, -3.0, -23.4, 60.0],
+      "tuning": {
+        "glance": {
+          "radius_m": 0.0
+        },
+        "look_around": {
+          "yaw_deg": 0.0
+        },
+        "stop_radius_m": 0.0,
+        "face_radius_m": 0.0,
+        "release_radius_m": 0.0
+      }
+    },
+    {
+      "npc_id": "held_terrace_0",
+      "body": "crowd_woman_heavy",
+      "silhouette": "#7FC6D9",
+      "stand_in": "CrowdSpots/held_terrace_0",
+      "at": [-6.2, -6.0, -38.6, 90.0],
+      "tuning": {
+        "glance": {
+          "radius_m": 0.0
+        },
+        "look_around": {
+          "yaw_deg": 0.0
+        },
+        "stop_radius_m": 0.0,
+        "face_radius_m": 0.0,
+        "release_radius_m": 0.0,
+        "clips": {
+          "work": "vigil"
+        }
+      }
+    },
+    {
+      "npc_id": "held_terrace_1",
+      "body": "crowd_man_heavy",
+      "silhouette": "#7FC6D9",
+      "stand_in": "CrowdSpots/held_terrace_1",
+      "at": [-6.4, -6.0, -39.8, 90.0],
+      "tuning": {
+        "glance": {
+          "radius_m": 0.0
+        },
+        "look_around": {
+          "yaw_deg": 0.0
+        },
+        "stop_radius_m": 0.0,
+        "face_radius_m": 0.0,
+        "release_radius_m": 0.0,
+        "clips": {
+          "work": "vigil"
+        }
+      }
+    },
+    {
+      "npc_id": "held_terrace_2",
+      "body": "crowd_elder_man_b",
+      "silhouette": "#7FC6D9",
+      "stand_in": "CrowdSpots/held_terrace_2",
+      "at": [-6.0, -6.0, -41.2, 90.0],
+      "tuning": {
+        "glance": {
+          "radius_m": 0.0
+        },
+        "look_around": {
+          "yaw_deg": 0.0
+        },
+        "stop_radius_m": 0.0,
+        "face_radius_m": 0.0,
+        "release_radius_m": 0.0,
+        "clips": {
+          "work": "kneel_mourn"
+        }
+      }
+    },
+    {
+      "npc_id": "held_terrace_3",
+      "body": "crowd_girl_small",
+      "silhouette": "#7FC6D9",
+      "stand_in": "CrowdSpots/held_terrace_3",
+      "at": [-5.6, -6.0, -39.3, 90.0],
+      "tuning": {
+        "glance": {
+          "radius_m": 0.0
+        },
+        "look_around": {
+          "yaw_deg": 0.0
+        },
+        "stop_radius_m": 0.0,
+        "face_radius_m": 0.0,
+        "release_radius_m": 0.0
+      }
+    },
+    {
+      "npc_id": "held_kitchen_0",
+      "body": "crowd_elder_woman_b",
+      "silhouette": "#7FC6D9",
+      "stand_in": "CrowdSpots/held_kitchen_0",
+      "at": [-5.8, -9.0, -61.2, 45.0],
+      "tuning": {
+        "glance": {
+          "radius_m": 0.0
+        },
+        "look_around": {
+          "yaw_deg": 0.0
+        },
+        "stop_radius_m": 0.0,
+        "face_radius_m": 0.0,
+        "release_radius_m": 0.0,
+        "clips": {
+          "work": "fold"
+        }
+      }
+    },
+    {
+      "npc_id": "held_kitchen_1",
+      "body": "crowd_man_lean_a",
+      "silhouette": "#7FC6D9",
+      "stand_in": "CrowdSpots/held_kitchen_1",
+      "at": [-4.4, -9.0, -63.6, 180.0],
+      "tuning": {
+        "glance": {
+          "radius_m": 0.0
+        },
+        "look_around": {
+          "yaw_deg": 0.0
+        },
+        "stop_radius_m": 0.0,
+        "face_radius_m": 0.0,
+        "release_radius_m": 0.0,
+        "clips": {
+          "work": "sweep"
+        }
+      }
+    },
+    {
+      "npc_id": "held_kitchen_2",
+      "body": "crowd_woman_medium_b",
+      "silhouette": "#7FC6D9",
+      "stand_in": "CrowdSpots/held_kitchen_2",
+      "at": [-6.6, -9.0, -63.0, 100.0],
+      "tuning": {
+        "glance": {
+          "radius_m": 0.0
+        },
+        "look_around": {
+          "yaw_deg": 0.0
+        },
+        "stop_radius_m": 0.0,
+        "face_radius_m": 0.0,
+        "release_radius_m": 0.0,
+        "clips": {
+          "work": "carry"
+        }
+      }
+    }
+  ],
+  "far": {
+    "glow": "#7FC6D9",
+    "frames": 6,
+    "fps": 10.0,
+    "people": [
+      {
+        "id": "held_gallery_0_0",
+        "body": "crowd_man_heavy",
+        "clip": "cheer",
+        "at": [-5.6, -15.0, -97.4, -90.0]
+      },
+      {
+        "id": "held_gallery_0_1",
+        "body": "crowd_man_lean_a",
+        "clip": "cheer",
+        "at": [-5.6, -15.0, -98.2, -90.0]
+      },
+      {
+        "id": "held_gallery_0_2",
+        "body": "crowd_woman_lean_a",
+        "clip": "cheer",
+        "at": [-5.6, -15.0, -99.0, -90.0]
+      },
+      {
+        "id": "held_gallery_0_3",
+        "body": "crowd_man_medium_a",
+        "clip": "cheer",
+        "at": [-5.6, -15.0, -99.8, -90.0]
+      },
+      {
+        "id": "held_gallery_0_4",
+        "body": "crowd_woman_medium",
+        "clip": "cheer",
+        "at": [-5.6, -15.0, -100.6, -90.0]
+      },
+      {
+        "id": "held_gallery_0_5",
+        "body": "crowd_man_lean_b",
+        "clip": "cheer",
+        "at": [-5.6, -15.0, -101.4, -90.0]
+      },
+      {
+        "id": "held_gallery_0_6",
+        "body": "crowd_woman_heavy",
+        "clip": "cheer",
+        "at": [-5.6, -15.0, -102.2, -90.0]
+      },
+      {
+        "id": "held_gallery_0_7",
+        "body": "crowd_woman_lean_b",
+        "clip": "cheer",
+        "at": [-5.6, -15.0, -103.0, -90.0]
+      },
+      {
+        "id": "held_gallery_0_8",
+        "body": "crowd_man_heavy",
+        "clip": "cheer",
+        "at": [-5.6, -15.0, -103.8, -90.0]
+      },
+      {
+        "id": "held_gallery_0_9",
+        "body": "crowd_man_lean_a",
+        "clip": "cheer",
+        "at": [-5.6, -15.0, -104.6, -90.0]
+      },
+      {
+        "id": "held_gallery_1_0",
+        "body": "crowd_man_medium_a",
+        "clip": "cheer",
+        "at": [-6.4, -15.0, -97.8, -90.0]
+      },
+      {
+        "id": "held_gallery_1_1",
+        "body": "crowd_woman_medium",
+        "clip": "cheer",
+        "at": [-6.4, -15.0, -98.6, -90.0]
+      },
+      {
+        "id": "held_gallery_1_2",
+        "body": "crowd_man_lean_b",
+        "clip": "cheer",
+        "at": [-6.4, -15.0, -99.4, -90.0]
+      },
+      {
+        "id": "held_gallery_1_3",
+        "body": "crowd_woman_heavy",
+        "clip": "cheer",
+        "at": [-6.4, -15.0, -100.2, -90.0]
+      },
+      {
+        "id": "held_gallery_1_4",
+        "body": "crowd_woman_lean_b",
+        "clip": "cheer",
+        "at": [-6.4, -15.0, -101.0, -90.0]
+      },
+      {
+        "id": "held_gallery_1_5",
+        "body": "crowd_man_heavy",
+        "clip": "cheer",
+        "at": [-6.4, -15.0, -101.8, -90.0]
+      },
+      {
+        "id": "held_gallery_1_6",
+        "body": "crowd_man_lean_a",
+        "clip": "cheer",
+        "at": [-6.4, -15.0, -102.6, -90.0]
+      },
+      {
+        "id": "held_gallery_1_7",
+        "body": "crowd_woman_lean_a",
+        "clip": "cheer",
+        "at": [-6.4, -15.0, -103.4, -90.0]
+      },
+      {
+        "id": "held_gallery_1_8",
+        "body": "crowd_man_medium_a",
+        "clip": "cheer",
+        "at": [-6.4, -15.0, -104.2, -90.0]
+      },
+      {
+        "id": "held_gallery_1_9",
+        "body": "crowd_woman_medium",
+        "clip": "cheer",
+        "at": [-6.4, -15.0, -105.0, -90.0]
+      },
+      {
+        "id": "held_gallery_2_0",
+        "body": "crowd_woman_heavy",
+        "clip": "cheer",
+        "at": [-7.2, -15.0, -97.4, -90.0]
+      },
+      {
+        "id": "held_gallery_2_1",
+        "body": "crowd_woman_lean_b",
+        "clip": "cheer",
+        "at": [-7.2, -15.0, -98.2, -90.0]
+      },
+      {
+        "id": "held_gallery_2_2",
+        "body": "crowd_man_heavy",
+        "clip": "cheer",
+        "at": [-7.2, -15.0, -99.0, -90.0]
+      },
+      {
+        "id": "held_gallery_2_3",
+        "body": "crowd_man_lean_a",
+        "clip": "cheer",
+        "at": [-7.2, -15.0, -99.8, -90.0]
+      },
+      {
+        "id": "held_gallery_2_4",
+        "body": "crowd_woman_lean_a",
+        "clip": "cheer",
+        "at": [-7.2, -15.0, -100.6, -90.0]
+      },
+      {
+        "id": "held_gallery_2_5",
+        "body": "crowd_man_medium_a",
+        "clip": "cheer",
+        "at": [-7.2, -15.0, -101.4, -90.0]
+      },
+      {
+        "id": "held_gallery_2_6",
+        "body": "crowd_woman_medium",
+        "clip": "cheer",
+        "at": [-7.2, -15.0, -102.2, -90.0]
+      },
+      {
+        "id": "held_gallery_2_7",
+        "body": "crowd_man_lean_b",
+        "clip": "cheer",
+        "at": [-7.2, -15.0, -103.0, -90.0]
+      },
+      {
+        "id": "held_gallery_2_8",
+        "body": "crowd_woman_heavy",
+        "clip": "cheer",
+        "at": [-7.2, -15.0, -103.8, -90.0]
+      },
+      {
+        "id": "held_gallery_2_9",
+        "body": "crowd_woman_lean_b",
+        "clip": "cheer",
+        "at": [-7.2, -15.0, -104.6, -90.0]
+      }
+    ]
+  }
+}

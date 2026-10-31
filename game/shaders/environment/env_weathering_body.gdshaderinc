@@ -53,6 +53,14 @@ uniform float specular_base : hint_range(0.0, 1.0) = 0.4;
 // UV2.y (per block / plank / shell) shifts value and warmth so repeated pieces never match.
 uniform float variation_value : hint_range(0.0, 0.5) = 0.12;
 uniform float variation_warmth : hint_range(0.0, 0.5) = 0.06;
+// The macro layer (the PC's pass 7, rows 79 and 80; env-art-b with the Lead's leave): a world-space breakup tens of
+// metres across, so one-piece terrain (a massif, a crater rim) isn't one flat tone at range, where the base tile has
+// mipmapped away. Two octaves of value noise in world XZ (its own, so no texture's mip average flattens it), between a
+// darker scree tone and a paler ash. Off by default.
+uniform float macro_strength : hint_range(0.0, 1.0) = 0.0;
+uniform float macro_scale_m = 36.0;
+uniform vec4 col_macro_dark : source_color = vec4(0.62, 0.58, 0.54, 1.0);
+uniform vec4 col_macro_light : source_color = vec4(1.12, 1.08, 1.02, 1.0);
 uniform float ao_strength : hint_range(0.0, 1.0) = 0.8;
 uniform float cavity_darken : hint_range(0.0, 1.0) = 0.35;
 // Lime wash / mortar / paint over the base: covers the albedo with col_paint (the base relief still
@@ -150,6 +158,19 @@ uniform int debug_view : hint_range(0, 2) = 0;
 group_uniforms;
 
 varying vec3 v_world_pos;
+
+// The macro layer's value noise: a hashed lattice, smoothly interpolated (0..1).
+float hymn_macro_hash(vec2 c) {
+	return fract(sin(dot(c, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+float hymn_macro_noise(vec2 p) {
+	vec2 i = floor(p);
+	vec2 f = fract(p);
+	vec2 u = f * f * (3.0 - 2.0 * f);
+	return mix(mix(hymn_macro_hash(i), hymn_macro_hash(i + vec2(1.0, 0.0)), u.x),
+			mix(hymn_macro_hash(i + vec2(0.0, 1.0)), hymn_macro_hash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
 varying vec3 v_world_normal;
 
 void vertex() {
@@ -345,6 +366,14 @@ void fragment() {
 		float face = mix(uw_caustic_wall, 1.0, clamp(wn_geo.y, 0.0, 1.0)) * step(-0.2, wn_geo.y);
 		float fade = exp(-depth / uw_caustic_falloff_m) * exp(-length(VERTEX) / uw_caustic_view_fade_m);
 		caustic_emit = albedo * uw_caustic_color.rgb * (web * uw_caustics * face * fade);
+	}
+
+	// ---- The macro layer, over every layer above (moss and salt would otherwise cover it) --------
+	if (macro_strength > 0.0) {
+		vec2 mxz = v_world_pos.xz / max(macro_scale_m, 0.01);
+		float m = hymn_macro_noise(mxz) * 0.65 + hymn_macro_noise(mxz * 2.7 + vec2(13.1, 7.7)) * 0.35;
+		m = smoothstep(0.3, 0.7, m);
+		albedo *= mix(vec3(1.0), mix(col_macro_dark.rgb, col_macro_light.rgb, m), macro_strength);
 	}
 
 	// ---- Output ------------------------------------------------------------------------------

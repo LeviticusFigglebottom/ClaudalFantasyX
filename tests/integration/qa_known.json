@@ -27,10 +27,10 @@
       "pattern": "^CutsceneSequencer\\((ch1[0-6]_[a-z0-9_]+)\\): (no (shot|actor|mark|light|look_at target) '|cannot place @vfx )",
       "task": "M4-A2P-075",
       "owner": "cinematics",
-      "note": "M4-A2P-114 plays the Act II scenes from the Ch10-Ch13 greybox flows so their flags are raised; their staging on these stages (the shots, cast, marks, lights and VFX anchors each scene names) is M4-A2P-070..075 (act1-chapters). Remove this row as each scene is staged."
+      "note": "M4-A2P-114 plays the Act II scenes from the Ch10-Ch13 greybox flows so their flags are raised; their staging on these stages (the shots, cast, marks, lights and VFX anchors each scene names) is M4-A2P-070..075 (act1-chapters). Remove this row as each scene is staged. The Ending's scenes aboard the Kite (ending_*, M5-A3P-1015) are the same: their cast and lights wait on the staging."
     },
     {
-      "pattern": "^CutsceneSequencer\\((ch1[7-9]_[a-z0-9_]+|ch2[01]_[a-z0-9_]+)\\): (no (shot|actor|mark|light|look_at target) '|cannot place @vfx )",
+      "pattern": "^CutsceneSequencer\\((ch1[7-9]_[a-z0-9_]+|ch2[01]_[a-z0-9_]+|ending_[a-z0-9_]+)\\): (no (shot|actor|mark|light|look_at target) '|cannot place @vfx )",
       "task": "M5-A3P-1001",
       "owner": "cinematics",
       "note": "M5-A3P-1001 (and the Ch18-Ch21 staging-and-flow rows) plays the Act III scenes from their flows; their shots (the D- and K-ids), the cast on the greybox stages and the VFX anchors are the staging half of those rows. Remove this row as each scene is staged."
@@ -60,7 +60,17 @@
 "hesper_oan": "characters, M5-A3P-1202 (the Wardens' bodies)",
 "ilsabet_rue": "characters, M5-A3P-1202",
 "chain_lamp": "creatures, M5-A3P-1801 (the chain lamp)",
-"spire_moth": "creatures, M5-A3P-1802 (the spire moth)"
+"spire_moth": "creatures, M5-A3P-1802 (the spire moth)",
+"cage_orin": "creatures-b, M5-A3P-1851 (the Cage)",
+"cage_halde": "creatures-b, M5-A3P-1851 (the Cage)",
+"cage_isse": "creatures-b, M5-A3P-1851 (the Cage)",
+"cage_cael": "creatures-b, M5-A3P-1851 (the Cage)",
+"sefir_warden": "character, M5-A3P-1849 (a revenant Sefir battle body)",
+"sefir_heart": "character, M5-A3P-1849 (a revenant Sefir battle body)",
+"sefir_letting": "character, M5-A3P-1849 (a revenant Sefir battle body)",
+"letting_stilled": "character, M5-A3P-1849 (the Stilled)",
+"tide_matron": "creatures-b, M5-A3P-1852 (the Tide Matron)",
+"old_leviathan": "creatures-b, M5-A3P-1853 (the Old Leviathan)"
     }
   },
   "unraised_doc": "test_qa_threads.gd: a flag a thread's chapter or main objectives wait on that its thread never raises -> why it isn't a softlock, and the task that closes the gap.",

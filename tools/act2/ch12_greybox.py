@@ -92,9 +92,10 @@ def landing(lid: str, cx: float, y: float, cz: float, hx: float, hz: float, gaps
 # --- Keth Pass --------------------------------------------------------------------------------------------------------
 
 def climb_volumes(prefix: str, runs: list[tuple[tuple[float, float, float], tuple[float, float, float]]],
-                  back_m: float = 5.0, up_m: float = 4.5) -> list[dict]:
+                  back_m: float = 5.0, up_m: float = 4.5, side_m: float = 0.0) -> list[dict]:
     """M4-A2P-012: a pan-follow volume per flight (the hub orbit sees the cliff on the inside turn): the camera stands
-    back_m behind the flight's foot, up_m over it, and looks up the flight to its middle."""
+    back_m behind the flight's foot, up_m over it, and looks up the flight to its middle. side_m moves it to the left of
+    the climb, away from a cliff on its right (the PC's row 86: on Keth Pass the cliff filled half the frame)."""
     out = []
     for i, (a, b) in enumerate(runs):
         dx, dz = b[0] - a[0], b[2] - a[2]
@@ -103,7 +104,7 @@ def climb_volumes(prefix: str, runs: list[tuple[tuple[float, float, float], tupl
         out.append({"id": f"{prefix}{i}", "mode": "pan_follow",
                     "at": [r3((a[0] + b[0]) / 2), r3((a[1] + b[1]) / 2 + 1.5), r3((a[2] + b[2]) / 2)],
                     "size": [r3(abs(dx) + FLIGHT_W + 1.0), r3(abs(b[1] - a[1]) + 4.0), r3(abs(dz) + FLIGHT_W + 1.0)],
-                    "pos": [r3(a[0] - ux * back_m), r3(a[1] + up_m), r3(a[2] - uz * back_m)],
+                    "pos": [r3(a[0] - ux * back_m + uz * side_m), r3(a[1] + up_m), r3(a[2] - uz * back_m - ux * side_m)],
                     "look_at": [r3((a[0] + b[0]) / 2), r3((a[1] + b[1]) / 2 + 0.8), r3((a[2] + b[2]) / 2)], "fov": 50,
                     "priority": 1})
     return out
@@ -181,7 +182,8 @@ def keth_pass() -> dict:
                   "K05": {"pos": [-0.5, 7.6, -42.0], "look_at": [-3.0, 7.4, -44.5], "fov": 35}},
         "camera_volumes": climb_volumes("Flight", [((0.0, 0.0, -6.0), (0.0, 6.0, -34.0)),
                                                     ((6.0, 6.0, -40.0), (34.0, 12.0, -40.0)),
-                                                    ((56.0, 12.0, -40.0), (84.0, 18.0, -40.0))])
+                                                    ((56.0, 12.0, -40.0), (84.0, 18.0, -40.0))],
+                                        up_m=6.0, side_m=2.5)
         + [{"id": "RamShelf", "mode": "pan_follow", "at": [45.0, 13.5, -40.0], "size": [22.0, 4.0, 20.0],
             "pos": [37.0, 18.0, -30.0], "look_at": [46.0, 12.8, -42.0], "fov": 55, "priority": 2},
            {"id": "Saddle", "mode": "pan_follow", "at": [95.0, 19.5, -40.0], "size": [22.0, 4.0, 20.0],

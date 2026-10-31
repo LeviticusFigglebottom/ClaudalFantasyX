@@ -1264,3 +1264,63 @@ SELF-RENDERED @ 4cd6ed12: ch05_pemakar_harbour, _crown and _weir with the lamp f
 - **Checks:** Godot corrow 18, coilspire 11, pemakar 10, ambient_life 3 and zone_kit_dressing 10 pass; tools corrow, coilspire and pemakar kits OK; validate_data and taskboard OK.
 - **MERGE-READY @ db1ce910** (rows 82, 62 and 84).
 SELF-RENDERED @ db1ce910: ch08_corrow_storm, _flood and _lake before and after; ch05_pemakar_weir and ch08_coilspire_gate before and after; plus ch05_ashcrown_court, ch05_pemakar_harbour_day, ch06_brine_camp and Ashcrown's A01 and A10 before (scratch). All viewed.
+
+### PC row 86 (Act II first look, real GPU; Lead 02:22)
+- **Lacquer Court, party near-black against the sunset: fixed.** `ch14_lacquer_court_dressing.py` adds two `fill_lights` rows: a cool sky fill from the east (0.4) on the faces the entry and dais views see, and a soft top fill (0.15). The sunset from the west keeps the shadows and the rim. A first try at 0.65 / 0.35 washed the court floor white, so they were halved.
+  - **Viewed:** the Steps and CourtEntry spawn views. The dusk stays deep orange and the figure reads.
+  - **The Barge spawn:** its canopy and deck now read in red instead of a dark box.
+- **Lamp Archive, Door spawn on a plain grey slab: finished.** That slab is the reading room's floor seen from the field camera, not greybox: Ansedra's white-painted marble (paint 0.9) read as one flat slab there. The archive now has its own copy, `lamp_archive_marble_material.tres`: paint 0.55 so the stone shows, warmer, with darker joints, a little relief and a lower specular.
+  - **Viewed** from behind the hero at the Door spawn: the flagstones and their joints read.
+- **Checks:** tools lacquer-court and archive tests OK; Godot lacquer 2, lamp_archive 2 and ch14 5 pass; validate_data OK.
+- **MERGE-READY @ baf421df.**
+SELF-RENDERED @ baf421df: the Lacquer Court from the Barge, Steps and CourtEntry spawns (before, first try, after) and the Lamp Archive from the Door spawn (before, after), all viewed.
+- **Pass 7 rows still open:** 78, 79, 80, 81 (see above). They come next.
+
+### PC pass 7, the big37 re-measure (Lead 03:22): rows 78–81 and 84
+- **Merge check:** in f5305b15 are 82 (ca8ad639, plus the fill_lights feature) and 62/84 (db1ce910). Row 86 (baf421df) isn't merged yet. The PC's pass 7 sheets (gpu/act1-qa-7) predate those fixes. Correction: two shas I quoted in chat summaries (4f8a3d92, 9d2c7a35) were wrong; the MERGE-READY lines in this log are the right ones.
+- **78 Ashcrown court: fixed (7ddf44d4).** The plume's shader takes no omni light, so the loggia's flat grey opening is fixed in my zone plume material instead: the crater's ember glow now reaches 18% up the column (to the hall's height) at 0.6, the vent glow climbs higher, and the shade side keeps its shadow. Two warm, shadowless bounce lights down the nave edge the black pillars and the brazier figure.
+  - **Viewed:** ch05_ashcrown_court shows fire-lit ash through the loggia and lit pillar edges. ch05_ashcrown_tiers shows the plume's foot glowing orange.
+  - **Checks:** test_ashcrown_kit OK, Godot ashcrown 22 pass.
+- **79: not my zone.** a01 and a10 are the Ashcrown kit preview's own shots (env-art's `_tests/ashcrown_kit`), which use the kit's unchanged `ac_plume_day`. My plume fix lives in the zone. Filed **M3-ENV-1332** for env-art, with PLUME_LOOK's exact values to adopt, plus the mound and the hands.
+- **80 Pemakar hillside: traced, requested, my attempts reverted.** An id-pick shows it's `mountain_massif` at LOD1 in `kit_volcanic_far`.
+  - **What I tried:** more relief changed nothing, and a 40 m tile left the far slope smooth while making the near slope blotchy. Both reverted.
+  - **The cause:** the shader has no large-scale term. Filed **M3-ENV-1333** for env-art to add a world-space macro layer to env_weathering.
+- **81 Brine camp seam: traced, not fixed yet.** id-picks on the flats return nothing: the ground's material is re-set each frame (most likely by the Tide node's wet sand), so the picker can't see it. My hypothesis: the "lighter plane" is the tide water (y -0.15) showing where a mudflat piece dips below it, and its straight edge is a piece's edge. Next: probe the tide and mudflat pieces' heights at the seam.
+- **84 Coilspire laterite:** what's left is texture resolution, **M3-ENV-1331** (env-art).
+- **MERGE-READY @ 7ddf44d4** (row 78). The requests are 2c7287d3 and this commit.
+
+### big38 sign-off check (Lead 04:43): where each open row stands
+- **Merged in big38 (8b546285):** ca8ad639 (82, storm fill), db1ce910 (62 and 84 material tunes), baf421df (86).
+- **MERGE-READY, not yet merged: 7ddf44d4 (row 78, the Ashcrown court).** The loggia now shows fire-lit ash and the pillars are edged, so big38's still of the court can't show it yet. Please merge it.
+- **Rows flagged on env-art's kit previews, not on my zones** (the big38 stills L_00 and M_00 name the shots):
+  - **62:** `pemakar_p11_sea_cut_weir_day` (Pemakar kit preview, day).
+  - **80:** `pemakar_p04_harbour_day` (Pemakar kit preview).
+  - **79:** `ashcrown_a10_plume_from_the_rim` and `ashcrown_a01_approach` (Ashcrown kit preview).
+  - **Why my fixes don't reach them:** they are in my Ch5 zones (zone materials, zone plume). The previews use the kits' own materials and env-art's preview rigs. Requests are filed: M3-ENV-1332 (79) and M3-ENV-1333 (80, the shader's macro variation); 62's weir stone is the kit-folder `kit_weir_stone` I write, which the preview also takes.
+- **LEAD-ASK:** these block Act I sign-off. Give env-art-b leave, as for M4-A2P-114, to fix them directly, each in its own commit with a note in env-art.md:
+  1. the Ashcrown kit's `ac_plume_day` takes my zone plume's PLUME_LOOK;
+  2. A01's hands get a shaded material, and A10's mound a texture;
+  3. a distance-faded macro term in `env_weathering_body.gdshaderinc` (default off), turned on in `kit_volcanic_far`;
+  4. the Pemakar weir courses' look in the day preview.
+  Otherwise env-art takes M3-ENV-1331, 1332 and 1333 now.
+- **Mine, in progress now:** 81 (the Brine camp seam). 84's remaining blockiness is texture resolution (M3-ENV-1331, env-art's texture), unless the leave above covers it too.
+- **81 Brine camp seam: fixed (7e7a4d38).** The seam is the channel's cells (x -24, z < -24), not the apron. The `channel_straight` pieces' banks rose to y 0.16 against the patches' 0.04, above the tide's wet band, so from the camp they read as a pale plane ending at the cell's straight edge. They now sink 0.12 m to sit flush.
+  - **Viewed** in ch06_brine_camp before and after: the pale strip and its edge are gone. Checked ch06_brine_road too.
+  - **Tried first, reverted (no change):** sinking the apron and adding a ring of patches round the grid.
+  - **Checks:** test_brine_shoals_kit OK, Godot ch06 5 and brine 5 pass, validate_data OK.
+  - **MERGE-READY @ 7e7a4d38.**
+- **Rows still waiting:** 78 (7ddf44d4, ready, unmerged); 62, 79 and 80 (env-art's kit previews: the LEAD-ASK above); 84 (M3-ENV-1331, env-art's texture).
+
+### Act I sign-off rows 79, 80 and 62 in env-art's kits (Lead 05:22, leave granted); each fix in its own commit, notes in env-art.md
+- **79, the plume:** 07300860, `ac_plume_day` reads as smoke, with the zone's look plus translucent, wispy edges.
+- **79, A10's mound:** d73f0c89, the macro layer on `ac_ground` and `ac_ground_far`.
+- **79, A01's hands:** 9f8a36f1, a low fill under the gate. It also fixes the preview generator, which `ash_drift` (M3-ENV-1310) had broken.
+- **80, Pemakar's hillside:**
+  - 6b437b0c: the optional macro layer in `env_weathering_body.gdshaderinc`, value noise over every layer, default off.
+  - d250de79 and 5a6e4596: `kit_volcanic_far` takes the macro layer and loses its grazing sky sheen.
+  - 4a82f498: the day haze is halved (preview and zone).
+  - **What I learned on the way:** the macro first sat under the moss, which hid it. With it moved over every layer, the upper hill still read flat until the sheen and the haze came down.
+- **62, the day weir:** 982d4842, the macro layer on `kit_weir_stone` at stone size. It's a small change on lavapipe, so the PC's GPU is the judge.
+- **Viewed** (lavapipe): a01 (the hands modelled), a10 (smoke and a grained mound), a02, p04 (the hillside patched, less haze), p11, ch05_pemakar_harbour_day and ch05_pemakar_weir.
+- **Checks:** test_pemakar_kit and test_ashcrown_kit OK; Godot pemakar 10 and ashcrown 22 pass; validate_data OK.
+- **MERGE-READY @ 982d4842,** covering every commit above, together with 7ddf44d4 (78) and 7e7a4d38 (81), which aren't merged yet. 84 waits on M3-ENV-1331 (the laterite texture), which the leave covers only if the Lead says so.

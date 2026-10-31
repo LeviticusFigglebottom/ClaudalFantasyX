@@ -432,8 +432,12 @@ def anchors() -> dict:
     }
 
 
-STORM_WAVES = (("Swell0", 0.0, 34.0, 0.16, 0.45, 0.0), ("Swell1", 22.0, 17.0, 0.08, 0.55, 1.7),
-               ("Swell2", 340.0, 7.5, 0.035, 0.6, 3.9), ("Chop0", 60.0, 2.6, 0.012, 0.5, 0.8))
+# PC pass 7 row 77 (10-31): one 34 m swell from a single bearing laid long, perfectly parallel faces across the sea,
+# and they caught the pale storm sky in perspective as straight bands (with Swell1 at 22 deg, as diagonals). A confused
+# storm sea: three long swells at spread bearings and unrelated wavelengths, gentler each, so no crest runs straight.
+STORM_WAVES = (("Swell0", 0.0, 31.0, 0.09, 0.3, 0.0), ("Swell1", 38.0, 23.0, 0.08, 0.35, 1.7),
+               ("Swell3", 317.0, 19.0, 0.07, 0.35, 4.6), ("Swell2", 340.0, 7.5, 0.035, 0.6, 3.9),
+               ("Chop0", 60.0, 2.6, 0.012, 0.5, 0.8))
 
 
 def tscn(shots: dict) -> str:

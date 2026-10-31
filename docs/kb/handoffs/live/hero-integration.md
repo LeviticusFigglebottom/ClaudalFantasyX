@@ -2260,3 +2260,73 @@ MERGE-READY @ (this commit).
 - **The storm figure (row 44):** creatures' fix (7dc3ab41) held in pass 5 (0 `material is null`). I can't reproduce the 59 GB loop headless.
   - **PC, please re-run a slice_sweep `--budget` walk to its quit and check the log size.** If it still loops, the `at:` line names the material owner, and I'll take it to creatures.
 MERGE-READY @ (this commit).
+
+### 2026-10-31: big37's red `test_clean_shutdown` fixed (the 59 GB-log guard)
+- **Cause:** with `$GODOT` unset (`tools/ci_local.sh` sets it but doesn't export it), the test launched `OS.get_executable_path()`. On the cloud's fetched Godot that's the sysroot's `ld-linux` loader, which the `<root>/godot` wrapper execs, so the child never started.
+- **Fix:** a new shared `tests/godot_binary.gd` (`GodotBinary.path()`). It tries, in order:
+  - `$GODOT`;
+  - this executable, if it's Godot itself;
+  - for a loader under `<root>/sysroot/`, that build's `<root>/godot` wrapper;
+  - `godot` on PATH.
+  - `test_clean_shutdown`, `test_battle_return` and `test_scene_router_swap` all use it now. The last two had the same assumption.
+  - `test_clean_shutdown` also stops after the "reached its quit" assert when the probe never ran, rather than reporting a garbage exit time.
+- **Checked on the big37 merge (f5305b150), with `GODOT` unset:** clean_shutdown 1/0 (the probe ran to its quit), battle_return 2/0, scene_router_swap 17/0.
+MERGE-READY @ (this commit).
+
+### 2026-10-31: big37 regression on the PC (Drownbell → Haluna 1.18–1.22 s on big36, 1.36 / 2.62 / 5.03 / 9.05 s on big37). Bisected headless: no difference found
+- **Headless A/B** (worktrees of 1983de0a = big36 and f5305b15 = big37, `return_probe --cases=drownbell`, alternating runs):
+
+| | big36 | big37 |
+|---|---|---|
+| field in | 776 / 843 / 783 / 814 ms | 791 / 862 / 776 ms |
+| input | 913–964 ms | 903–987 ms |
+| covered | 2.57–2.67 s | 2.51–2.66 s |
+| fight | 5.69 s | 5.70 s |
+
+  - No errors and no crashes on either build. One big36 run printed nothing once; two reruns were clean.
+  - Headless fight FPS is capped (about 145) and equal on both, so it can't show a GPU-side frame regression.
+- **Code read of 1983de0a..f5305b15** (`game/` minus data): nothing big37 adds runs per frame in a fight or touches Haluna's GPU path.
+  - audio's UiAudio guard and PropAudio light followers: Haluna has no light-following prop.
+  - my row 85 `_exit_tree`: runs only at quit.
+  - creatures' f6c23ed1: villagers hold their override materials and no longer swap them at teardown. Their tick returns off-tree, which is cheaper during a fight.
+  - Four new boss battle scenes, not loaded by the Drownbell.
+  - Fenn's re-export: Fenn isn't in Haluna.
+  - The clip libraries are .tres on both builds (the .res revert was never in big36).
+- **The PC's own pattern:** the times rise run after run (1.36 → 9.05 s, separate processes), and the fight rendered 561 frames in 10 s against about 1,450. That looks cumulative on the machine (shader cache, or the disk the 59 GB log filled on big33) rather than per-process code. Nothing confirms it yet.
+- **To bisect on the GPU without a rebuild, ReturnPark now reads two switches:**
+  - `-- --no-park`: the park is off; the return loads and instantiates as on big35.
+  - `-- --no-park-prewarm`: the park stays, but its shader prewarm moves back to the swap-in (as before ADR 0209 amendment 1).
+  - Headless check: plain → parked + prewarmed; `--no-park-prewarm` → parked, not prewarmed; `--no-park` → not parked, instantiate 2.9 s. return_park 3/0, battle_return 2/0, scene_router 17/0.
+- **Suggested PC runs (with `battle_return_probe`):** big37 plain ×3, then `--no-park-prewarm` ×3, then plain ×3 again after clearing the Godot shader cache (`%APPDATA%/Godot/app_userdata/<project>/shader_cache`) and checking the free space on C:. If plain recovers after the cache clear, it's the machine. If only `--no-park-prewarm` recovers, it's my prewarm in the fight, and I'll revert it.
+MERGE-READY @ (this commit).
+
+### 2026-10-31: the big37 regression is retracted (the PC's display was off). Back to Act III; my guards checked over the new zones
+- The `--no-park` / `--no-park-prewarm` switches stay, per the Lead.
+- **The new Act III zones** (`ch18/kite`, `ch19/iskarra_spire`; on d26cb3b76 = big37 merged):
+  - kite_landings 1/0, hero_field_snaps 2/0 (KNOWN Coilspire only), qa_field_camera 2/0 (known rows only).
+  - `kite_revisit_check`: 0 problems.
+- **qa_dock_edges was red on Hollowmere (Ch17).** The cause is a test-state gap, not a dock edge:
+  - The test walks every spawn in a fresh state. Before `ch17_started`, Hollowmere hides the hull's floors (`HullDeck`, `HullCabinFloor`, `HullEngineFloor`) and the berth walk. So the `HullDeck` spawn (y 2.9) has nothing under it, and Rhen falls into the 0.7 m water at once.
+  - The game never places the party there before `ch17_started`.
+  - **Fix (my test):** each spawn is settled 0.5 s with no input first. One with no floor in this state is skipped and printed. Hollowmere's HullDeck, Cabin, EngineBay and Berths are skipped. 1/0, with 23 zones that have water walked.
+  - **Coverage gap:** those four spawns go unwalked. A pass with each zone's later flags set would cover them; it's not done.
+MERGE-READY @ (this commit).
+
+### 2026-10-31: the Lead's three asks: Hollowmere's skipped spawns, row 88 (memory), and Haluna's ~12 s first entry
+- **Hollowmere's 4 skipped spawns are walked now.** qa_dock_edges retries an unfloored spawn under each story variant of its zone and walks it under the first that floors it. HullDeck, Cabin, EngineBay and Berths are all walked with `ch17_started` set, and they're clean. 1/0, 23 zones that have water.
+- **Row 88: no leak found headless.**
+  - New `game/core/debug/memory_walk_probe.tscn` changes through Haluna → causeway → shrine → Drownbell (with its parked return) → Haluna → Wake → ferry → Pemakar → Brine Shoals → Tamsule → Corrow → Haluna → Corrow.
+  - Godot's own allocations come back between zones: Haluna 1,050 → 1,080 → 1,089 MB across three visits, Corrow 1,634 → 1,634 MB.
+  - In the Drownbell fight: 709 MB and 5,022 orphan nodes (the resident shrine plus the parked Haluna, by design). After the return: 0 orphans.
+  - The park adds nothing measurable at the fight: about 1,030 MB with or without `--no-park`.
+  - So the PC's 5.8–7 GB private is outside what Godot counts (driver memory, GPU staging, the shader cache). A Windows/driver-level look on the PC is the next step.
+- **Haluna's cold first entry: 16.9 s → 7.8–9.3 s headless.**
+  - **Cause:** ResidentLoads loads every field hero for the session (`party_only: false`, ADR 0111), and the swap's hold waited for all of them. For about 700 frames, Liss's, Sefir's, Kerrid's and Pell's LOD1 models filled the four load slots, and only 2 of 427 loads finished.
+  - **Fix (`game/core/resident_loads.gd`):** the paths a change needs (the zone's own loads plus the party's heroes, via `party_data`) load first. The hold, the prewarm's wait and ReturnPark wait only for those (`needed_ready()`). The other heroes load once the router is idle.
+  - Letting them load during the change instead made the instantiate 1.9 → 10 s, because they shared the loader.
+  - Now: instantiate 1.7–1.9 s, prewarm wait 351–397 frames (was 1,491), worst hidden frame 748–1,112 ms (one noisy run over 1 s; before 778–833 ms).
+  - Tests: resident_loads 13/0 (+2), shader_prewarm 22/0, return_park 3/0, battle_return 2/0, scene_router 17/0.
+  - ui-menus' data (`resident_loads.json`) is unchanged.
+- **Headless crash seen once in a return_probe run:** the M3-HER-1151 race again (a WeatherClock global write, "wrong RID", then `material is null`, then signal 11).
+  - I believe the dummy renderer's RID owners aren't thread-safe while the PC's RenderingDevice ones are, so threaded instantiates can race headless only. It's unverified, and an engine-level detail. The PC's row 68 segfaults need their own backtraces.
+MERGE-READY @ (this commit).

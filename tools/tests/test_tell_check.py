@@ -13,6 +13,22 @@ sys.path.insert(0, os.path.join(HERE, "..", "audio"))
 import tell_check as tc  # noqa: E402
 
 
+def _unfetched() -> list[str]:
+    """The tells and attacks this needs, where the checkout holds a Git LFS pointer instead of audio (never pulled)."""
+    rows = tc._sfx_rows()
+    battle = tc.json.load(open(os.path.join(tc.ROOT, "game", "data", "audio", "battle_sfx.json")))
+    voices = tc.json.load(open(os.path.join(tc.ROOT, "game", "data", "audio", "creature_voices.json")))["creatures"]
+    ids = [battle["vfx"].get(s) or battle["skills"].get(s) for s in tc.ACT1_TELLS]
+    ids += [((voices.get(e) or {}).get("events") or {}).get("attack") for e, _ in tc.ACT1_TELLS.values()]
+    out = []
+    for i in filter(None, ids):
+        with open(tc._file(rows, i), "rb") as f:
+            if f.read(23) == b"version https://git-lfs":
+                out.append(i)
+    return out
+
+
+@unittest.skipIf(_unfetched(), "Act I's battle sounds are Git LFS and not fetched here (git lfs pull to judge them)")
 class TellCheckTest(unittest.TestCase):
     def test_act1_tells_are_distinct_where_it_matters(self) -> None:
         self.assertEqual(tc.main([]), 0)

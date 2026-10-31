@@ -1,0 +1,13 @@
+// M5-A3P-1003. Ch18 §5, one hero's heirloom errand. Split from ch18_heirloom_rhen.dlg, whose header has the rules: ZoneStory plays one scene file
+// per beat or bark.
+title: ch18_heirloom_kerrid
+location: ch08/corrow
+---
+// Corrow, the stair foot: the stair-watch's anchor. Kerrid lands for this one only.
+@mark kerrid stair_foot walk
+@wait 3.0
+Kerrid [neutral]: Watch's anchor. We set it every season. #line:ch18_heir_011
+@anim kerrid lift stair_anchor
+Kerrid [neutral]: Heavier than I remember. #line:ch18_heir_012
+<<set $ch18_heirloom_kerrid = true>>
+===

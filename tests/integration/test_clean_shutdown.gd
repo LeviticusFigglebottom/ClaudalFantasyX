@@ -17,15 +17,12 @@ const EXIT_SEC := 20.0
 const REPEAT_MAX := 5
 const TIMED_OUT := 124
 const LATE_FREES: Array[String] = ["Leaked instance dependency", '"material" is null']
-const GODOT_ENV := "GODOT"
 const BASH := "/bin/bash"
 const SCRIPT_PATH := "user://test_clean_shutdown.sh"
 
 
 func test_quitting_with_a_kept_zone_and_a_parked_return_exits_clean() -> void:
-	var godot := OS.get_environment(GODOT_ENV)
-	if godot == "":
-		godot = OS.get_executable_path()
+	var godot := _godot()
 	var cmd := (
 		"start=$(date +%%s.%%N); timeout %d '%s' --headless --path '%s' %s -- --to=%s --encounter=%s --cross-return=%s"
 		+ ' 2>&1 | while IFS= read -r l; do case "$l" in %s) echo "$l @$(date +%%s.%%N)";; *) echo "$l";; esac;'
@@ -59,9 +56,17 @@ func test_quitting_with_a_kept_zone_and_a_parked_return_exits_clean() -> void:
 	assert_true(
 		quit_at >= 0.0, "the probe reached its quit (exit %d, bash %d): %s" % [code, ran, "\n".join(lines.slice(0, 8))]
 	)
+	if quit_at < 0.0:
+		return
 	assert_true(code != TIMED_OUT, "the process exits (no loop at shutdown)")
 	assert_true(exit_at - quit_at <= EXIT_SEC, "the exit takes %.1f s after the quit" % (exit_at - quit_at))
 	for l: String in after:
 		assert_true(int(after[l]) <= REPEAT_MAX, "repeated %d times at exit: %s" % [after[l], l])
 		for late in LATE_FREES:
 			assert_false(l.contains(late), "freed after the renderer at exit: %s" % l)
+
+
+## The Godot to launch (as test_battle_return): $GODOT, else this executable when it is Godot itself (on the cloud's
+## fetched build it is the sysroot's loader, ld-linux, which takes no Godot option: big37's red), else `godot`.
+static func _godot() -> String:
+	return GodotBinary.path()

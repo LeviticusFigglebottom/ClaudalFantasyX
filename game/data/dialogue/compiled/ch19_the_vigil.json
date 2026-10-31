@@ -5,7 +5,7 @@
  "start": "ch19_the_vigil",
  "nodes": {
   "ch19_the_vigil": {
-   "headers": {"location": "prologue"},
+   "headers": {"location": "ch19/iskarra"},
    "ops": [
     {"op": "cue", "cue": "anim", "args": ["kerrid", "vigil_stand"], "kwargs": {}, "src": 13},
     {"op": "cue", "cue": "anim", "args": ["pell", "turn_back", "sea"], "kwargs": {}, "src": 14},

@@ -118,6 +118,8 @@ func spawn(engine: BattleEngine) -> void:
 		BattleLineup.apply(_side(engine.party_active), data, axis)
 		BattleLineup.apply(_side(engine.enemies), data, axis)
 		_spread_on_screen(engine, data)
+		for e in engine.enemies if camera != null else []:  # row 61: a dark boss's rim light (boss_rim_lights)
+			BattleBossLight.apply(stand_in(e.id), StringName(String(e.id).get_slice("#", 0)), camera.global_position)
 
 
 ## Creatures' audit (10-30): the opening foes kept apart on the fight's rest frame and clear of the command menu

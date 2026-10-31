@@ -1,0 +1,12 @@
+// M5-A3P-1000. Ch17 B02/B12, one of Hollowmere's field barks. Split from ch17_bark_lookout.dlg, whose header has the rules: ZoneStory plays one scene file
+// per beat or bark.
+title: ch17_bark_tally_keeper
+location: ch17/hollowmere
+---
+<<if $ch15_toma_on_the_tally>>
+    @anim clerk talk toma
+    Clerk as "Record-keeper" [neutral]: Your name's where you asked. Under the camp. Nobody's crossed it out. #line:ch17_bark_002
+<<else>>
+    Clerk as "Record-keeper" [neutral]: Every camp that burned, written down. Somebody has to keep the list. #line:ch17_bark_003
+<<endif>>
+===

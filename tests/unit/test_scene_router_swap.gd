@@ -8,9 +8,6 @@ extends TestCase
 ## probe measures on an injected per-frame clock (--frame-usec), so no result depends on the machine's load.
 
 const PROBE_TAG := "SCENE_SWAP_PROBE "
-const GODOT_NAME_HINT := "godot"
-const GODOT_ON_PATH := "godot"
-const GODOT_ENV := "GODOT"
 ## Set by tools/coverage/run_coverage.py for the instrumented run.
 const COVERAGE_ENV := "HYMN_COV_OUT"
 ## M1-ARC-16: an injected 60 fps clock, and how many frames the fade takes to lift on it.
@@ -307,13 +304,7 @@ func _run_probe(probe_scene: String, user_args: Array[String], target: String) -
 ## The binary that runs this test, unless it was started through a loader (the sandbox wrapper
 ## execs Godot via ld-linux), in which case $GODOT or `godot` on PATH.
 static func _godot() -> String:
-	var env := OS.get_environment(GODOT_ENV)
-	if env != "":
-		return env
-	var exe := OS.get_executable_path()
-	if exe.get_file().to_lower().contains(GODOT_NAME_HINT):
-		return exe
-	return GODOT_ON_PATH
+	return GodotBinary.path()
 
 
 ## ADR 0111: a held swap always waits PREWARM_WAIT_MAX_FRAMES; past that only while its holders make progress, and
