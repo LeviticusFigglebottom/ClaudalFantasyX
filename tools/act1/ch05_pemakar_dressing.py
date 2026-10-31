@@ -304,7 +304,11 @@ WEIR_STONE_OVERRIDES = {"col_tint": "Color(0.9, 0.88, 0.86, 1)", "use_algae": "t
 # wet weir one smooth dark face).
 WEIR_STONE_ADDED = {"algae_band_m": "Vector2(-0.9, 0.35)", "algae_coverage": "Vector2(0.5, 0.95)",
                     "wet_darken": "0.85", "wet_flatten": "0.1", "wet_roughness": "0.45",
-                    "col_algae": "Color(0.239, 0.29, 0.161, 1)"}
+                    "col_algae": "Color(0.239, 0.29, 0.161, 1)",
+                    # the PC's pass 7 (row 62 still flat in the day preview, p11): the courses read as long uniform
+                    # bars; the shader's macro layer at a stone's size gives each block of the course its own tone
+                    "macro_strength": "0.75", "macro_scale_m": "0.9",
+                    "col_macro_dark": "Color(0.55, 0.52, 0.5, 1)", "col_macro_light": "Color(1.2, 1.16, 1.1, 1)"}
 # ... and the water arriving over the crest runs (the kit's flowing spill water), not the channels' still near-mirror,
 # which read as a flat pale panel on the crest under a grey sky
 WEIR_SLOTS = {"kit_volcanic_dressed": KIT + "materials/" + WEIR_STONE + ".tres",
