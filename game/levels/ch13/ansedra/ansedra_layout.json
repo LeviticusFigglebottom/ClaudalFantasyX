@@ -1639,6 +1639,275 @@
     "beat": "to_archive"
    },
    "yaw": 0.0
+  },
+  {
+   "id": "pact",
+   "activation": "touch",
+   "at": [
+    -6.0,
+    0.0,
+    14.0
+   ],
+   "size": [
+    3.0,
+    0,
+    3.0
+   ],
+   "once": true,
+   "requires_flag": "ch13_archive_read",
+   "blocked_by_flag": "ch13_pact_of_silence",
+   "payload": {
+    "beat": "pact"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "rest",
+   "activation": "interact",
+   "at": [
+    2.5,
+    0.0,
+    -41.6
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch13_pact_of_silence",
+   "payload": {
+    "beat": "rest"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_liss_palm",
+   "activation": "touch",
+   "at": [
+    0.0,
+    0.0,
+    -4.0
+   ],
+   "size": [
+    4.0,
+    0,
+    2.0
+   ],
+   "once": true,
+   "requires_flag": "ch13_started",
+   "payload": {
+    "dialogue": "ch13_bark_liss_palm",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_pilgrim",
+   "activation": "touch",
+   "at": [
+    0.0,
+    0.0,
+    -18.0
+   ],
+   "size": [
+    4.0,
+    0,
+    2.0
+   ],
+   "once": true,
+   "requires_flag": "ch13_started",
+   "payload": {
+    "dialogue": "ch13_bark_pilgrim",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_stillguard",
+   "activation": "touch",
+   "at": [
+    -22.0,
+    0.0,
+    -40.0
+   ],
+   "size": [
+    2.0,
+    0,
+    4.0
+   ],
+   "once": true,
+   "requires_flag": "ch13_started",
+   "payload": {
+    "dialogue": "ch13_bark_stillguard",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_ysolde_holiness",
+   "activation": "touch",
+   "at": [
+    22.0,
+    0.0,
+    -40.0
+   ],
+   "size": [
+    2.0,
+    0,
+    4.0
+   ],
+   "once": true,
+   "requires_flag": "ch13_started",
+   "payload": {
+    "dialogue": "ch13_bark_ysolde_holiness",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_tender",
+   "activation": "touch",
+   "at": [
+    0.0,
+    0.0,
+    -62.0
+   ],
+   "size": [
+    4.0,
+    0,
+    2.0
+   ],
+   "once": true,
+   "requires_flag": "ch13_started",
+   "payload": {
+    "dialogue": "ch13_bark_tender",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "npc_bargeman",
+   "activation": "interact",
+   "at": [
+    7.0,
+    0.0,
+    8.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch13_started",
+   "payload": {
+    "dialogue": "ch13_bark_bargeman"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "npc_seamstress",
+   "activation": "interact",
+   "at": [
+    -6.0,
+    0.0,
+    -35.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch13_wedding_announced",
+   "payload": {
+    "dialogue": "ch13_bark_seamstress"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "side_the_leaning_flame",
+   "activation": "interact",
+   "at": [
+    6.0,
+    0.0,
+    -34.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch13_wedding_announced",
+   "payload": {
+    "dialogue": "ch13_side_the_leaning_flame"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "side_corran_house",
+   "activation": "interact",
+   "at": [
+    -44.0,
+    0.0,
+    -39.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LOOK",
+   "requires_flag": "ch13_started",
+   "payload": {
+    "dialogue": "ch13_someone_elses_house"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch13_corran_house"
+  },
+  {
+   "id": "moorings_kerrid",
+   "activation": "interact",
+   "at": [
+    -4.5,
+    0.0,
+    14.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch13_guest_of_sefir",
+   "payload": {
+    "dialogue": "ch13_moorings_kerrid"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch13_sat_at_moorings"
+  },
+  {
+   "id": "camp",
+   "activation": "interact",
+   "at": [
+    8.0,
+    0.0,
+    -41.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch13_ethren_bound",
+   "payload": {
+    "dialogue": "ch13_camp_twenty_four_years"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch13_camp_talk"
   }
  ]
 }

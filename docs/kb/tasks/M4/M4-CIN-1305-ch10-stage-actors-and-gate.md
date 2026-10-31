@@ -42,6 +42,32 @@ chapter's (layout actors, the zone's host wiring).
       `asha`, `ysolde`, `toma` in the inn (Asha on the bench at about (34.6, 0, -7.4)); **cloudloom** `asha`, `ysolde`,
       `toma`, `rhen` and `hesk` on the dais (creatures-b's Hesk).
 
+- [ ] **Ch13** (added 2026-10-30, from act2_ch13_direction.md; staged in M4-A2P-075): **ansedra** `sefir` (his door,
+      `sefir_door`), `tobin`, `merel` (the guest moorings), `householder` (Corran's house), `asha`, `toma`, `rhen`,
+      `ysolde`, `liss`, and the layout's `kerrid` shown (it is `hidden`); **sanctum** `liss`, `ysolde`, `asha`, and
+      `ethren` at the `corran` mark (creatures-b's Saint body; ch13_ethren's rise and head turn); **lamp_archive**
+      `ysolde`, `liss`, `asha`, `rhen`, and `sefir` (R10's reading table).
+
+- [ ] **Ch14** (added 2026-10-30, from act2_ch14_direction.md; staged in `game/data/cutscene/ch13/ansedra_lacquer_court.json`):
+      **ansedra_lacquer_court** `sefir` on the dais (`sefir_dais`, (0, 0.8, −20.2)), `tobin` and `merel` at `vows`,
+      `malcor_venn` at the Conclave gallery's rail (`venn_rail`, (−10.2, 2.0, −21.2)) with three more Conclave figures
+      beside him, `brannoc_hale`, `stillguard`, the hull captains, `kerrid` and the party on the court marks; the barge's
+      `bier` (Tobin under the bridal cloth) for L01/L12; and Venn on his own dead barge beyond the water gate for L10
+      (about (−3, 0, 22)).
+
+- [ ] **Ch15** (added 2026-10-30, from act2_ch15_direction.md): **open_sea** (the barge) `kerrid` at `kerrid_sits` (standing
+      at the stern until K05's `sit_down`), `asha`, `toma`, `liss`, `ysolde`, `rhen`, `pell`, and `tobin` on the bier
+      under the bridal cloth; the fin and the shoal's lights for U05/U06 and K01. **hollowmere** `aldous_varrow` (the
+      dock-master: his door, then the quay, `dockmaster_quay`), `liss`, `toma`, `rhen`, `asha`, `ysolde`, `pell`,
+      `kerrid`, Tobin's body on the jetty, and the pyre-raft's flotilla for H12.
+
+- [ ] **Ch16** (added 2026-10-30, from act2_ch16_direction.md): **pale_rim** the `hull_captain` at the ship's rail and
+      the seven (`toma`, `pell`, `asha`, `ysolde`, `liss`, `rhen`, `kerrid`) on the ship's deck, wading out to
+      `wade_1`…`wade_7`; **drowned_choir** the seven on the `ring_*` marks (plus `ring_pell`), `kesh` in the bowl
+      (creatures-b's Saint; she rises in C05), `sefir` at `sefir_barge` with his white barge, and the singers.
+      Kesh's memory (K01–K08): the six Lamplighters with Kesh, and `young_sefir` (`catch_light`, `face_smooths`),
+      in front of the memory's frames (about (0, 0, −66)).
+
 ## Notes
 - Cinematics' staging review (M4-C10-01) and M4-A2P-070. The stills wait on these actors.
 

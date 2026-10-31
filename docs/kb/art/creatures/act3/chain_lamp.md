@@ -96,3 +96,14 @@ point that never moves.
   presentation's file), or the sequencer will try to walk a hanging lamp across the room.
 - **With the wick crawler:** does the crawler relight a chain lamp whose shackle has parted (a revive that lifts it
   back), or only buff one still hanging? A revive needs a `revive` clip (the reverse of the KO), which is cheap to add.
+
+## As built (M5-A3P-1801, 2026-10-30)
+`assets_src/creatures/chain_lamp/build_chain_lamp.py`, as the sheet:
+- **Shape:** 4,552 triangles, 20 bones, the five slots.
+- **The light:** the louvres leave a 3 cm slit at their free edges, so the steady light shows in slits at rest (the
+  sheet's battle read) and in a beam as they open.
+- **Rig:** the cage rides the root, not the chain. While it hangs, its keys follow the chain's swing as a pendulum
+  from the 5 m ring (`swing`). When the shackle parts in the KO, the broken chain end whips up on its own and the cage
+  falls, tips and lands on the floor (grounded).
+- **Clip audit:** clean. Portrait, and review shot `creature_chain_lamp`.
+- **Combat's:** `travel: none` in choreo.json `style_by_skill`, and the beat.

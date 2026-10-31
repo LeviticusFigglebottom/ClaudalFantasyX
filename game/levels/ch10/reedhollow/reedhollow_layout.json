@@ -1775,6 +1775,28 @@
    "yaw": 0.0
   },
   {
+   "id": "kirru_ressa",
+   "activation": "touch",
+   "at": [
+    24.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.5,
+    0,
+    3.6
+   ],
+   "once": true,
+   "requires_flag": "ch10_reached_reedhollow",
+   "blocked_by_flag": "ch10_heard_ressa",
+   "payload": {
+    "dialogue": "ch10_bark_kirru_ressa",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
    "id": "shore",
    "activation": "touch",
    "at": [

@@ -2,8 +2,8 @@
 id: M4-A2P-1010
 title: "Request (staging): Asha's non-answer on the dark dock needs a longer hold (ch04_dock_in_the_dark)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "act1-chapters (claude/act1-chapters)"
 depends_on: []
 reviewer: narrative
 milestone: M4
@@ -25,5 +25,7 @@ voice-over. The read-through findings already filed (M4-A2P-1000/1001) cover the
 
 ## Acceptance criteria
 - [ ] The hold in, or answered here with a reason.
+
+- **act1-chapters, 2026-10-30:** done. `ch04_dock_in_the_dark.dlg`: the hold after "Is Oruvel in there?" is 3.0 s, and Asha is still on `look_out_to_sea` (no `look_at rhen` before her line). Recompiled.
 
 ## Review log
