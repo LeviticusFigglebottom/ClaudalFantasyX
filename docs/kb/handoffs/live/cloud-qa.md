@@ -122,6 +122,22 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## STATUS (02:15): big35 result; big36 (1983de0a2) pieces started
+ERROR counts by commit:
+| commit | piece | reached | ERROR lines |
+|---|---|---|---|
+| 9317c6b6c (big34) | fresh New Game → Ch4 ferry (stopped for big35) | Ch4 Brightwater ferry, 1175 s | **0** |
+| 6df68f059 (big35) | F8 Ch6 → end card (stopped for big36) | Ch8 Corrow after the beacon, 955 s | **0** |
+
+- **big35:** the run plays Ch6 → Ch8 through the binding and the beacon.
+  - **The binding still holds the player (M3-C08-1400 is still open).** The probe held skip at 942 s, about 90 s after
+    `ch08_virel_bound`. The skip also carried through the storm and beacon scenes (`ch08_beacon_opened` at 945.9 s),
+    and the run went back to Corrow at WallGate (955.6 s).
+  - **The Coilspire door after the beacon fires:** the beacon step's `go` to ch08/corrow WallGate happened.
+  - Then the field took no input in Corrow from 955 s. That was a probe fault: its skip hold carried over from the
+    last scene and was never re-pressed. The probe now lets go and presses again every 10 s while it's stuck.
+    Whether Corrow's wall-gate beat itself waits on something will show on big36.
+
 ## STATUS (01:05): big35 (6df68f059) chapter-start pieces started
 - **big34 fresh run (9317c6b6c), stopped for big35:** New Game → Ch4's Brightwater ferry in 1175 s with **0 ERROR
   lines**. The only stop was the Shell Shrine basin puzzle, which the probe skips (PLAY_SKIP), as on earlier runs.

@@ -25,6 +25,7 @@ const HOP_M := 0.25
 const NEAR_M := 1.0
 const INTERACT_S := 1.0
 const STUCK_S := 90.0
+const SKIP_REHOLD_S := 10.0
 const CANCEL_AFTER_S := 30.0
 const SOFTLOCK_S := 180.0
 const RESULT_READ_S := 1.0
@@ -48,6 +49,7 @@ const FLOOR_SEARCH_M := 4
 
 var _opts: Dictionary = {}
 var _skip_holding := false
+var _skip_since := 0.0
 var _t0 := 0
 var _last_progress := 0.0
 var _flags: Array[String] = []
@@ -142,8 +144,14 @@ func _run() -> void:
 				Input.action_press(held)
 				continue
 			# Past STUCK_S, a cutscene is held to skip (ui_cancel held: the sequencer's skip), as a stuck player would.
-			if t - _last_progress > STUCK_S and _skip_hold(true):
-				print("PLAY_SKIP_SCENE %.1f %s: ui_cancel held to skip the cutscene" % [t, path])
+			if t - _last_progress > STUCK_S:
+				# A hold carried in from the last scene isn't seen as a press by this one: let go now and then, and
+				# press again.
+				if _skip_holding and t - _skip_since > SKIP_REHOLD_S:
+					_skip_hold(false)
+				elif _skip_hold(true):
+					_skip_since = t
+					print("PLAY_SKIP_SCENE %.1f %s: ui_cancel held to skip the cutscene" % [t, path])
 			if t >= next_tap and not _skip_holding:
 				# Past CANCEL_AFTER_S with no progress, every other tap is ui_cancel: a menu the hero opened closes.
 				var cancel := t - _last_progress > CANCEL_AFTER_S and int(t / TAP_S) % 2 == 1
