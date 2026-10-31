@@ -232,6 +232,13 @@
       "spawn": "Deck",
       "name_key": "LOCATION_CH18_KITE",
       "_note": "M5-A3P-1004: Dace's hull flying, the Kite (act3_ch18.md), a greybox zone (Ch18Zone) from tools/act3/ch18_greybox.py: the deck, the wheel, the chart table and its courses."
+    },
+    {
+      "id": "ch19/iskarra_spire",
+      "scene": "res://game/levels/ch19/iskarra_spire/iskarra_spire.tscn",
+      "spawn": "Plaza",
+      "name_key": "LOCATION_CH19_ISKARRA_SPIRE",
+      "_note": "M5-A3P-1007: drowned Iskarra's plaza and the Lamp Spire (act3_ch19.md), a greybox zone (Ch19Zone) from tools/act3/ch19_greybox.py: the plaza, the spire's four tiers, the antechamber and the crown."
     }
   ],
   "shrines": [
