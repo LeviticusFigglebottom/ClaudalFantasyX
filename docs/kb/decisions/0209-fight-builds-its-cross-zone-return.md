@@ -36,3 +36,12 @@ Option 3.
 - The arena's wind and shimmer globals pause while the worker instantiates (about 1 s on the PC). That's the price of the M3-HER-1151 hold.
 - ui-menus' victory-panel preload stays. It now finds its loads already in and costs nothing, so it's harmless and the fallback if the park is off.
 - Watch: one headless parked run in five logged an engine `Parameter "t" is null` error (no backtrace). It may be a worker/main renderer race in the dummy renderer. The PC should watch for it.
+
+## Amendment 1 (2026-10-31): PC pass 7 re-measure, rows 74 and 68
+On the real GPU, the park took the Drownbell → Haluna return from 8.2–8.6 s to 2.87–3.03 s. What was left was the swap-in waiting on the shader prewarm (175 frames). A Drownbell fight start and a Ch6 entry also segfaulted (row 68), once next to a duplicate threaded load of one model.
+- **The prewarm runs during the fight.** Once the park is built, the router emits `prewarm_requested` for it, and ShaderPrewarm stages its pipelines then. The swap-in of a prewarmed parked scene requests no second prewarm. If Return comes before the stage finishes, its swap hold makes the swap wait, as before.
+  - Watch: pipeline compiles now happen during the battle, where they can be visible hitches. ShaderPrewarm's time slicing (`materials_per_frame`, `slice_budget_ms`) still applies. The PC should measure battle frames during a cross-zone fight.
+- **One family of loads at a time.**
+  - With the park on, the router no longer requests the return scene beside the battle's own threaded instantiate (`_prewarm_return`).
+  - ReturnPark loads the scene, then the zone's runtime loads (ResidentLoads), then instantiates. Nothing overlaps the battle's entry, or the scene load.
+- **The add frame is lighter.** `FieldCameraDirector.warm_triangles` builds big meshes' occlusion triangles on the instantiate worker. Haluna's root `_ready` went from 322 to 21 ms headless.

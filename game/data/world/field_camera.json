@@ -46,6 +46,8 @@
     "crane_ring_turns": 12,
     "standoff_m": 2.6,
     "release_mps": 4.0,
-    "min_size_m": 3.0
+    "min_size_m": 3.0,
+    "warm_doc": "Haluna's add frame (row 74, the human's playtest #1): a big mesh's triangles took 0.2-0.35 s to build on the zone's first frame (the director's first occlusion test). Meshes with at least warm_min_vertices vertices (and no transparent surface) have them built on the worker thread that instantiates the zone (SceneRouter, ReturnPark: FieldCameraDirector.warm_triangles), and Godot keeps them on the mesh. Smaller meshes stay lazy.",
+    "warm_min_vertices": 8000
   }
 }

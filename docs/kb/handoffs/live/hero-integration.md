@@ -2228,3 +2228,19 @@ MERGE-READY @ (this commit).
 - **For slice-polish:** Haluna's add frame (root `_ready` 388 ms) is the other.
 - ADR **0209**. If another track took 0209 meanwhile, renumber mine.
 MERGE-READY @ (this commit).
+
+### 2026-10-31: rows 74 and 68 after the PC's re-measure (ReturnPark 8.2–8.6 s → 2.87–3.03 s on GPU; ADR 0209 amendment 1)
+- **The prewarm runs during the fight.**
+  - Once ReturnPark has built Haluna, the router emits `prewarm_requested` for it, so ShaderPrewarm compiles its pipelines during the fight.
+  - The swap-in of a prewarmed parked scene requests no second prewarm. Headless: `prewarm_wait_frames` 14 → 0, `park_prewarmed` true.
+  - **PC, please measure battle frames during the Drownbell fight.** Pipeline compiles are now in the live fight. ShaderPrewarm's slicing still applies.
+- **Row 68: one family of loads at a time.**
+  - With the park on, the router no longer starts the return scene's threaded load beside the battle's own threaded instantiate (the old `_prewarm_return` at detach).
+  - ReturnPark now loads the scene, then the zone's ResidentLoads, then instantiates, with nothing overlapping.
+  - I couldn't reproduce the segfaults headless. This removes the overlaps I could find.
+- **Haluna's root `_ready` went 322 → 21 ms.** The camera director's first occlusion test built two dresser meshes' triangles (346 + 181 ms) on the add frame. `FieldCameraDirector.warm_triangles` now builds them in the instantiate worker task.
+  - Worst hidden frame 718–893 → 548 ms headless; readies 616 → 164–175 ms.
+- **Headless now (injected clock, causeway fight → Haluna):** entry 1.18 → **0.95 s**; parked, instantiate 0.
+- **The `"t" is null` engine error:** 0 in 11 more parked runs (1 in 12 overall). The one hit was the first parked run after unimported script edits, so I can't reproduce it. I'm leaving it as watch-only.
+- **Tests:** return_park 3/0, battle_return 2/0, scene_router 17/0, shader_prewarm 22/0, resident_loads 11/0, field_battle 12/0, qa_encounters 1/0, camera_director 57/0 (plus the warm test), qa_field_camera 2/0, resident_reattach 1/0.
+MERGE-READY @ (this commit).
