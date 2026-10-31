@@ -2,3 +2,41 @@ keys,en
 CHAR_IMRA,Imra
 CHAR_DACE,Dace
 FIELD_PROMPT_ENDING_TAKE_THE_STRAIN,Hold to take the strain
+ENEMY_KESH_HELD,Kesh
+LORE_KESH_HELD,"The First Voice, called out of Asha's sleeve one last time. She sings every element in turn and holds nothing back: she wants them strong enough."
+PHASE_KESH_WATER,The First Voice: Water
+PHASE_KESH_LIGHTNING,The First Voice: Lightning
+PHASE_KESH_FIRE,The First Voice: Fire
+PHASE_KESH_ICE,The First Voice: Ice
+PHASE_KESH_HOLY,The First Voice: Holy
+PHASE_KESH_GLIMMER,The First Voice: Glimmer
+PHASE_KESH_HELD_RELEASE,Lifting
+ENEMY_SEFIR,Sefir Aurane
+LORE_SEFIR_WARDEN,"The Warden of the Abiding, at the heart of the Undertow. He speaks warmly, wards himself, and settles every hero back into his order of turns."
+LORE_SEFIR_HEART,"Sefir with the Undertow's heart drawn into him, pulling at the glimmer the party carries."
+LORE_SEFIR_LETTING,"Sefir reaching for the Eighth Verse while Asha sings it."
+PHASE_SEFIR_WARDEN,The Warden
+PHASE_SEFIR_WARDEN_TO_ASHA,The Warden Turns to Asha
+PHASE_SEFIR_HEART,The Undertow-Heart
+PHASE_SEFIR_HEART_STORM_NOTE,The Storm's Note
+PHASE_SEFIR_LETTING,The Letting
+SKILL_SEFIR_SETTLE,Settle
+SKILL_SEFIR_PATIENCE,Patience
+SKILL_SEFIR_WARDEN_WORD,A Reasonable Word
+SKILL_SEFIR_DRAW,Draw the Glimmer
+SKILL_SEFIR_HEART_BEAT,The Storm's Note
+SKILL_SEFIR_REACH,Reach for the Verse
+SKILL_SEFIR_STILLNESS,The Long Stillness
+SKILL_LETTING_VERSE,The Eighth Verse
+ENTRY_CH21_THE_LETTING,The Eighth Verse
+ENC_CH21_KESH,Kesh
+ENC_CH21_SEFIR_WARDEN,Sefir: the Warden
+ENC_CH21_SEFIR_HEART,Sefir: the Undertow-Heart
+ENC_CH21_SEFIR_LETTING,Sefir: the Letting
+HUD_PARTY_CH21_ASHA_SINGS,Asha is singing the Eighth Verse.
+HUD_SWAP_CH21_TOMA_COVERS,Toma covers the verse: he stays in until it ends.
+HUD_CH21_THE_LETTING,The verse ends on tash.
+ENEMY_LETTING_STILLED,The Stilled
+LORE_LETTING_STILLED,"The Abiding's held dead, risen from the heart's floor to reach for the verse."
+SKILL_LETTING_STILLED_RISE,The Stilled Rise
+ENTRY_CH21_THE_STILLED,The Long Stillness
