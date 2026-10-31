@@ -31,6 +31,70 @@
    "y": 0.0,
    "yaw_deg": -90.0,
    "scale": 0.65
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    -9.0,
+    -6.0
+   ],
+   "y": -0.34,
+   "yaw_deg": 40.0,
+   "drift": {
+    "bob_m": 0.12,
+    "period_s": 7.0,
+    "tilt_deg": 4.0,
+    "wander_m": 1.5,
+    "wander_s": 90.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    11.0,
+    4.0
+   ],
+   "y": -0.34,
+   "yaw_deg": 150.0,
+   "drift": {
+    "bob_m": 0.12,
+    "period_s": 7.0,
+    "tilt_deg": 4.0,
+    "wander_m": 1.5,
+    "wander_s": 90.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    -6.5,
+    14.0
+   ],
+   "y": -0.34,
+   "yaw_deg": 260.0,
+   "drift": {
+    "bob_m": 0.12,
+    "period_s": 7.0,
+    "tilt_deg": 4.0,
+    "wander_m": 1.5,
+    "wander_s": 90.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    14.0,
+    -15.0
+   ],
+   "y": -0.34,
+   "yaw_deg": 320.0,
+   "drift": {
+    "bob_m": 0.12,
+    "period_s": 7.0,
+    "tilt_deg": 4.0,
+    "wander_m": 1.5,
+    "wander_s": 90.0
+   }
   }
  ]
 }

@@ -240,6 +240,9 @@ JOBS = [
      _source_files("assets_src/sfx/act2_ability_sfx.py"), "sfx"),
     ("assets_src/sfx/act2_cutscene_sfx.py", "assets/audio/sfx",
      _source_files("assets_src/sfx/act2_cutscene_sfx.py"), "sfx"),
+    # M5-A3P-1953 (ADR 0208): Act III's cutscene sounds, plain git under assets/audio/act3/sfx/
+    ("assets_src/sfx/act3_cutscene_sfx.py", "assets/audio/act3/sfx",
+     _source_files("assets_src/sfx/act3_cutscene_sfx.py"), "sfx"),
     ("assets_src/sfx/act2_ui_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/act2_ui_sfx.py"), "sfx"),
     ("assets_src/sfx/act1_foley_detail_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/act1_foley_detail_sfx.py"),
      "sfx"),
@@ -256,6 +259,24 @@ JOBS = [
     ("assets_src/music/act2/sefir_go_home.py", "assets/audio/act2/music", ["sefir_go_home.ogg"], "music"),
     ("assets_src/music/act2/act2_break.py", "assets/audio/act2/music", ["act2_break.ogg"], "music"),
     ("assets_src/music/act2/kesh_memory.py", "assets/audio/act2/music", ["kesh_memory.ogg"], "music"),
+    # M5-A3P-1950 (ADR 0208): Act III's score, plain git under assets/audio/act3/music/ (the Unbinding themes)
+    ("assets_src/music/act3/the_letting.py", "assets/audio/act3/music",
+     ["the_letting.ogg", "the_letting.loop.json", "the_letting_release.ogg"], "music_loop"),
+    ("assets_src/music/act3/release_sting.py", "assets/audio/act3/music", ["release_sting.ogg"], "music"),
+    ("assets_src/music/act3/unbinding_swell.py", "assets/audio/act3/music", ["unbinding_swell.ogg"], "music"),
+    # M5-A3P-1951: the finale (Ch21 H01-H06)
+    ("assets_src/music/act3/heart.py", "assets/audio/act3/music",
+     [f"{c}{ext}" for c in ("heart_approach", "heart_rest") for ext in (".ogg", ".loop.json")], "music_loop"),
+    ("assets_src/music/act3/kesh_first_voice.py", "assets/audio/act3/music",
+     ["kesh_first_voice.ogg", "kesh_first_voice.loop.json"], "music_loop"),
+    ("assets_src/music/act3/sefir_finale.py", "assets/audio/act3/music",
+     [f"{c}{ext}" for c in ("sefir_warden", "sefir_heart") for ext in (".ogg", ".loop.json")], "music_loop"),
+    # M5-A3P-1952: the ending (E1-E7, the credits)
+    ("assets_src/music/act3/ending.py", "assets/audio/act3/music",
+     ["goodbye_imra.ogg", "ending_lift_bed.ogg", "ending_lift_bed.loop.json", "goodbye_kerrid.ogg", "ending_dock.ogg",
+      "post_credits_lamp.ogg"], "music_loop"),
+    ("assets_src/music/act3/goodbye_dace.py", "assets/audio/act3/music", ["goodbye_dace.ogg"], "music"),
+    ("assets_src/music/act3/credits_suite.py", "assets/audio/act3/music", ["credits_suite.ogg"], "music"),
     # M4-A2P-092 (ADR 0175): the people bosses' stems
     ("assets_src/music/act2/malcor_venn.py", "assets/audio/act2/music",
      [f"malcor_venn_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),

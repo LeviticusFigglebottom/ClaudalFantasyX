@@ -28,6 +28,12 @@
       "task": "M4-A2P-075",
       "owner": "cinematics",
       "note": "M4-A2P-114 plays the Act II scenes from the Ch10-Ch13 greybox flows so their flags are raised; their staging on these stages (the shots, cast, marks, lights and VFX anchors each scene names) is M4-A2P-070..075 (act1-chapters). Remove this row as each scene is staged."
+    },
+    {
+      "pattern": "^CutsceneSequencer\\((ch1[7-9]_[a-z0-9_]+|ch2[01]_[a-z0-9_]+)\\): (no (shot|actor|mark|light|look_at target) '|cannot place @vfx )",
+      "task": "M5-A3P-1001",
+      "owner": "cinematics",
+      "note": "M5-A3P-1001 (and the Ch18-Ch21 staging-and-flow rows) plays the Act III scenes from their flows; their shots (the D- and K-ids), the cast on the greybox stages and the VFX anchors are the staging half of those rows. Remove this row as each scene is staged."
     }
   ],
   "capsules_doc": "test_qa_capsules.gd: zone file name -> the actors (StandIn's parent) still shown as capsules, and 'battle' -> party members with no battle actor scene. All handed to their owners: M3-HER-1125 (characters: the Act I cast's models), M3-HER-1120 (ui-menus: Liss's battle row; her actor is ready). Remove a name when its model lands; the guard then fails if the capsule comes back. Each zone is checked as it loads and again under every layout variant's flags (Ch9's dawn road: Kerrid at the milestone, act1-chapters' staging of characters' M3-CHR-505 model). 'battle_foes' -> every encounter enemy, spawn, summon and Vowbound with no actor scene, with its owner and task.",
@@ -47,15 +53,18 @@
       "cord_moth": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
       "scree_crawler": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
       "glass_skate": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
-      "rim_crawler": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts"
+      "rim_crawler": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
+"abiding_first": "characters, M4-A2P-051 (Sefir's Abiding guard's battle actors, in review)",
+"abiding_guard": "characters, M4-A2P-051 (in review)",
+"court_stillguard": "characters, M3-CHR-508 (the Stillguard soldiers)",
+"hesper_oan": "characters, M5-A3P-1202 (the Wardens' bodies)",
+"ilsabet_rue": "characters, M5-A3P-1202",
+"chain_lamp": "creatures, M5-A3P-1801 (the chain lamp)",
+"spire_moth": "creatures, M5-A3P-1802 (the spire moth)"
     }
   },
   "unraised_doc": "test_qa_threads.gd: a flag a thread's chapter or main objectives wait on that its thread never raises -> why it isn't a softlock, and the task that closes the gap.",
   "unraised": {
-    "ch14_started": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by ch14.json's arrive (Ch14's own chapter). Closes with M4-A2P-118 (Ch14's fights and court flow; then a row 'chapter' field, or Ch13's thread playing into Ch14).",
-    "ch14_vows_spoken": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by ch14_the_vows. Closes with M4-A2P-118 (Ch14's fights and court flow; then a row 'chapter' field, or Ch13's thread playing into Ch14).",
-    "ch14_declared_heretics": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by ch14_the_vows. Closes with M4-A2P-118 (Ch14's fights and court flow; then a row 'chapter' field, or Ch13's thread playing into Ch14).",
-    "ch14_steps_held": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by the water-steps set piece's escape, and ch14_first_ripple. Closes with M4-A2P-118 (Ch14's fights and court flow; then a row 'chapter' field, or Ch13's thread playing into Ch14).",
-    "ch14_complete": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by ch14_left_standing. Closes with M4-A2P-118 (Ch14's fights and court flow; then a row 'chapter' field, or Ch13's thread playing into Ch14)."
+    "ch18_world_open": "M5-A3P-1004: the Act III revisit rows in the earlier towns' chapter files (ch05, ch07, ch08, ch10, ch12, ch17) wait on the Kite's world; test_ch18_thread raises it and plays them (Pemakar, Quellan, Reedhollow)."
   }
 }

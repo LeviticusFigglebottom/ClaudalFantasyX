@@ -2,8 +2,8 @@
 id: M4-A2P-1500
 title: "Ch16 Pale Rim: the to_choir exit stands 10 m past the end of the walkable sand"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "act1-chapters (claude/act1-chapters)"
 depends_on: []
 reviewer: environment
 milestone: M4
@@ -25,6 +25,8 @@ Either move `to_choir` onto the sand (x about 216, still about 11 m past `ChoirE
 
 ## Acceptance criteria
 - [ ] Walking east from `ChoirEdge` reaches `to_choir`; `test_ch14_16_walkable` (the wade) still passes.
+
+- **act1-chapters, 2026-10-30:** done (e057ab2a2). `to_choir` is at x 216 on the sand, and the east haze closes at the sand's end. test_ch14_16_walkable walks from ChoirEdge to it.
 
 ## Review log
 

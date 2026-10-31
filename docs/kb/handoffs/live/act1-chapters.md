@@ -1034,7 +1034,7 @@ All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated;
 - **test_causeway_route in big25:** my fix is in big25 (7f54af722 and b368c93a5 are both ancestors). On a fresh
   big25 worktree after `--import` it's **5/0**. The red was almost certainly the stale class cache after a merge (the
   same thing I hit at 13:48 and 14:48), so the gate needs `--import` first.
-- **M4-A2P-114 (the 19 unraised flags): 14 wired, 5 moved to M4-A2P-118.** Now in review (narrative).
+- **M4-A2P-114 (the 19 unraised flags): 14 wired, 5 moved to M4-A2P-1200.** Now in review (narrative).
   - **New triggers** (from the generators): reedhollow `shore`, lowlight `engine` and `sanctum`, keth_pass
     `terrace`, cloudloom `dais`, sanctum `ledge`, lamp_archive `ledgers` and `roll`.
   - **New beats:** the Lamp Engine and the Avalanche Ram each play their scene, then the flow's `battle` step. The
@@ -1045,10 +1045,10 @@ All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated;
     - ch13_archive_hands (the third visit) and ch13_the_pact.
   - **Flags:** `ch11_engine_released` and `ch11_twice_seen` are declared in flags.tres (its own commit).
   - **Threads:** test_ch10..13_thread play each chapter's story in order. ch12 and ch13 have a new in-order test each.
-  - **qa_known `unraised`:** down from 19 to Ch14's 5. Those now point at M4-A2P-118.
+  - **qa_known `unraised`:** down from 19 to Ch14's 5. Those now point at M4-A2P-1200.
   - **Staging:** the scenes name shots, cast, marks and VFX anchors the greybox stages lack (100 warnings). One
     `known` row hands them to M4-A2P-075 (my staging, 070–075), and test_qa_threads is **green**.
-  - **Ch14 (rows 15–19):** filed as **M4-A2P-118** (combat, mine): `ch14_water_steps`, `ch14_malcor_venn` and Venn's
+  - **Ch14 (rows 15–19):** filed as **M4-A2P-1200** (combat, mine): `ch14_water_steps`, `ch14_malcor_venn` and Venn's
     enemy row and sim band, then the court's beats. The five flags also need M3-UI-1242's `"chapter"`.
 - **Ch14–16 mounts and walks:**
   - test_ch14_16_thread (5/0), lacquer, open_sea, hollowmere, pale_rim (2/0 each).
@@ -1060,7 +1060,7 @@ All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated;
     integration worktree, so it's ui's and inherited.
 - MERGE-READY @ 74accf6fd
 - **BACKLOG (10-30, after 16:45):**
-  - **Mine, next:** M4-A2P-118 (Ch14's fights) and the Act II staging (070–075).
+  - **Mine, next:** M4-A2P-1200 (Ch14's fights) and the Act II staging (070–075).
   - **Waiting on others:**
     - env-art-b: the Choir.
     - M3-BPR-445, M3-UI-1242 and M4-A2P-061.
@@ -1070,7 +1070,7 @@ All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated;
 **Id clashes, LEAD-ASK:**
 - Act2-plan's M4-A2P-116 duplicates env-art-b's M4-A2P-116 (the Lowlight arena request), which is already on
   integration.
-- Their 117 duplicated my Ch14 task. I renumbered mine to **M4-A2P-118** (e37d74276).
+- Their 117 duplicated my Ch14 task. I renumbered mine to **M4-A2P-1200** (e37d74276).
 - The taskboard will flag the 116 pair when act2-plan merges, so one of the two needs a new id.
 
 **Every row, as fixed** (the row's answer, for the review log):
@@ -1123,7 +1123,264 @@ All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated;
   `--import` writes six `.jpg.import` files there. I deleted the ones my imports made.
 - MERGE-READY @ c17b7c953
 
+### The Lead's 18:24 list (10-30); id range M4-A2P-1200..1399
+1. **M4-A2P-116, all 17 rows:** they were all fixed at 17:44, not 11 (C1–C10 and B1–B7, plus the Ch4 doc row). Every
+   row's answer is in the 17:44 entry above. MERGE-READY @ c17b7c953 covers them.
+2. **M4-A2P-1500 (env-art-b, the Pale Rim's exit):**
+   - `to_choir` now stands on the sand at x 216 (`RIM_LEN - 4`), about 11 m past ChoirEdge.
+   - The east haze bound moved from x 240.5 to the sand's end (`RIM_LEN + 1`), so there's no 20 m drop into nothing.
+   - test_ch14_16_walkable walks from ChoirEdge to the exit; it and pale_rim are green.
+3. **The three fights audio pre-wired** (music.json `pending_encounters`): all three built and in band (M4-A2P-1200
+   notes):
+   - `ch14_water_steps`, a set piece on Ch8's schema: naive 48.4, role 87.8, smart 100.
+   - `ch14_malcor_venn`, Venn plus the flat-engine Liss alone can break: naive 0.4, role 75, smart 100 at 40 turns.
+     - New engine rule, BattleParts `leaves_with`: a part withdraws once its owner no longer stands. A unit test
+       covers it, and validate_data checks the id.
+   - `ch16_abiding_guard`, the first plus two guards: naive 0.8, role 71, smart 100 at 41 turns.
+   - All at 500 seeds with `--check`, no timeouts.
+   - The scripts start `ch14_water_steps`; the plan's `ch14_hold_the_steps` name is only in audio's map (both map to
+     court_steps).
+   - Shared appends, each in its own commit: ch14.csv, ch16.csv, creature_voices.json (the three people
+     `"silent"`), choreo.json (the two sweeps stage as cast), validate_data.py, flags.tres (`ch14_venn_beaten`).
+4. **M4-A2P-114 flag setters: done, all 19.** Ch14 was the last five: the court flow (the dais, the water-steps, the
+   first ripple and Venn, left standing; the barge gated on `ch14_complete`). test_ch13_thread plays it, and
+   qa_known `"unraised"` is **empty**.
+5. **Ch14–16 mounts:** unchanged. The Drowned Choir's dressing still isn't anywhere (env-art-b's M4-A2P-046 is
+   `doing`).
+- **Ids:** my Ch14 task is renumbered into the range as M4-A2P-1200. M4-A2P-1201 is the effects request.
+- **Checks:**
+  - encounters_resolve (2/0), ch13_thread (3/0), ch14_16 (5/0), pale_rim (2/0), battle_answered (4/0), party_kits
+    (4/0), validate_data, taskboard, chapter_flow_check.
+  - `--filter=battle` (864 run) has five reds, none of them from this work:
+    - test_battle_act1_ability_vfx: the Vowbound and Swell effects, M4-A2P-061 (battle-presentation).
+    - test_battle_act2_ability_vfx: the conduit crawler's (M3-BPR-445) and my 13 new skills (M4-A2P-1201). Effects
+      are battle-presentation's.
+    - test_battle_lineup: `ch11_lamp_engine`'s engine and crawlers sit 2.5 m apart against 2.74 m. It's red on a
+      clean integration worktree too; the model's footprint against lowlight_engine_hall's slots is staging, so it's
+      for battle-presentation.
+    - test_battle_return: the probe exited 127, an environment binary issue.
+  - test_qa_threads: 1/0 with `unraised` empty.
+- MERGE-READY @ 3e62a3256
+- **BACKLOG EMPTY (10-30, after 18:24).** Waiting on others:
+  - env-art-b: the Choir's dressing.
+  - Battle-presentation: M4-A2P-1201, M3-BPR-445, M4-A2P-061, and the Lamp Engine lineup.
+  - Audio: the people's sounds.
+  - ui-menus: M3-UI-1242.
+  - The PC re-check of rows 34 and 39.
+
+### The Lead's 19:45 and 20:05 messages (10-30)
+- **19:45 status:** everything it listed was already pushed at 3e62a3256 (MERGE-READY in the 18:24 entry): the Pale Rim
+  exit, the three encounters, all 19 M4-A2P-114 setters, and the Ch14 court.
+  - The **ch01_zones red** isn't real. act2-plan's own log corrects it (a stale import cache after the merge), and it
+    passes 6/0 here.
+  - Ch14–16 mounts: the Choir's dressing still isn't anywhere.
+- **cloud-qa 1 (touch boxes):** GreyboxZone extends every trigger box `trigger_sink_m` (0.1 m, greybox_defaults.json)
+  below its `at` height, so a hero who settles at y -0.0004 still stands in it. New test:
+  `test_a_touch_box_reaches_below_its_floor`.
+- **cloud-qa 2 (o_kell):** a `kell_talk` interact trigger on Kell herself (29, 0, -7) plays the same `kell_stall` beat,
+  under the same flags. Its prompt is "Talk to Kell" (FIELD_PROMPT_CH01_KELL, appended). test_ch01_thread checks it.
+- **Checks:** zone_story (19/0), ch01 (20/0), ch04 (13/0), ch08 (25/0), ch09 (13/0), validate_data, flow check.
+  `layout`'s only red is the inherited test_aspect_layouts (ui's).
+- MERGE-READY @ 2f9f87dd9
+
+### The Lead's 21:05 list (10-30)
+- **Ch14–16 mounts:** done, except the Drowned Choir, whose dressing still isn't on env-art-b or integration
+  (M4-A2P-046 `doing`).
+- **M4-A2P-1500:** done at 3c0ebc49e/e057ab2a2 (18:24 entry).
+- **The Act II balance pass, Ch10–Ch13 as played:**
+  - Setup: all 11 Ch10–Ch13 suites (eight regulars and three bosses; Ch13 has no fight), 1,000 seeds, `--check`,
+    the ch08_seawall loadout. All in band.
+  - **Nothing trivial:**
+    - Regulars' naive wins run 24–58%, the bosses' 0.2–2.2%.
+    - Smart never wins a regular in fewer than 12.6 mean turns.
+    - The bosses' role answers sit at 61–63%, and the boss length climbs: the Drowner 23 smart turns, the Lamp
+      Engine 33, the Ram 43.
+  - **One spike:** `ch10_fen_leeches`.
+    - It cost smart about 3 items over 25 turns, and role answer won only 51%. Act I's last regulars cost 1.0–2.65
+      items over 12–18 turns (Ch6 skippers; Ch8 gulls, crabs, moths, 500 seeds).
+    - The cause was evasion 25 (misses stretch the fight), so it's now 18.
+    - At 1,000 seeds: naive 35.2, role 65.3, smart 99.6 at 23.2 turns and 2.83 items. That's about Ch8's gulls; the
+      longer fight is the leech's drain.
+  - **Per suite** (naive / role / smart, % win; smart turns):
+    - Fen archers 54 / 74 / 98 (17); fen roots 34 / 94 / 100 (18); fen leeches 35 / 65 / 100 (23).
+    - Vey rays 37 / 63 / 98 (22); Vey urchins 50 / 100 / 100 (13).
+    - Pass lynxes 48 / 68 / 100 (16); pass moths 58 / 96 / 100 (13); pass scree 56 / 94 / 100 (16).
+    - Drowner 1 / 62 / 100 (23); Lamp Engine 0 / 63 / 100 (33); Ram 2 / 61 / 100 (43).
+- MERGE-READY @ 6047d9d26
+
+### The Lead's 21:46 FAST-TRACK (10-30): Act I objectives (cloud-qa)
+- **Ch6 Brine Shoals** (objectives.json, after Ashcrown's rows):
+  - `s_ridge`: to the last wreck-ridge until the Inquisitor yields.
+  - `s_dawn`: once the camp is made, the shoal channel until `ch06_done`.
+  - Side row `s_side_lamp`: the tideline until the burned lamp is seen.
+  - The raid, the barge and the camp between them chain automatically, so they need no rows.
+- **Ch8 Corrow:**
+  - `k_ivo`: the watch captain, at a new `ivo` POI on his trigger.
+  - `k_headland`: the wall-gate until the beacon is opened.
+  - Side row `k_side_stair`: the fisher stair.
+  - The stair holds, the Reach and the cut rope chain automatically on arrival.
+- **Ch8 Coilspire:**
+  - `q_door`: the spire door.
+  - `q_crown`: the flue trial to a new `crown` POI.
+  - `q_beacon`: the great key, at a new `great_key` POI.
+- **Ashcrown's stair:** the field cue lifts a target to the player's own height, so a single crown target 117 m up
+  pointed through the stair. Now it's staged:
+  - `a_stair` points at the grave tier, `a_upper` at the copper tier, then `a_crown` at the crown.
+  - The two banter triggers set `ch05_passed_grave_tier` and `ch05_passed_copper_tier`, and the crown beat sets both.
+  - The trial rows are listed first, so a save already in the trial never falls back to the stair.
+  - test_objective_tracker's spot checks follow.
+- Shared appends, each in its own commit: flags.tres (the two tier flags), strings.csv (13 lines; `MAP_POI_Q_CROWN`
+  already existed), zone_maps.json (three POIs).
+- **ui-menus:** nothing needed on the HUD side.
+- **Checks:**
+  - zone_map (22/0), objective (16/0; the suite reports 7 orphan nodes left in the tree, its own cleanup, not
+    checked against the old head), ch05 (13/0), ch06 (5/0), ch08 (25/0), test_qa_threads (1/0, every new row's flags
+    raised by its thread).
+  - validate_data and chapter_flow_check.
+- MERGE-READY @ 7a37c3d53
+
+### The Lead's 21:56 message (10-30): the Act II rows first, then Act III (ADR 0207)
+M4-A2P-1003 (the Act II as-played read-through, Ch10–13) and M4-A2P-1012 (the Ch14–16 flows and encounters) are both
+done and in `status: review` (reviewer: narrative). Each task file's **Done** section answers its rows.
+- **Ch10:** the causeway on the Reedhollow arrival (D1), the Drowner's release on the fen's return (D11, new
+  `ch10_what_went_up_seen`), Ressa overheard (D2), and on to Ch11 (E1).
+- **Ch11:** the housing-mark in the conduit court (D5), held-by-you at the landing (D4), and on to Ch12.
+- **Ch12:**
+  - the cold road on arrival (E5), Kerrid's breath across the saddle (E4), the knot (E12), and the herd-cord once
+    (E6, new `ch12_herd_cord_seen`);
+  - the descent, then straight on to Ch13 (E7);
+  - every bark, person, side scene and camp in the three zones.
+- **Ch13:**
+  - the still city and Tobin on arrival (E3, new `ch13_guest_of_sefir`, which the layout's Kerrid state read but
+    nothing set);
+  - the Archive gated on Ethren (E2), one day a visit (E9), the pact at the moorings (E8), and Sefir's door to the
+    Lacquer Court;
+  - every bark, person, side scene and camp.
+- **Ch15:**
+  - the unlamped barge, the deck talks, and the fin at the bow → `ch15_wakefin` (new `ch15_wakefin_felled`);
+  - the shoal on the return, then the current-song → Hollowmere;
+  - the dock-master on arrival, the bier and the pyre-raft at the dock's end, the supper, and the ship;
+  - Hollowmere's people, side errands and camp.
+- **Ch16:**
+  - the ship waits; the wade's barks and the cairns;
+  - the Choir → `ch16_abiding_guard` → `ch16_storm_wakes` on the return → swept away.
+- **New encounter `ch16_storm_wakes`** (the sheet's §5b in ADR 0100's schema): suite in band at 500 seeds (naive
+  24.0, role 91.8, smart 100, p90 32, no timeouts). The sheet's attack_override became a lent skill, the grip comes
+  from a set-piece `storm_crawler`, and the storm_dark field is left out (each reason is in the 1012 task file).
+- M4-A2P-105: the open sea's marks for the reveal's held-dead cues (`shoal`, `shoal_floor`, `shoal_rising`,
+  `kerrid_orbit`, `kerrid_scar`; the scene's cues named marks that didn't exist) and a dawn `variants` row on the new
+  `ch15_dawn` (set at the bow before the current-song). env-art-b is told in the task.
+- The Act II shops: Quellan's trader, Ansedra's purveyor and Hollowmere's chandler (shops.json rows that no trigger
+  opened).
+- Tests: the ch10, ch11, ch12, ch13 and ch14_16 thread tests, qa_threads, objective, set_piece and encounter are
+  green, along with validate_data, chapter_flow_check, taskboard --check, and the tool tests for zone-map POIs, POI
+  views, dialogue clarity, creatures, Act II creature SFX, encounter pacing and music markers. No render (no shot
+  can change: the triggers are invisible, the flows are data).
+- LEAD-ASK: Ch9 → Ch10. Ch9's last beat opens the end card, and `first_playable.json` `end_card.next_location` is
+  empty by ADR 0042's note ("the end of Act I ... accept returns to the title"). Should it now go on to
+  `ch10/ossa_fen` FenEdge (the card's title says "The end of Act I")? It's one line in that file, and I haven't
+  made it because it moves the shipping boundary.
+- LEAD-ASK: who stages Act II Ch13–16 (M4-A2P-071–075)? slice-polish staged Ch10–12 as cinematics (M4-CIN-1304).
+  The played Ch13–16 scenes name about 50 marks and 110 shots that no stage has. I'll leave them to slice-polish
+  unless you route them to me.
+- LEAD-ASK: the Act II break. `ch16_swept_away` sets `ch16_act_two_complete` and then nothing happens: B11's vigil
+  at `prologue/iskarra_dusk` and B12's act card ("Act III: The Unbinding.", M3-UI-210) aren't wired. Who owns the
+  act break, and where does Act III begin (Hollowmere `ch17/hollowmere`)? I'll wire it as part of Act III unless
+  you say otherwise.
+- The four Act II save shrines (Quellan, Ansedra, Hollowmere, the Pale Rim) are wired through ShrineServices, with
+  `locations.json` shrines rows and their texts.
+- M4-A2P-104 part 1: each pole stroke in `ch14_first_ripple` rings the lagoon from the barge's stern (Ch13Zone
+  listens to `cue_played`), so M4-A2P-104 is now in review.
+- Request to audio (no row of mine): `ch16_storm_wakes` has no `music.json` encounter row. The sheet wants
+  `abiding_guard` stem 2.
+- MERGE-READY @ f46ec395b
+
+### The Lead's 23:05 FAST-TRACK (10-30): Act I, before the Act II and III flows
+1. **Touch beats dropped while a scene plays: fixed** (`game/flow/zone_story.gd`). A touch box fires once, on entry,
+   and ZoneStory dropped any beat that arrived while a run played (`_free()` false). A `once` box had also already
+   counted the use, so its beat was gone for good: Coilspire's `door`, entered as `keeping_flame` (the beacon scene
+   at the hearth beside it) played. The story now keeps such touches (beats and scenes; barks still drop) in
+   `pending_touches` and plays them in order when the run ends free; a hand-off drops them. Test:
+   `test_zone_story.gd::test_a_touch_entered_during_a_scene_plays_after_it`.
+2. **Ch9's landing marker: moved.** The `landing` trigger, and the map and objective marker that follow it
+   (`zone_maps` `trigger:landing`), stood 1.5 m out on the landing slab, past the strand's edge, where the kit's
+   landing piece starts. They now stand on the strand at the landing's foot, at (−27.37, 0.6, 27.17), 2.7 m back
+   along its axis. The walk test still reaches it at strand height (test_ch09_corrow_walkable).
+3. **Ch8's interior plays through headless:** `test_ch08_thread` plays Coilspire from the path fight through the
+   hearth, the door, all four flue tiers (the cough, the seized key, the side niche), both moth fights and their
+   reloads, to Virel's binding and the gallery. ch08 25/0, ch09 13/0, zone_story 20/0, zone_map 22/0,
+   test_zone_map_pois OK, qa_threads 1/0 (on the merged head, and re-run on this head).
+
+- MERGE-READY @ f46ec395b
+
+### After the FAST-TRACK (10-31): M4-A2P-019, 106, 018, 017; Act III Ch17 (ADR 0207)
+- **M4-A2P-019 (review):** Act II loadouts per chapter in `sim_policies.json` (`ch10_fen` … `ch16_rim`), and every
+  Act II suite runs on its own. At 500 seeds all are in band except the Wakefin masher's p90 (91 against 80), which
+  comes from the sim's Vowbound call rule re-calling Ilun. That's filed as **M4-A2P-1202** (it would move Act I's
+  numbers too).
+- **M4-A2P-106 (review):** the Drowned Choir laid out to the kit's amphitheatre (dais, channel and bridges, six
+  tiers, the south gap, the north aisle ramp; Kesh and Sefir on the tiers; the singers at r 44). Walked, and the
+  POI views were viewed.
+- **M4-A2P-018 (review):** the Act II greybox generators moved to `tools/act2/` (with an ownership row).
+- **M4-A2P-017 (doing):** met in every zone through env-art-b's dressing (`hide_all`), except the Choir, which
+  waits on its dressing.
+- **Staging is slice-polish's:** M4-A2P-1011 and 1013 are addressed to them, so I've withdrawn the 071–075 LEAD-ASK.
+- **Act III, Ch17 (M5-A3P-1001, the flow half):**
+  - Hollowmere is now Ch15's and Ch17's zone: Ch17Zone reads `chapters/ch17.json` after Act II, and
+    `chapter_flow_check` accepts a shared zone's beats from either chapter file.
+  - The flow plays B01–B12 in order, with the gangway, the berth walk and the hull's floors on env-art-b's
+    coordinates, and the held inputs (`ch17_field.json`). Ch16 hands on to it.
+  - Five barks and two hull scenes are nodes inside other files: **M5-A3P-1200** asks story to split them.
+  - The Act III staging warnings are known under M5-A3P-1001 in `qa_known.json`.
+  - Tests: ch17 2/0, ch14_16 5/0 (the dry-dock walk included), the chapter-flow tools test, qa_threads 1/0.
+- MERGE-READY @ 4a6418b52
+
+### Act III Ch18 (M5-A3P-1004, the flow half; 10-31)
+- The new `ch18/kite` zone (`tools/act3/ch18_greybox.py`, Ch18Zone with the lifts' held input, a location row).
+- `chapters/ch18.json`: the maiden flight on boarding (Hollowmere's `aboard` hands on), the chart table opens the
+  world, and its courses stand round the table until Design's Kite world map exists. Reedhollow's gate and
+  farewell-tide (Ch10Zone holds `turn_back`), then the night aboard and Iskarra (`ch18_complete`).
+- **The revisits**, each once, as Act III rows in the towns' own chapter files:
+  - Pemakar, Tamsule and Corrow play on landing and go back aboard (env-art-b's generated layouts get no trigger);
+  - Quellan, Reedhollow and Hollowmere play on landing and offer `a3_to_kite`;
+  - Ansedra plays from the air.
+- **Requests filed:**
+  - M5-A3P-1201 to slice-polish: Oruvel's and Haluna's revisits (Ch1–Ch3 zones).
+  - M5-A3P-1200 to story: split the node files (the heirlooms are nodes too).
+- Tests: ch18 1/0, ch17 2/0, ch05 13/0, ch07 18/0, ch08 25/0, ch10 3/0, ch12 5/0, zone_map 22/0; the tools'
+  zone-map, locations and chapter-flow tests pass; qa_threads 1/0. `ch18_world_open` is listed as known-unraised
+  for the older threads.
+- MERGE-READY @ b9ba89ca7
+
+### Act III Ch19 (M5-A3P-1007 flow, M5-A3P-1009 the Wardens; 10-31)
+- **M5-A3P-1009 (review):** `ch19_abiding_wardens`, Warden Hesper Oan and her scribe Ilsabet Rue. The watch-roll
+  as the engine can play it: Ilsabet is the roll and only Ysolde breaks it; Hesper answers blows while it stands. On
+  a new `ch19_iskarra` loadout (Ch16's plus Kesh), 500 seeds: naive 0.0%, role_answer 69.8%, smart 100% (report
+  only, ease floor 30: 40.7), p90 44. Their bodies are M5-A3P-1202 (character). The fight barks need a battle-bark
+  hook (battle-presentation).
+- **The spire's regulars:** `wick_crawler`, `chain_lamp`, `spire_moth`, `spire_conduit_crawler`, with three
+  encounters, all in band at 500 seeds. The report-only naive_swell p90 is the M4-A2P-1202 call-rule artifact.
+- **M5-A3P-1007 (the flow half, doing):** the new `ch19/iskarra_spire` zone (`tools/act3/ch19_greybox.py`: the
+  plaza, the gate, four tiers by switchback ramps over one ground, the antechamber, the crown), Ch19Zone's held
+  input, and `chapters/ch19.json` I01–I10 in order. The Kite's Iskarra course hands on to it. I01–I04 play at this
+  zone's plaza, because the scripts' `prologue` location is slice-polish's Prologue scene (noted in the task).
+- Tests: ch19 2/0 (the thread and the walk to the crown), ch18 1/0, capsule 3/0, the tools' zone-map, locations
+  and chapter-flow tests, qa_threads 1/0.
+- MERGE-READY @ e4445dc25
+
 ## Exact next step
+**2026-10-30 ~23:50:** the FAST-TRACK and the Act II flows (M4-A2P-1003, 1012, 104, 105) are done and pushed.
+Next, in order:
+1. M4-A2P-019, Act II loadouts: a loadout per chapter (the Vowbound bound by then: Nhoa from Ch12, Hesk from Ch13,
+   Ethren from Ch14; Kerrid's and Liss's kit; Act I's best gear, since no Act II gear exists), then every Act II
+   suite re-run on it (`sim.py --suite X --suite Y ...`, one flag per suite). Pell has no kit (M3-C09-07), and the
+   Lattice needs a sim hook, so both stay out (to be noted in the task).
+2. M4-A2P-106 (the Choir relayout to the kit), 018 (move the Act II generators to tools/act2), 017 (the kit swaps).
+3. Act III next: Ch18 (M5-A3P-1004: the new `ch18/kite` zone, the world opening, the revisits), then
+   Ch19–21 flows and the encounters (M5-A3P-1009, 1013, 1017).
+4. Then Act III (ADR 0207): M5-A3P-1001/1004/1007/1011/1015 (staging and flow) and 1009/1013/1017 (encounters).
+
+### Earlier exact next step (superseded 10-30 ~23:50)
 **BACKLOG EMPTY (2026-10-30 ~02:00):** the flow and pacing pass is done (`docs/kb/qa/act1_flow_pacing_pass.md`) and the
 Act II chapter drafts are written (`docs/kb/plan/act2/chapters/`, pre-gate). Waiting on:
 - **M3-CIN-1233** (slice-polish flips the M2 switch): when they log MERGE-READY, merge their head into a scratch

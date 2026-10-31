@@ -1,0 +1,12 @@
+// M5-A3P-1003. Ch18 §4 Hollowmere (offered). The dock-master working again; if ch17_first_berth he's
+// teaching windmills (the epilogue's seed for Liss).
+title: ch18_revisit_hollowmere
+location: ch17/hollowmere
+---
+<<if $ch17_first_berth>>
+    Aldous_varrow as "Dock-master" [neutral]: Children want windmills. I'm teaching them. Badly. #line:ch18_hollowmere_001
+    Liss [soft_smile]: You never did anything badly. #line:ch18_hollowmere_002
+<<else>>
+    Hull_captain as "Ship's captain" [neutral]: Dock-master's back at the berths. Doesn't say much. Works, though. #line:ch18_hollowmere_003
+<<endif>>
+===

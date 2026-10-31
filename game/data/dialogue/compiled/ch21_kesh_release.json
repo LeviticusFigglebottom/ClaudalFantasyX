@@ -1,0 +1,21 @@
+{
+ "format": 1,
+ "scene": "ch21_kesh_release",
+ "source": "game/data/dialogue/ch21/ch21_kesh_release.dlg",
+ "start": "ch21_kesh_release",
+ "nodes": {
+  "ch21_kesh_release": {
+   "headers": {"location": "ch21/heart"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "camera", "args": ["HT09"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "music", "args": ["release_sting"], "kwargs": {"fade": 0.0}, "src": 9},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "kesh", "count": 60, "motion": "spiral_up", "rate": "slow"}, "src": 10},
+    {"op": "cue", "cue": "wait", "args": [8.0], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "lamp_key", "count": 1, "motion": "spiral_up", "rate": "slow"}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 14}
+   ]
+  }
+ }
+}

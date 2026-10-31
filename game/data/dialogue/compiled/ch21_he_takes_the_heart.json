@@ -1,0 +1,28 @@
+{
+ "format": 1,
+ "scene": "ch21_he_takes_the_heart",
+ "source": "game/data/dialogue/ch21/ch21_he_takes_the_heart.dlg",
+ "start": "ch21_he_takes_the_heart",
+ "nodes": {
+  "ch21_he_takes_the_heart": {
+   "headers": {"location": "ch21/heart"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "camera", "args": ["HT10"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "anim", "args": ["sefir", "reach_past", "dace"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "sefir", "count": 200, "drift": "down_seaward", "rate": "fast"}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 13},
+    {"op": "line", "id": "ch21_heart_001", "key": "DLG_CH21_HEART_001", "speaker": "sefir", "emotion": "neutral", "voice": "", "src": 14},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "camera", "args": ["HT11"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "anim", "args": ["dace", "hold", "imra_light"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "camera", "args": ["HT12"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "music", "args": ["sefir_heart"], "kwargs": {"fade": 0.0}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 22},
+    {"op": "event", "name": "start_battle", "args": ["ch21_sefir_heart"], "src": 23}
+   ]
+  }
+ }
+}

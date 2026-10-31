@@ -22,8 +22,8 @@ const MAPS := [
 
 ## Puts the silhouette in `glow` on every mesh under `actor` (each surface its own material, carrying the maps the
 ## surface wore, so the shape keeps its folds and seams under the glow); returns how many surfaces it changed. The
-## materials belong to the meshes alone (no shared cache), so they free with the actor (the PC's pass 3: a cached
-## material outlived the figure and freeing it logged "material is null").
+## materials belong to the meshes and their FieldNpc (no shared cache), so they free with the actor (the PC's pass 3:
+## a cached material outlived the figure and freeing it logged "material is null").
 static func apply(actor: Node, glow: Color) -> int:
 	if actor == null:
 		return 0
@@ -56,14 +56,18 @@ static func material_for(glow: Color, worn: Material = null) -> ShaderMaterial:
 	return mat
 
 
-## Takes the silhouette off again (the surfaces wear their own materials): for a villager leaving the tree, so no
-## override outlives the meshes it was set on.
-static func clear(actor: Node) -> void:
+## Every surface override material under `actor` (its tints and its silhouette), for its FieldNpc to hold until the
+## meshes are gone (PC row 85).
+static func overrides_of(actor: Node) -> Array[Material]:
+	var out: Array[Material] = []
 	if actor == null:
-		return
+		return out
 	for node: Node in actor.find_children("*", "MeshInstance3D", true, false):
 		var mi := node as MeshInstance3D
 		if mi.mesh == null:
 			continue
 		for i in mi.mesh.get_surface_count():
-			mi.set_surface_override_material(i, null)
+			var m := mi.get_surface_override_material(i)
+			if m != null:
+				out.append(m)
+	return out

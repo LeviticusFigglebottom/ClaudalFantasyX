@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -53,7 +54,7 @@ JETTY_SPAN = (-1.8, -15.0)  # from the dock's north edge to the house platform's
 HOUSE_YAW = 180.0  # the deckhouse on the platform's north half, its door to the jetty
 HOMES = ((4.0, -33.0, 15.0), (20.0, -35.0, -10.0), (36.0, -33.0, 5.0), (52.0, -31.0, 20.0), (60.0, -18.0, 80.0),
          (12.0, -47.0, 0.0), (30.0, -49.0, 30.0), (48.0, -46.0, -20.0), (68.0, -34.0, 10.0), (-8.0, -20.0, 70.0))
-WINDMILLS = ((-12.0, -40.0, 30.0), (76.0, -10.0, -60.0), (70.0, -55.0, 10.0), (22.0, -62.0, 180.0), (55.0, 15.0, 200.0))
+WINDMILLS = ((-12.0, -40.0, 30.0), (66.0, -14.0, -60.0), (70.0, -55.0, 10.0), (22.0, -62.0, 180.0), (55.0, 15.0, 200.0))
 TIDE_WHEELS = ((4.0, -27.5, 0.0), (20.0, -27.5, 0.0), (36.0, -27.5, 0.0))
 SIGNAL_LAMPS = ((7.6, -15.6), (23.6, -15.6), (48.4, -15.6), (-1.0, -1.6))
 SIGNAL_COLOR = "#4FB3B0"
@@ -62,16 +63,44 @@ OIL_LAMPS = ((12.0, -17.4, 0.0), (28.0, -17.4, 0.0), (44.0, -17.4, 0.0), (16.0, 
 OIL_COLOR = "#FFB16E"
 OIL_ENERGY = 0.9
 OIL_RANGE_M = 5.0
+# The ambient-life pass (10-30): the flotilla is where life comes back after Ansedra's stillness. Its oil flames stir
+# (the signal lamps' glass steadies theirs), and the tide's litter rides the swell off the dock: planks and weed.
+OIL_FLICKER = 0.3
+SIGNAL_FLICKER = 0.12
+DEBRIS_AT = ((14.0, 12.5, 30.0), (46.0, 13.0, 205.0), (57.0, 7.5, 110.0), (2.0, 9.0, 290.0))
+DEBRIS_DRIFT = {"bob_m": 0.05, "period_s": 6.0, "tilt_deg": 2.5, "wander_m": 1.0, "wander_s": 80.0}
+DEBRIS_FLOAT_Y = 0.05  # tide_debris's planks sit 0.2 m under its origin
 LAMP_FLAME = (0.0, 1.55, 0.45)  # hollowmere.LAMP_FLAME
 SUPPER_AT = (42.0, 0.95, 0.0)  # by the father's place, against the south rail: the walk from the supper mark to the
 #   pyre-raft runs along the north half (z -0.8 to 0), so the table's box (stools at +-0.87 m) stays 0.4 m clear of a body
 DACE_AT = (78.0, -24.0, 30.0)  # seen at the zone's edge in Ch15 (Ch17's heart)
+# Ch17's dry-dock row (M5-A3P-1500): three empty berths beside Dace's, along his hull's beam toward the dock's east end,
+# BERTH_PITCH_M apart, the first (Tobin's post, B07) nearest the dock and Dace's "the last one" (B03).
+BERTH_PITCH_M = 8.5
+# Aldous Varrow's house (fathers_door at HousePlatform1's door): the furnished deckhouse, his table lit by a hanging oil
+# lamp (Ch17 B07, B11). TABLE_AT is hollowmere.py's, in the piece's frame; LAMP_OVER_TABLE_M its flame over the deck.
+DOCKMASTER_BLOCK = "HousePlatform1"
+DOCKMASTER_PIECE = "hm_dockmaster_house"
+DM_TABLE_AT = (0.45, 2.05)
+DM_DECK_Y = 0.9
+LAMP_OVER_TABLE_M = 1.6
+BERTHS = ("hm_drydock_berth", "hm_drydock_berth", "hm_drydock_berth_first")
 FLOTILLA_AT = (25.0, -5.0)
 
 WATER_NAME = "hollowmere_dawn_water_material.tres"
 WATER = {"col_deep": "Color(0.1098, 0.2275, 0.2902, 1)", "col_scatter_shallow": "Color(0.3529, 0.5098, 0.5294, 1)",
          "col_sss": "Color(0.3922, 0.5490, 0.5686, 1)", "scatter_energy": "0.1", "caustic_strength": "0.0"}
 ENV_NAME = "hollowmere_dawn_environment.tres"
+# Ch17's night (M5-A3P-1500; act3_ch17 B08 "the choice" and B09 on the hull's deck): the open sea's Ch15 night sky and
+# its unlamped LUT, with Hollowmere's own fog and a touch more ambient, so the flotilla reads by its oil flames and the
+# signal lamps' held cyan. B06's dusk is env-art's ch17 grade (assets/environments/zones/ch17). The Act III chapters'
+# states rows load either by environment_res (M5-A3P-1001).
+NIGHT_ENV_NAME = "hollowmere_night_environment.tres"
+NIGHT_SRC = ROOT / "game" / "levels" / "ch15" / "open_sea" / "open_sea_night_environment.tres"
+NIGHT_SET = {"resource_name": '"hollowmere_ch17_night"', "ambient_light_energy": "0.22", "tonemap_exposure": "1.3",
+             "fog_density": "0.006", "fog_light_energy": "0.25"}
+CABIN_LAMP = (-2.75, 3.4, -0.35)  # dace_hull_frame's cabin lamp over the desk, in the hull's frame (x, y, z)
+HATCH_SPILL = (-3.0, 3.65, 0.0)  # its light spilling up through the open hatch onto the deck (B06, B08 by night)
 LUT_NAME = "lut_ch15_hollowmere_dawn.png"
 LUT_DAWN = {  # colour script ch15 at Hollowmere: grey-rose dawn, the oil lamps' warmth kept, the rest cool and soft
     "saturation": 0.85, "s_curve": 0.35, "toe_hex": "#1C3A4A", "toe_strength": 0.35, "toe_end": 0.34,
@@ -144,7 +173,8 @@ def _row(piece: str, x: float, z: float, y: float = 0.0, yaw: float = 0.0, **ext
 def dressing() -> dict:
     b = blocks()
     pieces = dock_rows(b) + jetty_rows(b)
-    pieces += [_row("hm_lashed_hulls", v["pos"][0], v["pos"][2], WATER_Y, HOUSE_YAW)
+    pieces += [_row(DOCKMASTER_PIECE if k == DOCKMASTER_BLOCK else "hm_lashed_hulls", v["pos"][0], v["pos"][2], WATER_Y,
+                    HOUSE_YAW)
                for k, v in sorted(b.items()) if k.startswith("HousePlatform") and k[13:].isdigit()]
     pieces += [_row("hm_lashed_hulls", x, z, WATER_Y, yaw) for x, z, yaw in HOMES]
     pieces += [_row("hm_windmill", x, z, WATER_Y, yaw) for x, z, yaw in WINDMILLS]
@@ -155,14 +185,34 @@ def dressing() -> dict:
     pieces.append(_row("pyre_raft", b["PyreRaft"]["pos"][0], b["PyreRaft"]["pos"][2], WATER_Y))
     pieces.append(_row("hm_ship", b["Ship"]["pos"][0], b["Ship"]["pos"][2], WATER_Y))
     pieces.append(_row("dace_hull_frame", DACE_AT[0], DACE_AT[1], WATER_Y, DACE_AT[2]))
+    beam = (math.sin(math.radians(DACE_AT[2])), math.cos(math.radians(DACE_AT[2])))  # the hull's +Z in the zone
+    for k, piece in enumerate(BERTHS, 1):
+        pieces.append(_row(piece, r3(DACE_AT[0] + beam[0] * BERTH_PITCH_M * k), r3(DACE_AT[1] + beam[1] * BERTH_PITCH_M * k),
+                           WATER_Y, DACE_AT[2]))
     pieces.append(_row("hm_far_flotilla", FLOTILLA_AT[0], FLOTILLA_AT[1], WATER_Y))
     # The dock's mooring piles, where the greybox stood them (DockPile*: the gulls' perches, tops y 2.7; the wildlife
     # audit found the perches over open water with the greybox hidden): a stilt post from the bed, scaled to the top.
     pieces += [_row("timber_stilt_post", v["pos"][0], v["pos"][2], PILE_BED_Y, 0.0, scale=r3(PILE_SCALE))
                for k, v in sorted(b.items()) if k.startswith("DockPile")]
-    lights = [{"at": _flame(x, z, yaw), "energy": OIL_ENERGY, "range": OIL_RANGE_M} for x, z, yaw in OIL_LAMPS]
-    lights.append({"at": [SUPPER_AT[0] + 0.15, 0.75, SUPPER_AT[1] - 0.2], "energy": 0.6, "range": 3.5})
-    lights += [{"at": [x + 0.55, 3.0, z], "energy": 0.8, "range": 6.0, "color": SIGNAL_COLOR} for x, z in SIGNAL_LAMPS]
+    pieces += [_row("tide_debris", x, z, WATER_Y + DEBRIS_FLOAT_Y, yaw, drift=dict(DEBRIS_DRIFT))
+               for x, z, yaw in DEBRIS_AT]
+    lights = [{"at": _flame(x, z, yaw), "energy": OIL_ENERGY, "range": OIL_RANGE_M, "flicker": OIL_FLICKER}
+              for x, z, yaw in OIL_LAMPS]
+    hp = b[DOCKMASTER_BLOCK]["pos"]
+    yaw = math.radians(HOUSE_YAW)
+    tx = hp[0] + DM_TABLE_AT[0] * math.cos(yaw) + DM_TABLE_AT[1] * math.sin(yaw)
+    tz = hp[2] - DM_TABLE_AT[0] * math.sin(yaw) + DM_TABLE_AT[1] * math.cos(yaw)
+    lights.append({"at": [r3(tx), r3(WATER_Y + DM_DECK_Y + LAMP_OVER_TABLE_M), r3(tz)], "energy": 0.7, "range": 4.0,
+                   "flicker": OIL_FLICKER})
+    dyaw = math.radians(DACE_AT[2])
+    for (cx, cy, cz), energy, rng_m in ((CABIN_LAMP, 0.6, 3.5), (HATCH_SPILL, 0.35, 5.0)):
+        lights.append({"at": [r3(DACE_AT[0] + cx * math.cos(dyaw) + cz * math.sin(dyaw)), r3(WATER_Y + cy),
+                              r3(DACE_AT[1] - cx * math.sin(dyaw) + cz * math.cos(dyaw))],
+                       "energy": energy, "range": rng_m, "flicker": OIL_FLICKER})
+    lights.append({"at": [SUPPER_AT[0] + 0.15, 0.75, SUPPER_AT[1] - 0.2], "energy": 0.6, "range": 3.5,
+                   "flicker": OIL_FLICKER})
+    lights += [{"at": [x + 0.55, 3.0, z], "energy": 0.8, "range": 6.0, "color": SIGNAL_COLOR, "flicker": SIGNAL_FLICKER}
+               for x, z in SIGNAL_LAMPS]
     return {
         "schema": "ZoneKitDressing (game/levels/act1/zone_kit_dressing.gd; ADR 0200)",
         "_about": "Generated by tools/act2/ch15_hollowmere_dressing.py from env-art's Haluna kit (hollowmere.py and its "
@@ -199,6 +249,17 @@ def water() -> str:
         assert len(idx) == 1, key
         lines[idx[0]] = f"shader_parameter/{key} = {value}"
     return "\n".join(lines) + "\n"
+
+
+def night_environment() -> str:
+    """The open sea's night grade with NIGHT_SET, for Ch17's night on the flotilla."""
+    import re  # noqa: PLC0415
+
+    text = NIGHT_SRC.read_text(encoding="utf-8")
+    for key, value in NIGHT_SET.items():
+        text, n = re.subn(rf"^{re.escape(key)} = .*$", f"{key} = {value}", text, flags=re.M)
+        assert n == 1, key
+    return text
 
 
 def environment() -> str:
@@ -297,6 +358,7 @@ def main() -> None:
     (ZONE / WATER_NAME).write_text(water(), encoding="utf-8")
     write_lut()
     (ZONE / ENV_NAME).write_text(environment(), encoding="utf-8")
+    (ZONE / NIGHT_ENV_NAME).write_text(night_environment(), encoding="utf-8")
     wire_scene()
 
 

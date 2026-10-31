@@ -53,6 +53,7 @@ DLG_CH14_DECL_002	ch14_the_vows		'Outside the Level' is the Order's formal phras
 DLG_CH14_TOBIN_FALL_002	ch14_the_vows		Said to Merel, gently, almost a joke between them: his last words.	...Your knots are terrible.
 DLG_CH14_TOBIN_FALL_003	ch14_the_vows		A wright's repair words ('seat it', 'she'll hold'), said to his wound as if it were a machine.	Hold it. Hold, hold, she'll hold, seat it, hold—
 DLG_CH15_BARK_PUMP_001	ch15_bark_wright_pump		The pump is powered by the bound light of the speaker's dead grandmother; said with pride and affection.	She's a grandmother of mine. Pumps the bilge every night. Best worker on the hull.
+DLG_CH15_DECK_LISS_006	ch15_deck_liss		Tobin's vow to Merel at the wedding (Ch14), said back to herself by his sister.	I'll learn your quiet.
 DLG_CH15_SHIP_001	ch15_the_ship		Deliberately ambiguous: the lamp, the ship, or herself.	Bring it back.
 DLG_CH15_CONF_011	ch15_the_shoal		The first time Kerrid uses Rhen's name in the game. It should land hard.	She heard a man drowning under my stair and went down for him. A diver she'd never met. Your father, Rhen.
 DLG_CH15_CONF_018	ch15_the_shoal		'Stilled': the Order's rite on the dead who stay (the Stilling). It is mentioned, never shown.	I'd stood on the wall twice while they Stilled one of us. I was gone before light.
@@ -64,5 +65,31 @@ DLG_CH16_MEMORY_001	ch16_the_choir		Kesh, the first Cantor, speaking from inside
 DLG_CH16_MEMORY_003	ch16_the_choir		Every Cantor since her has been made the storm's heart in turn.	Every one of them since. Every one.
 DLG_CH16_SEFIR_016	ch16_the_choir		'Her': Asha's mother, whom he got up the Fisher Stair. Said quietly, with no threat of violence.	I carried her up so you could do this.
 DLG_CH16_SEFIR_017	ch16_the_choir		Sefir acknowledges what Kerrid is, using a rank Kerrid never held in the Order (he was a fishers' watch captain). Kerrid does not answer.	Captain.
+DLG_CH17_PULLED_003	ch17_pulled_from_the_sea		He gives back the cracked lamp holding Tobin's light. Liss said 'Keep it dry.' when she left it with him (Ch16).	Kept it dry.
+DLG_CH17_LEDGER_PAGE_001	ch17_the_ledger		Dace Sallow's ledger, eleven years ago, in a plain working hand. Shown as a page in the document reader; never read aloud.	Corrow. The stair. A Cantor came down it for me. I learned her name halfway up: Imra.
+DLG_CH17_LEDGER_PAGE_016	ch17_the_ledger		The one message that reached Rhen as a boy, left at Kell's stall (rhen_sallow.md). Dace's own judgement on it.	Sent Rhen word through the traders' post. Helping a friend on a long trip. All I could put my name to.
+DLG_CH17_LEDGER_PAGE_009	ch17_the_ledger		'Kell. Of course.': relief and recognition, not surprise. Kell is the Oruvel stallholder who raised Rhen.	A season after Corrow. A Hollowmere trader says the chandler has the boy. Kell. Of course.
+DLG_CH17_LEDGER_PAGE_015	ch17_the_ledger		The LAST entry. It breaks off mid-sentence, with no full stop: keep it unfinished in translation.	Rhen. If I bring him here he's a wright's son for life. Oruvel thinks he's a diver's boy. Let him be one. After the storm
+DLG_CH18_GATE_006	ch18_through_the_gate		He says his own name once, as it is given back. Plain, not triumphant.	Pell.
+DLG_CH19_ROLL_001	ch19_the_signatures		One line of a duty roll, repeated for four hundred years. Shown in the document reader.	Duty roll, the anchor-engine, Iskarra: Watch kept. H. Oan. Entered, I. Rue.
+DLG_CH19_VIGIL_001	ch19_the_vigil		Must stay word for word the same as prologue_dead_city_001, in every language: the same line, heard again.	Everyone I'm going to tell you about is still here tonight. Remember that, later.
+DLG_CH19_WORDS_001	ch19_the_words	yes	Lamptongue, the Eighth Verse as cut in the stones (lamptongue.md verse 8): keep exactly as written. Spoken flat, not sung.	Ish oan, ish oan. Vey hal, ennu tash. Oan re, oan re... tash.
+DLG_CH19_WORDS_002	ch19_the_words	yes	Lamptongue: keep exactly as written. Asha repeats only the first line and the last word, spoken.	Ish oan, ish oan... tash.
+DLG_CH20_FIGHT_002	ch20_bark_vowbound_fights		vowbound.md, verbatim: the old smith to Kerrid, both of them dead. Comfort, not dread.	It doesn't hurt, son. It's like setting the tools down.
+DLG_CH20_FIGHT_006	ch20_bark_vowbound_fights	yes	Lamptongue: keep exactly as written. Never translated on screen; the help line carries the meaning.	Mir, mir. Tash.
+DLG_CH20_ETHREN_001	ch20_ethren_release		Ethren speaks as Corran Ysel, Ysolde's husband: patient, funny, gentle.	I heard you. Every visit. Every one.
+DLG_CH20_HESK_001	ch20_hesk_release		Hesk speaks as Ama Quillo, an Ullari keth-reader, plainly devout.	Did anyone read my cords?
+DLG_CH20_ILUN_001	ch20_ilun_release		Ilun speaks in the voice of Teyo Marrin, a sixteen-year-old boy. Pila is the little sister he sang in place of.	Did Pila have a good life?
+DLG_CH20_KAHRE_001	ch20_kahre		vowbound.md, verbatim. Kahre speaks as Daro Pemakan, an old smith.	Finally. Hit harder, I'm old.
+DLG_CH20_NHOA_002	ch20_nhoa_release		Nhoa speaks as Ressa, Pell's clutch-sister, Kirru, seventy years gone: glad and sad at once.	You got old.
+DLG_CH20_VIREL_001	ch20_virel		Virel speaks as Wenna Corr, a young Corrow woman of hidden Saltwright blood, giddy and proud.	A wright! A real one, with the marks and everything!
+DLG_CH21_LETTING_001	ch21_the_letting	yes	Lamptongue, the Eighth Verse (lamptongue.md verse 8): keep exactly as written. Sung.	Ish oan, ish oan,
+DLG_CH21_LETTING_002	ch21_the_letting	yes	Lamptongue: keep exactly as written.	vey hal, ennu tash,
+DLG_CH21_LETTING_003	ch21_the_letting	yes	Lamptongue: keep exactly as written.	oan re, oan re...
+DLG_CH21_LETTING_004	ch21_the_letting	yes	Lamptongue: keep exactly as written. The last word of the game's song: 'let go'.	...tash.
+DLG_ENDING_DACE_001	ending_dace		Dace Sallow's first spoken word in the game. Plain, a diver's voice.	Rhen.
+DLG_ENDING_DACE_007	ending_dace		The payoff of Rhen's arc: this time he says it back. Plain, aloud, no softening.	Goodbye, Dad.
+DLG_ENDING_KERRID_001	ending_kerrid		The Corrow stair-watch's all-clear: a captain's report, not a farewell.	Stair's clear.
+DLG_ENDING_SEA_002	ending_the_dark_sea		Answers the Prologue's 'Remember that, later.' Quiet, not a flourish.	Everyone I told you about is gone. I remembered.
 DLG_PROLOGUE_DEAD_CITY_000	prologue_dead_city		Title card, centred on black, before the first frame of the game.	Prologue
 DLG_TEST_DLG_020	test_dialogue_fixture	yes	Invented language: keep as written.	Ennu re.

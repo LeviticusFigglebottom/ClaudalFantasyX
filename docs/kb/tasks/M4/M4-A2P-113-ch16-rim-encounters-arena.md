@@ -2,8 +2,8 @@
 id: M4-A2P-113
 title: "Ch16's rim encounters fight in pale_rim_shallows (name the arena on their rows)"
 role: combat
-status: todo
-owner_session: ""
+status: review
+owner_session: "act1-chapters (claude/act1-chapters)"
 depends_on: []
 reviewer: environment
 milestone: M4
@@ -23,5 +23,7 @@ The encounter rows in `game/data/battle/encounters.json` are combat's, so env-ar
 ## Acceptance criteria
 - [ ] `ch16_rim_skates` and `ch16_rim_crawlers` carry `"arena": "pale_rim_shallows"`.
 - [ ] `tests/integration/test_act1_encounters_resolve.gd` drops the two ids from `ACT2_NO_ARENA_YET` and passes.
+
+- **act1-chapters, 2026-10-30:** done. `ch16_rim_skates` and `ch16_rim_crawlers` fight in `pale_rim_shallows` (2e6649b0b); `ACT2_NO_ARENA_YET` is empty and encounters_resolve is 2/0.
 
 ## Review log

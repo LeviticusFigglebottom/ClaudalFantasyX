@@ -15,7 +15,8 @@ extends Node
 ## CUT_JUMP_M (a cut), every frame, as <out>/cut_<milliseconds>.png, so what a cut shows can be seen
 ## frame by frame. --no-taa turns the viewport's TAA off (to tell temporal history from staging). --log-player adds a
 ## line per written frame with the player's and the camera's positions (where the staging really put them).
-## Nothing is saved (autosaves held).
+## Nothing is saved (autosaves held). The resident shaders are warmed first, as boot does (a cold travel can fail to load
+## a zone whose shaders the resident loads share).
 
 const DEFAULT_EVERY_SEC := 1.0
 const DEFAULT_MAX_SEC := 120.0
@@ -97,6 +98,11 @@ func _reparent_and_go() -> void:
 	get_parent().remove_child(self)
 	tree.root.add_child(self)
 	tree.current_scene = null
+	# As boot does (M2-ARC-03): the resident shaders first. Without them the zone's threaded loads and the resident
+	# loads race on the shared character and water shaders, and a zone (Haluna, Oruvel) fails to load: a black run.
+	var warm := GraphicsRuntime.warm_resident_shaders(tree.root)
+	while warm != null and is_instance_valid(warm) and warm.is_running():
+		await tree.process_frame
 	if not SceneRouter.world_return.go_to(_location, _spawn):
 		push_error("CutsceneFrames: could not travel to %s/%s" % [_location, _spawn])
 		tree.quit(2)

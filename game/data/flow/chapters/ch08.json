@@ -6,6 +6,7 @@
       "party": {"party": ["rhen", "asha", "toma"], "reserve": ["ysolde", "liss"]},
       "overheard_hold_sec": 2.4,
       "arrive": [
+        {"when": {"set": ["ch18_world_open"], "unset": ["ch18_revisit_corrow_seen"]}, "steps": [{"place": "Mole"}, {"play": "ch18_revisit_corrow"}, {"set": "ch18_revisit_corrow_seen"}, {"go": {"location": "ch18/kite", "spawn": "Deck"}}]},
         {"when": {"set": ["ch08_reach_survived"], "unset": ["ch08_wall_fell"]}, "steps": [
           {"place": "WallHead"},
           {"play": "ch08_wall_falls"},

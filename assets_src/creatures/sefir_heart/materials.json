@@ -1,0 +1,24 @@
+{
+  "_doc": "The Undertow-heart (act3/undertow_heart.md, M5-A3P-1855): held (the bands, the tendrils, the foot ring: glimmer_held, steady; the motion is the bands', never a pulse), glass (the salt-glass shards of the column's sleeves, unlit). No glimmer_bound, no glimmer_lift. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "held": {
+      "metallic": 0.0,
+      "roughness_dry": 0.3,
+      "roughness_wet": 0.2,
+      "specular": 0.5,
+      "detail_albedo": 0.05,
+      "detail_bump": 0.15,
+      "emission_color": "#7FC6D9",
+      "emission_energy": 1.8
+    },
+    "glass": {
+      "metallic": 0.0,
+      "roughness_dry": 0.1,
+      "roughness_wet": 0.06,
+      "specular": 0.75,
+      "detail_albedo": 0.04,
+      "detail_bump": 0.2,
+      "emission_energy": 0.0
+    }
+  }
+}

@@ -2062,3 +2062,201 @@ MERGE-READY @ (this commit).
     settles on NemeDoor at 9.8 m.
   - **21 (Haluna beach start), real time:** 0 of 121 samples out of frame; settles on beach_shallows at 7.5 m.
   - Unchanged from big23 and big25: **all six are fixed on the headless checks.** The PC confirms by hand.
+
+### The Act I smoke run on big28 (c646c3a8), a clean worktree with a fresh profile; the Lead 10-30 19:25
+- `act1_gate_check.py --only 2` (each suite alone, its own XDG_DATA_HOME): **PASS, 0 SCRIPT ERRORs.**
+  - qa_threads 1/0: every chapter thread start to end, save and load at every shrine;
+  - qa_encounters 1/0: every Act I fight entered, won and left;
+  - fp_ 30/0: title → New Game → Prologue → the slice → Ch3;
+  - save_ 153/0;
+  - **act1_route 3/0:** New Game → Ch1 → the slice → Ch4 → Ch9's end card (with the credits) → the title, with the
+    taps.
+- **No soft-lock or stuck transition.** The logs have no timeout, no stuck story and no held reveal. The only
+  "softlock" text is Ch14's flag docs (Act II, M4-A2P-118).
+- (A big27 run was stopped part-way when big28 landed; its threads, encounters and fp_ were clean too.)
+
+### The Drownbell's return, traced (the Lead 10-30 19:45: the last piece of the black-screen report)
+- cloud-qa's return_probe on big28 (c646c3a8) + this branch, logging SceneRouter's fade and its reveal holders every
+  100 ms from the victory panel's Return:
+  - **0–0.4 s:** the fade going down.
+  - **0.4–1.9 s:** Haluna loading and instantiating (ui's 95f51b98 prepare_return prewarms it during the panel; the
+    load does come in).
+  - **1.9–5.0 s: Haluna is in the tree, and the reveal is held by creatures' VillagerLayer.** `_build_spread` adds 18
+    rows one a frame at ~120–250 ms a frame headless.
+  - **5.0–5.3 s:** the fade lifting.
+  - The later black in the probe's 10 s total is B11's chapter card and the Ch4 wake: the story's own black, not the
+    return.
+- **Tried:** a per-frame time budget in VillagerLayer (as many rows a frame as fit 40 ms). No change: in a real change
+  each row alone costs ~180 ms (actor instantiate and ready, or a model adopted), so the edit was **reverted**, not
+  shipped.
+- **Filed M3-HER-1168 (creatures):** instantiate the villagers' actors on worker threads under the fade, as
+  SceneRouter does for the zone, or during the zone's threaded instantiate. Target ≤ 0.5 s held after the zone is in.
+  **Every fresh Haluna entry** pays this, not only the Drownbell.
+- **With that done, the Drownbell's black would be ~1.9 s headless** (the fade plus a cross-zone load). Getting under
+  1 s needs Haluna resident or already instantiated before the Return, which is a bigger change.
+  **LEAD-ASK:** worth it for this one return (Haluna is the chapter hub, entered from the shrine once), or is ~1.9 s
+  headless (much less on the PC) acceptable after M3-HER-1168?
+- **B11's opening:** after the router's fade lifts (5.3 s), B11 opens from the field, with no extra black of its own in
+  the trace. Nothing to agree with slice-polish there.
+
+### big29 (46d8a067): the Act I smoke run and the field-camera rows; the Lead 10-30 20:45
+- **The Drownbell (the Lead's answer):** about 1.9 s headless is accepted once M3-HER-1168 (creatures) lands, and
+  Haluna is not to be kept resident. I re-measure when M3-HER-1168 merges.
+- **The Act I smoke run on 46d8a067** (cloud-qa hadn't posted one), in a clean worktree with a fresh profile:
+  **PASS, 0 SCRIPT ERRORs.**
+  - qa_threads 1/0, qa_encounters 1/0, fp_ 30/0, save_ 153/0;
+  - **act1_route 3/0,** New Game → Ch9's end card → the title.
+  - No soft-lock, stuck transition or held reveal in the logs.
+- **The field-camera rows on 46d8a067 + this branch (cbbbc34bf), a fresh import:**
+  - qa_field_camera 2/0, qa_party 3/0, camera_director 56/0. The only KNOWN entries are Tier4 (M3-HER-1157,
+    env-art-b) and B02 (M3-HER-1160, m2-slice).
+  - **24, 47 and 38:** clean in the spawn sweep.
+  - **37 (AfterHarrier):** the still is clean.
+  - **66:** never nearer than 5.1 m; 6 of 111 samples, all in the cross-town blend.
+  - **21:** 0 of 121 samples out of frame.
+  - **All six hold on big29.** They need the PC's hand pass to close.
+MERGE-READY @ (this commit).
+
+### The Drownbell → Haluna return re-measured with M3-HER-1168 (integration 7c4c6de18 + claude/creatures e0b9afb5, a trial tree); the Lead 10-30 21:25
+- `return_probe -- --trace` (headless). The trace is from the victory panel's Return:
+
+  | from Return | before M3-HER-1168 (big28) | now |
+  |---|---|---|
+  | fade down | 0–0.4 s | 0–0.4 s |
+  | Haluna loading and instantiating | 0.4–1.9 s | 0.4–2.8 s (one hidden frame 1.36 → 2.84 s, **~1.5 s**) |
+  | VillagerLayer's held reveal | **1.9–5.0 s (3.1 s)** | **2.8–3.1 s (0.26 s)** |
+  | fade lifting | 5.0–5.3 s | 3.1–3.4 s |
+  | **covered (field clear)** | **5.3 s** | **3.4 s** |
+
+- **M3-HER-1168 does what it says:** the villager hold is 0.26 s. The probe's `black_ms` (9.3 s) still counts B11's
+  chapter card and the Ch4 wake after Haluna; that is story black.
+- **Still over the ~2 s target:** 3.4 s to a clear field. The rest is Haluna's own entry, about 2.4 s headless,
+  including a ~1.5 s hidden frame (Haluna entering the tree), which is over ADR 0029's 1 s hidden-frame budget by
+  itself.
+  **LEAD-ASK:** is Haluna's add-to-tree frame worth a request? It's Haluna's own setup (`haluna_zone.gd`, m2-slice /
+  slice-polish's), and every fresh Haluna entry pays it. Or do we take the 3.4 s headless as is, given the PC is
+  several times faster?
+- The other cases on this tree: tideline 168 ms black, causeway 51, oruvel_scuttlers 78, ch04_ferry 100, ch06 79.
+  Their ready times as before.
+- **The probe is committed** for reuse: `tools/gpu_bench/return_probe.gd` / `.tscn` (cloud-qa's, from
+  qa/cloud-pass6), with a `--trace` option that prints the fade, the current scene and the router's reveal holders
+  every 100 ms.
+- **The Lead (10-30 21:46): Haluna's ~1.5 s add-to-tree frame goes to slice-polish (haluna_zone.gd), target no hidden
+  frame over 1 s.** I re-measure the Drownbell after their fix. **How to measure it (for slice-polish):**
+  - The add frame alone: `godot --headless --path . res://game/core/debug/scene_swap_probe.tscn -- --to=res://game/levels/ch02/haluna/haluna.tscn --resident-loads --warm-resident`
+    prints `SCENE_SWAP_PROBE {…}`. `frame_ms[0]` and `max_frame_ms` are the add-to-tree frame (was 699–853 ms, and
+    ~1.5 s inside the Drownbell's return), `instantiate_ms` is the threaded instantiate, and `over_budget` is a
+    hidden frame over 1 s.
+  - As played: `godot --headless --path . --audio-driver Dummy res://tools/gpu_bench/return_probe.tscn -- --cases=drownbell --trace`.
+    The TRACE lines show the gap between the last `scene=FieldBattle` line and the first `scene=Haluna` line (that
+    frame), then any `reveal=[…]` hold.
+  - Headless (lavapipe) inflates both; judge by the split and against the same probe before your change.
+
+### 2026-10-30: Haluna's add-to-tree frame, split by node (offered to slice-polish, ADR 0207)
+- New: `SceneRouter.scene_instantiated(node)` is emitted after the (threaded) instantiate, before the add. `SceneSwapProbe --ready-profile` stamps every node's `ready` and prints the slowest gaps as `READY_PROFILE` lines. Run it with `godot --headless --path . res://game/core/debug/scene_swap_probe.tscn -- --to=res://game/levels/ch02/haluna/haluna.tscn --resident-loads --ready-profile`.
+- Real router path (worker instantiate, then `prebuild()`, then add; headless, this box): **max hidden frame 718 ms** (under the 1 s bar); instantiate 811 ms on the thread; reveal wait 1.29 s.
+  - Readies total **603 ms** over 4,320 nodes.
+  - Root `.` (HalunaZone `_ready`, its own share) 311 ms.
+  - `CutsceneStage/Actors/asha` 168 ms. That's the cast actor building its model or materials in `_ready`; toma's is 0.3 ms, so asha's is the outlier.
+  - `HalunaMood/WorldEnvironment` 48 ms.
+  - Player 21 ms; SaveShrine BoundGlimmer 16 ms; WildlifeLayer 10 ms; Story 10 ms. Everything else is under 4 ms.
+  - About 115 ms of the frame is `_enter_tree` and notifications outside the readies.
+- For slice-polish:
+  - The biggest levers are what HalunaZone `_ready` still does after `prebuild`, and asha's actor in CutsceneStage (move its build into `prebuild` or defer it until the scene is revealed).
+  - I don't edit `haluna_zone.gd`. When their fix lands, I'll re-measure the Drownbell return with `return_probe -- --cases=drownbell --trace`.
+MERGE-READY @ (this commit).
+
+### 2026-10-30: Act III started (ADR 0207); integration merged in
+- I merged `claude/new-session-mj8c3c` (5cacfd6a0); it merged clean.
+- **Snap guard:** the fixed zones' KNOWN entries are gone from `test_hero_field_snaps`: Lowlight (M4-HER-1166) and Haluna Wake's three (M3-HER-1154). `--filter=hero_field_snaps` 2/0.
+- **M5-A3P-1980**, `tests/integration/test_kite_landings.gd`. Every Kite destination or secret, with the world open, is an enterable location with the named spawn. The party lands grounded within 1 s, no more than 1 m below the marker, out of deep water, and doesn't fall walking out. All 8 pass.
+- **M5-A3P-1981**, `tools/act3/kite_revisit_check.py` plus its tools test. Under the most-advanced flag state (225 settable flags), no destination's `arrive` row replays. 0 problems.
+- Both new tasks are in `docs/kb/tasks/M5/` (I checked the shared block first; none existed). Status review; reviewer qa.
+- Next steps:
+  - Re-measure the Drownbell return when slice-polish's Haluna fix lands.
+  - The Haluna split is offered above (`--ready-profile`).
+  - Act III: the Kite hub zone (`ch18/kite`) needs Ch18's chapter data first. I'll take its field side (party staging, camera volumes) when it lands.
+LEAD-ASK: the M5-A3P block now holds 1980 and 1981 (hero-integration). Is there an Act III chapter-select start (`ch18`) planned? Both guards would gain a runtime landing smoke from it.
+MERGE-READY @ (this commit).
+
+### 2026-10-30: the UiAudio reconnect ERROR (the Lead asked)
+- **It is caused by the resident return, but the fix is on audio's side.** The re-attached zone fires `node_added` again, `AudioDirector` asks `UiAudio.watch` again, and `watch()` connects the same `request` callable twice. The causeway fight-and-return logs 6 "Signal 'used' is already connected" errors.
+- SceneRouter can't stop `node_added` firing. The guard belongs in `UiAudio.watch`: skip a connection that already exists.
+- I tested that patch locally: 0 errors after the return, `--filter=audio` 185/0. I didn't commit it, because `game/audio/**` is audio's.
+- Filed as **M3-HER-1169** (role audio), with the exact diff and the repro command.
+- The Haluna `--ready-profile` split was already offered above. It's in big33 per the Lead's merge note.
+LEAD-ASK: please pass M3-HER-1169 to audio (a 4-line, tested guard in `ui_audio.gd`), or tell me to apply it myself if audio is busy.
+MERGE-READY @ (this commit).
+
+### 2026-10-30: Haluna re-measured after slice-polish's M4-A2P-070 (asha posed a frame after the swap), on big33
+- `--ready-profile`: asha's 168 ms is out of the add frame.
+  - What's left in the readies: root `.` 388 ms, WorldEnvironment 91 ms, Player 41 ms, BoundGlimmer 34 ms.
+  - They total 616 ms, so the readies didn't shrink overall.
+- The reveal wait after the add fell from **1.29 s to 50 ms**.
+- The worst hidden frame is 718–893 ms on a quiet box, under 1 s. Under load it is 1.6 s (the same run's return_probe).
+- `return_probe --cases=drownbell`: field in at 3.39 s, the player can move at 3.73 s. That's the same as before: the instantiate (1.3 s on the thread) and the add frame are still the cost.
+  - `black_ms` 10.2 s also counts the story moving on afterwards: Haluna, then the Ch4 chapter card, then Haluna Wake (Wake's own add frame is 4.2 s; that's a separate zone entry, not the return).
+- **Next lever for slice-polish:** the root's own 388 ms is what HalunaZone `_ready` still does on the add frame.
+  - Haluna Wake's 4.2 s hidden frame also deserves its own `--ready-profile` (`--to=res://game/levels/ch04/haluna_wake/haluna_wake.tscn`).
+MERGE-READY @ (this commit).
+- **Haluna Wake, `--ready-profile` (cold, quiet box):**
+  - The worst hidden frame is 720 ms, under 1 s. The instantiate takes 1.2 s on the thread.
+  - The readies total only 204 ms: Cast 60, Dressing/Water 39, Player 32, BoundGlimmer 19, root 11.
+  - The other ~500 ms of that frame is tree entry (render and physics instance registration for about 4,400 nodes), not `_ready`.
+  - The 4.2 s seen in return_probe came from the chain under load (Haluna, the card, then Wake), not from Wake itself. If a split is wanted there, it means fewer nodes, not lighter readies.
+MERGE-READY @ (this commit).
+
+### 2026-10-31: FAST-TRACK row 74. The Drownbell → Haluna cross-zone return is built while the fight runs (ADR 0209)
+- **What changed:** SceneRouter's new `ReturnPark` (`game/core/return_park.gd`).
+  - Once a fight is in and its return isn't the resident field, it threaded-loads the return scene and calls `ResidentLoads.prepare_return` (ui-menus' victory-panel call, now at fight start).
+  - It waits for those loads, instantiates on a worker (prebuild included, ShaderGlobals held), and parks the root off-tree.
+  - Return swaps the parked root in. A build still in flight is waited on.
+  - Any scripted fight with a cross-zone return gets this automatically.
+- **Numbers (headless, this box):**
+  - Injected clock (causeway fight → Haluna, `scene_swap_probe --cross-return`): entry **3.23 s → 1.18 s**, instantiate **2.05 s → 0**, parked true.
+  - `return_probe --cases=drownbell`, real flow and wall clock: field in **3.39 s → 1.05–1.09 s**, input **3.73 s → 2.0 s**, covered **4.1 s → 2.5 s**. Of that 2.5 s, 0.4 s is the fade-out and 0.7 s the fade-in; about 1.5 s is fully black (Haluna's add frame plus VillagerLayer's hold).
+- **Tests:**
+  - `tests/unit/test_return_park.gd` 3/0.
+  - `test_battle_return` adds a cross-zone case, 2/0.
+  - scene_router 17/0, resident_reattach 1/0, field_battle 12/0, qa_encounters 1/0, battle_request 3/0.
+- **For the PC (re-measure with `battle_return_probe`):**
+  - Your probe forces the win about 2.5 s into the fight (120 + 30 frames). On the PC the build may still be in flight then. It's waited on, but that's shorter than a real fight's head start.
+  - A `--fight-sec=10` style wait before the forced win would measure what a player gets.
+  - Watch for an engine `Parameter "t" is null`: one in five headless parked runs logged it, with no backtrace.
+- **For ui-menus:** the victory-panel `prepare_return` stays. It now finds the loads already in and costs nothing.
+- **For creatures:** VillagerLayer's reveal hold on Haluna is now one of the two things left under the fade (0.26 s headless).
+- **For slice-polish:** Haluna's add frame (root `_ready` 388 ms) is the other.
+- ADR **0209**. If another track took 0209 meanwhile, renumber mine.
+MERGE-READY @ (this commit).
+
+### 2026-10-31: rows 74 and 68 after the PC's re-measure (ReturnPark 8.2–8.6 s → 2.87–3.03 s on GPU; ADR 0209 amendment 1)
+- **The prewarm runs during the fight.**
+  - Once ReturnPark has built Haluna, the router emits `prewarm_requested` for it, so ShaderPrewarm compiles its pipelines during the fight.
+  - The swap-in of a prewarmed parked scene requests no second prewarm. Headless: `prewarm_wait_frames` 14 → 0, `park_prewarmed` true.
+  - **PC, please measure battle frames during the Drownbell fight.** Pipeline compiles are now in the live fight. ShaderPrewarm's slicing still applies.
+- **Row 68: one family of loads at a time.**
+  - With the park on, the router no longer starts the return scene's threaded load beside the battle's own threaded instantiate (the old `_prewarm_return` at detach).
+  - ReturnPark now loads the scene, then the zone's ResidentLoads, then instantiates, with nothing overlapping.
+  - I couldn't reproduce the segfaults headless. This removes the overlaps I could find.
+- **Haluna's root `_ready` went 322 → 21 ms.** The camera director's first occlusion test built two dresser meshes' triangles (346 + 181 ms) on the add frame. `FieldCameraDirector.warm_triangles` now builds them in the instantiate worker task.
+  - Worst hidden frame 718–893 → 548 ms headless; readies 616 → 164–175 ms.
+- **Headless now (injected clock, causeway fight → Haluna):** entry 1.18 → **0.95 s**; parked, instantiate 0.
+- **The `"t" is null` engine error:** 0 in 11 more parked runs (1 in 12 overall). The one hit was the first parked run after unimported script edits, so I can't reproduce it. I'm leaving it as watch-only.
+- **Tests:** return_park 3/0, battle_return 2/0, scene_router 17/0, shader_prewarm 22/0, resident_loads 11/0, field_battle 12/0, qa_encounters 1/0, camera_director 57/0 (plus the warm test), qa_field_camera 2/0, resident_reattach 1/0.
+MERGE-READY @ (this commit).
+
+### 2026-10-31: FAST-TRACK row 85, a shutdown that looped `Parameter "material" is null` (a 59 GB log)
+- **Cause found in my code.** SceneRouter keeps two scenes off the tree: the resident field through a fight (ADR 0205) and the parked cross-zone return (ADR 0209).
+  - The tree's teardown never frees off-tree nodes, so they went only in the engine's last cleanup, after the RenderingServer.
+  - Headless, quitting during a fight logs 50 "Leaked instance dependency: did not call instance_notify_deleted" warnings, plus leaked Canvas RIDs. With a parked Haluna it's 203. A plain zone quit has none of these.
+  - The PC's slice_sweep walk enters fights, so a resident zone is held at its quit.
+- **Fix:** `SceneRouter._exit_tree` frees the parked scene (`return_park.drop()`) and the resident zone (`free()`, not `queue_free`) as the tree quits, while the renderer is still up. Headless, all those late frees are gone: what's left matches a plain zone quit, plus one leaked dummy-shader RID that's headless-only.
+- **Test:** `tests/integration/test_clean_shutdown.gd` runs the new `QuitProbe` (`game/core/debug/quit_probe.tscn`: zone, fight, parked return, quit) in a child bash under `timeout 300`. It asserts:
+  - the exit comes within 20 s of the quit;
+  - no ERROR or WARNING line repeats more than 5 times;
+  - no line mentions a late instance free or `"material" is null`.
+  - Results: passes with the fix, and fails without it (203 repeats). scene_router 17/0, return_park 3/0, battle_return 2/0.
+  - Gotcha: `OS.execute` with output runs one popen command line, so `$(...)` in a `-c` argument gets expanded by the outer shell. The test writes its script to a file.
+- **The storm figure (row 44):** creatures' fix (7dc3ab41) held in pass 5 (0 `material is null`). I can't reproduce the 59 GB loop headless.
+  - **PC, please re-run a slice_sweep `--budget` walk to its quit and check the log size.** If it still loops, the `at:` line names the material owner, and I'll take it to creatures.
+MERGE-READY @ (this commit).

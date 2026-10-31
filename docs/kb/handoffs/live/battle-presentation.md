@@ -4,6 +4,63 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+### 2026-10-31 ~01:30: the Lead's 00:44 (PC pass 7 row 61 still open)
+**MERGE-READY @ 34bb40ca.** The Reach's rest frame looks up its arm.
+- **Why ef997f3d wasn't enough:** the rest frame kept the authored look point, so the lens looked down into the
+  wall's blank face and the arm left the top of the frame. The dark mass still filled the left side.
+- **The fix:** rest_by_enemy rows take `look_up_m`. The Reach: 8 m back, 3.2 m up, fov 56, look 2.4 m up.
+- **SELF-RENDERED battle_arena_seawall_stairhead_surge** (lavapipe): the arm takes about a fifth of the frame, its
+  teal glow against the sky, and the party is clear on the wall-walk. boss 123/0, arena 23/0.
+- **PC-QUEUE:** row 61 re-check on the GPU.
+- **For creatures-b (a request, not blocking):** against the night sky the Reach is dark on dark. A rim or edge glow
+  on its model (bound-light seams, as its teal glow) would make it read at the rest frame's distance. Camera-side
+  this is as far as framing can take it.
+
+### 2026-10-30 ~21:40: the Lead's 20:26 and 21:25 (Act I readability pass, pillar 4, on 46d8a067 merged in at 39486b66)
+**In progress. The first fix is MERGE-READY @ d58eb032.**
+- **The tool:** tools/vfx/readability_sheet (15d1b779, ec07c623). Every Act I fight at 1920x1080 per text scale:
+  - stills of the target pick (the cursor, the rings, the action's cost on the timeline) and of the hit;
+  - checks for HUD labels that overflow, and for floats drawn over the timeline or the party panel.
+  - VFX draw under the HUD's layers, so none can cover the turn order.
+- **Found and fixed:** at 130% text, the current timeline chip's "Acting now" ran past its bottom border (d58eb032,
+  viewed; timeline 30/0).
+- **Checked, not a defect:** the party panel's numbers at 130% sit above their gauges (ui-menus' own fix). My first
+  run had set the scale on a private UiSettings and missed it.
+- **Tideline at 1.0 and 1.3:** turn order, cost, target ring and damage number all read. No overflow, no float over
+  the timeline or the party panel.
+- **Queue after this (the Lead's 21:56, ADR 0207):** the Act I readability pass, then the Act II one, then the
+  paused Act I sweep (Ch6, Ch8). After that: Act III production (battle VFX, boss intros, the finale camera; ids
+  M5-A3P-1900..1949), or an offer to slice-polish's Act II cutscene staging by request task.
+- **MERGE-READY @ 78342f98** (23:50): the readability fixes so far, full `--filter=battle` 864/0 at 3999100f.
+  - **Damage floats behind a HUD panel:** the Drownbell's "134" started under its boss read-out at 1.3. A float
+    now moves out of each shown panel (battle_hud.json damage.avoid: the boss read-out, help line, timeline, party
+    panel, command menu) by the shortest way on screen, clearing it by a float's height and rise. 3999100f,
+    78342f98; test_hud_float_clear.
+    - The menu, timeline and party panel lay their boxes out inside full-screen Controls, so their rects come from
+      their battle_hud.json sections.
+  - **SELF-RENDERED:** the Drownbell's and the Hullgnaw's hits at 1.3 are clear.
+  - **Checked clean at 1.3 (no overflow, no float over a panel; stills viewed):** tideline, Drownbell, both
+    causeway fights, Wickfry, Oil Slug, Shaft Limpet, Scuttlers, Hullgnaw, Underway Shoals.
+  - **Running:** the other 24 Act I fights.
+- **Running:** every Act I fight at 1.3 (the sweep covered 1.0). The Ch6 encounter sweep is paused so this pass has
+  the CPU. Then the same pass for Act II.
+
+### 2026-10-30 ~19:30: the Lead's 18:45 (The Seven out of frame, creatures-b 5e3492af)
+**MERGE-READY @ 004f4dae.** A tall called Vowbound gets its own rest frame (9999f3e1, tuned 004f4dae).
+- **The problem:** on the middle party slot, right before the camera, Kesh's head was cut at rest. In The Seven
+  the director takes no lead or contact shot (both come back empty), so as she rises her head and raised arms left
+  the frame.
+- **The fix:** `camera.rest_by_vowbound` (as rest_by_enemy, applied after it) moves the rest frame while one is
+  out, and the fight's own frame comes back when it leaves. Kesh: 3 m back, 1.4 m up, fov 52.
+- **SELF-RENDERED** (a probe calls Kesh on the tideline as Asha): rest, and The Seven's lead, contact and +0.8 s.
+  Kesh is whole with headroom, and the foes read. vowbound 117/0.
+  - Ethren's row (2.6 m back, 1 m up, fov 52) is NOT viewed yet. Next.
+- camera: 73 run, 1 failed, test_qa_field_camera (lowlight's field camera). It fails without this change too; not
+  mine.
+- **Sweep, ch04_derelict_leeches:** Ilun "under the timeline" at his Brine Lash and attack is the contact shot's
+  over-the-shoulder: the target leech reads clearly, and Ilun's net reaches past the right edge. Judged as framing,
+  not a defect. 55e54edd (his seat) does not change it and is harmless. ch04_derelict_glass is clean.
+
 LEAD-ASK (18:30): Not idle and not blocked. Everything you asked at 17:04, 18:04 and 18:2x has been MERGE-READY on
 `origin/claude/battle-presentation` since 17:30, as logged right below and in the CURRENT STATUS table. If these
 updates aren't reaching you, please read this file on this branch, not the integration copy.
@@ -428,6 +485,7 @@ element (voice_glimmer, level_hand, still_water).
     sky; that is the arena's light.
 
 ### PC-QUEUE
+- Row 61 re-check (34bb40ca: the Reach's rest frame 8 m back, its look raised 2.4 m): battle_arena_seawall_stairhead_surge.
 - Row 64 re-measure (7c3307df, the search behind the fade): the 60 frames after the fade at tideline, causeway, the Drownbell, the Hermit and Moll; and the Drownbell's phase and fall moments.
 - GPU QA row 36 (the Reach): re-check in live play on the RX 9070 XT (M3-BPR-425's rest frame).
 - GPU QA row 34: re-check once M3-BPR-427 lands (and hold the zone's random encounters in the walk).

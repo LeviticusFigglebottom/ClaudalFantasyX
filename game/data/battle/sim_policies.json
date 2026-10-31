@@ -335,6 +335,359 @@
         "kahre",
         "virel"
       ]
+    },
+    "ch10_fen": {
+      "_note": "M4-A2P-019 (the chapters combat seat): the Act II party's kit at this chapter: Act I's best gear (no Act II gear exists yet), Kerrid's and Liss's own, the Vowbound bound by then and the chapter's shop stock. No Lattice (the sim has no hook for it yet) and no Pell (no battle kit, M3-C09-07). Ch10: nothing new bound.",
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ],
+        "liss": [
+          "liss_crank_launcher",
+          "liss_copper_sleeve"
+        ]
+      },
+      "items": {
+        "salt_tonic": 5,
+        "brine_eyewash": 2,
+        "relighting_wick": 1,
+        "reef_draught": 1
+      },
+      "flags": [
+        "ch03_ilun_bound",
+        "ch05_kahre_bound",
+        "ch08_virel_bound",
+        "ch08_hoist_rigged"
+      ],
+      "vowbound": [
+        "ilun",
+        "kahre",
+        "virel"
+      ]
+    },
+    "ch11_vey": {
+      "_note": "M4-A2P-019 (the chapters combat seat): the Act II party's kit at this chapter: Act I's best gear (no Act II gear exists yet), Kerrid's and Liss's own, the Vowbound bound by then and the chapter's shop stock. No Lattice (the sim has no hook for it yet) and no Pell (no battle kit, M3-C09-07). Ch11: Nhoa is bound only after the Lamp Engine.",
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ],
+        "liss": [
+          "liss_crank_launcher",
+          "liss_copper_sleeve"
+        ]
+      },
+      "items": {
+        "salt_tonic": 5,
+        "brine_eyewash": 2,
+        "relighting_wick": 1,
+        "reef_draught": 2
+      },
+      "flags": [
+        "ch03_ilun_bound",
+        "ch05_kahre_bound",
+        "ch08_virel_bound",
+        "ch08_hoist_rigged"
+      ],
+      "vowbound": [
+        "ilun",
+        "kahre",
+        "virel"
+      ]
+    },
+    "ch12_pass": {
+      "_note": "M4-A2P-019 (the chapters combat seat): the Act II party's kit at this chapter: Act I's best gear (no Act II gear exists yet), Kerrid's and Liss's own, the Vowbound bound by then and the chapter's shop stock. No Lattice (the sim has no hook for it yet) and no Pell (no battle kit, M3-C09-07). Ch12: Nhoa (Ch11).",
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ],
+        "liss": [
+          "liss_crank_launcher",
+          "liss_copper_sleeve"
+        ]
+      },
+      "items": {
+        "salt_tonic": 5,
+        "reef_draught": 2,
+        "relighting_wick": 1,
+        "quickwater": 1
+      },
+      "flags": [
+        "ch03_ilun_bound",
+        "ch05_kahre_bound",
+        "ch08_virel_bound",
+        "ch08_hoist_rigged",
+        "ch11_nhoa_bound"
+      ],
+      "vowbound": [
+        "ilun",
+        "kahre",
+        "virel",
+        "nhoa"
+      ]
+    },
+    "ch14_court": {
+      "_note": "M4-A2P-019 (the chapters combat seat): the Act II party's kit at this chapter: Act I's best gear (no Act II gear exists yet), Kerrid's and Liss's own, the Vowbound bound by then and the chapter's shop stock. No Lattice (the sim has no hook for it yet) and no Pell (no battle kit, M3-C09-07). Ch14: Nhoa, Hesk (Ch12) and Ethren (Ch13).",
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ],
+        "liss": [
+          "liss_crank_launcher",
+          "liss_copper_sleeve"
+        ]
+      },
+      "items": {
+        "salt_tonic": 5,
+        "reef_draught": 3,
+        "tidewash_salve": 1,
+        "relighting_wick": 1
+      },
+      "flags": [
+        "ch03_ilun_bound",
+        "ch05_kahre_bound",
+        "ch08_virel_bound",
+        "ch08_hoist_rigged",
+        "ch11_nhoa_bound",
+        "ch12_hesk_bound",
+        "ch13_ethren_bound"
+      ],
+      "vowbound": [
+        "ilun",
+        "kahre",
+        "virel",
+        "nhoa",
+        "hesk",
+        "ethren"
+      ]
+    },
+    "ch15_sea": {
+      "_note": "M4-A2P-019 (the chapters combat seat): the Act II party's kit at this chapter: Act I's best gear (no Act II gear exists yet), Kerrid's and Liss's own, the Vowbound bound by then and the chapter's shop stock. No Lattice (the sim has no hook for it yet) and no Pell (no battle kit, M3-C09-07). Ch15: as Ch14; the barge carries what they fled with.",
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ],
+        "liss": [
+          "liss_crank_launcher",
+          "liss_copper_sleeve"
+        ]
+      },
+      "items": {
+        "salt_tonic": 4,
+        "reef_draught": 2,
+        "relighting_wick": 1
+      },
+      "flags": [
+        "ch03_ilun_bound",
+        "ch05_kahre_bound",
+        "ch08_virel_bound",
+        "ch08_hoist_rigged",
+        "ch11_nhoa_bound",
+        "ch12_hesk_bound",
+        "ch13_ethren_bound"
+      ],
+      "vowbound": [
+        "ilun",
+        "kahre",
+        "virel",
+        "nhoa",
+        "hesk",
+        "ethren"
+      ]
+    },
+    "ch16_rim": {
+      "_note": "M4-A2P-019 (the chapters combat seat): the Act II party's kit at this chapter: Act I's best gear (no Act II gear exists yet), Kerrid's and Liss's own, the Vowbound bound by then and the chapter's shop stock. No Lattice (the sim has no hook for it yet) and no Pell (no battle kit, M3-C09-07). Ch16: as Ch14, restocked at Hollowmere's chandler.",
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ],
+        "liss": [
+          "liss_crank_launcher",
+          "liss_copper_sleeve"
+        ]
+      },
+      "items": {
+        "salt_tonic": 5,
+        "reef_draught": 3,
+        "tidewash_salve": 1,
+        "quickwater": 1,
+        "ember_pot": 1,
+        "relighting_wick": 1
+      },
+      "flags": [
+        "ch03_ilun_bound",
+        "ch05_kahre_bound",
+        "ch08_virel_bound",
+        "ch08_hoist_rigged",
+        "ch11_nhoa_bound",
+        "ch12_hesk_bound",
+        "ch13_ethren_bound"
+      ],
+      "vowbound": [
+        "ilun",
+        "kahre",
+        "virel",
+        "nhoa",
+        "hesk",
+        "ethren"
+      ]
+    },
+    "ch19_iskarra": {
+      "_note": "M4-A2P-019 (the chapters combat seat): the Act II party's kit at this chapter: Act I's best gear (no Act II gear exists yet), Kerrid's and Liss's own, the Vowbound bound by then and the chapter's shop stock. No Lattice (the sim has no hook for it yet) and no Pell (no battle kit, M3-C09-07). Ch19 (Act III, M5-A3P-1009): as Ch16, with Kesh (bound in Ch16) and the Hollowmere chandler's stock.",
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ],
+        "liss": [
+          "liss_crank_launcher",
+          "liss_copper_sleeve"
+        ]
+      },
+      "items": {
+        "salt_tonic": 5,
+        "reef_draught": 3,
+        "tidewash_salve": 1,
+        "quickwater": 1,
+        "ember_pot": 1,
+        "relighting_wick": 1
+      },
+      "flags": [
+        "ch03_ilun_bound",
+        "ch05_kahre_bound",
+        "ch08_virel_bound",
+        "ch08_hoist_rigged",
+        "ch11_nhoa_bound",
+        "ch12_hesk_bound",
+        "ch13_ethren_bound",
+        "ch16_kesh_bound"
+      ],
+      "vowbound": [
+        "ilun",
+        "kahre",
+        "virel",
+        "nhoa",
+        "hesk",
+        "ethren",
+        "kesh"
+      ]
     }
   }
 }

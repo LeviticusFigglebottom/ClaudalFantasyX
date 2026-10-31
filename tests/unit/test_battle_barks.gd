@@ -60,6 +60,39 @@ func test_asha_names_virel_as_she_calls_him_and_ilun_comes_unnamed() -> void:
 	_free()
 
 
+## M5-A3P-1708 (act3_ch17 B09): Kesh answers as she is called, and her answer changes once Asha has chosen.
+func test_kesh_answers_her_call_and_changes_once_asha_chooses() -> void:
+	ctl.start_fixture(BattleFixture.load_fixture(&"vowbound_call"))
+	for row: Variant in BattleVowbound.load_config():  # lend the fixture Kesh's row
+		if str((row as Dictionary)["id"]) == "kesh":
+			ctl.engine.vowbound.rows[&"kesh"] = row
+	var chose := {"yes": false}
+	_barks().read_flag = func(f: StringName) -> bool: return f == &"ch17_chose_the_unbinding" and chose["yes"]
+	assert_eq(_barks().answer_key(&"kesh"), "DLG_CH17_KESH_002", "before the choice: she holds")
+	assert_eq(_barks().answer_key(&"ilun"), "", "Ilun answers with his presence")
+	chose["yes"] = true
+	assert_eq(_barks().answer_key(&"kesh"), "DLG_CH17_KESH_001", "after it: you chose")
+	ctl.engine.vowbound.known.append(&"kesh")
+	_to_turn_of(&"asha")
+	assert_true(ctl.vow.call_vowbound(&"kesh"), "Asha calls Kesh")
+	assert_eq(_barks().said.back(), {"speaker": &"kesh", "text": tr("DLG_CH17_KESH_001")}, "Kesh has the last word")
+	assert_eq(str(ctl.hud.recent_numbers.back()["text"]), tr("DLG_CH17_KESH_001"), "it floats over her")
+	_free()
+
+
+## The answers are the script's own lines: each key is in its scene, and each when_flag is what the scene tests.
+func test_every_answer_is_its_scene_s_line() -> void:
+	for r: Variant in BattleBarks.answer_rows():
+		var row := r as Dictionary
+		var scene := str(row["scene"])
+		var compiled := FileAccess.get_file_as_string("res://game/data/dialogue/compiled/%s.json" % scene)
+		assert_true(compiled.contains('"%s"' % row["key"]), "%s is a line of %s" % [row["key"], scene])
+		var flag := str(row["when_flag"])
+		assert_true(flag == "" or compiled.contains(flag), "%s is the condition %s tests" % [flag, scene])
+		assert_ne(tr(str(row["key"])), str(row["key"]), "%s is translated" % row["key"])
+	_free()
+
+
 func test_a_retry_replaces_the_view() -> void:
 	_start(&"sandbox_reef")
 	var first := _barks()

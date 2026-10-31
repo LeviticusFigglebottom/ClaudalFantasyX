@@ -316,12 +316,12 @@
     "build": 10.0, "home": 4.0, "accepted_rank": 0.5, "kit": 3.0, "per_use": 2.5,
     "tint_min_distance": 40.0,
     "late_zones": ["ch02/haluna"],
-    "late_prefixes": ["oruvel_deck_", "pemakar_quay_"],
+    "late_prefixes": ["oruvel_deck_", "pemakar_quay_", "quellan_town_", "hollowmere_dawn_", "ansedra_moorings_"],
     "tint_tries": 24
   },
   "clip_libraries": {
     "_about": "M3-CRE-662: the crowd bodies share the villager rig (one skeleton, the same bone names), so each group shares one AnimationLibrary (build_crowd.py build_library: assets/crowd/clips/crowd_<library>_clips.tres, built in `ref`'s job on its skeleton with the members' mean _persona and every member's work clips). The import (game/data/import/crowd.json `libraries`, the same map) gives every member its group's library and scales the hips track to its own height. Groups by measurement (tools/tests/test_npc.py SharedClips samples it): each member's own clips against the reference's played on it, world positions of the hands, feet, toes, knees and head over every clip. Within these groups the skeleton's part is at most 1.0 cm (feet height 0.4 cm); one library for all would be 4.7 cm (the small children) and flatten the elders' lean; the children split at the small pair (4.6 cm from the tall ones' reference).",
-    "adult": {"ref": "crowd_man_medium_b", "bodies": ["crowd_man_heavy", "crowd_man_heavy_b", "crowd_man_lean_a", "crowd_man_lean_b", "crowd_man_medium_a", "crowd_man_medium_b", "crowd_order_man", "crowd_order_woman", "crowd_woman_heavy", "crowd_woman_lean_a", "crowd_woman_lean_b", "crowd_woman_medium", "crowd_woman_medium_b"]},
+    "adult": {"ref": "crowd_man_medium_b", "extra": ["cheer"], "bodies": ["crowd_man_heavy", "crowd_man_heavy_b", "crowd_man_lean_a", "crowd_man_lean_b", "crowd_man_medium_a", "crowd_man_medium_b", "crowd_order_man", "crowd_order_woman", "crowd_woman_heavy", "crowd_woman_lean_a", "crowd_woman_lean_b", "crowd_woman_medium", "crowd_woman_medium_b"]},
     "elder": {"ref": "crowd_elder_man_a", "bodies": ["crowd_elder_man_a", "crowd_elder_man_b", "crowd_elder_woman_a", "crowd_elder_woman_b"]},
     "child": {"ref": "crowd_girl_teen", "bodies": ["crowd_boy_tall", "crowd_girl_tall", "crowd_girl_teen"]},
     "child_small": {"ref": "crowd_boy_small", "bodies": ["crowd_boy_small", "crowd_girl_small"]}

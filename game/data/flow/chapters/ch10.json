@@ -1,5 +1,5 @@
 {
- "doc": "M4-C10-02 (docs/kb/tech/chapter_flow.md): Ch10 'Fen of the Kirru', the first chapter of Act II, as a greybox walk before the beat sheet (M4-C10-01): the party arrives at Ossa Fen's edge at dusk (act1_ch09.md \u00a710; the chapter becomes 10), walks the root-walks to Reedhollow and can walk back. Pell joins the formation when his battle kit lands (M3-C09-07: he isn't a party hero yet); in Reedhollow he stays out (he isn't let in). The story beats, the Drowner and the farewell-tide come with the beat sheet.",
+ "doc": "M4-C10-02 (docs/kb/tech/chapter_flow.md): Ch10 'Fen of the Kirru', the first chapter of Act II, as a greybox walk before the beat sheet (M4-C10-01): the party arrives at Ossa Fen's edge at dusk (act1_ch09.md §10; the chapter becomes 10), walks the root-walks to Reedhollow and can walk back. Pell joins the formation when his battle kit lands (M3-C09-07: he isn't a party hero yet); in Reedhollow he stays out (he isn't let in). The story beats, the Drowner and the farewell-tide come with the beat sheet.",
  "chapter": "ch10",
  "zones": {
   "ch10/ossa_fen": {
@@ -31,6 +31,27 @@
       },
       {
        "set": "ch10_started"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch10_drowner_defeated"
+      ],
+      "unset": [
+       "ch10_what_went_up_seen"
+      ]
+     },
+     "steps": [
+      {
+       "place": "DrownerArena"
+      },
+      {
+       "play": "ch10_what_went_up"
+      },
+      {
+       "set": "ch10_what_went_up_seen"
       }
      ]
     }
@@ -81,6 +102,27 @@
    "arrive": [
     {
      "when": {
+      "set": [
+       "ch18_world_open"
+      ],
+      "unset": [
+       "ch18_pell_named"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Gate"
+      },
+      {
+       "play": "ch18_through_the_gate"
+      },
+      {
+       "play": "ch18_farewell_tide_taught"
+      }
+     ]
+    },
+    {
+     "when": {
       "unset": [
        "ch10_reached_reedhollow"
       ]
@@ -88,6 +130,9 @@
      "steps": [
       {
        "place": "Gate"
+      },
+      {
+       "play": "ch10_causeway"
       },
       {
        "set": "ch10_reached_reedhollow"
@@ -127,8 +172,29 @@
       },
       {
        "play": "ch10_dawn_gate"
+      },
+      {
+       "go": {
+        "location": "ch11/sunken_vey",
+        "spawn": "Landing"
+       }
       }
      ]
+    },
+    "to_kite": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch18/kite",
+        "spawn": "Deck"
+       }
+      }
+     ],
+     "when": {
+      "set": [
+       "ch18_world_open"
+      ]
+     }
     }
    }
   }

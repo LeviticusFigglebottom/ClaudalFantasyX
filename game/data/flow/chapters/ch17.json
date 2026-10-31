@@ -1,0 +1,190 @@
+{
+ "doc": "M5-A3P-1001 (act3_ch17.md §1-§2; docs/kb/tech/chapter_flow.md): Ch17 'Hollowmere' on Ch15's zone, read once Act II is over (Ch17Zone points the zone's chapter_path here when ch16_act_two_complete is set; chapters.json's first match stays Ch15's). Pulled from the sea on arrival (B01); on the gangway the dock-master points to the last berth (B03); the hull's sails from the walk's end, aboard by the ladder its tool rack and chart wall (B04); the hatch: the ledger in the cabin, then dusk on the deck (B05-B06); Tobin's post (B07, optional); night on the deck: the choice, next morning the first lamp in the engine bay, then Ysolde's table at the dock-master's house (B08, B10, B11); Hollowmere at work (B12) until the party boards the hull (ch17_complete; Ch18 opens on the maiden flight). B09 (Kesh's changed call bark) plays from the Vowbound menu, a Combat/UI hook.",
+ "chapter": "ch17",
+ "zones": {
+  "ch17/hollowmere": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch17_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Dock"
+      },
+      {
+       "chapter": 17
+      },
+      {
+       "play": "ch17_pulled_from_the_sea"
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch18_world_open"
+      ],
+      "unset": [
+       "ch18_revisit_hollowmere_seen"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Dock"
+      },
+      {
+       "play": "ch18_revisit_hollowmere"
+      },
+      {
+       "set": "ch18_revisit_hollowmere_seen"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "berths": {
+     "when": {
+      "set": [
+       "ch17_started"
+      ],
+      "unset": [
+       "ch17_saw_the_hull"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Berths"
+      },
+      {
+       "play": "ch17_dock_master_points"
+      }
+     ]
+    },
+    "board": {
+     "when": {
+      "set": [
+       "ch17_saw_the_hull"
+      ]
+     },
+     "steps": [
+      {
+       "place": "HullDeck"
+      }
+     ]
+    },
+    "ledger": {
+     "when": {
+      "set": [
+       "ch17_saw_the_hull"
+      ],
+      "unset": [
+       "ch17_read_the_ledger"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Cabin"
+      },
+      {
+       "play": "ch17_the_ledger"
+      },
+      {
+       "place": "HullDeck"
+      },
+      {
+       "play": "ch17_after_the_blank_page"
+      }
+     ]
+    },
+    "night": {
+     "when": {
+      "set": [
+       "ch17_read_the_ledger"
+      ],
+      "unset": [
+       "ch17_chose_the_unbinding"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch17_the_choice"
+      },
+      {
+       "place": "EngineBay"
+      },
+      {
+       "play": "ch17_the_first_lamp"
+      },
+      {
+       "place": "Fathers"
+      },
+      {
+       "play": "ch17_ysoldes_table"
+      }
+     ]
+    },
+    "aboard": {
+     "when": {
+      "set": [
+       "ch17_verse_begun"
+      ],
+      "unset": [
+       "ch17_complete"
+      ]
+     },
+     "steps": [
+      {
+       "set": "ch17_complete"
+      },
+      {
+       "go": {
+        "location": "ch18/kite",
+        "spawn": "Deck"
+       }
+      }
+     ]
+    },
+    "shrine": {
+     "steps": [
+      {
+       "play": "ch15_shrine_hollowmere"
+      }
+     ]
+    },
+    "to_kite": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch18/kite",
+        "spawn": "Deck"
+       }
+      }
+     ],
+     "when": {
+      "set": [
+       "ch18_world_open"
+      ]
+     }
+    }
+   }
+  }
+ }
+}

@@ -16,7 +16,10 @@
       "res://game/data/flow/chapters/ch13.json",
       "res://game/data/flow/chapters/ch14.json",
       "res://game/data/flow/chapters/ch15.json",
-      "res://game/data/flow/chapters/ch16.json"
+      "res://game/data/flow/chapters/ch16.json",
+      "res://game/data/flow/chapters/ch17.json",
+      "res://game/data/flow/chapters/ch18.json",
+      "res://game/data/flow/chapters/ch19.json"
     ]
   }
 }

@@ -159,7 +159,10 @@ func test_ch4_to_ch9_spot_checks() -> void:
 			&"p_harbour_road",
 			&"harbour"
 		],
-		[[&"ch05_arrived", &"ch05_met_kerrid"], ASHCROWN, &"a_crown", &"crown"],
+		# the Lead (10-30): the pilgrim stair is staged, a target per level (its foot is 117 m under the crown)
+		[[&"ch05_arrived", &"ch05_met_kerrid"], ASHCROWN, &"a_stair", &"grave_tier"],
+		[[&"ch05_passed_grave_tier"], ASHCROWN, &"a_upper", &"copper_tier"],
+		[[&"ch05_passed_grave_tier", &"ch05_passed_copper_tier"], ASHCROWN, &"a_crown", &"crown"],
 		[[&"ch05_trial_begun"], ASHCROWN, &"a_trial", &"tier_1"],
 		[[&"ch05_trial_begun", &"ch05_strike_landed"], ASHCROWN, &"a_anvil_court", &"anvil_court"],
 		[[&"ch07_arrived"], TAMSULE, &"t_market_boats", &"market_boats"],
@@ -210,7 +213,7 @@ func test_act_two_zones_point_along_the_main_path() -> void:
 		[[&"ch13_entered_sanctum"], &"ch13/sanctum", &"s_ledge", &"ledge"],
 		[[&"ch13_ethren_bound", &"ch13_started"], &"ch13/ansedra", &"a_archive", &"archive"],
 		[[&"ch13_entered_archive"], &"ch13/lamp_archive", &"la_ledgers", &"ledgers"],
-		[[&"ch13_entered_archive", &"ch13_read_ledgers"], &"ch13/lamp_archive", &"la_roll", &"roll"],
+		[[&"ch13_entered_archive", &"ch13_read_ledgers"], &"ch13/lamp_archive", &"la_roll", &"door"],  # E9
 		[[&"ch13_archive_read", &"ch13_ethren_bound", &"ch13_started"], &"ch13/ansedra", &"a_moorings", &"moorings"],
 		[
 			[&"ch13_archive_read", &"ch13_ethren_bound", &"ch13_pact_of_silence", &"ch13_started"],

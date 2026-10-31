@@ -84,3 +84,15 @@ INN_MENU_PREVIEW_FREE,A night here costs nothing.
 INN_ERR_HERETIC,The door stays shut. The Order keeps no guests outside the Level.
 HUD_FLOAT_DRAINED,Drained
 HUD_FLOAT_REPAIRED_FMT,{part} mended
+CREDITS_ROLL_MUSIC_TITLE,Music
+CREDITS_ROLL_MUSIC,"Original score, composed for this game."
+CREDITS_ROLL_TOOLS_TITLE,Tools and Licences
+CREDITS_ROLL_MPFB,Base human topology adapted from MakeHuman / MPFB2 data (CC0)
+CREDITS_ROLL_THANKS_TITLE,With Thanks
+CREDITS_ROLL_FAST,Hold {ui_accept}: faster
+CREDITS_ROLL_SKIP,Hold {ui_cancel}: skip
+LEDGER_TITLE_DACE,Dace Sallow's ledger
+HUD_HELP_ECHO_FMT,echoes {skill}
+HUD_HELP_ECHO_NONE,Nothing to echo yet: no foe has acted
+HUD_HELP_CURES_FMT,cures {statuses}
+HUD_HELP_LIST_SEP,", "

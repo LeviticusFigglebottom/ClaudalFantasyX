@@ -589,8 +589,185 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **LEAD (19:25), IN PROGRESS: the Ch4 beauty pass (the Haluna wake, the Brightwater ferry), then the Prologue-to-Ch4
-  transitions as played.** Eye-height stills are rendering.
+- **PC pass 7 (the Lead, 00:44) rows 59, 76, 77 and 83: MERGE-READY @ 7769d2ad.** Each was checked on lavapipe
+  before and after; below is what I expect on the GPU.
+  - **59, ch01_o10_gull:**
+    - The "bird" is the carving by design: C1-11's open-throat lintel-gull, a carved ridge finial. "That's the gulls"
+      means the carvings crying in the wind. So it now reads as one: limewashed chalk-white over the grain, an ochre
+      bill, soot-grey wingtips and tail, the perch bare wood. Every ridge gull shares it.
+    - On lavapipe it reads as a white painted gull carving against the sky.
+    - **GPU:** the same read; the limewash's worn edges show the grain at 85 mm. If the cinematics track wants it
+      unmistakable, O10 could also frame the bored throat (its wind-hole), which this framing doesn't show.
+  - **76, zone_oruvel_storm_o16:**
+    - The storm frame's ambient came from the near-black storm sky. It is now a fixed storm-grey fill (#80949F,
+      0.9), with exposure 0.65 → 0.85.
+    - On lavapipe, o16's mean went 32 → 46: the deck, nets and figures read, and the pen water stays darkest.
+    - **GPU:** around 50–60 with the real GPU's SSAO and glow. If it's still too dark there, the next lever is a
+      cold fill light on the pen, not more exposure (the sky would wash out).
+  - **77, oruvel_o17_pen_split:**
+    - The horizon's "grey boxes" were reef_edge_far's seven drowned tower crowns, flat-topped. Each top is now a
+      broken parapet in stretches of different heights with gaps (coarser at LOD1, which is what 300 m sees), with
+      bigger windows. On lavapipe the skyline reads as broken towers.
+    - **The straight pale streaks across the water are not this kit's.** No kit geometry is shaped or placed like
+      that. They look like sun shadow edges cast by the Undertow storm's far geometry: hard parallel bands toward the
+      camera. **LEAD-ASK:** please route to rendering (storm stream) for the GPU check; they're visible on lavapipe too.
+  - **83, ch01_bell_room:**
+    - U03 faces the room's south wall, which was a blank bay behind Rhen. It now carries the tower's service pipe and
+      a coral curtain.
+    - **The yellow-green haze is the diver lantern's light scattering in the underwater fog** (the UnderwaterRig's;
+      the rendering-underwater stream's), not the kit. **LEAD-ASK:** route the haze strength to them.
+    - **GPU:** the wall reads busier; the haze is unchanged by this commit.
+  - **Checks:**
+    - Tools: test_oruvel_kit (its storm-soaked check caught the new parapets until they got the storm weathering),
+      test_oruvel_moorings, test_zone_dressing_ch01 and the Underway tests OK.
+    - Godot `--filter`: ch01 20/0, underway 9/0, edge_walls 2/0.
+    - validate_data clean.
+- **M5-A3P-1402 (Act III, Ch20): the rest landing `memory_landing`. MERGE-READY @ f3466e20** (review: art).
+  - A small flagged fragment with a curved bench and one steady held lamp: 1754 / 274 triangles.
+  - It hangs in the undertow_cage arena. Viewed at a walker's eye and from away.
+  - test_undertow_layers and test_arenas OK; validate_data and taskboard --check clean.
+  - Baselines that move (none written): battle_arena_undertow_cage.
+- **ANSWER to env-art-b (the Lead relayed it 00:27):**
+  - **M5-A3P-1501 (supplement): ACCEPTED.** env-art-b takes the Ch18 Kite hub dressing (`ch18/kite`), placing
+    `kite.py`'s pieces unchanged; the layout stays the chapters'. `kite.py` and its outputs stay env-art's. If a
+    piece needs changing, open a request task to env-art and I'll turn it round.
+  - **The split this settles:** env-art-b has Ch17 Hollowmere and the Ch18 Kite dressing. env-art has Ch18's
+    Reedhollow revisit, Ch19 (Iskarra and the Spire), Ch20 (the Undertow) and the ending.
+  - **M4-A2P-1501 (env-art-b's request: flicker on Ch11's open flames): ANSWERED, nothing to change.**
+    - Every fire light in both Ch11 dressings is the bound teal (#4FB3B0): Lowlight's 19 (the Engine's twelve
+      trimmed lamps, the conduits, the upwelling) and the Vey's one. Neither zone has an open flame, so the request's
+      own rule keeps them steady.
+    - The optional `drift` rows on the Vey's lanes wait until env-art-b's ZoneKitDressing `drift` reaches
+      integration and this branch, since `zone_kit_dressing.gd` here has no drift yet. I'll add three tide_debris
+      rows then.
+- **CLAIM M5-A3P-1402 (Act III, Ch20): `memory_landing`, the rest landing between the layers** (R1, R2; the chapters'
+  M5-A3P-1011 lists "the two rests"). For the well (U00), `heart_eyewall` can be used scaled down; no new piece.
+- **M5-A3P-1401 (Act III, Ch19): the Lamp Spire's tier kit. MERGE-READY @ d6f51ad3** (review: art).
+  - **New pieces:**
+    - `spire_tier` (stacks every 4.2 m): flags on a bed whose underside is the ceiling below, the stairwell open where
+      the flight arrives, conduit rings, six window bays, and the flight curving up the wall.
+    - `spire_lamp_engine`: bound and steady.
+    - `spire_quarters`: the founders' room, the child's height marks on the door post.
+  - Viewed in a staged stack at a walker's eye. Two fixes after viewing: wedge gaps between the flags (now on a bed),
+    and the deck's underside normals.
+  - **Checks:**
+    - Tools: test_iskarra_spire (+2 checks), test_iskarra and test_haluna_kit OK.
+    - validate_data and taskboard --check clean.
+  - The ch19 greybox and the stacking of the tiers are the Act III chapters' track's; iskarra.md §3 describes the kit
+    for them.
+- **CONFIRMED 23:27 (the Lead's check-in): all pushed to origin/claude/env-art** (the head is 55188ef9 and later).
+  - The last Oruvel outrigger, M3-ENV-1391: MERGE-READY @ 0de280e2.
+  - The Ch4 derelict hatch lip, M4-A2P-1403: MERGE-READY @ bcb96e0a (its log commit; the fix is just before it).
+  - M5-A3P-1400, Ch20's three memory rooms: MERGE-READY @ 23805774.
+- **CLAIM M5-A3P-1401 (Act III, Ch19): the Lamp Spire's four tiers' interior kit** (`spire_tier`,
+  `spire_lamp_engine`, `spire_quarters` in iskarra_spire.py; task file in docs/kb/tasks/M5/). Lead, please record
+  the claim. The zone split proposal to env-art-b (below) has no answer yet; Ch19 is in my lane under it either way.
+- **M5-A3P-1400 (Act III): Ch20's three missing memory rooms. MERGE-READY @ 83fbf95e** (review: art).
+  - **New pieces:** `memory_terrace` (U02), `memory_gallery` (U05) and `memory_square` (U06), each within 7k / 500
+    triangles, with glbs, imports, PROVENANCE rows and manifest rows.
+  - **The undertow_cage arena now hangs all six rooms.** The gallery replaces its stand-in second kitchen.
+  - **Viewed in the arena:**
+    - the square's pool and flags were raised onto the island's top (they first sat under it);
+    - the terrace's boats became pointed hulls;
+    - the gallery's columns read dark under the top-down key, which Ch20's staging will light.
+  - **Checks:**
+    - Tools: test_undertow_layers (+2 checks), undertow_heart, haluna_kit and arenas, 51 OK.
+    - Godot `--filter=arena`: 18/0.
+    - validate_data clean; no banned terms.
+  - **Baselines that move (none written):** battle_arena_undertow_cage.
+  - **Next (still waiting for env-art-b to confirm the split):** Ch19's Iskarra (the full dusk version, and the Lamp
+    Spire's floors beyond its crown, M3-ENV-726).
+- **ACT III (ADR 0207): CLAIM M5-A3P-1400, Ch20's three missing memory rooms** (`memory_terrace`, `memory_gallery`,
+  `memory_square` in undertow_layers.py; task file in docs/kb/tasks/M5/). Lead, please record the claim on integration.
+  - **Ownership row appended:** Act III env-art covers the Undertow and Heart kits, Ch19 Iskarra and the Spire, the
+    ending grades, Ch18's Reedhollow revisit, and `tools/act3/ch19_*`/`ch20_*`.
+  - **ZONE SPLIT, proposed to env-art-b** (please confirm or amend in env-art-b.md):
+    - env-art-b: Ch17 Hollowmere (already claimed, M5-A3P-1500) and Ch18's Kite (Dace's hull is the Kite, and the
+      hull is yours).
+    - env-art: Ch18's Reedhollow revisit, Ch19 (the full Iskarra dusk and the Lamp Spire), Ch20 (the Undertow layers)
+      and the ending (Ch21's heart and grades). I wrote those kits and briefs (iskarra, undertow_layers, ending).
+- **The Ch10–Ch12 beauty pass is complete (M4-A2P-1402, review: art). MERGE-READY @ f3df9d62.**
+  - **Ch12 at eye height** (Keth Pass, Quellan, Cloudloom): the volcanic crag read as flat black masses (keth_pass.md
+    calls for "grey crags"), and the road's granite read near black.
+    - `kit_keth_crag` now has a neutral grey tint over 1. The first, cool tint read blue (99692b06); this commit
+      corrects it.
+    - `kit_keth_road` (also the dry-stone walls) lifts a step.
+  - Reedhollow reads well.
+  - **Checks:**
+    - Tools: the keth and haluna kit tests OK.
+    - Godot `--filter=ch12` is green; validate_data clean.
+  - **Baselines that move (none written):** the Ch12 zone shots and the keth_seep_terrace arena.
+  - **Next:** Act III per ADR 0207. First, claim the paths in ownership.md and agree the zone split with env-art-b
+    here.
+- **LEAD (21:56, ADR 0207), noted.** When the queue is empty: supplement others, or start Act III environments in my lane
+  (M5-A3P-1400..1499). I'll claim the paths in ownership.md first and agree the zone split with env-art-b here.
+  The order: the hatch lip (done, M4-A2P-1403), then the rest of the Ch10–Ch12 pass (Reedhollow and the Ch12 zones,
+  rendering now), then Act III.
+- **LEAD (21:46), answered: the derelict's hold-hatch corner (M4-A2P-1403, review: qa). MERGE-READY @ b36f94ef.**
+  - The hatch's collider is now an octagon with 0.25 m chamfers (`derelict_hatch()` in
+    `tools/act1/ch04_ferry_dressing.py`); the mesh is unchanged.
+  - A headless probe walked along -x at the corner. At lateral offsets 0.0 and 0.1 m, the old square stopped the hero
+    after 0.5 m; the octagon slides him on 4.35 m. Walking into the flat face still stops him.
+  - Godot `--filter=ch04` is green; validate_data and taskboard --check are clean.
+  - Next: back to the Ch10–Ch12 beauty pass. M4-A2P-1402 covers the fen, Lowlight and the Vey; Reedhollow and the
+    Ch12 zones follow.
+- **CONFIRMED 21:06: the last Oruvel outrigger fix (M3-ENV-1391) is pushed.** It is 0de280e2 on origin/claude/env-art,
+  MERGE-READY.
+- **LEAD (21:05), answered: the Act II Ch10–Ch12 beauty pass (M4-A2P-1402, review: art). MERGE-READY @ a60417fc.**
+  - **Viewed:** eye-height stills at every interactable and zone-map POI: Ossa Fen 7, the Sunken Vey 5, Lowlight 5.
+  - **Fixed:**
+    - The fen's reed platforms read plastic green; `kit_fen_reed` is now straw-grey.
+    - The fen mud and bank used mirror-wet defaults; they are now matte damp.
+  - **Kept:**
+    - The fen edge's sheen is backlight from the low sun.
+    - The Vey and Lowlight read cold and empty, as designed.
+  - **LEAD-ASK:** the Vey landing is a bare flagged platform with a rail. Dressing it would be new content; your
+    call.
+  - **Checks:**
+    - Tools: the fen and haluna kit tests OK.
+    - Godot `--filter=ch10`: 3/0.
+    - validate_data and taskboard --check clean.
+  - **Baselines that move (none written):** the Ossa Fen shots with reed platforms.
+- **STATUS 20:46 (answers the Lead's 20:45 check-in): everything is pushed; the head is the log commit after 937389e9.**
+  - Oruvel's last outrigger (M3-ENV-1391): MERGE-READY @ 0de280e2 (pushed 19:58).
+  - The Ch4 beauty pass and the Prologue-to-Ch4 arrivals (M4-A2P-1401): MERGE-READY @ 937389e9 (pushed 19:58).
+  - **Transitions, viewed as played:**
+    - Zone exits: this stretch has none to walk through; every hand-off is a beat or cutscene. So I viewed the frame
+      the player gets on arriving at each spawn (M4-A2P-1401 has the findings: the ferry Landing is fixed; the
+      DockShore camera and the shrine Entry party stacking are the Lead's call).
+    - Chapter cards: flow_chapter_card_ch04_voice, flow_chapter_card_ch04 and cutscene_act_card were captured to my
+      scratchpad (no baseline) and viewed. They are clean: centred serif titles on black under the gold rule.
+    - One typography note for UI/narrative: the Ch4 voice caption uses straight ASCII quotes ("...") on the serif card;
+      typographic quotes would match the card. That's a loc string, not env-art's.
+    - Ch1 to Ch3 have no chapter card in the played route; each hand-off is a fade into the next zone's arrival.
+- **LEAD (19:45), answered: M3-ENV-1391's last box. MERGE-READY @ 4f46aecd.** LowHull's outrigger lay along the run's
+  two plank bridges, its booms through their rails. It now floats alongside the run (z -21.25, yaw 180), with its
+  AABB 0.1 m clear. The salvage on the planks over LowHull still blocks the way, and both still drift with the block.
+  - Viewed from the run, from the bridge and from the side.
+  - The AABB mirror of cloud-qa's check lists only the dive raft's three intended pairs.
+  - test_oruvel_moorings drops the LowHull allowance and passes; test_zone_dressing_ch01 OK.
+  - Godot `--filter=ch01` and `--filter=edge_walls` are green.
+  - The Ch4 pass continues (the galley's satin walls are in at 7d2197e6).
+- **LEAD (19:25), answered: the Ch4 beauty pass and the Prologue-to-Ch4 arrivals (M4-A2P-1401, review: art).
+  MERGE-READY @ 34fdefa3.**
+  - **Viewed:**
+    - eye-height stills along the walkthrough legs: Haluna wake 18, ferry 18;
+    - the arrival frame at each hand-off's spawn (`tools/hero/walk_stills`, the real camera and party): Drop, Surface,
+      Beach, FromHaluna, Entry, NemeDoor, DockShore and Landing.
+  - **Fixed:**
+    - The Terrace galley's lacquer boards streaked white with sky reflections indoors; they are now satin
+      (`bf_lacquer_black_satin`, 7d2197e6).
+    - The Landing arrival was a black rock. A ferry lantern now sits at the gangplank's head as its warm key light.
+  - **LEAD-ASK (not env-art's to change):**
+    - The Haluna wake's night shallows glow bright day-cyan (`haluna_mood.gd`'s held-glimmer sea-glow). Intended, or
+      calm it?
+    - The DockShore arrival camera sits behind Rhen's head, so he fills the frame (camera).
+    - At the shrine Entry arrival, Asha and Toma stand stacked into Rhen (party spawn spots).
+  - **Checks:**
+    - Tools: the ch04 and ferry tests OK.
+    - Godot `--filter=ch04`: 13/0.
+    - validate_data and taskboard --check clean.
+  - **Baselines that move (none written):** the ferry galley and landing shots.
 - **LEAD (18:24), answered: the Ch2 Haluna and Ch3 causeway beauty pass (M4-A2P-1400, review: art). MERGE-READY @ dadb6930.**
   - Stills at eye height along the walkthrough legs, viewed: Haluna 22, the causeway 12, the Shell Shrine 8.
   - **Fixed:** Haluna's 49 windbreak trees rendered as black blots from every side. `kit_windbreak_leaf` now has a
@@ -1193,6 +1370,7 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- PC pass 7 fixes (7769d2ad): re-check rows 59, 76, 77 and 83 on the GPU (expectations in Now).
 - Ch1 Underway pass (922cd122): Underway caustics on a real GPU (strength 1.2, and whether caustics inside the sun's shadows read wrong), and the dive well's floats from the deck.
 - Prologue dressing pass (b39caa29): look at P01 and P02 on a real GPU for the Iskarra towers' grime streaks and tide band, the plaza puddles' gloss and the amber lamp globes.
 - **M3-ENV-1323 (2026-10-30):** A/B `battle_arena_underway_tower` with its Sun node hidden. Rectangles that

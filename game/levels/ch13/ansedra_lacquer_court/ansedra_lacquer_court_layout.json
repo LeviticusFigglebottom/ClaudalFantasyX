@@ -1,5 +1,5 @@
 {
- "doc": "M4-C14-02 greybox (tools/act1/ch14_greybox.py; do not edit by hand): the Lacquer Court at dusk (colour script ch14). The court's floor under a red-lacquered colonnade, the wedding dais (vows: Sefir officiates), the guests' galleries, the Conclave's gallery (north-west), the water-steps down (a ramp; kerrid_steps: he holds them) to the bridal barge (barge_deck; the barge trigger runs the escape out across the water) and the water-gate beyond (merel_gate). Entered from the city at the east (CourtEntry). The story waits on the beat sheet (M4-C14-01).",
+ "doc": "M4-C14-02 greybox (tools/act2/ch14_greybox.py; do not edit by hand): the Lacquer Court at dusk (colour script ch14). The court's floor under a red-lacquered colonnade, the wedding dais (vows: Sefir officiates), the guests' galleries, the Conclave's gallery (north-west), the water-steps down (a ramp; kerrid_steps: he holds them) to the bridal barge (barge_deck; the barge trigger runs the escape out across the water) and the water-gate beyond (merel_gate). Entered from the city at the east (CourtEntry). The story waits on the beat sheet (M4-C14-01).",
  "sun": {
   "pitch_deg": -4.0,
   "yaw_deg": -90.0,
@@ -927,8 +927,29 @@
     0,
     3.0
    ],
+   "requires_flag": "ch14_complete",
    "payload": {
     "beat": "escape"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "dais",
+   "activation": "touch",
+   "at": [
+    0.0,
+    0.0,
+    -16.5
+   ],
+   "size": [
+    4.0,
+    0,
+    1.5
+   ],
+   "requires_flag": "ch14_started",
+   "blocked_by_flag": "ch14_vows_spoken",
+   "payload": {
+    "beat": "dais"
    },
    "yaw": 0.0
   }

@@ -1,5 +1,5 @@
 {
- "doc": "M4-C11-02 greybox (tools/act1/ch11_greybox.py; do not edit by hand): Sunken Vey, the drowned galleries, at an overcast midday (colour script ch11). A Lit Age city's arcades half under a still turquoise lagoon, their roofs the walks. From the landing (west) to the conduit court, where a conduit bleeds bound teal and Liss reads the Saltwright housing-mark (conduit_mark); a side gallery north to a fig-choked end; east to Lowlight's gate (to_lowlight). The story waits on the beat sheet (M4-C11-01).",
+ "doc": "M4-C11-02 greybox (tools/act2/ch11_greybox.py; do not edit by hand): Sunken Vey, the drowned galleries, at an overcast midday (colour script ch11). A Lit Age city's arcades half under a still turquoise lagoon, their roofs the walks. From the landing (west) to the conduit court, where a conduit bleeds bound teal and Liss reads the Saltwright housing-mark (conduit_mark); a side gallery north to a fig-choked end; east to Lowlight's gate (to_lowlight). The story waits on the beat sheet (M4-C11-01).",
  "sun": {
   "pitch_deg": -65.0,
   "yaw_deg": 160.0,
@@ -1254,6 +1254,27 @@
    ],
    "payload": {
     "beat": "to_lowlight"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "conduit_mark",
+   "activation": "touch",
+   "at": [
+    38.0,
+    0.0,
+    -22.0
+   ],
+   "size": [
+    12.0,
+    0,
+    12.0
+   ],
+   "once": true,
+   "requires_flag": "ch11_started",
+   "blocked_by_flag": "ch11_rhen_admitted",
+   "payload": {
+    "beat": "housing_mark"
    },
    "yaw": 0.0
   }

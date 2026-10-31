@@ -194,3 +194,116 @@ is about the rail's back edge, so the front of the rail lifts rather than sinks.
   override if one is added.
 - **For the characters track:** the founders' heights (≤ 1.9 m), their bound-light material (`glimmer_bound`, steady,
   as the Vowbound) and the `freed` clip timed to the cue at 0.5 s.
+
+## Amendment: seats and chains (M5-A3P-1812, 2026-10-30)
+The Act III bestiary reconciled this sheet with the Ch20 beat sheet (act3_roster.md, Ch20 U07; act3_ch20.md §5 and
+U08). The beat sheet says: "four seats of bound light round a well, each founder chained into one. Break a seat's
+chains and that founder stops fighting and thanks you; the rest grow stronger." U08 adds: "The Cage's bars are bound
+light; when it breaks they don't lift yet. They lie in the dark water, held." This section **supersedes** the sheet
+above wherever they differ. Everything not named here (the plan on its arc, the palette, the anchor chains, the battle
+camera numbers, the idle, attack, cast and hit) stands.
+
+### What changes, in one line each
+- **A bay becomes a seat.** The founder sits, upright, chained at the wrists and ankles, facing out, back to the well.
+- **The breakable part is the seat's chains**, gathered into one lock (the **hasp**) per seat. The keystone clasp stays
+  as ornament and loses its weak-point mark.
+- **The broken bars stay lit and fall.** A broken seat's lamp-bars come down into the water, still steady bound light.
+  They are not dark, and nothing rises (Ch20 rule 2: only a Vowbound's release lifts).
+- **The founder is freed, not gone.** At the break they rise, step off the seat, say "thank you" and stand still and
+  free beside it until the fight ends. They fall in U08's cutscene, not in battle. So no `glimmer_lift`, no kneel and
+  no `hide_after` in the battle.
+
+### The plan: round a well
+The four seats keep the arc above: the near quarter of a ring round the heart. That ring is now the **rim of the
+well** (U00 drops the Kite down it). The arena's well rim and its dark opening behind the seats are environment art.
+The frame's base rail sits on the rim, and the anchor chains run back and down over the lip into the well, rather
+than to floor rings. Since they end below the floor, `GroundedClipsTest` needs an `ALLOW` row for the chains alone
+(the rail, the seats and the founders stay on the floor).
+
+### A seat
+Each of the four bays keeps its posts, arch, crown lamp and keystone, but drops its gate leaves and shin bars. Inside:
+- **The seat:** a Lit Age lamp-keeper's watch chair in brass, built into the bay. The seat is 0.45 m above the rail
+  (y 0.75) and 0.45 m deep, with a high back on the bay's spine bar and two armrests at y 0.98.
+- **The heights drop with the figure.** The two inner crowns are at **2.9 m** and the two outer ones at **2.6 m**.
+  The clear height above the seat is 1.6 m, enough for a seated figure up to 1.9 m tall standing.
+- **The chains:** four short chains per seat, from **wrist rings** on the armrests' front ends (x ±0.30 of the seat
+  centre, y 1.00) and **ankle rings** at the seat's front feet (x ±0.14, y 0.36, z +0.28) to the **hasp**. The hasp
+  is a brass lamp-housing lock on the seat's outer front post, at y 1.05, beside the figure's hip and clear of the
+  body.
+
+The four outer posts point away from the centre, so q1 and q2's hasps are on their left posts and q3 and q4's on
+their right. Each hasp faces the party and the camera.
+
+**The pose the frame expects** (the characters track's figure):
+- Seated upright: the back against the chair, the forearms along the armrests, the wrists in the rings, the hands open
+  and palms down.
+- The feet are together at the seat's front, the ankles in their rings, the head level, looking out.
+- It is the lamp-keeper at a long watch, chosen, not cowed. **Never slumped, never straining at the chains**
+  (pillar 1; rule 4 of the chapter: "nothing about them is monstrous except what they're bound into").
+- When the founder "fights" (its skills), the figure only lifts its head and opens one hand toward the party. The
+  frame does the rest.
+
+### Weak point (ADR 0151, amended)
+**One small closed `spawn_wound` mark on each seat's hasp:** a hairline seam across the lock, 6 cm, never open and
+never shedding motes. That is four marks on one foe, still the Lamp Engine's justified exception. The keystone
+clasps lose their marks. **The party strikes the lock, never the person** (pillar 1): the hasp is beside the hip, on
+the outer post, never in front of the figure.
+
+**VFX:** the row's `vfx_anchors.wound` is the bone of the hasp next to break (or `q1_hasp` while CreatureActor names
+one bone per anchor). `core` is the frame's centre (`frame`). That retires the stand-in-height workaround above: the
+hits find the locks by bone.
+
+### Bones (amended)
+Per quarter:
+- `q<n>_bay` (the bay frame and its seat);
+- `q<n>_seat`: the figure's root, on the seat under the pelvis, +z out of the bay;
+- `q<n>_wrist_l`, `q<n>_wrist_r`, `q<n>_ankle_l`, `q<n>_ankle_r`: the rings, hinged to spring open;
+- `q<n>_chain_wl`, `q<n>_chain_wr`, `q<n>_chain_al`, `q<n>_chain_ar`: each short chain as one bone, swinging from
+  the hasp;
+- `q<n>_hasp`: the weak point;
+- `q<n>_crown`, `q<n>_clasp`, and the anchor chain `q<n>_chain_0..2`.
+
+The gate leaves are gone. With `root` and `frame`, that is **58 bones**.
+
+### Broken mesh (amended)
+`Q<n>Broken` is the seat with its hasp sprung, its chains hanging slack from the hasp, its rings open, and its lamp-bars
+**fallen**: the arch ribs and posts lie across the rail and the rim in front of the seat, still lit (the same steady
+`glimmer_bound` emission), with the arch's crown lamp hanging low in its gimbal.
+
+The light does not go out. It falls and is held: the bars' light stays where it lies, which U08 and H09 pick up. The
+last quarter's KO question in the sheet's open questions answers itself, because a broken quarter is lit too, so the
+KO's fade on the last quarter's whole bars reads the same.
+
+The budget stands, about 2.5k triangles a quarter, twice.
+
+### A quarter's break (`break_q<n>`, 4.0 s, amended)
+| Time | The frame | The founder (characters track; proposal) |
+|---|---|---|
+| 0.0–0.3 s | The hasp springs apart. The four chains drop slack and swing. | still, seated |
+| 0.3–0.6 s | The wrist and ankle rings spring open. **0.5 s is the founder's cue.** | the hands lift off the armrests |
+| 0.6–1.6 s | The bay's lamp-bars part at the clasp and come down slowly, ribs first, the posts last, into the water in front of the seat. Lit throughout, and falling, never rising. | they stand up off the seat (0.6–1.4 s) |
+| 1.0 s | The anchor chain parts at the rim and slides over the lip into the well. | |
+| 1.6–2.6 s | The crown lamp drops to hang low in its gimbal. The fallen bars settle. | one step forward, off the rail (0.3 m down), and they look at the party: **"thank you"** in the common tongue (act3_ch20.md §5) |
+| 2.6–4.0 s | Still. | they step back beside the seat, on the rim, and stand: free, hands open, their light steady and dimmed a little (no lift, rule 2) |
+
+A freed founder **stays shown** to the end of the fight: they stop fighting, they don't leave. The phase hides
+`Q<n>Whole` and shows `Q<n>Broken` (CreatureActor `hide`/`show`) and hides nothing else. The founders fall one by one
+in U08's cutscene, from where they stand, which is the characters track's and cinematics'.
+
+"The rest grow stronger" is Combat's (the remaining seats' numbers). If Combat wants it seen, the frame's `cast` (the
+tightening) is the clip to play at each phase change on the seats still whole, and no new clip is needed.
+
+### KO (amended)
+The last quarter breaks as above (0–4.0 s). Then the empty frame lets go: the anchor chains slide over the rim, the
+base rail settles 0.1 m, and the four seats stand open among their fallen, still-lit bars. It ends on the floor (y ≥ 0),
+except the chains over the lip (the `ALLOW` row). All four founders stand free.
+
+### Open questions, settled or moved
+- **One combatant, four parts:** settled by the roster ("leans to one combatant, four parts, as the flat engine").
+- **The thanks:** in battle, the common-tongue "thank you" during each break (1.6–2.6 s). The falls and the last words
+  are U08's.
+- **The last quarter's light at the KO:** settled (broken quarters stay lit).
+- **The VFX anchor height:** settled by `vfx_anchors` bones (above).
+- **Still open:** the break order (fixed, the proposal; or charge-driven); the arena's boss mark and `travel: none`
+  (battle presentation); Toma's "holds the line" set piece (Combat and the chapter designer); the founders' seated
+  figures and their `freed` clip, timed to the cue at 0.5 s (the characters track).

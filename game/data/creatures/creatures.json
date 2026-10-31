@@ -22,6 +22,7 @@
     "stormgull": {"scene": "res://game/creatures/stormgull/stormgull_battle.tscn", "vfx_anchors": {"core": "body", "wound": "neck"}, "contact": {"attack": 0.75}, "stand_in": {"yaw_deg": 60.0, "hover": 1.05}, "portrait": {"yaw_deg": 60.0, "pitch_deg": 20.0}},
     "wallcrab": {"scene": "res://game/creatures/wallcrab/wallcrab_battle.tscn", "vfx_anchors": {"core": "body", "wound": "body"}, "contact": {"attack": 0.5, "cast": 0.7}},
     "flue_moth": {"scene": "res://game/creatures/flue_moth/flue_moth_battle.tscn", "vfx_anchors": {"core": "thorax", "wound": "head"}, "contact": {"attack": 0.5, "cast": 0.6}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
+    "spire_moth": {"scene": "res://game/creatures/spire_moth/spire_moth_battle.tscn", "vfx_anchors": {"core": "thorax", "wound": "head"}, "contact": {"attack": 0.5, "cast": 0.6}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
     "undertows_reach": {
       "scene": "res://game/creatures/undertows_reach/undertows_reach_battle.tscn",
       "contact": {"attack": 1.2, "cast": 1.3, "attack_dark": 1.2, "cast_dark": 1.3, "attack_breach": 1.2, "cast_breach": 1.3,
@@ -52,6 +53,7 @@
     "slag_tortoise": {"scene": "res://game/creatures/slag_tortoise/slag_tortoise_battle.tscn", "vfx_anchors": {"core": "shell", "wound": "shell"}, "contact": {"attack": 0.55}},
     "ashwing": {"scene": "res://game/creatures/ashwing/ashwing_battle.tscn", "vfx_anchors": {"core": "thorax", "wound": "fore_l"}, "stand_in": {"hover": 1.86}, "contact": {"attack": 0.6}, "hit_snap": {"preroll_sec": 0.1}},
     "scuttler": {"scene": "res://game/creatures/scuttler/scuttler_battle.tscn", "vfx_anchors": {"core": "back", "wound": "front"}, "contact": {"attack": 0.45}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
+    "deep_scuttler": {"scene": "res://game/creatures/deep_scuttler/deep_scuttler_battle.tscn", "vfx_anchors": {"core": "back", "wound": "front"}, "contact": {"attack": 0.45}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
     "spar_wraith": {
       "scene": "res://game/creatures/spar_wraith/spar_wraith_battle.tscn", "stand_in": {"yaw_deg": 45.0},
       "clip_by_skill": {"spar_stab": "attack", "shroud_sweep": "shroud_sweep", "lines_taut": "lines_taut_deck",
@@ -85,6 +87,13 @@
     },
     "hullgnaw": {
       "scene": "res://game/creatures/hullgnaw/hullgnaw_battle.tscn", "contact": {"attack": 0.8, "rib_lash": 0.8, "thrash": 1.25},
+      "clip_by_skill": {"gnaw": "attack", "rib_lash": "rib_lash", "thrash": "thrash", "gnaw_coil": "coil"},
+      "ko_fade_sec": 0.8,
+      "phases": {"breaking": {"clip": "phase_break", "hide_after": ["Ribs"], "sec": 0}},
+      "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
+    },
+    "hull_rasp": {
+      "scene": "res://game/creatures/hull_rasp/hull_rasp_battle.tscn", "contact": {"attack": 0.8, "rib_lash": 0.8, "thrash": 1.25},
       "clip_by_skill": {"gnaw": "attack", "rib_lash": "rib_lash", "thrash": "thrash", "gnaw_coil": "coil"},
       "ko_fade_sec": 0.8,
       "phases": {"breaking": {"clip": "phase_break", "hide_after": ["Ribs"], "sec": 0}},
@@ -203,6 +212,34 @@
       "contact": {"attack": 0.45, "cast": 1.0, "idle_b": 0.6},
       "portrait": {"yaw_deg": 40.0, "pitch_deg": 20.0}
     },
+    "wick_crawler": {
+      "scene": "res://game/creatures/wick_crawler/wick_crawler_battle.tscn",
+      "contact": {"attack": 0.5, "cast": 0.95},
+      "stand_in": {"yaw_deg": 90.0},
+      "portrait": {"yaw_deg": 50.0, "pitch_deg": 18.0}
+    },
+    "chain_lamp": {
+      "scene": "res://game/creatures/chain_lamp/chain_lamp_battle.tscn",
+      "vfx_anchors": {"core": "beam", "wound": "shackle"},
+      "contact": {"attack": 0.45, "cast": 1.3},
+      "ko_fade_sec": 1.0,
+      "portrait": {"pitch_deg": 10.0}
+    },
+    "held_shoal": {
+      "scene": "res://game/creatures/held_shoal/held_shoal_battle.tscn",
+      "vfx_anchors": {"core": "float", "wound": "seam"},
+      "contact": {"attack": 0.55, "cast": 0.9},
+      "loop": ["idle", "idle_turned"],
+      "ko_fade_sec": 1.2,
+      "portrait": {"pitch_deg": 22.0}
+    },
+    "drowned_lantern": {
+      "scene": "res://game/creatures/drowned_lantern/drowned_lantern_battle.tscn",
+      "vfx_anchors": {"core": "heart", "wound": "globe"},
+      "contact": {"attack": 0.5, "cast": 0.8},
+      "ko_fade_sec": 1.0,
+      "portrait": {"pitch_deg": 12.0}
+    },
     "ridge_lynx": {
       "scene": "res://game/creatures/ridge_lynx/ridge_lynx_battle.tscn",
       "contact": {"attack": 0.7, "cast": 0.75},
@@ -309,6 +346,17 @@
                   "voice_ice": 0.9, "voice_holy": 0.8, "voice_glimmer": 0.9},
       "stand_in": {"yaw_deg": -90.0, "height": 4.2, "radius": 0.8}
     },
+    "kesh_held": {
+      "scene": "res://game/creatures/kesh/kesh_held_battle.tscn",
+      "ko": "release",
+      "clip_by_skill": {"voice_water": "voice_water", "voice_lightning": "voice_lightning", "voice_fire": "voice_fire",
+                        "voice_ice": "voice_ice", "voice_holy": "voice_holy", "voice_glimmer": "voice_glimmer",
+                        "the_seven": "special"},
+      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.8, "voice_water": 0.9, "voice_lightning": 0.7, "voice_fire": 0.8,
+                  "voice_ice": 0.9, "voice_holy": 0.8, "voice_glimmer": 0.9},
+      "phases": {"release": {"clip": "release", "hold": true}},
+      "stand_in": {"yaw_deg": 90.0, "height": 4.2, "radius": 0.8}
+    },
     "ilun_held": {
       "scene": "res://game/creatures/ilun/ilun_held_battle.tscn",
       "ko": "release",
@@ -352,6 +400,45 @@
       "contact": {"attack": 0.55, "cast": 0.8, "stop": 0.9, "ward": 0.8, "special": 1.45},
       "phases": {"release": {"clip": "release", "hold": true}},
       "stand_in": {"yaw_deg": 90.0, "height": 2.5, "radius": 0.6}
+    },
+    "tide_matron": {
+      "scene": "res://game/creatures/tide_matron/tide_matron_battle.tscn",
+      "ko": "bank",
+      "contact": {"attack": 1.0625, "tide_pour": 1.4375, "bank_the_tide": 1.25, "regrow_gather": 1.375, "regrow": 1.0,
+                  "phase_change": 1.1},
+      "loop": ["idle", "ready"]
+    },
+    "old_shoal": {
+      "scene": "res://game/creatures/old_shoal/old_shoal_battle.tscn",
+      "ko": "settle",
+      "contact": {"attack": 1.5, "cast": 2.2, "bite": 1.2},
+      "loop": ["idle", "ready"],
+      "stand_in": {"height": 3.8, "radius": 3.2}
+    },
+    "the_cage": {
+      "scene": "res://game/creatures/the_cage/the_cage_battle.tscn",
+      "contact": {"attack": 0.6, "cast": 1.0},
+      "loop": ["idle"],
+      "vfx_anchors": {"core": "vfx_core"},
+      "phases": {
+        "break_q1": {"clip": "break_q1", "sec": 0, "hide": ["Q1Whole"],
+                     "show": ["Q1Broken"], "hide_after": ["FounderQ1"]},
+        "break_q2": {"clip": "break_q2", "sec": 0, "hide": ["Q1Whole", "Q2Whole"],
+                     "show": ["Q1Broken", "Q2Broken"], "hide_after": ["FounderQ1", "FounderQ2"]},
+        "break_q3": {"clip": "break_q3", "sec": 0, "hide": ["Q1Whole", "Q2Whole", "Q3Whole"],
+                     "show": ["Q1Broken", "Q2Broken", "Q3Broken"], "hide_after": ["FounderQ1", "FounderQ2", "FounderQ3"]},
+        "break_q4": {"clip": "break_q4", "sec": 0, "hide": ["Q1Whole", "Q2Whole", "Q3Whole", "Q4Whole"],
+                     "show": ["Q1Broken", "Q2Broken", "Q3Broken", "Q4Broken"], "hide_after": ["FounderQ1", "FounderQ2", "FounderQ3", "FounderQ4"]}
+      },
+      "stand_in": {"yaw_deg": 45.0, "height": 4.3, "radius": 2.0}
+    },
+    "sefir_heart": {
+      "scene": "res://game/creatures/sefir_heart/sefir_heart_battle.tscn",
+      "ko": "let_go",
+      "contact": {"attack": 0.9, "cast": 1.4, "phase_change": 1.5},
+      "loop": ["idle", "ready"],
+      "vfx_anchors": {"core": "vfx_core"},
+      "stand_in": {"height": 4.0, "radius": 1.7}
     }
   }
 }

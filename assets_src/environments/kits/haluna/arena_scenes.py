@@ -1749,7 +1749,11 @@ UNDERTOW_CAGE = {
         {"glb": KIT + "memory_market.glb", "at": (19.0, 3.5, -27.0), "yaw": -30.0},
         {"glb": KIT + "memory_stands.glb", "at": (-30.0, 7.0, -44.0), "yaw": 40.0},
         {"glb": KIT + "memory_island.glb", "at": (34.0, -12.0, -55.0), "yaw": 10.0, "scale": 0.7},
-        {"glb": KIT + "memory_kitchen.glb", "at": (8.0, 12.0, -60.0), "yaw": 160.0, "scale": 0.9},
+        # M5-A3P-1400: the rest of act3_ch20's rooms (the second kitchen was a stand-in for them).
+        {"glb": KIT + "memory_gallery.glb", "at": (8.0, 12.0, -60.0), "yaw": 160.0, "scale": 0.9},
+        {"glb": KIT + "memory_terrace.glb", "at": (-40.0, -9.0, -18.0), "yaw": 70.0},
+        {"glb": KIT + "memory_square.glb", "at": (36.0, 9.0, -28.0), "yaw": -55.0},
+        {"glb": KIT + "memory_landing.glb", "at": (-14.0, 16.0, -46.0), "yaw": 20.0},  # M5-A3P-1402: a rest
     ],
     "scatters": [],
     "lamp_spec": {"color": "#7FC6D9", "energy": 1.8, "range_m": 8.0, "attenuation": 1.3},

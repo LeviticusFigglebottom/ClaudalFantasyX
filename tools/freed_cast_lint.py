@@ -23,7 +23,6 @@ CAST = re.compile(r"^\s*var (\w+)\s*:?=\s*(.+?)\s+as\s+\w+\s*(#.*)?$")
 KNOWN: dict[str, str] = {
     "game/audio/footstep_audio.gd:mi": "M3-HER-1150",
     "game/vfx/revenant/revenant_tells.gd:light": "M3-HER-1152",
-    "game/battle/scene/battle_choreo.gd:f": "M3-HER-1153",
     "game/vfx/ebbing/ebbing_motes.gd:node": "M3-HER-1161",
 }
 

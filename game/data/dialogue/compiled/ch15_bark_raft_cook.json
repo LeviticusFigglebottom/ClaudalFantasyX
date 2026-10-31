@@ -5,9 +5,13 @@
  "start": "ch15_bark_raft_cook",
  "nodes": {
   "ch15_bark_raft_cook": {
-   "headers": {"location": "ch15/hollowmere"},
+   "headers": {"location": "ch17/hollowmere"},
    "ops": [
-    {"op": "line", "id": "ch15_bark_rcook_001", "key": "DLG_CH15_BARK_RCOOK_001", "speaker": "cook", "emotion": "smile", "voice": "", "src": 5, "name_key": "DLG_NAME_COOK_RAFT_COOK"}
+    {"op": "if_not", "cond": ["flag", "ch15_toma_carried_tobin"], "to": 3, "src": 5},
+    {"op": "line", "id": "ch15_bark_rcook_001", "key": "DLG_CH15_BARK_RCOOK_001", "speaker": "cook", "emotion": "smile", "voice": "", "src": 6, "name_key": "DLG_NAME_COOK_RAFT_COOK"},
+    {"op": "goto", "to": 5, "src": 5},
+    {"op": "line", "id": "ch15_bark_rcook_002", "key": "DLG_CH15_BARK_RCOOK_002", "speaker": "cook", "emotion": "neutral", "voice": "", "src": 8, "name_key": "DLG_NAME_COOK_RAFT_COOK"},
+    {"op": "goto", "to": 5, "src": 7}
    ]
   }
  }

@@ -1,0 +1,23 @@
+{
+ "format": 1,
+ "scene": "ch20_hesk",
+ "source": "game/data/dialogue/ch20/ch20_hesk.dlg",
+ "start": "ch20_hesk",
+ "nodes": {
+  "ch20_hesk": {
+   "headers": {"location": "ch20/undertow_layers"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "camera", "args": ["U16"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "music", "args": ["memory_tidecup"], "kwargs": {"fade": 3.0}, "src": 9},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "gallery_faces", "count": 120, "rate": "slow"}, "src": 10},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "camera", "args": ["U17"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "anim", "args": ["hesk", "unfold", "cords"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 15},
+    {"op": "event", "name": "start_battle", "args": ["ch20_hesk"], "src": 16}
+   ]
+  }
+ }
+}

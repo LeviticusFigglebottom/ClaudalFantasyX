@@ -1,5 +1,5 @@
 {
- "_doc": "M4-CIN-1304: Ch10 Ossa Fen's cutscene shots and marks (cinematics'), for ch10_fen_edge, ch10_dead_channel and ch10_what_went_up, in the layout's frame (tools/act1/ch10_greybox.py's Walk0 runs from (3.4, 0.7) along (0.979, 0.204)). The layout's own F01-F04 and marks stay the chapter's. Shot lenses from act2_ch10.md section 7.",
+ "_doc": "M4-CIN-1304: Ch10 Ossa Fen's cutscene shots and marks (cinematics'), for ch10_fen_edge, ch10_dead_channel and ch10_what_went_up, in the layout's frame (tools/act2/ch10_greybox.py's Walk0 runs from (3.4, 0.7) along (0.979, 0.204)). The layout's own F01-F04 and marks stay the chapter's. Shot lenses from act2_ch10.md section 7.",
  "shots": {
   "O01": {
    "pos": [

@@ -1,0 +1,25 @@
+{
+ "format": 1,
+ "scene": "ch18_revisit_corrow",
+ "source": "game/data/dialogue/ch18/ch18_revisit_corrow.dlg",
+ "start": "ch18_revisit_corrow",
+ "nodes": {
+  "ch18_revisit_corrow": {
+   "headers": {"location": "ch08/corrow"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["K21"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 8},
+    {"op": "if_not", "cond": ["flag", "ch09_heard_stair_clear"], "to": 6, "src": 9},
+    {"op": "line", "id": "ch18_corrow_001", "key": "DLG_CH18_CORROW_001", "speaker": "child", "emotion": "neutral", "voice": "", "src": 10, "name_key": "DLG_NAME_CHILD_MARRA_S_CHILD"},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 11},
+    {"op": "goto", "to": 6, "src": 9},
+    {"op": "line", "id": "ch18_corrow_002", "key": "DLG_CH18_CORROW_002", "speaker": "marra", "emotion": "neutral", "voice": "", "src": 13},
+    {"op": "if_not", "cond": ["flag", "ch09_toma_knelt_with_ivo"], "to": 12, "src": 14},
+    {"op": "cue", "cue": "mark", "args": ["toma", "ivo_stone", "walk"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 16},
+    {"op": "line", "id": "ch18_corrow_003", "key": "DLG_CH18_CORROW_003", "speaker": "toma", "emotion": "sad", "voice": "", "src": 17},
+    {"op": "goto", "to": 12, "src": 14}
+   ]
+  }
+ }
+}

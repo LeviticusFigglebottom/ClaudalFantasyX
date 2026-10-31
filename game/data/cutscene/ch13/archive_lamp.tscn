@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[node name="ArchiveLampProp" type="Node3D"]
+
+[node name="archive_lamp" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+light_color = Color(1, 0.74, 0.45, 1)
+light_energy = 1.8
+omni_range = 5.0
+omni_attenuation = 1.4
+shadow_enabled = true

@@ -16,7 +16,7 @@ location: ch17/hollowmere
 @anim aldous_varrow look_at liss
 @wait 2.0
 @camera H06
-@mark liss fathers_door walk
+@mark liss fathers_door_liss walk
 @wait 6.0
 @anim aldous_varrow embrace liss
 @wait 4.0

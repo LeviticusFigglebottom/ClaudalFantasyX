@@ -249,12 +249,30 @@ with no tints and the npc.json tuning for its `npc_id`. `"silhouette": "#RRGGBB"
 silhouette in that colour (`NpcSilhouette`, `game/world/npc/npc_silhouette.gdshader`: unshaded, a fresnel rim brighter
 than the core, fading in from the feet, no shadow, no TIME). Each surface gets its own material carrying the maps it
 wore (albedo brightness, occlusion, normal map), so cloth folds and seams show under the glow, plus brine tide lines and
-drip streaks; the materials belong to the meshes alone and FieldNpc clears them on leaving the tree (the PC's pass 3:
-a shared cached material logged "material is null" on free). `"tuning": {...}` is merged over the villager's tuning.
+drip streaks.
+
+**Material lifetime (PC row 85).** FieldNpc holds every override it puts on its actor, tints and silhouette alike
+(`override_materials`), as well as the meshes holding them:
+- On free, the children go first: the meshes and their render instances. The materials go after, when the FieldNpc
+  does, so no instance ever draws with a freed material.
+  - A mesh alone frees its overrides in its own destructor, before its base frees the render instance. Headless,
+    that logged `material is null` once per surface.
+- Nothing swaps materials on leaving the tree. The earlier clear in `_exit_tree` put the body's own materials back
+  mid-teardown while the silhouette's were freed.
+- NpcTints caches its shared tinted copies weakly, so none outlives its people. The PC's pass 3 had a static
+  per-colour cache that outlived the figure. `"tuning": {...}` is merged over the villager's tuning.
 - **Corrow's storm figure** (act1_ch08 W22, "a single cyan silhouette", a man's shape in the storm wall) is
   `corrow_storm_figure` in `zones/ch08_corrow.json`: the Oruvel diver's body `crowd_man_lean_a` in `#5fd6e0`, inside the
   `figure` stage actor (attach child, so the layout's flags show and hide it and the cutscene's `@mark figure
   figure_gone walk` moves it). Its tuning zeroes the glance, look-around and talk radii: it never turns to the party.
+
+### Built under a scene change (M3-HER-1168)
+During a scene change the layer holds SceneRouter's reveal while it builds (ADR 0111 amendment 4).
+1. It requests every row's actor scene on worker threads (`ResourceLoader.load_threaded_request`).
+2. It adds the rows as many a frame as fit `SPREAD_BUDGET_MS`.
+3. It waits `SETTLE_FRAMES` before releasing.
+
+Haluna's held reveal went from 1.85 s to about 0.2 s, cold and headless.
 
 ### Day and night rows (the Lead, 2026-10-30: Haluna's vignettes)
 A row's `"shown": "day"` or `"night"` shows the villager only while the zone's `is_night` is false or true; with no
@@ -291,3 +309,30 @@ does the same by hand. The validator accepts only `day` and `night`.
 - **Routes** need a villager beside its stand-in (it carries the body). An adopted villager rides inside its body,
   so its row's `route` and `follow` do not apply; Haluna's routes (Reed's sweep, the child's lane) wait until the
   zone owner places those two beside their bodies (or lets the layer place them).
+
+## Distant crowds: CrowdFar (M5-A3P-1809, 2026-10-31)
+For a crowd too big for skinned actors (Ch20 U04's remembered Reefball crowd, 30+ held shapes). `game/world/npc/crowd_far.gd`:
+- **Data** (JSON): `glow` "#RRGGBB", `frames` (poses per clip), `fps`, and `people` [{`id`, `body` (a crowd body),
+  `clip` (its crowd library's clip), `at` [x, y, z(, yaw_deg)]}].
+- **Bake:** at load, each body and clip in the data is posed at `frames` even points through the clip. Each pose is
+  skinned on the CPU (linear blend of the skin's binds) into one static mesh. The unskinned eyes are left out, inside
+  the head.
+  - It doesn't use `bake_mesh_from_current_skeleton_pose`, which needs the renderer's skin and fails headless.
+- **Draw:** one MultiMesh per body, clip and pose, all in one NpcSilhouette material in `glow`, no shadows.
+  - Each person shows in exactly one pose at a time: its phase (HeroIdleMicro.share of its id) plus the clock at
+    `fps`, so the crowd is out of step.
+  - Draw calls = bodies × poses (the review stage: 8 × 6 = 48 for 32 people; fewer bodies or poses for a real
+    layer).
+- **Deterministic:** ids and frame deltas only. No skeletons, no AnimationPlayers, no physics.
+- **The roar:** crowd clip `cheer` (crowd_clips.py; 2.4 s, both arms up and pumping on a knee-bounce). It's in the
+  adult library through `clip_libraries.adult.extra` in ranges.json, a library's clips that no member works at.
+- **Review:** `game/levels/_tests/npc/held_shapes_reefball.tscn`, 32 held shapes on four tiers, shot
+  `npc_held_shapes_reefball`. Tests: tests/unit/test_crowd_far.gd.
+- **Open:**
+  - **Load:** threaded by default. The actor scenes load on ResourceLoader's threads, which is most of the cost
+    (about 0.6 s a body: textures and materials). Posing is the main thread's, and the skinning runs on the
+    WorkerThreadPool. The crowd appears when it's done (`built`).
+    - Measured on the review stage (8 bodies, 6 poses, 4 cores, headless): the worst frame is 48 ms (the posing)
+      and the crowd is in after 1.05 s. All at once it was 5.3 s on the main thread.
+    - `threaded = false` builds in `_ready` (the review stage's shot).
+  - The U01–U03 layers' near held shapes stay VillagerLayer `silhouette` rows (skinned, close).

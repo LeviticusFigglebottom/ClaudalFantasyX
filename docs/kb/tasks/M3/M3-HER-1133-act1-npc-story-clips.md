@@ -2,8 +2,8 @@
 id: M3-HER-1133
 title: "Request (characters): Act I's people have no story clips (their @anim cues are skipped), plus two hero clips nobody requested"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "creatures (claude/creatures), supplementing characters (ADR 0207)"
 reviewer: cinematics
 depends_on: [M3-HER-1125]
 milestone: M3
@@ -56,3 +56,19 @@ until the person has a rig with the clip:
 - [ ] Re-run the audit (`--filter=qa_cutscene_motion_audit`): the "none" count falls as each lands.
 
 ## Review log
+- 2026-10-30 creatures (supplementing characters, the Lead's 23:26). The state of the list on claude/creatures:
+  - **Already built** (villager_story_clips.json, requested_clips.json): clerk, elder, fenn, garo, gatekeeper,
+    marra, poolkeeper, reed_a, reed_b; ivo's two and the officer's hatchet_blow.
+  - **Built now** (villager_story_clips.json; libraries regenerated with villager_clips.py):
+    - kell: `trim_wicks`, `take_scissors`, `light_beacon` (her `press_wick` was M3-CHR-03's already; the script's
+      `trim_wicks` is a one-shot of its own beside her looping `trim_wick`);
+    - neme: `clear_plates`, `carry_food` (both loops), `watch`, `laugh_breaks`;
+    - osu: `set_shell`.
+    Eight review shots (`villager_{kell,neme,osu}_*`, pending_baseline), all viewed. Neme's `carry_food` was too
+    high at first and was lowered to the chest. Tools test_villagers is expected-list updated (the only reds are
+    tender and tobin rebuilding byte for byte, which fail without this change too: characters' WIP). Godot villager
+    49/0.
+  - **Still open:**
+    - liss `haul_rope` and pell `storm_call` (hero libraries, characters' M3-CHR-1000 queue);
+    - boat_seller, ferryman, inquisitor and passenger_child have no rig of their own. That's cinematics' routing
+      (ferrymaster? moll? child?), the same as characters' "script actor ids with no library".

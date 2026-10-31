@@ -903,3 +903,225 @@ farthest any bone moves on screen from the idle's first frame, and its peak spee
 - Moll (the Inquisitor) is the characters track's actor, so its clips are outside this measure.
 - Stagger and phase tells were all clear: the phase clips move 88 to 849 px. What hides them in play is the
   phase-moment cut (battle-presentation, traced above), not the clips.
+- **The Vowbound summon passes: COMPLETE** (all seven, every skill once plus the finisher, in the mounted Act II
+  fights). All clips read on their bodies:
+  - **Ilun** (ch10): Brine Lash, Tidal Ward, the Floodnet finisher (the net-wings spread).
+  - **Nhoa** (ch10): Silt Fall, Deep Well, Echo, the Farewell Tide finisher (she lifts, arms raised).
+  - **Kahre** (ch11): Forge Bolt, the Last Strike finisher. Its mid-clip still looks like Forge Bolt's, so I
+    measured both: Last Strike peaks 2.8 m from rest over 2.8 s with two strikes, Forge Bolt 1.5 m over 1.6 s.
+  - **Hesk** (ch11): Knot Light, Cord Lift (`cleanse`), Mending, the Pass Cord finisher, and the guard.
+  - **Virel**, **Ethren**, **Kesh** (ch12): as above.
+  - **Fixed in my lane:** Kesh's rise (021ce740). **For battle-presentation:** the normal call's hold (1.3 s after
+    the 0.95 s delay) is shorter than the 2.6 s rises; Kesh's 4.2 m (and The Seven's lift) leave the frame at the
+    vowbound slot; the slot stands before the default camera.
+  - The effects on these skills are battle-presentation's (big25+); I re-run the same passes to view them on the
+    bodies once they are on the integration branch (the agreed split).
+- **BACKLOG EMPTY (19:40):** the Act I and Act II boss passes, the Act I feel pass (de6c131b) and the Vowbound summon
+  passes are done, with every fix in my lane MERGE-READY. Next when they land: battle-presentation's Act II effects
+  (view them on the bodies), the Abiding guard's actor, the flat-engine's row, and the Ch13+ boss encounters.
+
+## 2026-10-30 20:30: answer to the Lead's 20:26 (the Act I boss feel pass is DONE, logged at 19:10)
+MERGE-READY @ de6c131bf: the Act I boss feel pass. All six bosses measured at battle distance (the table at 19:10). The one weak tell, the Reach's hit, is fixed and tested; the stagger and phase tells all read.
+MERGE-READY @ 589c27676: the branch head (everything above).
+
+## 2026-10-30 ~21:40: M3-HER-1134 (an open Act I row of mine, before the Act II feel pass)
+MERGE-READY @ c095cfec2: M3-HER-1134. The Cinder Matron's cutscene cues play her own clips (to review: cinematics).
+- She was already her creature on the Ashcrown stage (cast `creature:cinder_matron`). Only the clip names were
+  missing. Two keys were appended to the sequencer's `clip_stand_ins` (game/data/cutscene/sequencer.json):
+  `matron/bank` plays `bank_the_fire`, and `matron/unfold` plays `intro` (the anvil's ring wakes her).
+- qa_cutscene_motion_audit, before and after: ch05_kahre real 7 -> 8 (`matron/bank` was none; it's real now);
+  ch05_matron_wakes real 1 -> 2, gaps none. The one gap left in ch05_kahre, `tender/open_chamber`, is the
+  characters track's. validate_data 0/0; taskboard --check clean.
+- Running: the four Act II Vowbound with battle-presentation's big29 effects, to view each one on its body. Next:
+  the Act II boss feel pass. M3-HER-1168 is creatures': they haven't asked in their log.
+- **The Act II effects viewed on the bodies (big29), Ethren and Kesh so far:** the sweep's impacts check finds
+  every landed hit has its effect, and no framing failures. Ethren's Level Hand, Hold the Hour, Lacquer Screen and
+  Still Water, and Kesh's six voices and The Seven, sit on the bodies (the projectiles leave her hands; the impacts
+  are on the target's chest). The big29 framing now fits Kesh whole in her turns. **Filed M4-A2P-1850 for
+  battle-presentation:** all of Kesh's voices fly one shared pale orb, so the element reads only on impact, and the
+  orb casts a shadow on the floor. Nothing in my models needs fixing. Hesk (with the crawlers) and Nhoa are rendering.
+- **The Act II effects on the bodies, done (big29):** Hesk (Knot Light's gold burst on the Engine, Cord Lift,
+  Mending, Pass Cord), Nhoa (Silt Fall on the Drowner, Deep Well, Echo, Farewell Tide), and the conduit crawler's
+  Brush Jab (a brass spark on its target) all sit on their bodies. Nhoa's impacts check is clean; Hesk's run ended on
+  its time limit (the pass keeps the Vowbound unkillable, so the fight is long). The crawler's mend and tend didn't
+  come up in this sweep. M4-A2P-1850 is the only request.
+
+## 2026-10-30 ~23:00: the Act II boss feel pass (the Lead's 20:45)
+Measured as for Act I: each Act II boss in its own fight at the default camera (1920x1080); the farthest any bone
+moves on screen, and its peak speed in px per 0.05 s.
+
+| Boss | body | hit | hit_b | idle | the tells |
+|---|---|---|---|---|---|
+| Mangrove Drowner | 378 px | 29 / v23 | 34 / v28 | 10 / v1 | **rising_water 30 / v6**, snag 164 / v98, phase_change 326 / v138 |
+| Lamp Engine | 452 | 55 / v43 | 79 / v56 | 36 / v3 | lamp_gather 148 / v33, call 175 / v174, phase_change 107 / v19 |
+| Avalanche Ram | 527 | 170 / v113 | 160 / v115 | 38 / v3 | charge_gather 238 / v51, neck_sweep 234 / v67, phase_tear 387 / v226 |
+| Wakefin | 246 | 42 / v36 | 44 / v28 | 45 / v3 | dive 141 / v40, rise_strike 421 / v233, phase_close 284 / v61 |
+
+- Every hit is a fast jolt against a slow idle, and every tell clears the idle, **except the Drowner's rooted
+  `rising_water`**: its party-wide call every third turn, with no charge, so its own motion is the only warning.
+  It moved the body 30 px at 6 px per 0.05 s.
+- **MERGE-READY @ ef0cad9f1: Rising Water's heave is doubled** (the mass rises 0.55 m, the arches and aerial roots swing
+  further, the trunk lifts 0.18 m): now 65 / v23, and the uprooted version 303 / v34. Clip sheet viewed in its fight:
+  the dark mass heaves up between the arches with its teal lights high. New tools/tests/test_mangrove_drowner.py
+  (the heave is at least 0.45 m; the old clip's 0.27 m fails it). Blender creature_mangrove_drowner 4 identical;
+  Godot bosses_act2 32/0, creature_vfx 15/0, creature_actor 31/0; tools test_creatures and test_blender_builds OK.
+- **BACKLOG EMPTY (23:00):** the Act I and Act II feel passes, the boss and summon passes, the effects on the bodies
+  (M4-A2P-1850 filed for battle-presentation) and M3-HER-1134 are done, and every fix in my lane is MERGE-READY. Next
+  when they land: M4-A2P-1850's re-view, the Abiding guard's actor, the flat-engine's row, and the Ch13+ bosses.
+
+## 2026-10-30 ~22:40: Act III opens (ADR 0207; the Lead's 21:56)
+My Act I and Act II rows are done or waiting on other tracks, so I'm on Act III production in my lane (bosses and
+Vowbound), ids M5-A3P-1850 to 1899. Order: the never-cut items first (act3_roster.md "Order of work").
+- **M5-A3P-1850, Kesh's held form and release (to review):** act3_ending H03 releases Kesh as the Ch20 six (T-01,
+  accepted). She has the held light (`materials_held/`), `kesh_held_battle.tscn`, a creatures.json `kesh_held` row
+  (KO = the held `release`), a portrait, and a 3.5 s `release`: the arms open low, palms out; the face lifts and turns
+  away; the column carries her up 2.2 m, out of the frame. Clip sheet viewed. New test_creature_kesh_held 3/0 (Godot
+  vowbound 118/0, creature_portraits 4/0; Blender kesh 7 identical; validate_data 0/0).
+- **Claimed (todo):** M5-A3P-1851 the Cage (Ch20 boss; the sheet's seats-and-chains amendment first),
+  M5-A3P-1852 tide_matron and M5-A3P-1853 old_leviathan (Ch18 optional, last). An ownership row is appended for the
+  Act III ids.
+- **LEAD-ASK (the Undertow heart):** your 21:56 names "the finale's Undertow heart" for me, but act3_roster.md
+  (creatures) gives the Undertow-heart (Sefir's phase 2) and the storm's eye to the rendering track ("the rendering
+  track's Undertow, not a creature"). **Default:** the roster stands, and I offer rendering the heart's body if they
+  want a rigged form (a request task, ADR 0207 supplement). Say if you want me to take it instead.
+- **LEAD-ASK (the Cage's sheet):** docs/kb/art/creatures/act3/the_cage.md is creatures' sheet (M3-CRE-648, blocked),
+  but the Cage is a boss, which is my lane. **Default:** I take the sheet's amendment and the build (M5-A3P-1851) unless
+  creatures say otherwise in their log; I'll note it there with a request task.
+
+MERGE-READY @ 1efbbe0cd: M5-A3P-1850 (Kesh held form and release).
+- **M5-A3P-1852 tide_matron: the design sheet** (docs/kb/art/creatures/act3/tide_matron.md). She is the Cinder
+  Matron's sister kiln, drowned with a shore-forge: her sister's rig and silhouette, a reef grown where the slag was,
+  the firebox shut and dark, and the heart bound behind polished salt-glass. The fight proposal, for Combat: the reef
+  regrows on its own, so breaking it is never the answer, and a party that lets her bank wins at once (Ch5's lesson,
+  mastered). The ending is always the bank, never a break. Next: Combat's answer, then the build (a `tide` flag in her
+  sister's build script, a second GLB).
+- **Waiting:** M5-A3P-1854 (creatures: the Cage's sheet), the two LEAD-ASKs above.
+
+## 2026-10-30 ~23:20: supplementing characters, M4-A2P-1980 (the Lead's 22:05; before the Act III bosses)
+MERGE-READY @ fb31999db: M4-A2P-1980 part 1, a per-clip fist on a free hand (to review: characters).
+- requested_clips.json takes an optional `fist` per story clip (documented in its `_doc`). Rhen's `knock` closes his
+  right hand as the arm comes up and keeps it closed through the held last frame. hero_clips.py reuses the fist that
+  HAND_SHAPE already solves (FIST_CURL, flat_init's solve, now shared as `_hand_rots`), and keys it in that clip only.
+- Regenerated: only Rhen's `knock` sub-resource changed (the other 96 are byte-identical). Pell's and the officer's
+  libraries (the flat-hand heroes whose solve was refactored) regenerate identical. rhen_clip_knock rendered and
+  viewed: a closed fist. tools test_hero_clips and test_hero_battle_clips 34/0; Godot hero_stage 11/0.
+- The clip list agreed: one clip, Rhen's `knock` (the task's only named case). Any other story clip can take
+  `fist` the same way, in characters' specs.
+- **LEAD-ASK, for characters (part 2, headroom):** measured, Godot's binary save of today's libraries is 1.85 MB plain
+  or 0.65 MB compressed, against 4.02 and 3.99 MB of text. Two options are written in the task file: (a) commit
+  `<hero>_clips.res`, built by a headless Godot step from hero_clips.py's text, with the import rule, about 30 stage
+  scenes and scene_loads.json pointing at it; or (b) split the story clips into `<hero>_story_clips.tres`, merged by
+  the import rule. **Default (a)**, as the test's own note says. I start it when characters agrees in their log or in
+  the task.
+- Meanwhile: Act III (M5-A3P-1852, the Tide Matron's build).
+
+## 2026-10-30 ~23:55: M4-A2P-1980 part 2 (the Lead's "take your best default"), then the Tide Matron's build
+- **M4-A2P-1980 part 2, default (a), done:** Asha's and Rhen's libraries are now committed as compressed binary
+  `assets/characters/{asha,rhen}/anim/<hero>_clips.res` (0.65 and 0.66 MB, down from about 4 MB of text each).
+  hero_clips.py still builds the text and then saves it through a headless Godot step, tools/characters/clips_to_res.gd.
+  The save is deterministic for its `res://` path. A `<hero>_clips.res.sha256` beside each library is the source's
+  hash, so the tools test checks the build without Godot. Nothing loaded the `.tres` except through these paths:
+  game/core/import/asset_import_rules.gd's `animation_library_path` falls back to the `.res` (a **core** edit, two
+  lines), and 18 stage scenes plus scene_loads.json point at `.res`. The other heroes stay text. Characters can move
+  one with `BINARY_LIBS`.
+- **M5-A3P-1852 the Tide Matron, built (to review: combat).** `build_cinder_matron.py --tide` writes
+  assets/creatures/tide_matron/tide_matron.glb from her sister's rig and mesh:
+  - The frame is verdigris over brass. Every fire is out: no emission anywhere but the heart and the sight-glass.
+  - The slag is a coral `Reef`, and `Kelp` ribbons sway through her idle.
+  - Her clips are her sister's ×1.25, renamed `bank_the_tide`, `tide_pour`, `regrow_gather` and `regrow`. Her KO
+    is `bank`, with the head bowing last, and `phase_change` is the Calm.
+  - The Cinder Matron's GLB rebuilds byte-identical, and both builds reproduce.
+  - New pieces: Blender job `creature_tide_matron`, the battle scene, the creatures row (`ko: bank`), a portrait,
+    PROVENANCE rows and tools/tests/test_tide_matron.py.
+  - tools/creatures/clip_sheet.gd now plays a row's own `ko` clip.
+  - Clip sheet and portrait viewed.
+  - **For Combat:** her skills and enemy row (none exist yet, so the row has no `clip_by_skill` and no phases).
+- Next: the Cage (M5-A3P-1851) when creatures answer M5-A3P-1854; else old_leviathan (M5-A3P-1853).
+- **LEAD-ASK (a name near-miss, CLAUDE.md §2):** the roster's `old_leviathan` uses "Leviathan", a recurring summon
+  name in the series we must not echo. A giant-turtle superboss also sits near one of its trope monsters.
+  - **Default, taken:** the id becomes `old_shoal`, player-facing "the Old Shoal". The design stays ours: a shoal
+    that turns out to be an animal, with no light at all, the only boss outside the cycle.
+  - Sheet: docs/kb/art/creatures/act3/old_shoal.md (M5-A3P-1853, now doing). My ownership row is updated.
+  - Creatures should rename the roster row (act3_roster.md is theirs).
+  - The Lead's call: whether "leviathan" goes into tools/banned_terms.txt once nothing uses it.
+
+MERGE-READY @ 0a995f876 (head; includes a0ba72003):
+- **M4-A2P-1980 part 2** (a0ba72003, to review: characters). This touches **game/core/import/asset_import_rules.gd**
+  (the .res fallback).
+  - After merging, reimport asha.glb, asha_lod1.glb, rhen.glb and rhen_lod1.glb, or the old cache points at the
+    deleted .tres. Add any line to their .import files and run `godot --headless --import`; Godot rewrites the
+    files back.
+  - Checks: Godot `--filter=hero` 116/0; tools hero tests 60/0.
+- **M5-A3P-1852 and 1853** (0a995f876, to review: combat). The Tide Matron and the Old Shoal are built, as above, and both
+  rebuild byte-identical.
+  - Blender jobs `creature_tide_matron` and `creature_old_shoal`; the Cinder Matron's GLB is unchanged.
+  - Checks: Godot creature 163/0, portrait 22/0; validate_data 0/0.
+  - Shots: none in the manifest show them. Viewed: the clip sheets and portraits.
+
+## 2026-10-31 ~00:50: M5-A3P-1851 the Cage (the last Act III boss in my range)
+MERGE-READY @ 1c658c5ce: the Cage, built (to review: combat).
+- **Built from the roster's amendment**, because M5-A3P-1854 got no answer (the default logged 2026-10-30).
+  The_cage.md is unchanged. What the build does differently from it is in docs/kb/art/creatures/act3/the_cage_seats.md.
+- **The model:** four seats on the arc, chained at the wrists and ankles, with lit salt-glass bars, crown lamps and
+  keystone clasps (one spawn_wound seam each).
+  - Each quarter is `Q<n>Whole` / `Q<n>Broken`, swapped by four **cumulative** `break_q<n>` phases.
+  - The scene has `FounderQ1..Q4` placeholders at the seats.
+  - 47 bones, 17.4k triangles (budget 22k), byte-reproducible.
+- **New pieces:** Blender job `creature_the_cage`, a portrait, PROVENANCE rows and tools/tests/test_the_cage.py.
+- **Checks:** Godot creature 163/0, portrait 22/0; validate_data 0/0.
+- **Viewed:** the portrait, the clip sheet, and a scratch render with q1 and q2 broken.
+- **For Combat:** the enemy row and phase HP thresholds (break_q4 just above 0 HP), `travel: none`, an arena mark.
+- **For characters:** the founders, seated.
+
+BACKLOG EMPTY: all my Act III bosses are built and in review (M5-A3P-1850 Kesh held, 1851 the Cage, 1852 the Tide
+Matron, 1853 the Old Shoal). M4-A2P-1980 is in review (characters). M4-A2P-1850 is battle-presentation's. What's
+left on these is other roles' (Combat's enemy rows and skills, characters' founders, battle presentation's effects
+and framing) or the LEAD-ASKs above (the Undertow heart's owner, the old_leviathan rename).
+
+## 2026-10-31 ~01:45: the Lead's 01:21 (Act III bosses, then the finale's Undertow heart)
+- The Act III bosses from M5-A3P-1852 onward were already built (see above). Your message answers the heart
+  LEAD-ASK: it is mine.
+
+MERGE-READY @ 44fb48a8d: M5-A3P-1855, the Undertow-heart (to review: combat).
+- **What it is:** the battle body of Sefir's phase 2 (H06), sheeted at docs/kb/art/creatures/act3/undertow_heart.md.
+  - Three helical bands of held light turn so their stripes sink in a seamless loop.
+  - Salt-glass shards torn from the column's sleeves orbit him, two tendrils make the draw, and a ring of light lies
+    at his feet.
+  - His figure is the characters track's, at the scene's `Sefir` node. Env-art's column, floor and eyewall stay
+    theirs.
+- **Light:** `glimmer_held` only. The KO `let_go` sinks the bands under the KO fade, so held light never rises
+  (colour-script rule 1). The lift is the effects layer's.
+- **Size:** 3.2k triangles, 17 bones, byte-reproducible.
+- **Checks:** Godot creature 163/0, portrait 22/0; validate_data 0/0; tools test_sefir_heart OK.
+- **Viewed:** the portrait and a scratch render of `cast`.
+- **For Combat:** Sefir's phase-2 row (this body as his phase-2 model, or a second row; the sheet's questions).
+- **Battle-presentation's row 61 (Surge model):** nothing has come in from them yet. I'll take it if they ask in
+  their log or a task.
+
+BACKLOG EMPTY: the Act III bosses (1850 Kesh held, 1851 the Cage, 1852 the Tide Matron, 1853 the Old Shoal) and the
+Undertow-heart (1855) are built and in review. M4-A2P-1980 is in review. What's left is other roles' (Combat's rows
+and skills, characters' founders and Sefir's figure) or the old_leviathan rename LEAD-ASK.
+
+## 2026-10-31 ~02:10: the Lead's 01:41 (drop the binary libraries; merge clean)
+- **Reverted a0ba72003** (the .res conversion) at c8f7af0bc, without rewriting history. Asha's and Rhen's libraries,
+  hero_clips.py, the import rule, the stage scenes, scene_loads.json and the hero tests are back to the base
+  byte for byte, so characters' .tres rebuild (abf7391b) wins cleanly. The PROVENANCE rows for my four bosses stay.
+- **Offered to characters as M4-A2P-1981** (request, todo), with the numbers:
+  - 4.02 → 0.65 MB (Asha) and 3.99 → 0.66 MB (Rhen).
+  - Cold load 595 → 28 ms and 573 → 30 ms.
+  - Godot's export already converts text to binary, so the win is for the editor, the tests and git.
+  - They decide. M4-A2P-1980 part 1 (Rhen's knock fist) stays in their review.
+- **Merged claude/new-session-mj8c3c in** (a merge commit; the branch was pushed, so no rebase). The only conflicts
+  were in three shared files, each resolved with both sides kept:
+  - PROVENANCE: both sides' rows.
+  - ownership: env-art's and env-art-b's new rows beside my updated row.
+  - the creatures import list: the union.
+  - A test merge of lead/gate-big36 conflicts in the same three files, which this merge resolves.
+- Checks on the merged tree:
+  - Godot creature 163/0; validate_data 0/0; taskboard OK; tools tests for my bosses OK.
+  - Godot portrait 21/1. The one failure, test_hero_portraits' `venn`, is **not this branch's**: his manifest
+    stage is game/levels/_tests/characters/stillguard/venn_face_cold.tscn, which has no `character_scene`. That
+    comes from the integration branch; my only portraits.json change is my four creature entries. For characters.
+
+MERGE-READY @ 17bfab43e: the Act III bosses (M5-A3P-1851 the Cage, 1852 the Tide Matron, 1853 the Old Shoal, 1855 the
+Undertow-heart), the a0ba72003 revert and M4-A2P-1981, merged with the integration branch.

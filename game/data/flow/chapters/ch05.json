@@ -5,6 +5,7 @@
     "ch05/pemakar": {
       "party": {"party": ["rhen", "asha", "toma"], "reserve": ["ysolde"]},
       "arrive": [
+        {"when": {"set": ["ch18_world_open"], "unset": ["ch18_revisit_pemakar_seen"]}, "steps": [{"place": "Harbour"}, {"play": "ch18_revisit_pemakar"}, {"set": "ch18_revisit_pemakar_seen"}, {"go": {"location": "ch18/kite", "spawn": "Deck"}}]},
         {"when": {"set": ["ch05_kahre_bound"], "unset": ["ch05_after_seen"]}, "steps": [
           {"place": "FromAshcrown"},
           {"zone": "place_actor", "args": ["kerrid", "inn_gate"]},
@@ -62,6 +63,8 @@
           {"battle": "ch05_stair_tortoises", "return_spawn": "AfterTortoises", "victory_flag": "ch05_tortoises_won"}
         ]},
         "crown": {"when": {"unset": ["ch05_trial_begun"]}, "steps": [
+          {"set": "ch05_passed_grave_tier"},
+          {"set": "ch05_passed_copper_tier"},
           {"play": "ch05_crown_pavilion"},
           {"set": "ch05_trial_begun"},
           {"place": "Crown"}

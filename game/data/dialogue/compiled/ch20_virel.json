@@ -1,0 +1,40 @@
+{
+ "format": 1,
+ "scene": "ch20_virel",
+ "source": "game/data/dialogue/ch20/ch20_virel.dlg",
+ "start": "ch20_virel",
+ "nodes": {
+  "ch20_virel": {
+   "headers": {"location": "ch20/undertow_layers"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "camera", "args": ["U12"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "music", "args": ["memory_coilspire"], "kwargs": {"fade": 3.0}, "src": 10},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "kitchen_shapes", "count": 20, "rate": "slow"}, "src": 11},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "camera", "args": ["U13"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "anim", "args": ["virel", "uncoil", "kitchen_door"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch20_virel_001", "key": "DLG_CH20_VIREL_001", "speaker": "virel", "emotion": "laugh", "voice": "", "src": 16, "name_key": "DLG_NAME_VIREL_WENNA"},
+    {"op": "if_not", "cond": ["flag", "ch08_liss_found_marks"], "to": 21, "src": 17},
+    {"op": "if_not", "cond": ["and", ["flag", "ch11_found_wenna_mark"], ["flag", "ch13_found_wenna_mark"]], "to": 13, "src": 18},
+    {"op": "line", "id": "ch20_virel_002", "key": "DLG_CH20_VIREL_002", "speaker": "liss", "emotion": "soft_smile", "voice": "", "src": 19},
+    {"op": "goto", "to": 19, "src": 18},
+    {"op": "if_not", "cond": ["or", ["flag", "ch11_found_wenna_mark"], ["flag", "ch13_found_wenna_mark"]], "to": 16, "src": 21},
+    {"op": "line", "id": "ch20_virel_003", "key": "DLG_CH20_VIREL_003", "speaker": "liss", "emotion": "soft_smile", "voice": "", "src": 22},
+    {"op": "goto", "to": 18, "src": 21},
+    {"op": "line", "id": "ch20_virel_004", "key": "DLG_CH20_VIREL_004", "speaker": "liss", "emotion": "soft_smile", "voice": "", "src": 24},
+    {"op": "goto", "to": 18, "src": 23},
+    {"op": "goto", "to": 19, "src": 20},
+    {"op": "line", "id": "ch20_virel_005", "key": "DLG_CH20_VIREL_005", "speaker": "virel", "emotion": "surprised", "voice": "", "src": 27, "name_key": "DLG_NAME_VIREL_WENNA"},
+    {"op": "goto", "to": 21, "src": 17},
+    {"op": "if_not", "cond": ["flag", "ch08_found_sail_needle"], "to": 25, "src": 29},
+    {"op": "cue", "cue": "anim", "args": ["liss", "show", "sail_needle"], "kwargs": {}, "src": 30},
+    {"op": "line", "id": "ch20_virel_006", "key": "DLG_CH20_VIREL_006", "speaker": "virel", "emotion": "tender", "voice": "", "src": 31, "name_key": "DLG_NAME_VIREL_WENNA"},
+    {"op": "goto", "to": 25, "src": 29},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 33},
+    {"op": "event", "name": "start_battle", "args": ["ch20_virel"], "src": 34}
+   ]
+  }
+ }
+}

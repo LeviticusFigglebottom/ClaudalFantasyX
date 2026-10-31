@@ -15,6 +15,10 @@ origin is on the water (y 0) unless it says otherwise.
   dace_hull_frame     Dace's unfinished hull on the floating dry-dock (ch17): a pontoon deck (16 x 7 m, top y 0.6),
                       cradle blocks, the keel, stem and sternpost, thirteen ribs, five strakes planked on the near
                       (-Z) side only, staging poles and a walk-board, and his workbench. Nothing on it is finished.
+                      Ch17 (M5-A3P-1500, env-art-b): he planked and decked the stern third to live aboard. Its hatch
+                      drops to the cabin (his bunk, the ledger on a fold-down desk, the chart wall with Corrow
+                      circled, the tool rack), and a doorway in the bulkhead opens on the engine bay's empty bed. The
+                      keel wears a Lit Age brass shoe, and the mast stands with one kite wing half-rigged.
   hm_far_flotilla     the rest of the raft-city round the zone: low hull clusters and windmills at 220-460 m.
 
 Ch15's first visit (M4-A2P-045, env-art-b; docs/kb/plan/act2/zones/ch15_hollowmere.md):
@@ -29,6 +33,15 @@ Ch15's first visit (M4-A2P-045, env-art-b; docs/kb/plan/act2/zones/ch15_hollowme
                       waterline.
   hm_supper_table     the side scene's supper on a deck: a low table, four stools, bowls and an oil lamp (lit by the
                       zone). Origin at its foot.
+  hm_drydock_berth    an empty floating berth in Dace's row (Ch17, M5-A3P-1500): his dry-dock's pontoon (16 x 7 m,
+                      top y 0.6), its cradle blocks waiting for a keel, a pair of shear-legs lashed at the head with
+                      a block hanging, and a fender post at the outer (+X, +Z) corner. Origin at the waterline.
+  hm_drydock_berth_first  the first berth, where Dace built his first hull (B07): the same, but its fender post's
+                      top is worn pale where Tobin sat, an old rope coiled at its foot, and the rotted keel and rib
+                      stubs of that first hull lie in the mud under the pontoon's open end.
+  hm_dockmaster_house  Aldous Varrow's home (Ch17 B07, B11; HousePlatform1): hm_lashed_hulls with the deckhouse
+                      furnished: his table and two benches, a lamp hook over it, a shelf of jars and a rolled chart,
+                      a sleeping mat, a net hung on the wall. The table at TABLE_AT; the door as hm_lashed_hulls'.
   hm_oil_lamp         a hanging clay oil lamp on its bracket (the zone puts a real light at its flame). Origin at the
                       bracket's foot.
 """
@@ -55,10 +68,11 @@ M_CORE = "kit_bound_core"
 M_TAR = "kit_interior_dark"
 
 TRI_BUDGET = {"hm_lashed_hulls": (9000, 700), "hm_windmill": (5000, 400), "hm_tide_wheel": (6000, 450),
-              "hm_signal_lamp": (1500, 150), "dace_hull_frame": (12000, 800), "hm_far_flotilla": (9000, 2500),
+              "hm_signal_lamp": (1500, 150), "dace_hull_frame": (24000, 1600), "hm_far_flotilla": (9000, 2500),
               "hm_dock_4m": (2500, 200), "hm_dock_4m_open_n": (2500, 200), "hm_dock_4m_open_s": (2500, 200), "hm_dock_4m_open_ns": (2500, 200),
               "pyre_raft": (2500, 320), "hm_ship": (14000, 900), "hm_supper_table": (1500, 150),
-              "hm_oil_lamp": (600, 80)}
+              "hm_oil_lamp": (600, 80),
+              "hm_drydock_berth": (5000, 400), "hm_dockmaster_house": (11000, 700), "hm_drydock_berth_first": (6500, 500)}
 
 DECK_Y = 0.9
 HULL_LEN = 10.0
@@ -102,11 +116,11 @@ def _hull(mb, cz: float, lod: bool, *, plated: bool, rng) -> None:
                              weather=WOOD, variation=float(rng.random()))
 
 
-def build_lashed_hulls(seed: int = 2301) -> list[kc.MeshBuilder]:
+def build_lashed_hulls(seed: int = 2301, name: str = "hm_lashed_hulls", furnished: bool = False) -> list[kc.MeshBuilder]:
     out = []
     for lod in (False, True):
-        rng = kc.rng_for("hm_lashed_hulls", seed)
-        mb = kc.MeshBuilder("hm_lashed_hulls" + ("-lod1" if lod else ""))
+        rng = kc.rng_for(name, seed)
+        mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
         timber, lash = mb.material(M_TIMBER), mb.material(M_LASH)
         _hull(mb, -HULL_GAP, lod, plated=True, rng=rng)
         _hull(mb, HULL_GAP, lod, plated=False, rng=rng)
@@ -161,8 +175,71 @@ def build_lashed_hulls(seed: int = 2301) -> list[kc.MeshBuilder]:
                                  seg=1, weather=WOOD)
             kc.tube(mb, np.array([[-3.2, DECK_Y, 0.4], [-3.2, DECK_Y + 0.7, 0.4]]), np.array([0.28, 0.28]), 10,
                     mb.material(M_DRIFT), cap_end=True)
+        if furnished and not lod:
+            _dockmaster_room(mb, (hx, hz, hh, cz), rng)
         out.append(mb)
     return out
+
+
+TABLE_AT = (0.45, 2.05)  # hm_dockmaster_house's table (x, z) in the piece: the fathers_table mark stands by it
+
+
+def _dockmaster_room(mb, room: tuple[float, float, float, float], rng) -> None:
+    """The dock-master's room inside the deckhouse (Ch17 B07, B11): a woven floor mat, his table and two benches, a
+    shelf of jars and a rolled chart, a sleeping mat along the back wall, a net hung on the west wall, and the hook his
+    oil lamp hangs from over the table (the zone hangs hm_oil_lamp there and lights it)."""
+    hx, hz, hh, cz = room
+    timber, drift, lash = mb.material(M_TIMBER), mb.material(M_DRIFT), mb.material(M_LASH)
+    woven, clay, sail = mb.material(M_WOVEN), mb.material(M_CLAY), mb.material(M_SAIL)
+    kc.rounded_block(mb, (0.0, DECK_Y + 0.012, cz), (hx - 0.15, 0.012, hz - 0.15), woven, radius=0.005, seg=1)
+    tx, tz = TABLE_AT
+    kc.rounded_block(mb, (tx, DECK_Y + 0.72, tz), (0.55, 0.03, 0.35), timber, radius=0.01, seg=1, weather=WOOD)
+    for ox, oz in ((-0.48, -0.28), (0.48, -0.28), (-0.48, 0.28), (0.48, 0.28)):
+        kc.tube(mb, np.array([[tx + ox, DECK_Y, tz + oz], [tx + ox, DECK_Y + 0.7, tz + oz]]), 0.03, 4, timber)
+    for sz in (-1.0, 1.0):  # the benches either side of it
+        bz = tz + sz * 0.62
+        kc.rounded_block(mb, (tx, DECK_Y + 0.42, bz), (0.5, 0.025, 0.13), timber, radius=0.01, seg=1, weather=WOOD)
+        for ox in (-0.42, 0.42):
+            kc.rounded_block(mb, (tx + ox, DECK_Y + 0.2, bz), (0.03, 0.2, 0.1), timber, radius=0.005, seg=1)
+    # The lamp hook over the table, from the ridge.
+    ridge = DECK_Y + hh + math.tan(0.6) * (hz + 0.05) - 0.1
+    kc.tube(mb, np.array([[tx, ridge, cz], [tx, DECK_Y + 1.75, cz], [tx, DECK_Y + 1.7, cz + 0.08]]), 0.012, 3,
+            mb.material(M_COPPER))
+    # The shelf on the east wall: a board on two brackets, jars and a rolled chart on it.
+    sx = hx - 0.2
+    kc.rounded_block(mb, (sx, DECK_Y + 1.35, cz), (0.14, 0.02, 0.8), timber, radius=0.005, seg=1, weather=WOOD)
+    for z in (cz - 0.6, cz + 0.6):
+        kc.tube(mb, np.array([[hx - 0.06, DECK_Y + 1.15, z], [sx - 0.1, DECK_Y + 1.33, z]]), 0.02, 4, timber)
+    for k in range(4):
+        z = cz - 0.6 + k * 0.32
+        r = float(rng.uniform(0.06, 0.09))
+        kc.tube(mb, np.array([[sx, DECK_Y + 1.37, z], [sx, DECK_Y + 1.37 + r * 2.2, z]]), np.array([r, r * 0.7]), 7,
+                clay, cap_end=True)
+    kc.tube(mb, np.array([[sx - 0.02, DECK_Y + 1.42, cz + 0.55], [sx - 0.02, DECK_Y + 1.42, cz + 0.85]]), 0.05, 6, sail,
+            cap_start=True, cap_end=True)
+    # The sleeping mat and a folded blanket along the back (+Z) wall.
+    kc.rounded_block(mb, (-0.6, DECK_Y + 0.06, cz + hz - 0.45), (0.95, 0.05, 0.36), woven, radius=0.03, seg=1)
+    kc.rounded_block(mb, (-1.3, DECK_Y + 0.16, cz + hz - 0.45), (0.22, 0.06, 0.3), mb.material(M_CLOTH_RED),
+                     radius=0.04, seg=1)
+    # A mended net hung on the west wall from three pegs, sagging between them.
+    wx = -hx + 0.07
+    pegs = [(wx, DECK_Y + 1.6, cz + dz) for dz in (-0.9, 0.0, 0.9)]
+    for p in pegs:
+        kc.tube(mb, np.array([[-hx + 0.02, p[1], p[2]], [wx + 0.06, p[1], p[2]]]), 0.015, 4, drift)
+    rows = []
+    for k in range(5):
+        y = DECK_Y + 1.6 - k * 0.22
+        zs = np.linspace(cz - 0.9, cz + 0.9, 9)
+        rows.append(np.stack([np.full_like(zs, wx + 0.02), y - 0.12 * np.sin((zs - cz + 0.9) / 0.9 * math.pi) ** 2
+                              * (1.0 - k * 0.15), zs], -1))
+    for r in rows:
+        kc.tube(mb, r, 0.006, 3, lash)
+    for j in range(0, 9, 2):
+        kc.tube(mb, np.array([r[j] for r in rows]), 0.006, 3, lash)
+
+
+def build_dockmaster_house(seed: int = 2310) -> list[kc.MeshBuilder]:
+    return build_lashed_hulls(seed, "hm_dockmaster_house", furnished=True)
 
 
 def _windmill(mb, lod: bool, origin=(0.0, 0.0, 0.0), scale: float = 1.0, *, far: bool = False) -> None:
@@ -281,6 +358,16 @@ KEEL_Y = 1.2
 SHEER_Y = 3.8
 RIBS = 13
 STRAKES = 5
+# Ch17's fit-out (M5-A3P-1500): the decked stern from the sternpost to STERN_X, the cabin's sole at SOLE_T of the way
+# from keel to sheer, the hatch (x, half-size) on the centre line, and the mast and its kite wing (kite.py's lines).
+STERN_X = -2.0
+SOLE_T = 0.25
+HATCH = (-3.0, 0.42)
+DOOR_HALF_W = 0.4
+DOOR_H = 1.75
+ENGINE_BED_X = (-1.6, 0.4)
+MAST_X = 1.0
+MAST_H = 11.0
 
 
 def _rib_point(x: float, t: float) -> tuple[float, float]:
@@ -325,6 +412,8 @@ def build_dace_hull(seed: int = 2305) -> list[kc.MeshBuilder]:
                 continue
             last = len(xs) - 1 - (STRAKES - k)  # the top strakes stop short: the work in hand
             for i in range(last):
+                if xs[i] < STERN_X:
+                    continue  # the decked stern is planked whole
                 pa, pb = _rib_point(xs[i], v), _rib_point(xs[i + 1], v)
                 kc.plank(mb, (xs[i], pa[0], -pa[1] - 0.06), (xs[i + 1], pb[0], -pb[1] - 0.06), 0.3, 0.04, timber,
                          up=(0.0, 0.3, -1.0), weather=WOOD, variation=float(rng.random()))
@@ -347,8 +436,177 @@ def build_dace_hull(seed: int = 2305) -> list[kc.MeshBuilder]:
             a = np.linspace(0.2, 1.4, 7)
             mould = np.stack([-2.3 + np.cos(a) * 0.6, np.full_like(a, DOCK_TOP + 0.91), 2.95 - np.sin(a) * 0.4], -1)
             kc.tube(mb, mould, 0.02, 4, drift)
+        _dace_stern(mb, lod, rng)
+        _dace_rig(mb, lod, rng)
         out.append(mb)
     return out
+
+
+def _strip(mb, grid: np.ndarray, mat: int, want) -> None:
+    """quad_strip turned so its first quad faces `want` (a direction)."""
+    n = np.cross(grid[0, 1] - grid[0, 0], grid[1, 0] - grid[0, 0])
+    span = np.ptp(grid.reshape(-1, 3), axis=0)
+    uv = grid[..., [k for k in range(3) if k != int(np.argmin(span))]]  # the two axes it spans
+    kc.quad_strip(mb, grid, mat, uv=uv, col=(0.0, 0.15, 0.2, 0.5), uv2=(0.8, 0.5),
+                  flip=bool(np.dot(n, np.asarray(want, float)) < 0.0))
+
+
+def _deck_strip(mb, mat: int, xa: float, xb: float, za, zb, n: int) -> None:
+    """The deck at the sheer between stations xa and xb, from za(x) to zb(x) across: its top, and its underside (the
+    cabin's ceiling)."""
+    xs = np.linspace(xa, xb, n)
+    grid = np.stack([np.stack([xs, np.full(n, SHEER_Y), np.array([f(x) for x in xs])], -1) for f in (za, zb)])
+    _strip(mb, grid, mat, (0.0, 1.0, 0.0))
+    _strip(mb, grid - np.array([0.0, 0.05, 0.0]), mat, (0.0, -1.0, 0.0))
+
+
+def _dace_stern(mb, lod: bool, rng) -> None:
+    """Ch17's decked stern: the planking both sides from the sternpost to STERN_X, the deck with its hatch, the cabin's
+    sole and bulkhead, and (LOD0) the cabin's fittings and the engine bay's empty bed."""
+    timber, tar, drift = mb.material(M_TIMBER), mb.material(M_TAR), mb.material(M_DRIFT)
+    stern = -DACE_LEN * 0.5
+    nx, nt = (4, 4) if lod else (9, 9)
+    xs = np.linspace(stern + 0.05, STERN_X, nx)
+    ts = np.linspace(0.0, 1.0, nt)
+    for side in (-1.0, 1.0):
+        grid = np.array([[[x, _rib_point(x, t)[0], side * (_rib_point(x, t)[1] + 0.04)] for x in xs] for t in ts])
+        _strip(mb, grid, timber, (0.0, 0.0, side))
+        _strip(mb, grid - np.array([0.0, 0.0, side * 0.05]), timber, (0.0, 0.0, -side))  # the cabin's side
+    hw = lambda x: _rib_point(x, 1.0)[1] + 0.04  # noqa: E731 - the sheer's half-width
+    hx, hh = HATCH
+    n = 3 if lod else 6
+    _deck_strip(mb, timber, stern + 0.05, hx - hh, lambda x: -hw(x), hw, n)
+    _deck_strip(mb, timber, hx + hh, STERN_X, lambda x: -hw(x), hw, n)
+    _deck_strip(mb, timber, hx - hh, hx + hh, lambda x: -hw(x), lambda x: -hh, 2)
+    _deck_strip(mb, timber, hx - hh, hx + hh, lambda x: hh, hw, 2)
+    sole_y = KEEL_Y + (SHEER_Y - KEEL_Y) * SOLE_T
+    sw = lambda x: _rib_point(x, SOLE_T)[1] - 0.02  # noqa: E731 - the sole's half-width
+    _deck_strip_y = np.linspace(stern + 0.9, ENGINE_BED_X[1], 4 if lod else 10)
+    grid = np.stack([np.stack([_deck_strip_y, np.full_like(_deck_strip_y, sole_y), np.array([s * sw(x) for x in
+                                                                                         _deck_strip_y])], -1)
+                     for s in (-1.0, 1.0)])
+    _strip(mb, grid, timber, (0.0, 1.0, 0.0))
+    # The bulkhead at STERN_X, sole to deck, a doorway through it on the centre line.
+    # Its two leaves follow the rib out to the planking, keel-side to sheer; both faces (the cabin and the bay).
+    bw = _rib_point(STERN_X, 0.7)[1]  # the leaves' half-width at the chart's height
+    ts_b = np.linspace(SOLE_T, 1.0, 3 if lod else 7)
+    for sz in (-1.0, 1.0):
+        grid = np.array([[[STERN_X, _rib_point(STERN_X, t)[0], sz * (_rib_point(STERN_X, t)[1] + 0.04)],
+                          [STERN_X, _rib_point(STERN_X, t)[0], sz * DOOR_HALF_W]] for t in ts_b])
+        for fx in (-1.0, 1.0):
+            _strip(mb, grid + np.array([fx * 0.02, 0.0, 0.0]), timber, (fx, 0.0, 0.0))
+    top = sole_y + DOOR_H
+    grid = np.array([[[STERN_X, y, -DOOR_HALF_W], [STERN_X, y, DOOR_HALF_W]] for y in (top, SHEER_Y)])
+    for fx in (-1.0, 1.0):
+        _strip(mb, grid + np.array([fx * 0.02, 0.0, 0.0]), timber, (fx, 0.0, 0.0))
+    for sz in (-1.0, 1.0):  # the door posts
+        kc.tube(mb, np.array([[STERN_X, sole_y, sz * DOOR_HALF_W], [STERN_X, SHEER_Y, sz * DOOR_HALF_W]]), 0.05, 4,
+                timber)
+    # The hatch coaming and the ladder down to the sole.
+    kc.rounded_block(mb, (hx, SHEER_Y + 0.08, 0.0), (hh + 0.06, 0.08, hh + 0.06), tar, radius=0.02, seg=1)
+    # The Lit Age brass shoe along the keel, under it all.
+    kc.rounded_block(mb, (0.0, KEEL_Y - 0.15, 0.0), (DACE_LEN * 0.5 - 0.3, 0.04, 0.13), mb.material(M_PLATE),
+                     radius=0.02, seg=1, weather=WOOD)
+    if lod:
+        return
+    for sz in (-0.25, 0.25):
+        kc.tube(mb, np.array([[hx + hh - 0.1, sole_y, sz], [hx - hh + 0.15, SHEER_Y, sz]]), 0.03, 5, drift)
+    for k in range(6):
+        f = (k + 0.7) / 6.5
+        x = hx + hh - 0.1 + (-2.0 * hh + 0.25) * f
+        y = sole_y + (SHEER_Y - sole_y) * f
+        kc.tube(mb, np.array([[x, y, -0.25], [x, y, 0.25]]), 0.02, 4, drift)
+    # His bunk along the +Z side, aft.
+    bx, bz = stern + 1.9, sw(stern + 1.9) - 0.4
+    kc.rounded_block(mb, (bx, sole_y + 0.42, bz), (0.85, 0.04, 0.34), timber, radius=0.01, seg=1, weather=WOOD)
+    kc.rounded_block(mb, (bx, sole_y + 0.52, bz), (0.8, 0.06, 0.3), mb.material(M_SAIL), radius=0.04, seg=2)
+    for x in (bx - 0.8, bx + 0.8):
+        kc.tube(mb, np.array([[x, sole_y, bz - 0.3], [x, sole_y + 0.42, bz - 0.3]]), 0.035, 4, timber)
+    # The fold-down desk on the -Z side by the bulkhead, the ledger open on it, a stool.
+    dx = STERN_X - 0.75
+    dz = -(sw(dx) - 0.35)
+    kc.rounded_block(mb, (dx, sole_y + 0.76, dz), (0.42, 0.025, 0.24), timber, radius=0.01, seg=1, weather=WOOD)
+    kc.tube(mb, np.array([[dx, sole_y + 0.74, dz + 0.2], [dx, sole_y + 0.2, dz - 0.2]]), 0.025, 4, timber)
+    kc.rounded_block(mb, (dx, sole_y + 0.8, dz + 0.02), (0.2, 0.012, 0.15), tar, radius=0.006, seg=1)
+    for sz in (-0.075, 0.075):  # the two open pages, a little apart at the spine
+        kc.rounded_block(mb, (dx + 0.0, sole_y + 0.818, dz + 0.02 + sz), (0.18, 0.006, 0.07), mb.material(M_SAIL),
+                         rot=kc.rot_x(-sz * 0.6), radius=0.003, seg=1)
+    kc.rounded_block(mb, (dx - 0.05, sole_y + 0.24, dz + 0.45), (0.17, 0.02, 0.17), timber, radius=0.01, seg=1)
+    for ox, oz in ((-0.13, -0.13), (0.13, -0.13), (-0.13, 0.13), (0.13, 0.13)):
+        kc.tube(mb, np.array([[dx - 0.05 + ox, sole_y, dz + 0.45 + oz], [dx - 0.05 + ox, sole_y + 0.23,
+                                                                          dz + 0.45 + oz]]), 0.02, 4, timber)
+    # The chart wall: a chart on the bulkhead's +Z leaf (cabin side), Corrow circled in red.
+    cx, cz, cy = STERN_X - 0.05, (bw + DOOR_HALF_W) * 0.5, sole_y + 1.25
+    kc.rounded_block(mb, (cx, cy, cz), (0.008, 0.38, 0.42), mb.material(M_SAIL), radius=0.004, seg=1)
+    a = np.linspace(0.0, 2.0 * math.pi, 13)
+    ring = np.stack([np.full_like(a, cx - 0.012), cy - 0.08 + np.sin(a) * 0.07, cz + 0.12 + np.cos(a) * 0.09], -1)
+    kc.tube(mb, ring, 0.008, 4, mb.material(M_CLOTH_RED))
+    for k in range(5):  # the coast it charts, a few inked lines
+        y0 = cy - 0.3 + k * 0.13
+        kc.tube(mb, np.array([[cx - 0.01, y0, cz - 0.35], [cx - 0.01, y0 + float(rng.uniform(-0.05, 0.05)),
+                                                           cz + 0.35]]), 0.004, 3, tar)
+    # The tool rack on the -Z leaf: a batten, his hooks (the make of Rhen's), the tools hung on them.
+    tz = -(bw + DOOR_HALF_W) * 0.5
+    kc.rounded_block(mb, (STERN_X - 0.06, sole_y + 1.45, tz), (0.025, 0.05, 0.4), timber, radius=0.01, seg=1)
+    for k in range(5):
+        z = tz - 0.32 + k * 0.16
+        hook = np.array([[STERN_X - 0.08, sole_y + 1.45, z], [STERN_X - 0.16, sole_y + 1.43, z],
+                         [STERN_X - 0.17, sole_y + 1.36, z]])
+        kc.tube(mb, hook, 0.008, 3, mb.material(M_COPPER))
+        length = float(rng.uniform(0.3, 0.55))
+        kc.tube(mb, np.array([[STERN_X - 0.17, sole_y + 1.36, z], [STERN_X - 0.15, sole_y + 1.36 - length, z]]),
+                0.015 if k % 2 else 0.022, 4, timber if k % 2 else mb.material(M_COPPER))
+    # The engine bay: two bearers on the sole and the empty bed's half-round chocks, a bronze mounting ring between.
+    ea, eb = ENGINE_BED_X
+    for sz in (-0.5, 0.5):
+        kc.rounded_block(mb, ((ea + eb) * 0.5, sole_y + 0.1, sz), ((eb - ea) * 0.5, 0.1, 0.07), timber, radius=0.01,
+                         seg=1, weather=WOOD)
+    for x in (ea + 0.3, eb - 0.3):
+        a = np.linspace(math.pi, 2.0 * math.pi, 9)
+        chock = np.stack([np.full_like(a, x), sole_y + 0.65 + np.sin(a) * 0.45, np.cos(a) * 0.45], -1)
+        kc.tube(mb, chock, 0.06, 5, timber)
+    a = np.linspace(0.0, 2.0 * math.pi, 17)
+    ring = np.stack([np.full_like(a, (ea + eb) * 0.5), sole_y + 0.65 + np.sin(a) * 0.32, np.cos(a) * 0.32], -1)
+    kc.tube(mb, ring, 0.03, 5, mb.material(M_PLATE))
+
+
+def _dace_rig(mb, lod: bool, rng) -> None:
+    """The mast stepped on the keel and one kite wing half-rigged on the +Z side (kite.py's spars): two of the forward
+    sail's three panels bent on, the rest furled along the foot spar; the -Z wing not yet begun."""
+    timber, sand, red = mb.material(M_TIMBER), mb.material(M_SAIL), mb.material(M_CLOTH_RED)
+    kc.tube(mb, np.array([[MAST_X, KEEL_Y, 0.0], [MAST_X, SHEER_Y + MAST_H, 0.0]]), np.array([0.16, 0.09]),
+            6 if lod else 10, timber, cap_end=True)
+    head = np.array([MAST_X, SHEER_Y + MAST_H - 0.6, 0.0])
+    foot = np.array([MAST_X - 0.4, SHEER_Y + 5.0, 0.0])
+    tip = np.array([MAST_X - 2.4, SHEER_Y + 7.8, 8.5])
+    for a in (head, foot):
+        kc.tube(mb, np.array([a, tip]), 0.06, 4 if lod else 6, timber)
+    n = 3
+    for k in range(2):  # the two panels bent on, from the mast out
+        u0, u1 = k / n, (k + 1) / n
+        p0, p1 = head + (tip - head) * u0, head + (tip - head) * u1
+        q0, q1 = foot + (tip - foot) * u0, foot + (tip - foot) * u1
+        sag = np.array([0.0, -0.1, 0.0]) * (0.6 + 0.4 * float(rng.random()))
+        grid = np.array([[p0, p1], [(p0 + q0) * 0.5 + sag, (p1 + q1) * 0.5 + sag], [q0, q1]])
+        uv = np.array([[[u0, 0.0], [u1, 0.0]], [[u0, 0.5], [u1, 0.5]], [[u0, 1.0], [u1, 1.0]]]) * 2.0
+        for flip in (False, True):
+            kc.quad_strip(mb, grid, red if k % 2 else sand, uv=uv, col=(0.0, 0.0, 0.0, 0.3), uv2=(0.9, 0.5),
+                          flip=flip, smooth=False)
+        if not lod and k > 0:
+            kc.tube(mb, np.array([p0, (p0 + q0) * 0.5 + sag, q0]), 0.03, 4, timber)
+    # The rest furled: a roll of sailcloth lashed along the foot spar's outer third.
+    roll = np.array([foot + (tip - foot) * u for u in (0.68, 0.84, 0.97)])
+    kc.tube(mb, roll, np.array([0.13, 0.11, 0.07]), 5 if lod else 8, sand, cap_start=True, cap_end=True)
+    if not lod:
+        for u in (0.72, 0.86, 0.94):
+            c = foot + (tip - foot) * u
+            a = np.linspace(0.0, 2.0 * math.pi, 7)
+            d = (tip - foot) / np.linalg.norm(tip - foot)
+            e1 = np.cross(d, [0.0, 1.0, 0.0])
+            e1 /= np.linalg.norm(e1)
+            e2 = np.cross(d, e1)
+            loop = np.array([c + (e1 * math.cos(t) + e2 * math.sin(t)) * 0.14 for t in a])
+            kc.tube(mb, loop, 0.012, 3, mb.material(M_LASH))
 
 
 def build_far_flotilla(seed: int = 2306) -> list[kc.MeshBuilder]:
@@ -575,6 +833,73 @@ def build_oil_lamp(seed: int = 2315) -> list[kc.MeshBuilder]:
     return out
 
 
+POST_AT = (7.4, 3.1)  # the fender post at the pontoon's outer corner (x, z)
+POST_TOP = 1.75
+KEEL_MUD_Y = -0.75  # the first hull's keel in the shallows off the pontoon, its rib stubs breaking the water
+
+
+def _berth(name: str, first: bool, seed: int) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for(name, seed)
+        mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
+        timber, drift, tar, lash = mb.material(M_TIMBER), mb.material(M_DRIFT), mb.material(M_TAR), mb.material(M_LASH)
+        # The pontoon (Dace's dry-dock's) and the cradle blocks down its centre line, waiting for a keel.
+        kc.rounded_block(mb, (0.0, DOCK_TOP - 0.5, 0.0), (8.0, 0.5, 3.5), drift, radius=0.06, seg=1, weather=WOOD,
+                         variation=float(rng.random()))
+        if not lod:
+            for z in np.arange(-3.3, 3.31, 0.55):  # deck seams
+                kc.tube(mb, np.array([[-7.9, DOCK_TOP + 0.005, z], [7.9, DOCK_TOP + 0.005, z]]), 0.01, 3, tar)
+        for x in np.linspace(-4.5, 4.5, 4):
+            h = 0.35 + float(rng.uniform(-0.05, 0.05))
+            kc.rounded_block(mb, (x, DOCK_TOP + h * 0.5, 0.0), (0.3, h * 0.5, 0.7), tar, radius=0.02, seg=1)
+        # The shear-legs: two poles from the deck's edges, lashed where they cross over the centre line, a block hung.
+        head = np.array([-1.0, 6.2, 0.0])
+        for sz in (-1.0, 1.0):
+            kc.tube(mb, np.array([[-1.0, DOCK_TOP, sz * 3.2], head + [0.0, 0.3, -sz * 0.25]]), np.array([0.11, 0.08]),
+                    5 if lod else 7, drift, cap_end=True)
+        kc.tube(mb, np.array([head + [0.0, 0.1, 0.0], [-1.0, 3.6, 0.0]]), 0.015, 3, lash)
+        kc.rounded_block(mb, (-1.0, 3.45, 0.0), (0.09, 0.15, 0.06), timber, radius=0.03, seg=1)
+        if not lod:
+            a = np.linspace(0.0, 2.0 * math.pi, 9)
+            kc.tube(mb, np.stack([np.full_like(a, -1.0) + np.cos(a) * 0.14, head[1] + np.sin(a) * 0.14,
+                                  np.zeros_like(a)], -1), 0.022, 4, lash)
+            kc.tube(mb, np.array([head + [0.0, 0.2, 0.0], [-6.5, DOCK_TOP, 0.0]]), 0.012, 3, lash)  # the back-stay
+        # The fender post at the outer corner, its foot in the water beside the pontoon.
+        px, pz = POST_AT
+        kc.tube(mb, np.array([[px, -1.2, pz], [px, POST_TOP, pz]]), np.array([0.16, 0.14]), 6 if lod else 9, drift,
+                cap_end=True, weather=WOOD)
+        if first:
+            # Tobin's post: its top worn pale and smooth where he sat, an old rope coiled at its foot.
+            kc.rounded_block(mb, (px, POST_TOP + 0.01, pz), (0.13, 0.025, 0.13), mb.material(M_SAIL), radius=0.02,
+                             seg=1 if lod else 2)
+            if not lod:
+                for k in range(4):
+                    a = np.linspace(0.0, 2.0 * math.pi, 13)
+                    r = 0.32 - k * 0.05
+                    kc.tube(mb, np.stack([px - 0.6 + np.cos(a) * r, np.full_like(a, DOCK_TOP + 0.03 + k * 0.03),
+                                          pz - 0.4 + np.sin(a) * r], -1), 0.025, 4, lash)
+            # The first hull's rotted keel in the mud off the pontoon's open (-X) end, rib stubs standing from it.
+            kc.tube(mb, np.array([[-8.5, KEEL_MUD_Y, 0.3], [-14.0, KEEL_MUD_Y - 0.15, -0.4]]), 0.12, 5 if lod else 7, tar)
+            for k in range(2 if lod else 6):
+                x = -9.0 - k * 0.9
+                lean = float(rng.uniform(-0.25, 0.25))
+                for sz in (-1.0, 1.0):
+                    kc.tube(mb, np.array([[x, KEEL_MUD_Y, sz * 0.15], [x + lean, KEEL_MUD_Y + float(rng.uniform(0.4, 0.9)),
+                                                                   sz * (0.6 + float(rng.uniform(0.0, 0.3)))]]),
+                            np.array([0.06, 0.035]), 4, tar)
+        out.append(mb)
+    return out
+
+
+def build_drydock_berth(seed: int = 2401) -> list[kc.MeshBuilder]:
+    return _berth("hm_drydock_berth", False, seed)
+
+
+def build_drydock_berth_first(seed: int = 2402) -> list[kc.MeshBuilder]:
+    return _berth("hm_drydock_berth_first", True, seed)
+
+
 TARGETS = {
     "hm_lashed_hulls": build_lashed_hulls,
     "hm_windmill": build_windmill,
@@ -590,4 +915,7 @@ TARGETS = {
     "hm_ship": build_ship,
     "hm_supper_table": build_supper_table,
     "hm_oil_lamp": build_oil_lamp,
+    "hm_drydock_berth": build_drydock_berth,
+    "hm_dockmaster_house": build_dockmaster_house,
+    "hm_drydock_berth_first": build_drydock_berth_first,
 }

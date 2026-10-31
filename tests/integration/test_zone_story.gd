@@ -75,6 +75,21 @@ func test_a_gated_trigger_opens_a_battle_that_returns_here() -> void:
 	_done()
 
 
+## The 23:05 FAST-TRACK: a touch box entered while a scene plays (Coilspire's door as the beacon scene ends) fires once,
+## on entry; the story keeps it and plays it when the scene is over, and a hand-off drops it.
+func test_a_touch_entered_during_a_scene_plays_after_it() -> void:
+	Game.set_flag(&"test_flag", true)
+	Game.state.party_ids.assign([&"rhen"])
+	story.busy = true  # a run is playing
+	assert_true(_trigger(&"gate").on_touched())
+	assert_eq(hand_offs.size(), 0, "nothing while the scene plays")
+	assert_eq(story.pending_touches.size(), 1, "kept")
+	story.run([])  # the scene ends
+	assert_eq(hand_offs.size(), 1, "the gate's beat plays after it")
+	assert_eq(story.pending_touches.size(), 0)
+	_done()
+
+
 func test_an_event_steps_rhen_back_without_leaving() -> void:
 	zone.place_at(&"AfterFight")
 	assert_true(_trigger(&"leave").on_touched())
@@ -148,6 +163,17 @@ func test_camera_volumes_and_rails_are_built() -> void:
 	assert_eq(zone.director.volumes.size(), 2)
 	var glow := (zone.get_node("Greybox/Glow/Mesh") as MeshInstance3D).mesh.material as StandardMaterial3D
 	assert_true(glow.emission_enabled, "an emissive block glows")
+	_done()
+
+
+func test_a_touch_box_reaches_below_its_floor() -> void:
+	# cloud-qa (the Lead, 10-30): a hero who lands on a deck settles a hair under it and must still stand in the box
+	var gate := _trigger(&"gate")
+	var cs := gate.get_node("Shape") as CollisionShape3D
+	var bottom := gate.global_position.y + cs.position.y - (cs.shape as BoxShape3D).size.y * 0.5
+	var sink := float(zone.setting("trigger_sink_m"))
+	assert_true(sink > 0.0, "greybox_defaults.json trigger_sink_m")
+	assert_true(is_equal_approx(bottom, gate.global_position.y - sink), "the box starts below the floor")
 	_done()
 
 

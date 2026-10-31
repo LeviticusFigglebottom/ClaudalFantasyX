@@ -61,6 +61,7 @@
     "pen_child_3": {"at": [31, 0, -25, 0], "color": "#b4907a", "radius": 0.18, "height": 0.9, "hidden": true, "model": "res://assets/characters/villagers/child/child_actor.tscn"},
     "hullgnaw": {"at": [31.0, -1.2, -21.8, 39], "hidden": true, "model": "res://assets/creatures/hullgnaw/hullgnaw.glb"},
     "dive_lamp": {"at": [30.5, -3.9, -14.6, 0], "model": "res://game/levels/ch01/oruvel/dive_lamp.tscn"},
+    "dive_hull_lights": {"at": [29.5, -1.7, -12.0, 0], "model": "res://game/levels/ch01/oruvel/dive_hull_lights.tscn"},
     "seabed": {"at": [30, -11, -25, 0], "model": "res://assets/cutscene/ch01/oruvel_seabed.glb"},
     "hullgnaw_lights": {"at": [31.0, -1.2, -21.8, 0], "model": "res://game/levels/ch01/oruvel/hullgnaw_lights.tscn"},
     "pen_lights": {"at": [30, 0, -24, 0], "model": "res://game/levels/ch01/oruvel/pen_lights.tscn"}
@@ -89,6 +90,7 @@
     {"id": "npc_sadi", "activation": "interact", "at": [-28, 0, -12], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "blocked_by_flag": "ch01_gulls_cried", "payload": {"dialogue": "ch01_bark_outer_mooring"}},
     {"id": "npc_sabe", "activation": "interact", "at": [0, 0, -37], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "blocked_by_flag": "ch01_gulls_cried", "payload": {"dialogue": "ch01_bark_keel_hull"}},
     {"id": "kell_stall", "at": [23, 0, -6], "size": [2, 0, 2.5], "requires_flag": "ch01_sold_gauge_wheel", "blocked_by_flag": "ch01_has_kell_wick", "payload": {"beat": "kell_stall"}},
+    {"id": "kell_talk", "activation": "interact", "at": [29, 0, -7.0], "size": [1.8, 0, 1.8], "prompt_key": "FIELD_PROMPT_CH01_KELL", "requires_flag": "ch01_sold_gauge_wheel", "blocked_by_flag": "ch01_has_kell_wick", "payload": {"beat": "kell_stall"}},
     {"id": "dive_mooring", "at": [45, 0, -5], "size": [4, 0, 4], "requires_flag": "ch01_has_kell_wick", "blocked_by_flag": "ch01_gulls_cried", "payload": {"beat": "gulls"}},
     {"id": "scuttlers", "at": [45, 0, -11.5], "size": [2, 0, 1], "requires_flag": "ch01_gulls_cried", "blocked_by_flag": "ch01_scuttlers_won", "payload": {"beat": "scuttlers"}},
     {"id": "lashing_a", "activation": "interact", "at": [41.5, 0, -17], "size": [1.5, 0, 2], "prompt_key": "FIELD_PROMPT_CUT", "requires_flag": "ch01_scuttlers_won", "sets_flag": "ch01_cut_lashing_a", "once": true, "payload": {"beat": "cut_lashing"}},

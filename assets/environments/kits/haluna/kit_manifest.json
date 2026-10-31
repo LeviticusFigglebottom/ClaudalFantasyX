@@ -664,13 +664,13 @@
     },
     "dace_hull_frame": {
       "budget": [
-        12000,
-        800
+        24000,
+        1600
       ],
-      "bytes": 216052,
+      "bytes": 292608,
       "lods": {
-        "dace_hull_frame": 3538,
-        "dace_hull_frame-lod1": 608
+        "dace_hull_frame": 4648,
+        "dace_hull_frame-lod1": 850
       }
     },
     "dock_haluna": {
@@ -913,6 +913,39 @@
       "lods": {
         "hm_dock_4m_open_s": 910,
         "hm_dock_4m_open_s-lod1": 156
+      }
+    },
+    "hm_dockmaster_house": {
+      "budget": [
+        11000,
+        700
+      ],
+      "bytes": 253044,
+      "lods": {
+        "hm_dockmaster_house": 4102,
+        "hm_dockmaster_house-lod1": 368
+      }
+    },
+    "hm_drydock_berth": {
+      "budget": [
+        5000,
+        400
+      ],
+      "bytes": 40344,
+      "lods": {
+        "hm_drydock_berth": 295,
+        "hm_drydock_berth-lod1": 126
+      }
+    },
+    "hm_drydock_berth_first": {
+      "budget": [
+        6500,
+        500
+      ],
+      "bytes": 71256,
+      "lods": {
+        "hm_drydock_berth_first": 837,
+        "hm_drydock_berth_first-lod1": 180
       }
     },
     "hm_far_flotilla": {
@@ -1674,6 +1707,17 @@
         "market_stall-lod1": 192
       }
     },
+    "memory_gallery": {
+      "budget": [
+        7000,
+        500
+      ],
+      "bytes": 197164,
+      "lods": {
+        "memory_gallery": 3060,
+        "memory_gallery-lod1": 316
+      }
+    },
     "memory_island": {
       "budget": [
         12000,
@@ -1696,6 +1740,17 @@
         "memory_kitchen-lod1": 208
       }
     },
+    "memory_landing": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 121080,
+      "lods": {
+        "memory_landing": 1754,
+        "memory_landing-lod1": 274
+      }
+    },
     "memory_market": {
       "budget": [
         7000,
@@ -1707,6 +1762,17 @@
         "memory_market-lod1": 276
       }
     },
+    "memory_square": {
+      "budget": [
+        7000,
+        500
+      ],
+      "bytes": 188940,
+      "lods": {
+        "memory_square": 2434,
+        "memory_square-lod1": 304
+      }
+    },
     "memory_stands": {
       "budget": [
         7000,
@@ -1716,6 +1782,17 @@
       "lods": {
         "memory_stands": 1648,
         "memory_stands-lod1": 268
+      }
+    },
+    "memory_terrace": {
+      "budget": [
+        7000,
+        500
+      ],
+      "bytes": 122352,
+      "lods": {
+        "memory_terrace": 2284,
+        "memory_terrace-lod1": 364
       }
     },
     "mooring_platform": {
@@ -2578,6 +2655,39 @@
       "lods": {
         "spire_crown_floor": 11404,
         "spire_crown_floor-lod1": 1532
+      }
+    },
+    "spire_lamp_engine": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 39208,
+      "lods": {
+        "spire_lamp_engine": 416,
+        "spire_lamp_engine-lod1": 104
+      }
+    },
+    "spire_quarters": {
+      "budget": [
+        6000,
+        400
+      ],
+      "bytes": 81628,
+      "lods": {
+        "spire_quarters": 972,
+        "spire_quarters-lod1": 96
+      }
+    },
+    "spire_tier": {
+      "budget": [
+        20000,
+        1500
+      ],
+      "bytes": 340872,
+      "lods": {
+        "spire_tier": 3186,
+        "spire_tier-lod1": 340
       }
     },
     "stillguard_rack": {

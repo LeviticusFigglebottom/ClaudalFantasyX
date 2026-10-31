@@ -1,0 +1,33 @@
+{
+ "format": 1,
+ "scene": "ch21_the_letting",
+ "source": "game/data/dialogue/ch21/ch21_the_letting.dlg",
+ "start": "ch21_the_letting",
+ "nodes": {
+  "ch21_the_letting": {
+   "headers": {"location": "ch21/heart"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["HT13"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "anim", "args": ["asha", "step_forward"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "music", "args": ["the_letting"], "kwargs": {"fade": 0.0}, "src": 14},
+    {"op": "event", "name": "start_battle", "args": ["ch21_sefir_letting"], "src": 15}
+   ]
+  },
+  "ch21_the_letting_verse": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch21_letting_001", "key": "DLG_CH21_LETTING_001", "speaker": "asha", "emotion": "determined", "voice": "", "src": 20, "tags": ["sung", "lamptongue", "notr"]},
+    {"op": "line", "id": "ch21_letting_002", "key": "DLG_CH21_LETTING_002", "speaker": "asha", "emotion": "tender", "voice": "", "src": 21, "tags": ["sung", "lamptongue", "notr"]},
+    {"op": "line", "id": "ch21_letting_003", "key": "DLG_CH21_LETTING_003", "speaker": "asha", "emotion": "tender", "voice": "", "src": 22, "tags": ["sung", "lamptongue", "notr"]},
+    {"op": "line", "id": "ch21_letting_004", "key": "DLG_CH21_LETTING_004", "speaker": "asha", "emotion": "tender", "voice": "", "src": 23, "tags": ["sung", "lamptongue", "notr"]}
+   ]
+  },
+  "ch21_the_letting_sleeve": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "asha_sleeve", "count": 7, "motion": "spiral_up", "rate": "slow"}, "src": 28},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 29}
+   ]
+  }
+ }
+}

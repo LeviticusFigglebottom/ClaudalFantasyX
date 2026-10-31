@@ -49,9 +49,28 @@ func test_hollowmeres_dock() -> void:
 	close()
 
 
+## M5-A3P-1001: in Ch17 the dock's east end opens onto the gangway to the berths and the walk along their heads.
+func test_hollowmeres_dry_dock_in_ch17() -> void:
+	open(HOLLOWMERE)
+	Game.set_flag(&"ch17_started")
+	(zone as Ch17Zone).apply_variant()
+	read_boxes()
+	var berths := _spawn(&"Berths")
+	var dock_way: Array[Vector3] = [
+		_spawn(&"Dock"), Vector3(38, 0, -1.2), Vector3(47, 0, -1.2), Vector3(59, 0, 0), berths
+	]
+	walk("to the berths", dock_way, 0.0)
+	walk("to Tobin's post", [berths, _mark(&"first_berth")] as Array[Vector3], 0.0)
+	walk("along the berths", [berths, _mark(&"berth_walk")] as Array[Vector3], 0.0)
+	close()
+
+
 func test_the_rim_wade_and_the_choir() -> void:
 	open(RIM)
 	walk("the wade", [_spawn(&"Rim"), Vector3(100, 0, 0), _mark(&"choir_edge")] as Array[Vector3], 0.0)
+	# M4-A2P-1500: the exit to the Choir stands on the sand, reachable from where the montage sets the party down
+	var exit := (zone.get_node(^"Triggers/to_choir") as Node3D).position
+	walk("to the Choir's edge", [_spawn(&"ChoirEdge"), exit] as Array[Vector3], 0.0)
 	close()
 	open(CHOIR)
 	walk("to Kesh", [_spawn(&"Approach"), _mark(&"kerrid_line"), _mark(&"kesh")] as Array[Vector3], 0.0)

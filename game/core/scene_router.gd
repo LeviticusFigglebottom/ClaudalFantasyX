@@ -70,6 +70,10 @@ extends Node
 signal prewarm_requested(scene_path: String)
 ## ADR 0111: emitted when change_scene() starts (before the fade): ResidentLoads starts its threaded loads here.
 signal change_started(scene_path: String)
+## Emitted under the opaque fade with the new scene's root once it is instantiated (on the worker thread, when
+## instantiate_on_thread), before it enters the tree: a profiler can watch its nodes' ready (SceneSwapProbe
+## --ready-profile; slice-polish's Haluna add-to-tree frame).
+signal scene_instantiated(node: Node)
 ## Emitted under the opaque fade, just before the new scene enters the tree (zone globals reset here).
 signal scene_swapping(scene_path: String)
 ## Emitted after each successful swap with the same dictionary stored in last_swap_stats.
@@ -127,9 +131,12 @@ var world_return: WorldReturn
 ## it, with its zone shader globals and its outside links (zone_links); the change back to that zone re-attaches the
 ## same instance (no load, no instantiate, no _ready), restores its links, calls RESIDENT_RETURN_METHOD through it (its
 ## story arrives again: a scripted win's scene plays; its flag states are applied) and puts the party on its spawn.
-## A fight that returns elsewhere starts loading that scene (_prewarm_return). Any other change, or a loaded game,
-## frees the kept zone.
+## A fight that returns elsewhere builds that scene off the tree while it runs (ReturnPark, park_return). Any other
+## change, or a loaded game, frees the kept zone.
 var keep_field_resident := true
+## Build a fight's cross-zone return scene while the fight runs (ReturnPark; PC pass 7 row 74).
+var park_return := true
+var return_park: ReturnPark
 var _resident: Node = null
 var _resident_path := ""
 var _resident_globals := {}
@@ -177,6 +184,7 @@ func _ready() -> void:
 	world_return = WorldReturn.new()
 	world_return.name = "WorldReturn"
 	add_child(world_return)
+	return_park = ReturnPark.new(get_tree())
 	EventBus.game_loaded.connect(func(_slot: int) -> void: drop_resident())  # a loaded game reloads its zone
 
 
@@ -251,18 +259,31 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 	var entry_start := _now_usec()
 	var stats := {"scene_path": scene_path, "budget_ms": HIDDEN_FRAME_BUDGET_MS}
 	var keep := keeps_resident(scene_path)
+	var fight := BattleRequest.pending() if keep else null  # the battle takes it once in
 	var back := _resident != null and is_instance_valid(_resident) and scene_path == _resident_path
 	stats["resident"] = back
-	if not back:
+	stats["parked"] = return_park.holds(scene_path)
+	if not return_park.holds(scene_path) and not RESIDENT_THROUGH.has(scene_path):
+		return_park.drop()  # gone somewhere else: the scene built for the fight's return isn't wanted
+	if not back and not return_park.holds(scene_path):
 		ResourceLoader.load_threaded_request(scene_path)
 	change_started.emit(scene_path)
 	_start_font_warm(stats)
 	await _fade_to(1.0)
 	if keep:
 		_detach_resident()
-		_prewarm_return()
+		if not park_return:
+			_prewarm_return()  # the park loads it once the battle is in, not beside the battle's own instantiate
+	var parked: Node = null
+	var warmed := return_park.prewarmed and return_park.holds(scene_path)
+	if not back:
+		parked = await return_park.take(scene_path)
 	if back:
 		await _swap_resident(scene_path, stats, spawn, entry_start)
+		await _wait_for_reveal(stats)
+	elif parked != null:
+		stats["park_prewarmed"] = warmed
+		await _swap(null, scene_path, stats, spawn, entry_start, parked, warmed)
 		await _wait_for_reveal(stats)
 	else:
 		while ResourceLoader.load_threaded_get_status(scene_path) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
@@ -279,6 +300,8 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 		_measure_visible(stats, _fade_lifted)
 	await _fade_to(0.0)
 	_busy = false
+	if keep and park_return:
+		_park_return(fight)
 
 
 ## True when the change to `scene_path` keeps the current field zone resident (see keep_field_resident).
@@ -300,8 +323,20 @@ func resident_path() -> String:
 	return _resident_path
 
 
+## PC row 85 (a shutdown that looped `Parameter "material" is null` into a 59 GB log): the resident zone and the
+## parked return live off the tree, so the tree's own teardown never frees them, and the engine's last cleanup frees
+## their materials after the RenderingServer is gone. They go here, as the tree quits, while it is still up.
+func _exit_tree() -> void:
+	return_park.drop()
+	if _resident != null and is_instance_valid(_resident):
+		_resident.free()
+	drop_resident()
+
+
 ## Frees the resident field zone, if one is kept.
 func drop_resident() -> void:
+	if not is_busy():
+		return_park.drop()  # a loaded game (not the return that just took it, nor one mid-change)
 	if _resident != null and is_instance_valid(_resident):
 		_resident.queue_free()
 	_resident = null
@@ -342,14 +377,35 @@ static func restore_links(links: Dictionary) -> void:
 ## location): that scene starts loading on a worker thread now, so the way back after the victory panel finds it
 ## in. Its change drops the kept field as usual.
 func _prewarm_return() -> void:
-	var r := BattleRequest.pending()
+	var dest := _return_scene(BattleRequest.pending())
+	if dest != "" and dest != _resident_path and ResourceLoader.exists(dest):
+		ResourceLoader.load_threaded_request(dest)
+
+
+## The fight `r`'s return scene ("" when none resolves).
+func _return_scene(r: BattleRequest) -> String:
 	if r == null:
-		return
+		return ""
 	var dest := r.return_scene
 	if dest == "" and r.return_location != &"" and world_return != null and world_return.registry != null:
 		dest = world_return.registry.scene_of(r.return_location)
-	if dest != "" and dest != _resident_path and ResourceLoader.exists(dest):
-		ResourceLoader.load_threaded_request(dest)
+	return dest
+
+
+## The fight is in: a return elsewhere than the resident field is built off the tree while it runs (ReturnPark).
+func _park_return(fight: BattleRequest) -> void:
+	var dest := _return_scene(fight)
+	if dest == "" or dest == _resident_path:
+		return
+	var loads := ResidentLoads.shared()
+	if DisplayServer.get_name() == "headless" and not ResidentLoads.run_headless:
+		loads = null  # as the victory panel's prepare_return: no zone loads in a headless run
+	await return_park.start(dest, loads, fight, _resident_path)
+	if return_park.path == dest and not is_busy():
+		# Row 74 on the PC: the swap-in still waited ~2.5 s on the prewarm compiling Haluna's pipelines. They compile
+		# now, during the fight (the stage holds the swap only if Return comes first).
+		return_park.prewarmed = true
+		prewarm_requested.emit(dest)
 
 
 ## Takes the current scene out of the tree, kept (not freed), with its zone shader globals.
@@ -489,14 +545,23 @@ func measure_reveal(scene_path: String, lifted: Callable, extra: Dictionary = {}
 
 ## With split_swap off this reproduces the M0 router (prewarm, instantiate, free and add in one
 ## frame), which the profiler uses as the "before" case.
+## `prebuilt`: the scene's root already instantiated (ReturnPark), in place of instantiating `packed`; `prewarmed`:
+## its shader prewarm already ran (or runs) during the fight, so none is requested here.
 func _swap(
-	packed: PackedScene, scene_path: String, stats: Dictionary, spawn: StringName = &"", entry_start_usec: int = -1
+	packed: PackedScene,
+	scene_path: String,
+	stats: Dictionary,
+	spawn: StringName = &"",
+	entry_start_usec: int = -1,
+	prebuilt: Node = null,
+	prewarmed := false
 ) -> void:
 	while _font_warmer != null and not _font_warmer.done:
 		await get_tree().process_frame
 	var t := _now_usec()
 	var swap_frame_start := t
-	prewarm_requested.emit(scene_path)
+	if not prewarmed:  # a parked scene's prewarm ran during the fight (still running: its hold makes this wait)
+		prewarm_requested.emit(scene_path)
 	stats["prewarm_ms"] = _ms_since(t)
 	if split_swap:
 		await get_tree().process_frame
@@ -519,10 +584,13 @@ func _swap(
 		await get_tree().process_frame
 		waited += 1
 	stats["prewarm_wait_frames"] = waited
-	var node := await _instantiate(packed, stats)
+	var node: Node = prebuilt if prebuilt != null else await _instantiate(packed, stats)
+	if prebuilt != null:
+		stats["instantiate_ms"] = 0.0
 	if node == null:
 		push_error("SceneRouter: failed to instantiate %s" % scene_path)
 		return
+	scene_instantiated.emit(node)
 	if split_swap:
 		if get_tree().current_scene != null:
 			t = _now_usec()
@@ -588,7 +656,7 @@ func _instantiate(packed: PackedScene, stats: Dictionary) -> Node:
 	stats["instantiated_on_thread"] = instantiate_on_thread
 	if instantiate_on_thread:
 		ShaderGlobals.hold_writes()  # M3-HER-1151: no global write while the thread creates the zone's materials
-		var task := WorkerThreadPool.add_task(func() -> void: holder.append(packed.instantiate()))
+		var task := WorkerThreadPool.add_task(func() -> void: holder.append(built_scene(packed)))
 		while not WorkerThreadPool.is_task_completed(task):
 			await get_tree().process_frame
 		WorkerThreadPool.wait_for_task_completion(task)
@@ -597,6 +665,14 @@ func _instantiate(packed: PackedScene, stats: Dictionary) -> Node:
 		holder.append(packed.instantiate())
 	stats["instantiate_ms"] = _ms_since(t)
 	return holder[0] if not holder.is_empty() else null
+
+
+## On the worker thread: the scene instantiated, with its big meshes' occlusion triangles built (row 74: Haluna's
+## dresser meshes cost 0.5 s on the add frame otherwise; FieldCameraDirector.warm_triangles).
+static func built_scene(packed: PackedScene) -> Node:
+	var node := packed.instantiate()
+	FieldCameraDirector.warm_triangles(node)
+	return node
 
 
 func _record(stats: Dictionary, frames: Array[float]) -> void:

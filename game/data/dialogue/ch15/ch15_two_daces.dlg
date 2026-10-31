@@ -19,19 +19,24 @@ Aldous_varrow as "Dock-master" [neutral]: You've got his hands. Wright's hands. 
 @wait 2.0
 Aldous_varrow as "Dock-master" [soft_smile]: He came through here twenty years ago trading salvage. Could hear a current in the water before he saw it. #line:ch15_daces_005 #long
 Aldous_varrow as "Dock-master" [soft_smile]: Sang every chart he knew. Too loud. #line:ch15_daces_006
-Aldous_varrow as "Dock-master" [neutral]: Built a hull in my dry-dock for a season, left it half-done, never came back for it. Best ear in the flotilla. Worst at finishing things. #line:ch15_daces_007 #long
+Aldous_varrow as "Dock-master" [neutral]: Came back years after. Built a hull in my dry-dock for a season, left it half-done, never came back for it. Best ear in the flotilla. Worst at finishing things. #line:ch15_daces_007 #long
 <<if $ch15_sat_with_liss>>
     @mark liss supper walk
     @anim liss sit_beside rhen
     @anim aldous_varrow set_bowl liss
     @wait 2.0
 <<endif>>
-Rhen [sad]: He hummed the same song every night. Came home from the Low Reaches with salt in his beard. #line:ch15_daces_008
+Rhen [sad]: He hummed the same song every night. Came home off the wrecks with salt in his beard. #line:ch15_daces_008
 Rhen [sad]: Went up the coast for wall-work when I was eight. Didn't come back. #line:ch15_daces_009
 Rhen [neutral]: He left his lantern on its hook. That's the one thing he finished. #line:ch15_daces_010
 @wait 3.0
 Aldous_varrow as "Dock-master" [sad]: He never said he had a son. Not once. #line:ch15_daces_011
 @wait 2.0
+<<if $ch14_spoke_with_tobin>>
+    Aldous_varrow as "Dock-master" [sad]: You talked to my boy. Before. What did he say? #line:ch15_daces_013
+    Rhen [tender]: He said nobody had to be chosen. He volunteered. #line:ch15_daces_014
+    @wait 3.0
+<<endif>>
 Aldous_varrow as "Dock-master" [neutral]: Now I know why he never finished anything here. #line:ch15_daces_012
 @wait 3.0
 <<set $ch15_supper_with_father = true>>

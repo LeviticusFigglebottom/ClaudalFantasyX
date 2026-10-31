@@ -6,7 +6,8 @@
   "vfx_drift": ["down_seaward"],
   "vfx_motion": ["spiral_up"],
   "vfx_rate": ["slow", "normal", "fast", "hang"],
-  "camera_eases": ["linear", "in_out_sine", "in_out_cubic", "out_quart"]
+  "camera_eases": ["linear", "in_out_sine", "in_out_cubic", "out_quart"],
+  "memory_looks": ["white", "held"]
  },
  "reserved": {
   "music": {"silence": "Not a track: fade the music bed out to nothing (fade= sets the time)."},
@@ -95,6 +96,11 @@
    },
    "one_of": ["sec", "music", "arrive"],
    "requires": {"max": "music"}
+  },
+  "memory": {
+   "doc": "M5-A3P-1600: a remembered scene (CutsceneMemory): eases a screen layer on or off over sec (0 or none = at once) that drains the colour, washes toward the look's colour and softens the edges to it (sequencer.json memory looks: white is Kesh's memory, held the Undertow's). The scene's end takes it off.",
+   "args": [{"name": "state", "type": "enum", "values": ["on", "off"]}, {"name": "sec", "type": "number", "min": 0, "optional": true}],
+   "kwargs": {"look": {"type": "enum", "set": "memory_looks"}}
   }
  }
 }

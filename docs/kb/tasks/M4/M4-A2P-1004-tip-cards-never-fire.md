@@ -2,8 +2,8 @@
 id: M4-A2P-1004
 title: "Request: three first-time tips never fire, and the tips start a chapter late (tutorial_tips)"
 role: ui
-status: todo
-owner_session: ""
+status: review
+owner_session: claude/ui (ui-menus)
 depends_on: []
 reviewer: narrative
 milestone: M4
@@ -23,7 +23,21 @@ Lead's Act I tutorial clarity pass (pillar 4). Each finding was traced in code a
 (the labels are Objective, Equip, Buy and Sell). Matching them would help once F1 makes the menu tips appear.
 
 ## Acceptance criteria
-- [ ] F1: a new game sees the field-menu, menu-save and Swell tips.
-- [ ] F5 and F8 fixed, or answered here with a reason.
+- [x] F1: a new game sees the field-menu, menu-save and Swell tips.
+- [x] F5 and F8 fixed, or answered here with a reason.
+
+## Answer (ui-menus, 2026-10-31)
+- **F1:** fixed earlier on claude/ui (the Lead's first-hour pass).
+  - `field_menu` is raised by `ch01_wickfry_won` or `ch02_tideline_won` (`when` may list flags).
+  - A flag tip whose flag was set while no field listened, such as the first fight's victory flag set in the
+    battle scene, is caught up on the field's `field_ready` (TutorialTips.raise_field_ready).
+  - So a new game sees the menu tip after Ch1's first win, then menu_save and swell.
+  - test_tutorial_tips: `test_a_flag_set_while_no_field_listened_is_caught_up_on_the_field` and
+    `test_the_act1_route_teaches_the_objective_and_the_menu_in_ch1`.
+- **F5:** the `objective` tip is raised by `ch01_saw_bell_room` (or `ch02_met_asha`).
+- **F8:** `TutorialTips.tags_of` adds `shrine` when a payload has `save_shrine` (`test_act2_tips_come_once_at_their_moment`
+  checks a layout trigger's shrine).
+- **Wording:** "errand" and "gear" are gone from the bodies. TIP_SHOP_BODY still says "In a deal". strings.csv is
+  shared, so that word is left for its owner.
 
 ## Review log

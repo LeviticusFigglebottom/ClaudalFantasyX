@@ -105,7 +105,7 @@
       "scene": "res://game/levels/ch10/ossa_fen/ossa_fen.tscn",
       "spawn": "FenEdge",
       "name_key": "LOCATION_CH10_OSSA_FEN",
-      "_note": "M4-C10-02: Ossa Fen at the overcast dusk, the first zone of Act II (act_outline Ch10), a greybox zone (Ch10Zone) from tools/act1/ch10_greybox.py: the fen's edge where Pell stops, the root-walks, the Drowner's clearing. Reached on its own until Ch9's act break hands off here."
+      "_note": "M4-C10-02: Ossa Fen at the overcast dusk, the first zone of Act II (act_outline Ch10), a greybox zone (Ch10Zone) from tools/act2/ch10_greybox.py: the fen's edge where Pell stops, the root-walks, the Drowner's clearing. Reached on its own until Ch9's act break hands off here."
     },
     {
       "id": "ch10/reedhollow",
@@ -119,7 +119,7 @@
       "scene": "res://game/levels/ch11/sunken_vey/sunken_vey.tscn",
       "spawn": "Landing",
       "name_key": "LOCATION_CH11_SUNKEN_VEY",
-      "_note": "M4-C11-02: Sunken Vey, the drowned galleries (act_outline Ch11), a greybox zone (Ch11Zone) from tools/act1/ch11_greybox.py: the landing, the conduit court (Liss's housing-mark), the fig-choked side gallery, the way on to Lowlight."
+      "_note": "M4-C11-02: Sunken Vey, the drowned galleries (act_outline Ch11), a greybox zone (Ch11Zone) from tools/act2/ch11_greybox.py: the landing, the conduit court (Liss's housing-mark), the fig-choked side gallery, the way on to Lowlight."
     },
     {
       "id": "ch11/lowlight",
@@ -133,7 +133,7 @@
       "scene": "res://game/levels/ch12/keth_pass/keth_pass.tscn",
       "spawn": "PassFoot",
       "name_key": "LOCATION_CH12_KETH_PASS",
-      "_note": "M4-C12-02: Keth Pass, the mountain route (act_outline Ch12), a greybox zone (Ch12Zone) from tools/act1/ch12_greybox.py: the switchback flights, the pass-cords, the knotted cord post, the Ram's terrace shelf, the saddle."
+      "_note": "M4-C12-02: Keth Pass, the mountain route (act_outline Ch12), a greybox zone (Ch12Zone) from tools/act2/ch12_greybox.py: the switchback flights, the pass-cords, the knotted cord post, the Ram's terrace shelf, the saddle."
     },
     {
       "id": "ch12/quellan",
@@ -154,7 +154,7 @@
       "scene": "res://game/levels/ch13/ansedra/ansedra.tscn",
       "spawn": "Moorings",
       "name_key": "LOCATION_CH13_ANSEDRA",
-      "_note": "M4-C13-02: Ansedra, the holy city on its mirror lagoon (act_outline Ch13), a greybox zone (Ch13Zone) from tools/act1/ch13_greybox.py: the outer moorings (Kerrid's nights), Sefir's house, Corran's old house, the causeways to the Sanctum and the Lamp Archive."
+      "_note": "M4-C13-02: Ansedra, the holy city on its mirror lagoon (act_outline Ch13), a greybox zone (Ch13Zone) from tools/act2/ch13_greybox.py: the outer moorings (Kerrid's nights), Sefir's house, Corran's old house, the causeways to the Sanctum and the Lamp Archive."
     },
     {
       "id": "ch13/sanctum",
@@ -175,14 +175,14 @@
       "scene": "res://game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn",
       "spawn": "CourtEntry",
       "name_key": "LOCATION_CH14_LACQUER_COURT",
-      "_note": "M4-C14-02: the Lacquer Court, the wedding court on Ansedra's still water (act_outline Ch14), a greybox zone (Ch13Zone) from tools/act1/ch14_greybox.py: the colonnade, the dais, the galleries, the water-steps down to the bridal barge, the water-gate."
+      "_note": "M4-C14-02: the Lacquer Court, the wedding court on Ansedra's still water (act_outline Ch14), a greybox zone (Ch13Zone) from tools/act2/ch14_greybox.py: the colonnade, the dais, the galleries, the water-steps down to the bridal barge, the water-gate."
     },
     {
       "id": "ch15/open_sea",
       "scene": "res://game/levels/ch15/open_sea/open_sea.tscn",
       "spawn": "Deck",
       "name_key": "LOCATION_CH15_OPEN_SEA",
-      "_note": "M4-C15-02: the open sea at night aboard the unlamped bridal barge (act_outline Ch15), a greybox zone (Ch15Zone) from tools/act1/ch15_16_greybox.py: the deck, Tobin's bier, the stern, the shoal of held dead below."
+      "_note": "M4-C15-02: the open sea at night aboard the unlamped bridal barge (act_outline Ch15), a greybox zone (Ch15Zone) from tools/act2/ch15_16_greybox.py: the deck, Tobin's bier, the stern, the shoal of held dead below."
     },
     {
       "id": "ch17/hollowmere",
@@ -225,6 +225,20 @@
       "spawn": "PathFoot",
       "name_key": "LOCATION_CH08_COILSPIRE",
       "_note": "M3-C08-02: the headland path, the keeper's hut and Coilspire, the fire temple (Ch8 B03-B07): the flue trial, the crown chamber and the beacon gallery; a greybox zone (Ch08CoilspireZone). Corrow's wall-gate hands off here at PathFoot; the beacon's opening hands back to ch08/corrow at WallGate."
+    },
+    {
+      "id": "ch18/kite",
+      "scene": "res://game/levels/ch18/kite/kite.tscn",
+      "spawn": "Deck",
+      "name_key": "LOCATION_CH18_KITE",
+      "_note": "M5-A3P-1004: Dace's hull flying, the Kite (act3_ch18.md), a greybox zone (Ch18Zone) from tools/act3/ch18_greybox.py: the deck, the wheel, the chart table and its courses."
+    },
+    {
+      "id": "ch19/iskarra_spire",
+      "scene": "res://game/levels/ch19/iskarra_spire/iskarra_spire.tscn",
+      "spawn": "Plaza",
+      "name_key": "LOCATION_CH19_ISKARRA_SPIRE",
+      "_note": "M5-A3P-1007: drowned Iskarra's plaza and the Lamp Spire (act3_ch19.md), a greybox zone (Ch19Zone) from tools/act3/ch19_greybox.py: the plaza, the spire's four tiers, the antechamber and the crown."
     }
   ],
   "shrines": [
@@ -232,6 +246,10 @@
     {"id": "haluna_shrine", "location_id": "ch02/haluna", "spawn": "Shrine"},
     {"id": "brine_shoals_camp", "location_id": "ch06/brine_shoals", "spawn": "RidgeCamp"},
     {"id": "tamsule_shrine", "location_id": "ch07/tamsule", "spawn": "Shrine"},
-    {"id": "corrow_shrine", "location_id": "ch08/corrow", "spawn": "Shrine"}
+    {"id": "corrow_shrine", "location_id": "ch08/corrow", "spawn": "Shrine"},
+    {"id": "quellan_shrine", "location_id": "ch12/quellan", "spawn": "Shrine"},
+    {"id": "ansedra_shrine", "location_id": "ch13/ansedra", "spawn": "Moorings"},
+    {"id": "hollowmere_shrine", "location_id": "ch17/hollowmere", "spawn": "Dock"},
+    {"id": "pale_rim_shrine", "location_id": "ch16/pale_rim", "spawn": "Rim"}
   ]
 }

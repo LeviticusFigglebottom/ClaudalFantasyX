@@ -22,7 +22,8 @@
     -16.95
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -31,7 +32,8 @@
     -16.95
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -40,7 +42,8 @@
     -16.95
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -49,7 +52,8 @@
     1.4
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -58,7 +62,8 @@
     -1.4
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -67,7 +72,38 @@
     1.4
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
+  },
+  {
+   "at": [
+    27.55,
+    1.6,
+    -21.05
+   ],
+   "energy": 0.7,
+   "range": 4.0,
+   "flicker": 0.3
+  },
+  {
+   "at": [
+    75.443,
+    2.5,
+    -22.928
+   ],
+   "energy": 0.6,
+   "range": 3.5,
+   "flicker": 0.3
+  },
+  {
+   "at": [
+    75.402,
+    2.75,
+    -22.5
+   ],
+   "energy": 0.35,
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -76,7 +112,8 @@
     0.75
    ],
    "energy": 0.6,
-   "range": 3.5
+   "range": 3.5,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -86,7 +123,8 @@
    ],
    "energy": 0.8,
    "range": 6.0,
-   "color": "#4FB3B0"
+   "color": "#4FB3B0",
+   "flicker": 0.12
   },
   {
    "at": [
@@ -96,7 +134,8 @@
    ],
    "energy": 0.8,
    "range": 6.0,
-   "color": "#4FB3B0"
+   "color": "#4FB3B0",
+   "flicker": 0.12
   },
   {
    "at": [
@@ -106,7 +145,8 @@
    ],
    "energy": 0.8,
    "range": 6.0,
-   "color": "#4FB3B0"
+   "color": "#4FB3B0",
+   "flicker": 0.12
   },
   {
    "at": [
@@ -116,7 +156,8 @@
    ],
    "energy": 0.8,
    "range": 6.0,
-   "color": "#4FB3B0"
+   "color": "#4FB3B0",
+   "flicker": 0.12
   }
  ],
  "pieces": [
@@ -380,7 +421,7 @@
    "yaw_deg": 180.0
   },
   {
-   "piece": "hm_lashed_hulls",
+   "piece": "hm_dockmaster_house",
    "at": [
     28.0,
     -19.0
@@ -499,8 +540,8 @@
   {
    "piece": "hm_windmill",
    "at": [
-    76.0,
-    -10.0
+    66.0,
+    -14.0
    ],
    "y": -0.9,
    "yaw_deg": -60.0
@@ -682,6 +723,33 @@
    "at": [
     78.0,
     -24.0
+   ],
+   "y": -0.9,
+   "yaw_deg": 30.0
+  },
+  {
+   "piece": "hm_drydock_berth",
+   "at": [
+    82.25,
+    -16.639
+   ],
+   "y": -0.9,
+   "yaw_deg": 30.0
+  },
+  {
+   "piece": "hm_drydock_berth",
+   "at": [
+    86.5,
+    -9.278
+   ],
+   "y": -0.9,
+   "yaw_deg": 30.0
+  },
+  {
+   "piece": "hm_drydock_berth_first",
+   "at": [
+    90.75,
+    -1.916
    ],
    "y": -0.9,
    "yaw_deg": 30.0
@@ -874,6 +942,70 @@
    "y": -1.6,
    "yaw_deg": 0.0,
    "scale": 1.792
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    14.0,
+    12.5
+   ],
+   "y": -0.85,
+   "yaw_deg": 30.0,
+   "drift": {
+    "bob_m": 0.05,
+    "period_s": 6.0,
+    "tilt_deg": 2.5,
+    "wander_m": 1.0,
+    "wander_s": 80.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    46.0,
+    13.0
+   ],
+   "y": -0.85,
+   "yaw_deg": 205.0,
+   "drift": {
+    "bob_m": 0.05,
+    "period_s": 6.0,
+    "tilt_deg": 2.5,
+    "wander_m": 1.0,
+    "wander_s": 80.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    57.0,
+    7.5
+   ],
+   "y": -0.85,
+   "yaw_deg": 110.0,
+   "drift": {
+    "bob_m": 0.05,
+    "period_s": 6.0,
+    "tilt_deg": 2.5,
+    "wander_m": 1.0,
+    "wander_s": 80.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    2.0,
+    9.0
+   ],
+   "y": -0.85,
+   "yaw_deg": 290.0,
+   "drift": {
+    "bob_m": 0.05,
+    "period_s": 6.0,
+    "tilt_deg": 2.5,
+    "wander_m": 1.0,
+    "wander_s": 80.0
+   }
   }
  ]
 }

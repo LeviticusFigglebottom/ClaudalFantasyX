@@ -1,0 +1,21 @@
+{
+ "format": 1,
+ "scene": "test_cutscene_memory",
+ "source": "game/data/dialogue/test/test_cutscene_memory.dlg",
+ "start": "test_cutscene_memory",
+ "nodes": {
+  "test_cutscene_memory": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "memory", "args": ["on", 1.0], "kwargs": {"look": "held"}, "src": 5},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 6},
+    {"op": "line", "id": "test_cutscene_memory_001", "key": "DLG_TEST_CUTSCENE_MEMORY_001", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "cue", "cue": "memory", "args": ["off", 0.5], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 9},
+    {"op": "line", "id": "test_cutscene_memory_002", "key": "DLG_TEST_CUTSCENE_MEMORY_002", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 10},
+    {"op": "cue", "cue": "memory", "args": ["on", 0.5], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "wait", "args": [0.6], "kwargs": {}, "src": 12}
+   ]
+  }
+ }
+}

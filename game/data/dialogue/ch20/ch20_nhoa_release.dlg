@@ -1,0 +1,32 @@
+// M5-A3P-1010. Ch20 U05 the release: Nhoa. She is glad to see him and sad that he is old. As she
+// starts to lift, PELL TURNS HIS BACK and sings the farewell-tide (wordless; this is his own, not Asha's lesson). Asha
+// turns her back with him. If ch18_pell_named she sees his new shell and touches it. Her name-shell (the keepsake) is
+// the last thing to go up. The most complete act of love in the game, done by looking away: the camera holds Pell's back
+// in the foreground, Nhoa lifting out of focus behind him (§7).
+title: ch20_nhoa_release
+location: ch20/undertow_layers
+---
+@letterbox on
+@camera U21
+@music silence fade=1.0
+Nhoa as "Ressa" [soft_smile]: You got old. #line:ch20_nhoa_002 #tn:"Nhoa speaks as Ressa, Pell's clutch-sister, Kirru, seventy years gone: glad and sad at once."
+@wait 2.0
+Nhoa as "Ressa" [sad]: I'm glad. I'm sorry. Both. #line:ch20_nhoa_003
+<<if $ch18_pell_named>>
+    @anim nhoa touch pell_name_shell
+    @wait 2.0
+    Nhoa as "Ressa" [tender]: They gave you your name back. #line:ch20_nhoa_004
+<<endif>>
+@wait 2.0
+@camera U22
+@anim pell turn_back nhoa
+@anim asha turn_back nhoa
+@music farewell_tide fade=1.0
+@sfx pell_farewell_tide at=pell vol=0.8
+@vfx glimmer_lift at=nhoa count=40 motion=spiral_up rate=slow
+@wait 10.0
+@vfx glimmer_lift at=ressa_name_shell count=1 motion=spiral_up rate=slow
+@wait 5.0
+<<set $ch20_nhoa_released = true>>
+@letterbox off
+===

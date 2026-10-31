@@ -60,6 +60,15 @@ extends HalunaDresser
 ##                  the walkways' edges over the water (assets_src/environments/zone_edges.py), so the hero can't
 ##                  step off; a "while_hidden" wall collides only while Greybox/<id> is hidden (a bridge the story
 ##                  takes away leaves no open edge).
+##   pieces[].drift  {"bob_m"?, "period_s"?, "tilt_deg"?, "wander_m"?, "wander_s"?}: a piece afloat (flotsam on a
+##                  sea) rides a slow swell: it bobs `bob_m` over `period_s`, rocks `tilt_deg`, and wanders round its
+##                  placed point in a `wander_m` eddy every `wander_s` (each piece's phase from its position).
+##   fire_light_fade  [begin_m, length_m]: every fire light fades out with distance from the camera (a town of lamps
+##                  whose far ones are "far_lights" quads: the omnis beyond leave the clustered light list).
+##   fill_lights  [{"pitch_deg", "yaw_deg", "color", "energy", "block"?}]: shadowless directional fill and rim lights
+##                  for a frame the key leaves black (Corrow under the storm's dimmed sun); a "block" one follows its
+##                  block, so it shows only while the story shows it.
+##   fire_lights[].flicker  0..1: the share of the light's energy a flame's flicker takes away at its deepest.
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
 ## It writes hymn_sun_direction from the zone's sun every frame, so the sky's sun follows the story's
@@ -90,6 +99,26 @@ const KEY_EBBING := "ebbing"
 const KEY_EDGE_WALLS := "edge_walls"
 const KEY_SNAP := "snap"
 const SNAP_FROM_M := 4.0
+const KEY_DRIFT := "drift"
+## A drifting piece's defaults: a calm sea's swell under a plank, a slow eddy.
+const DRIFT_BOB_M := 0.06
+const DRIFT_PERIOD_S := 5.5
+const DRIFT_TILT_DEG := 3.0
+const DRIFT_WANDER_M := 1.2
+const DRIFT_WANDER_S := 70.0
+## The rock's two axes out of step (rad lag, rate against the swell), and the piece's slow turn per eddy.
+const DRIFT_ROCK_LAG := 1.1
+const DRIFT_ROLL_RATE := 0.7
+const DRIFT_TURN_RATE := 0.25
+## A position hash to a phase (s): x and z weights, and the wrap.
+const PHASE_HASH := Vector3(12.9898, 78.233, 997.0)
+const KEY_FLICKER := "flicker"
+const KEY_FIRE_FADE := "fire_light_fade"
+const KEY_FILL := "fill_lights"
+const FILL_LIGHTS := &"FillLights"
+## A flame's flicker: two incommensurate wavers (Hz) and a quick gutter, mixed so it never repeats in a shot.
+const FLICKER_HZ := Vector3(1.7, 4.3, 9.1)
+const FLICKER_MIX := Vector3(0.5, 0.3, 0.2)
 const SNAP_DOWN_M := 16.0
 const EDGE_WALLS := &"EdgeWalls"
 const KEY_MATERIAL_PATHS := "material_paths"
@@ -116,6 +145,9 @@ var _followers: Dictionary = {}  ## block id -> Array of kit nodes
 var _kit_caches: Dictionary = {}  ## materials dir -> that kit's material cache
 var _spinners: Array[Array] = []  ## [piece, block, the piece's own basis]
 var _turners: Array[Array] = []  ## [piece, block, the piece's own basis]
+var _drifters: Array[Array] = []  ## [piece, its placed transform, its drift row, phase]
+var _flickers: Array[Array] = []  ## [light, its energy, flicker share, phase]
+var _clock_s := 0.0
 
 
 func dress() -> void:
@@ -156,8 +188,11 @@ func dress() -> void:
 			_turners.append([piece, turn, piece.basis])
 		if spec.has(KEY_SNAP):
 			snaps.append([piece, float(spec[KEY_SNAP])])
+		if spec.has(KEY_DRIFT):
+			_drifters.append([piece, piece.transform, spec[KEY_DRIFT], _phase(piece.position)])
 	_snap_to_ground(snaps, grounds)
 	_place_fire_lights()
+	_place_fill_lights()
 	_place_multimeshes()
 	_place_far_lights()
 	_place_waters()
@@ -173,7 +208,15 @@ func dress() -> void:
 	dressed.emit()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_clock_s += delta
+	for d: Array in _drifters:
+		_drift(d)
+	for f: Array in _flickers:
+		var t := _clock_s + float(f[3])
+		var w := Vector3(sin(t * TAU * FLICKER_HZ.x), sin(t * TAU * FLICKER_HZ.y), sin(t * TAU * FLICKER_HZ.z))
+		var dip := ((w + Vector3.ONE) * 0.5).dot(FLICKER_MIX)  # each waver 0..1
+		(f[0] as OmniLight3D).light_energy = float(f[1]) * (1.0 - float(f[2]) * dip)
 	for sp: Array in _spinners:
 		var turn := deg_to_rad((sp[1] as Node3D).rotation_degrees.y)
 		(sp[0] as Node3D).basis = (sp[2] as Basis) * Basis(Vector3.BACK, turn)
@@ -185,6 +228,28 @@ func _process(_delta: float) -> void:
 	if not toward.is_equal_approx(_sun_written):
 		_sun_written = toward
 		ShaderGlobals.set_value(GLOBAL_SUN, toward)
+
+
+## A phase (s) from a point, so neighbouring flames and floats never move in step.
+static func _phase(at: Vector3) -> float:
+	return fposmod(at.x * PHASE_HASH.x + at.z * PHASE_HASH.y, PHASE_HASH.z)
+
+
+func _drift(d: Array) -> void:
+	var piece := d[0] as Node3D
+	var base := d[1] as Transform3D
+	var row: Dictionary = d[2]
+	var t := _clock_s + float(d[3])
+	var swell := t * TAU / float(row.get("period_s", DRIFT_PERIOD_S))
+	var eddy := t * TAU / float(row.get("wander_s", DRIFT_WANDER_S))
+	var wander := float(row.get("wander_m", DRIFT_WANDER_M))
+	var tilt := deg_to_rad(float(row.get("tilt_deg", DRIFT_TILT_DEG)))
+	var offset := Vector3(cos(eddy) * wander, sin(swell) * float(row.get("bob_m", DRIFT_BOB_M)), sin(eddy) * wander)
+	var rock := (
+		Basis(Vector3.RIGHT, sin(swell + DRIFT_ROCK_LAG) * tilt)
+		* Basis(Vector3.BACK, sin(swell * DRIFT_ROLL_RATE) * tilt)
+	)
+	piece.transform = Transform3D(Basis(Vector3.UP, eddy * DRIFT_TURN_RATE) * rock * base.basis, base.origin + offset)
 
 
 ## Every surface of `root`'s meshes whose kit slot (its source material's name) is a key of `paths` takes that
@@ -506,6 +571,7 @@ func _place_fire_lights() -> void:
 	root.name = FIRE_LIGHTS
 	add_child(root)
 	var color := Color.html(str(layout.get("fire_light_color", "#E0702E")))
+	var fade: Array = layout.get(KEY_FIRE_FADE, [])
 	for r: Variant in rows:
 		var row: Dictionary = r
 		var at: Array = row.get("at", [0.0, 0.0, 0.0])
@@ -517,7 +583,33 @@ func _place_fire_lights() -> void:
 		light.omni_attenuation = float(row.get("attenuation", light.omni_attenuation))
 		light.light_specular = float(row.get("specular", light.light_specular))
 		light.light_volumetric_fog_energy = 0.0  # the fog-lamp rule (test_fog_lamps)
+		if fade.size() == 2:
+			light.distance_fade_enabled = true
+			light.distance_fade_begin = float(fade[0])
+			light.distance_fade_length = float(fade[1])
 		light.position = Vector3(float(at[0]), float(at[1]), float(at[2]))
+		root.add_child(light)
+		if row.has(KEY_FLICKER):
+			_flickers.append([light, light.light_energy, float(row[KEY_FLICKER]), _phase(light.position)])
+		_attach(light, str(row.get(KEY_BLOCK, "")))
+
+
+func _place_fill_lights() -> void:
+	var rows: Array = layout.get(KEY_FILL, [])
+	if rows.is_empty():
+		return
+	var root := Node3D.new()
+	root.name = FILL_LIGHTS
+	add_child(root)
+	for r: Variant in rows:
+		var row: Dictionary = r
+		var light := DirectionalLight3D.new()
+		light.rotation_degrees = Vector3(float(row.get("pitch_deg", 0.0)), float(row.get("yaw_deg", 0.0)), 0.0)
+		light.light_color = Color.html(str(row.get("color", "#FFFFFF")))
+		light.light_energy = float(row.get("energy", 1.0))
+		light.shadow_enabled = false
+		light.light_specular = float(row.get("specular", light.light_specular))
+		light.light_volumetric_fog_energy = 0.0  # the fog-lamp rule (test_fog_lamps)
 		root.add_child(light)
 		_attach(light, str(row.get(KEY_BLOCK, "")))
 

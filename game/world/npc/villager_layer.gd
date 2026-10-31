@@ -34,6 +34,11 @@ extends Node3D
 ## Day and night (the Lead, 2026-10-30: Haluna's vignettes): a row's `shown` (`day` or `night`; none: always) shows
 ## the villager only while the zone's `is_night` (HalunaZone.set_night: the dock at night) is false or true. Hidden, it
 ## is stopped and not ticked, as HalunaZone's night_hide stops its own villagers.
+##
+## Flags (M5-A3P-1810, the Act III revisits): a row's `flag` shows the villager only while that flag is set, and its
+## `not_flag` only until that flag is set (Game.get_flag, checked each tick), so a zone can swap a crowd person's
+## row for a changed one (Haluna's backs-to-the-water, Reedhollow's farewell-tide again). Together with `shown`, a
+## villager shows only when both allow it.
 
 const DATA_DIR := "res://game/data/world/npc/zones/"
 const ACTOR_PATH := "res://assets/characters/villagers/%s/%s_actor.tscn"
@@ -52,6 +57,10 @@ const GREYBOX_MODEL := "Model"
 const ZONE_CAST := "Cast"
 ## Where a row's `at` spot is made when the zone has no stand-in for it (a crowd on a greybox that names no actors).
 const CROWD_SPOTS := "CrowdSpots"
+## M3-HER-1168: during a scene change, rows are added as many a frame as fit this (their scenes loaded first), and
+## the reveal waits this many frames more for the villagers' first ticks.
+const SPREAD_BUDGET_MS := 30
+const SETTLE_FRAMES := 2
 ## Row `shown`: only by day, only at night (the zone's `is_night`).
 const SHOWN_DAY := "day"
 const SHOWN_NIGHT := "night"
@@ -81,6 +90,9 @@ var _storm_flag: StringName = &""
 var _built := false
 ## FieldNpc -> its row's `shown` (only rows that set one)
 var _shown: Dictionary = {}
+## FieldNpc -> [its row's `flag`, its `not_flag`] (only rows that set one), and the flags' last values
+var _gates: Dictionary = {}
+var _gate_values: Dictionary = {}
 
 
 func _ready() -> void:
@@ -132,9 +144,13 @@ func build() -> int:
 	return villagers.size()
 
 
-## ADR 0111 amendment 4 (the PC's pass 3: Pemakar's entry stayed over 1 s hidden): adopting a villager moves its
-## whole model out of the tree and back under a FieldNpc (100-240 ms headless each), so built during a scene change
-## the layer adds one villager a frame and holds the router's reveal until the last is in. The fade stays opaque.
+## ADR 0111 amendment 4 (the PC's pass 3: Pemakar's entry stayed over 1 s hidden): built during a scene change, the
+## layer holds the router's reveal until the last villager is in; the fade stays opaque. M3-HER-1168 (Haluna's reveal
+## held 3.1 s, one row a frame at ~180 ms): a row's cost was mostly loading its actor scene (the GLB, its materials and
+## textures, 100-250 ms the first time), so every row's actor scene is first loaded on worker threads
+## (ResourceLoader.load_threaded_request) while the frames stay light, then the rows are added as many a frame as
+## fit SPREAD_BUDGET_MS (a row with its scene loaded costs ~20 ms), and the reveal waits SETTLE_FRAMES more for the
+## villagers' first ticks, so no heavy frame shows as the fade lifts.
 func _build_spread() -> void:
 	if _built:
 		return
@@ -142,16 +158,58 @@ func _build_spread() -> void:
 	var router := get_tree().root.get_node_or_null(^"SceneRouter")
 	router.call(&"hold_reveal", self)
 	var rows := _begin_build()
+	var requested: Array[String] = []
+	for row: Variant in rows:
+		var path := _actor_path(row)
+		if path != "" and not path in requested and ResourceLoader.exists(path) and not ResourceLoader.has_cached(path):
+			if ResourceLoader.load_threaded_request(path, "", true) == OK:
+				requested.append(path)
+	var pending := requested.duplicate()
+	while not pending.is_empty():
+		await get_tree().process_frame
+		if not is_inside_tree():
+			router.call(&"release_reveal", self)
+			return
+		pending = pending.filter(
+			func(p: String) -> bool:
+				return ResourceLoader.load_threaded_get_status(p) == ResourceLoader.THREAD_LOAD_IN_PROGRESS
+		)
+	var loaded: Array[Resource] = []  # held until the rows are built, so the cache keeps them
+	for path in requested:
+		loaded.append(ResourceLoader.load_threaded_get(path))
 	var by_id: Dictionary = {}
+	var frame_start := Time.get_ticks_usec()
 	for i in rows.size():
 		_add_row(rows[i], by_id)
-		if i < rows.size() - 1:
+		if i < rows.size() - 1 and Time.get_ticks_usec() - frame_start > SPREAD_BUDGET_MS * 1000:
 			await get_tree().process_frame
 			if not is_inside_tree():
 				router.call(&"release_reveal", self)
 				return
+			frame_start = Time.get_ticks_usec()
 	_finish_build(rows, by_id)
+	for i in SETTLE_FRAMES:
+		await get_tree().process_frame
+		if not is_inside_tree():
+			break
 	router.call(&"release_reveal", self)
+
+
+## The actor scene a row's villager will wear (what _make loads), or "" when it wears none of its own (an adopted
+## model, a bad row).
+func _actor_path(row: Variant) -> String:
+	if not row is Dictionary:
+		return ""
+	var r := row as Dictionary
+	var crowd_id := StringName(str(r.get("crowd", "")))
+	if crowd_id != &"":
+		var body := str(crowd_person(crowd_id).get("body", ""))
+		return CROWD_ACTOR_PATH % [body, body] if body != "" else ""
+	if r.has("body"):
+		var bare := str(r["body"])
+		return CROWD_ACTOR_PATH % [bare, bare] if bare != "" else ""
+	var actor_id := str(r.get("actor", r.get("npc_id", "")))
+	return ACTOR_PATH % [actor_id, actor_id] if actor_id != "" else ""
 
 
 ## True while SceneRouter (when there is one) is changing scene: its fade covers the screen.
@@ -175,6 +233,10 @@ func _add_row(row: Variant, by_id: Dictionary) -> void:
 			var shown := str((row as Dictionary).get("shown", ""))
 			if shown == SHOWN_DAY or shown == SHOWN_NIGHT:
 				_shown[npc] = shown
+			var flag := StringName(str((row as Dictionary).get("flag", "")))
+			var not_flag := StringName(str((row as Dictionary).get("not_flag", "")))
+			if flag != &"" or not_flag != &"":
+				_gates[npc] = [flag, not_flag]
 
 
 func _finish_build(rows: Array, by_id: Dictionary) -> void:
@@ -473,14 +535,39 @@ func set_night(on: bool) -> void:
 
 
 func _apply_shown() -> void:
-	for key: Variant in _shown.keys():
+	_gate_values = _read_gates()
+	for key: Variant in _shown.keys() + _gates.keys():
 		if not is_instance_valid(key):
 			_shown.erase(key)
+			_gates.erase(key)
 			continue
 		var npc := key as FieldNpc
-		var on := (str(_shown[key]) == SHOWN_NIGHT) == night
+		var on := true
+		if _shown.has(key):
+			on = (str(_shown[key]) == SHOWN_NIGHT) == night
+		if _gates.has(key):
+			var gate: Array = _gates[key]
+			on = (
+				on and (gate[0] == &"" or bool(_gate_values[gate[0]])) and (gate[1] == &"" or not _gate_values[gate[1]])
+			)
 		npc.visible = on
 		npc.process_mode = Node.PROCESS_MODE_INHERIT if on else Node.PROCESS_MODE_DISABLED
+
+
+## The gated rows' flags and their values now.
+func _read_gates() -> Dictionary:
+	var out := {}
+	for key: Variant in _gates:
+		for f: StringName in _gates[key]:
+			if f != &"" and not out.has(f):
+				out[f] = bool(Game.get_flag(f))
+	return out
+
+
+## A flag a gated row names was set or cleared: the rows appear or go.
+func _check_gates() -> void:
+	if not _gates.is_empty() and _read_gates() != _gate_values:
+		_apply_shown()
 
 
 func _check_night() -> void:
@@ -492,6 +579,7 @@ func _check_night() -> void:
 ## One frame: the villagers (when the owner drives them), the storm flag, the night and the riders.
 func tick(delta: float) -> void:
 	_check_night()
+	_check_gates()
 	if not auto_build:
 		for n in live_villagers():
 			if n.visible:

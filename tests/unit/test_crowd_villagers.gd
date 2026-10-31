@@ -488,6 +488,56 @@ func test_a_freed_silhouette_leaves_no_material_behind() -> void:
 	assert_eq(alive, 0, "no silhouette material outlives the figure")
 
 
+## PC row 85: leaving the tree swaps no material (the pass-3 clear put the body's own materials back mid-teardown), and
+## a freed crowd person's tinted copies don't outlive it (NpcTints caches them weakly).
+func test_leaving_the_tree_keeps_the_materials_and_freeing_frees_them() -> void:
+	var zone := _greybox_zone(["figure"])
+	var spot := {"npc_id": "haluna_dock_mender", "crowd": "haluna_dock_mender", "stand_in": "CrowdSpots/mender"}
+	spot["at"] = [2.0, 0.0, -2.0, 0.0]
+	var layer := _layer(
+		zone,
+		[
+			{
+				"npc_id": "storm_figure_exit",
+				"body": "crowd_man_lean_a",
+				"silhouette": "#5fd6e0",
+				"stand_in": "CutsceneStage/Actors/figure",
+				"attach": "child"
+			},
+			spot
+		]
+	)
+	layer.build()
+	var figure := layer.villager(&"storm_figure_exit")
+	var worn := _override_ids(figure.actor)
+	var parent := zone.get_parent()
+	parent.remove_child(zone)
+	assert_eq(_override_ids(figure.actor), worn, "out of the tree, the figure still wears the same materials")
+	parent.add_child(zone)
+	var refs := _override_refs(layer.villager(&"haluna_dock_mender").actor)
+	var worn_copies := 0
+	for r in refs:
+		if r.get_ref() != null:
+			worn_copies += 1
+	assert_true(worn_copies > 0, "the mender wore tinted copies")
+	_done()
+	var alive := 0
+	for r in refs:
+		if r.get_ref() != null:
+			alive += 1
+	assert_eq(alive, 0, "no tinted material outlives the person")
+
+
+func _override_ids(actor: Node) -> Array[int]:
+	var ids: Array[int] = []
+	for node: Node in actor.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		for i in mi.mesh.get_surface_count():
+			var m := mi.get_surface_override_material(i)
+			ids.append(m.get_instance_id() if m != null else 0)
+	return ids
+
+
 ## Weak references to every surface override under `actor`, gathered in a function of their own: GDScript keeps an
 ## expression's last value in a stack slot until its function returns, which would hold one material alive.
 func _override_refs(actor: Node) -> Array[WeakRef]:
@@ -615,12 +665,16 @@ func test_haluna_vignettes_come_alive_in_the_real_zone() -> void:
 	_done()
 
 
-## The slice towns lived in (the Lead, 2026-10-30): Oruvel's deck and Pemakar's quay at Lanternfall, at work.
-func test_oruvel_and_pemakar_vignettes_come_alive_in_their_zones() -> void:
+## The towns lived in (the Lead, 2026-10-30): Oruvel's deck, Pemakar's quay at Lanternfall, Quellan's square,
+## Hollowmere's dawn and Ansedra's moorings, at work.
+func test_town_vignettes_come_alive_in_their_zones() -> void:
 	var people := _people()
 	for z: Array in [
 		["res://game/levels/ch01/oruvel/oruvel.tscn", &"ch01/oruvel", "oruvel_deck_", 6],
-		["res://game/levels/ch05/pemakar/pemakar.tscn", &"ch05/pemakar", "pemakar_quay_", 5]
+		["res://game/levels/ch05/pemakar/pemakar.tscn", &"ch05/pemakar", "pemakar_quay_", 5],
+		["res://game/levels/ch12/quellan/quellan.tscn", &"ch12/quellan", "quellan_town_", 8],
+		["res://game/levels/ch17/hollowmere/hollowmere.tscn", &"ch17/hollowmere", "hollowmere_dawn_", 4],
+		["res://game/levels/ch13/ansedra/ansedra.tscn", &"ch13/ansedra", "ansedra_moorings_", 7]
 	]:
 		var zone := (load(str(z[0])) as PackedScene).instantiate() as Node3D
 		_holder().add_child(zone)
@@ -642,4 +696,80 @@ func test_oruvel_and_pemakar_vignettes_come_alive_in_their_zones() -> void:
 			if npc.route_points.is_empty():
 				assert_eq(npc.current_clip, work, "%s plays %s" % [id, work])
 		assert_eq(found, int(z[3]), "%s's vignette people" % z[1])
+	_done()
+
+
+## Reedhollow lived in (the Lead, 2026-10-30), as still as the Kirru are: fishers at the ring's edge, a pair talking in
+## bouts on the ring, a youngster watching, on the Kirru's own clips.
+func test_reedhollow_vignettes_fish_talk_and_watch() -> void:
+	var zone := (load("res://game/levels/ch10/reedhollow/reedhollow.tscn") as PackedScene).instantiate() as Node3D
+	_holder().add_child(zone)
+	var layer := VillagerLayer.wire(zone, &"ch10/reedhollow")
+	layer.build()
+	for id: StringName in [&"fisher_1", &"fisher_2", &"fisher_3", &"talker_1", &"talker_2", &"shore_youngster"]:
+		var npc := layer.villager(id)
+		assert_true(npc != null and npc.actor != null, "%s stands in Reedhollow wearing a Kirru body" % id)
+	assert_eq(layer.villager(&"talker_1").partner, layer.villager(&"talker_2"), "the pair talk together")
+	_done()
+
+
+## M3-HER-1168: under a scene change the layer loads each row's actor scene on worker threads first; _actor_path names
+## the scene _make will wear for a crowd person, a bare body and a villager (its own or a borrowed `actor`).
+func test_each_row_names_the_actor_scene_it_will_wear() -> void:
+	var people := _people()
+	var layer := VillagerLayer.new()
+	var body := str((people["haluna_dock_mender"] as Dictionary)["body"])
+	assert_eq(
+		layer._actor_path({"npc_id": "x", "crowd": "haluna_dock_mender"}),
+		VillagerLayer.CROWD_ACTOR_PATH % [body, body],
+		"a crowd person wears its body"
+	)
+	assert_eq(
+		layer._actor_path({"npc_id": "x", "body": "kirru_man"}),
+		VillagerLayer.CROWD_ACTOR_PATH % ["kirru_man", "kirru_man"],
+		"a bare body row"
+	)
+	assert_eq(
+		layer._actor_path({"npc_id": "fisher"}), VillagerLayer.ACTOR_PATH % ["fisher", "fisher"], "a villager's own"
+	)
+	assert_eq(
+		layer._actor_path({"npc_id": "smith", "actor": "fisher"}),
+		VillagerLayer.ACTOR_PATH % ["fisher", "fisher"],
+		"a borrowed model"
+	)
+	assert_eq(layer._actor_path("not a row"), "", "nothing for a bad row")
+	layer.free()
+
+
+## M5-A3P-1810: a row's `flag` shows its villager only while the flag is set, its `not_flag` only until then, so a
+## zone swaps a person's row for a changed one when a story flag lands (checked each tick).
+func test_flag_rows_swap_when_the_flag_is_set() -> void:
+	var flag := &"ch02_heard_pila"
+	var was: Variant = Game.get_flag(flag)
+	Game.set_flag(flag, false)
+	var zone := _holder()
+	var before := {
+		"npc_id": "haluna_dock_mender",
+		"crowd": "haluna_dock_mender",
+		"stand_in": "CrowdSpots/before",
+		"at": [0.0, 0.0, -2.0, 0.0],
+		"not_flag": String(flag)
+	}
+	var after := {
+		"npc_id": "haluna_dock_mender_after",
+		"crowd": "haluna_dock_mender",
+		"stand_in": "CrowdSpots/after",
+		"at": [0.0, 0.0, -2.0, 180.0],
+		"flag": String(flag)
+	}
+	var layer := _layer(zone, [before, after])
+	assert_eq(layer.build(), 2, "both rows are built")
+	var a := layer.villager(&"haluna_dock_mender")
+	var b := layer.villager(&"haluna_dock_mender_after")
+	assert_true(a.visible and not b.visible, "before the flag: the person's own row")
+	assert_eq(b.process_mode, Node.PROCESS_MODE_DISABLED, "the hidden variant is stopped")
+	Game.set_flag(flag, true)
+	layer.tick(DT)
+	assert_true(not a.visible and b.visible, "once it lands: the changed row instead")
+	Game.set_flag(flag, was)
 	_done()

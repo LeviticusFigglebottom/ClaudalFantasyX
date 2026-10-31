@@ -511,6 +511,46 @@
       ]
     },
     {
+      "id": "creature_tide_matron",
+      "owner": "character",
+      "sources": ["assets_src/creatures/cinder_matron/**", "assets_src/creatures/tide_matron/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/tide_matron/*.glb", "assets/creatures/tide_matron/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/cinder_matron/build_cinder_matron.py", "--", "--tide", "--out", "assets/creatures/tide_matron/tide_matron.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "tide_matron"]
+      ]
+    },
+    {
+      "id": "creature_old_shoal",
+      "owner": "character",
+      "sources": ["assets_src/creatures/old_shoal/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/old_shoal/*.glb", "assets/creatures/old_shoal/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/old_shoal/build_old_shoal.py", "--", "--out", "assets/creatures/old_shoal/old_shoal.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "old_shoal"]
+      ]
+    },
+    {
+      "id": "creature_the_cage",
+      "owner": "character",
+      "sources": ["assets_src/creatures/the_cage/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/the_cage/*.glb", "assets/creatures/the_cage/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/the_cage/build_the_cage.py", "--", "--out", "assets/creatures/the_cage/the_cage.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "the_cage"]
+      ]
+    },
+    {
+      "id": "creature_sefir_heart",
+      "owner": "character",
+      "sources": ["assets_src/creatures/sefir_heart/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/sefir_heart/*.glb", "assets/creatures/sefir_heart/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/sefir_heart/build_sefir_heart.py", "--", "--out", "assets/creatures/sefir_heart/sefir_heart.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "sefir_heart"]
+      ]
+    },
+    {
       "id": "creature_shoal_skipper",
       "owner": "character",
       "sources": ["assets_src/creatures/shoal_skipper/**", "assets_src/creatures/common/**"],
@@ -1157,6 +1197,76 @@
       "runs": [
         ["{blender}", "--python", "assets_src/creatures/rim_crawler/build_rim_crawler.py", "--", "--out", "assets/creatures/rim_crawler/rim_crawler.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "rim_crawler"]
+      ]
+    },
+    {
+      "id": "creature_deep_scuttler",
+      "owner": "character",
+      "sources": ["assets_src/creatures/deep_scuttler/**", "assets_src/creatures/scuttler/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/deep_scuttler/*.glb", "assets/creatures/deep_scuttler/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/deep_scuttler/build_deep_scuttler.py", "--", "--out", "assets/creatures/deep_scuttler/deep_scuttler.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "deep_scuttler"]
+      ]
+    },
+    {
+      "id": "creature_hull_rasp",
+      "owner": "character",
+      "sources": ["assets_src/creatures/hull_rasp/**", "assets_src/creatures/hullgnaw/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/hull_rasp/*.glb", "assets/creatures/hull_rasp/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/hull_rasp/build_hull_rasp.py", "--", "--out", "assets/creatures/hull_rasp/hull_rasp.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "hull_rasp"]
+      ]
+    },
+    {
+      "id": "creature_wick_crawler",
+      "owner": "character",
+      "sources": ["assets_src/creatures/wick_crawler/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/wick_crawler/*.glb", "assets/creatures/wick_crawler/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/wick_crawler/build_wick_crawler.py", "--", "--out", "assets/creatures/wick_crawler/wick_crawler.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "wick_crawler"]
+      ]
+    },
+    {
+      "id": "creature_chain_lamp",
+      "owner": "character",
+      "sources": ["assets_src/creatures/chain_lamp/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/chain_lamp/*.glb", "assets/creatures/chain_lamp/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/chain_lamp/build_chain_lamp.py", "--", "--out", "assets/creatures/chain_lamp/chain_lamp.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "chain_lamp"]
+      ]
+    },
+    {
+      "id": "creature_spire_moth",
+      "owner": "character",
+      "sources": ["assets_src/creatures/spire_moth/**", "assets_src/creatures/flue_moth/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/spire_moth/*.glb", "assets/creatures/spire_moth/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/spire_moth/build_spire_moth.py", "--", "--out", "assets/creatures/spire_moth/spire_moth.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "spire_moth"]
+      ]
+    },
+    {
+      "id": "creature_held_shoal",
+      "owner": "character",
+      "sources": ["assets_src/creatures/held_shoal/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/held_shoal/*.glb", "assets/creatures/held_shoal/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/held_shoal/build_held_shoal.py", "--", "--out", "assets/creatures/held_shoal/held_shoal.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "held_shoal"]
+      ]
+    },
+    {
+      "id": "creature_drowned_lantern",
+      "owner": "character",
+      "sources": ["assets_src/creatures/drowned_lantern/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/drowned_lantern/*.glb", "assets/creatures/drowned_lantern/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/drowned_lantern/build_drowned_lantern.py", "--", "--out", "assets/creatures/drowned_lantern/drowned_lantern.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "drowned_lantern"]
       ]
     },
     {

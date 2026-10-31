@@ -27,7 +27,7 @@ Ysolde [sad]: She tied that too. A question-knot. Hanging at the end of the coun
 @wait 1.5
 Ysolde [sad]: She sang anyway. She believed faith could hold a question. #line:ch12_voices_008
 Asha [sad]: Could it? #line:ch12_voices_009
-Ysolde [grief]: I have visited my husband every year for twenty-four years, Lady Cantor. I would very much like it to. #line:ch12_voices_010
+Ysolde [grief]: I have visited my husband every year for eleven years, Lady Cantor. I would very much like it to. #line:ch12_voices_010
 <<set $ch12_ysolde_confessed = true>>
 @camera Q05
 @mark toma hearth_step walk

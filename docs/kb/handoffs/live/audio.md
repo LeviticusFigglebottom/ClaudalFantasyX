@@ -3,6 +3,145 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 5537dc6e8: the Lead's 01:41 FAST-TRACK (cloud-qa's 32 `used` reconnect ERRORs).**
+  - **Is the first fix on integration?** Yes. 4d4fbd50 merged in big34 (9317c6b6, `Merge lead/gate-big34: UiAudio/unbind ERROR fixes`). I merged integration (big35 included) into claude/audio for this check.
+  - **The repro** (M3-HER-1169's: scene_swap_probe `--encounter=ch03_causeway_shore --return=...saltgrass_causeway.tscn`, a resident return) logs **0** "already connected" on current integration.
+    - The pre-fix ui_audio.gd also logs 0 there now, so since big35's return changes the probe no longer tells the two apart.
+  - **cloud-qa's build:** its log isn't in the repo, so I can't tell whether its 32 came from a build before big34. **LEAD-ASK:** the build sha of that run, if it was big34 or later.
+  - **Hardened either way:** UiAudio.watch now also skips any connection that already exists (`is_connected`, M3-HER-1169's tested guard), on top of the node's mark. So no path that brings a node back (a lost mark, a duplicate, a second watch) can connect `used` or any hooked signal twice.
+  - **Test:** test_audio_reconnect +1. A real `Interactable`, routed as the director routes it (UiAudio and InteractAudio), goes through two resident returns and then once with its mark cleared: no engine error, one connection each, and the soft touch plays once.
+  - **Checks:** gdlint and gdformat clean; Godot `--filter=audio` 189/0, ui_ 58/0; validate_data 0. **M3-HER-1169** is answered by this (hero-integration can close it on merge).
+- **MERGE-READY @ bc41b3147: Act III cutscene sounds (M5-A3P-1953, to review).** Every `@sfx` the Act III drafts name now has a row.
+  - **13 new** under `assets/audio/act3/sfx/`:
+    - velamir_lullaby_hum: the lullaby hummed, one file for both Asha (Ch18) and Imra (E1);
+    - pell_farewell_tide: Pell sings the clutch's rising line for Nhoa;
+    - match_struck: E7's lamp;
+    - the Kite's settle, strain and floor-touch;
+    - Iskarra's engine stopping, Kerrid's hitch spilling, the flat sea, Haluna's murmured names, the clutch's hum, the shell into the lagoon, the wind in the sails.
+  - **4 alias rows** to the Kite's existing foley (kite_engines_stop, sails_fill, rope_creak, hull_meets_water).
+  - **Checks:** determinism; targets rule act3/sfx; validate_data 0; audio_loudness and audio_data OK; Godot audio_runtime 11/0.
+  - **Next:** Ch17–Ch20's music cues: hollowmere_morning, the_choice, kite_first_lamp, kite_theme, kite_night, haluna_lifting, reedhollow_return, kerrid_hitch, engine_down, the_eye, undertow_descent, the six memory_* cues, the_cage, thank_you.
+- **MERGE-READY @ 626528274: the Lead's 01:21 item, the Act II cue placement in slice-polish's newest Ch13–Ch16 staging (m2-slice @ ff50ec33).**
+  - **Staged now:** Ch13's ansedra, ansedra_lacquer_court, lamp_archive (with the `archive_lamp` prop) and sanctum; Ch15's open_sea; Ch16's drowned_choir and pale_rim.
+  - **The check:** act1_playthrough `--act 2 --holds`, run in a scratch worktree of m2-slice with audio's current data and tools copied in. No missing cue and no cue ending inside a held shot, in any of them; only the 13 known notes (deliberate `fade=0.0` cuts and ansedra named twice).
+  - **The scripts the slice changed** (Ch13–Ch16): wording and marks only, plus `@memory on look=white … off` round ch16_kesh_memory. That scene already has its cue (`kesh_memory`), and the zone bed holds under a sequencer's music, so it needs nothing more.
+  - **One addition, Ch13 R10 (ch13_sefir_closes_the_book):** after `@music silence`, Sefir squares the pages, closes the ledger and puts out the Archive's one lamp (`@light archive_lamp off 1.0`). The lamp is staged warm, an oil flame ("the only warm notes are human", act2_ch13.md rule 5), and nothing else sounds in that silence. So:
+    - prop_sfx.json gives `archive_lamp.tscn` the `lamp_flame` loop, close (1.5 m), marked pending until the slice merges;
+    - PropAudio rows may name a `light`: the loop's level follows its energy every frame, so the lamp's breath goes out with the light (a 1 s fade, then stopped).
+  - **Test:** test_prop_audio +1 (lit at its level; half the energy about 6 dB down; out with the light).
+  - **Checks:** validate_data 0; gdlint and gdformat clean; Godot prop_audio 3/0, flame_audio 3/0. Skipped: screenshots, Blender.
+- **MERGE-READY @ 3e7910593: the Lead's 23:05 FAST-TRACK (the two ERRORs). It pre-empts the score (ADR 0207).**
+  - **UiAudio "already connected" on every resident battle return (134 in Ch1–Ch6):**
+    - Cause: the field leaves the tree for the battle and comes back with its connections intact. `step()` had dropped it from `watched`, so the director's `watch()` connected every hooked signal again.
+    - Fix: a node now carries the UiAudio that connected it (meta `ui_audio_connected`). A second `watch()` only resumes its reads, and a signal still plays its row once.
+  - **ashcrown_audio.gd:53 `unbind(0)`:** the trial's `ran` has three arguments and went through `unbind(argc - 3)`, which is 0 and an ERROR. Now three arguments connect plainly, and only a signal with more drops its extras.
+  - **Test:** `tests/unit/test_audio_reconnect.gd` (2) fails on any engine error (QaLogger), not only script errors. It reproduces both on the old code (the exact messages) and passes on the fix.
+  - **Checks:** gdlint and gdformat clean; Godot audio_reconnect 2/0, ui_ 58/0, ashcrown 22/0, audio_runtime 11/0, battle_audio 22/0. ui_'s "2 left nodes in the tree" happens without this change too.
+- **MERGE-READY @ e8755571d: Act III production starts (ADR 0207; the Lead's 21:56 item). The score, part 1, is the Unbinding themes (M5-A3P-1950, to review); part 2, the finale, is begun (M5-A3P-1951).**
+  - **Merged integration** (46d8a067 onward) into claude/audio; it was clean.
+  - **Storage, ADR 0208:** Act III's new audio is plain git under `assets/audio/act3/`, the same route as Act II's (LFS uploads are still refused from the cloud). The budget is 150 MiB; plain audio was at 100.3 MiB of 105. **LEAD-ASK:** accept ADR 0208 (repository size) on merge.
+  - **The sung Letting is derived, never retyped.** motifs.py `letting_verse()` is the first verse turned upward line by line, its close climbing to the held E6 on *tash*. `assets_src/music/act3/lamptongue.py` holds lamptongue.md's eight verses and its syllable rules. Asha's voice stays the vowel-shaped breath-flute vocalise (SPEC §16 Q4 still open); choirs use the procedural formant voices, as Act II's do.
+  - **New cues** (assets/audio/act3/music/; music.json rows):
+    - `the_letting` (H07, a 53 s loop): she sings the Eighth Verse twice; the score follows her, cool and held, then the choir and the rising glass. Its `release`, `the_letting_release` (H08), holds the E6 while the strings thin to it alone.
+    - `release_sting`: Ch20's six releases and Kesh's; the Letting's cell on metallophone and glass, with no voice and no cadence.
+    - `unbinding_swell` (H09, 109 s): the full choir and orchestra, the only time in the game, sing the Hush's first phrase in Lamptongue twice. The second time it resolves **upward**, B D E | A, to A major on *tash*.
+    - `heart_approach` (H01–H02, a loop): the Hush's first phrase backwards, as reversed piano over the heart's drone.
+    - `heart_rest` (R1): the drone alone.
+  - **Battle:** `battle.encounters` maps `ch21_sefir_letting` (H07's fight, pending combat) to `the_letting`, so the battle keeps her song.
+  - **Checks:**
+    - render_all: loudness, loop seams, and `--determinism` (all identical).
+    - mono fold: Act III has 0 failing files.
+    - validate_data 0; taskboard OK.
+    - tools tests: audio_loudness, audio_data, motifs (+1), lamptongue_sung (new), all OK.
+    - Godot tests: music_release 4/0, audio_runtime 11/0, battle_audio 22/0, music_transitions 7/0.
+    - Skipped: screenshots, Blender, coverage.
+  - **PC-QUEUE, by ear:**
+    - `unbinding_swell`'s A major resolution: the loudest moment in the game by design, momentary max -6.3.
+    - The Letting's vocalise vowels.
+- **MERGE-READY @ 4ff7c51c5: the Act III score, part 2, the finale (M5-A3P-1951, to review).**
+  - **`kesh_first_voice`** (H03, a loop): the seven verses' first lines in turn, in Lamptongue, a step higher each, over a 3+3+2 drum and string ostinato; her own verse is the fullest.
+  - **`sefir_warden`** (H04): the Order hums ORDER_HUM over airless strings, and his motif hangs on its C#.
+  - **`sefir_heart`** (H05–H06): the storm's note on the heart's A under rock-fusion percussion in 7/8, his C# now the A's major third.
+  - **Battle:** `ch21_kesh` and `ch21_sefir_heart` are pending rows in `battle.encounters`.
+  - **For combat:**
+    - H04's fight has no id in the drafts yet: it needs a row to `sefir_warden`.
+    - A BattleCycle `cycle_changed` signal would let Kesh's verses follow her element.
+  - **Checks:** render_all loudness, seams and determinism (all identical; kesh's seam re-placed half a beat in); true peaks under -1; mono fold 0 failing; validate_data 0; audio_loudness and audio_data OK; Godot battle_audio 22/0, music_transitions 7/0.
+- **MERGE-READY @ 39e91137c: the Act III score, part 3, the ending (M5-A3P-1952, to review).**
+  - **The cues:**
+    - `goodbye_imra`: one piano A after she is gone.
+    - `ending_lift_bed`: the drone and a glass shimmer.
+    - `goodbye_dace`: the current-song on harp with four bars of the lullaby inside it; same notes, D dorian and A minor.
+    - `goodbye_kerrid`: his stair slowing to a stop.
+    - `ending_dock`: solo piano, the Hush resolving to A.
+    - `credits_suite`: the shipped themes in pilgrimage order, ending on the lullaby on piano.
+    - `post_credits_lamp`: the star-path on a low metallophone.
+  - **Checks:** render_all loudness and determinism (all identical); the lift bed's seam; mono fold 0 failing; validate_data 0; audio_loudness and audio_data OK; Godot audio_runtime 11/0.
+  - **PC-QUEUE:**
+    - The credits suite's hush-to-piano join (it thins 7.5 dB in mono there).
+    - goodbye_dace's harp by ear.
+  - **Not done yet:** the 17 Act III cutscene `@sfx` (velamir_lullaby_hum, match_struck, hull_meets_water and the others); then the Ch17–Ch20 cues.
+- **MERGE-READY @ 6fcbce03d: the Lead's 21:25 item, the audio accessibility pass (M4-A2P-1952, to review).**
+  - **Sliders reach every sound.** Every bus sends to a slider bus (UI, World and Combat under SFX; Ambience with the effects slider). Two fixes:
+    - **Strays:** a player that never names a bus would sit on Master, under no slider but the master's. `AudioDirector.route_stray` now moves it to mix.json `stray_bus` (SFX). Nothing hits this today (the dialogue blip goes to Voice, the cutscene sound fallback to SFX); it guards any track's future players.
+    - **Voice-like barks:** the townsfolk's chatter (`villager_murmur_*`) was on World, under the effects slider only. It now plays on a new **Walla** bus sending through World, so the voice slider reaches it while it still ducks under a line and keeps the zone's reverb. The voice slider's help text says so.
+    - Battle barks are dialogue lines (the Voice blip), and the creatures' voices are effects; neither changes.
+  - **Mono.** A new `mono_audio` setting on the Audio page folds Master to (L + R) / 2: a StereoEnhance with `pan_pullout` 0, applied live.
+    - The new `tools/audio/mono_check.py` checks all 1,289 renders (186 of them stereo).
+    - One failed: `sefir_theme` lost 8.5 dB at 39.4 s, where its hall's late field went out of phase under the bar-9 hum. Re-rendered with the hall at width 0.7, it now thins by 6.4 dB for that moment; loudness is unchanged at -15.98 LUFS.
+    - The largest whole-file loss is 2.1 LU (kesh_memory). Fifteen music cues thin by 4–7.4 dB for a moment and keep every part (listed by the tool). **PC-QUEUE:** sefir_theme at bar 9, by ear.
+  - **Captions.** The game has no captions setting. Dialogue, narration and voice-over are subtitled, but non-dialogue cues aren't. That is requested from UI as **M4-A2P-1953**: a `captions` setting (default off) and a caption line. Audio then emits the battle tells and the off-screen story `@sfx` with loc keys.
+  - **Act I tells are distinct.** The new `tools/audio/tell_check.py` checks the seven Act I wind-ups:
+    - each against its enemy's attack;
+    - each against every tell it can meet in one fight.
+
+    All are distinct; the closest is Hullgnaw's coil against its bite (4.8 times as long, 1.28 times brighter). The Cinder Matron's recrust (Ch5) and the Grip (Ch8) sound alike (3.8 dB apart in colour) but never share a fight, so that pair is reported, not failed.
+  - **Touched outside audio's files:**
+    - `test_ui_settings.gd`: its pinned settings list gains `mono_audio`, one id appended.
+    - accessibility.json, audio_menu.json, strings.csv: appended rows, each in its own commit.
+  - **Checks:**
+    - gdlint and gdformat clean (game, tests); validate_data 0; taskboard OK.
+    - tools tests: audio_data, audio_loudness, dialogue_clarity, mono_check (new), tell_check (new), all OK.
+    - Godot tests: audio_accessibility 3/0 (new), ui_settings 12/0, settings 49/0, audio_menu 4/0, audio_runtime 11/0, life_audio 14/0, battle_audio 22/0, battle_stings 8/0, flame_audio 3/0, prop_audio 2/0, music_release 4/0.
+    - Skipped: screenshots (none shows the Audio page: the settings shots are the hub, Accessibility and Controls, and the Accessibility page leaves audio_menu.json's rows off, so `mono_audio` moves no baseline), Blender, coverage.
+- **BACKLOG EMPTY (after 6fcbce03d):** waiting on Ch11 and Ch13 staging, combat's Ch14–Ch16 fights, env-art-b's merge and UI's M4-A2P-1953.
+- **MERGE-READY @ 1ad5bbcfb: the Lead's 21:05 item.**
+  - **The Act II boss themes as played in the intros (bdc5ef22):** done at d04d79422 (above). Each sting now lands with the title card at 0.7 s, under the boss cue's 3.5 s duck.
+  - **Victory stings:** each Act II boss win returns to the field (the chapter flows: `victory_flag`, then the zone), not into a scene of grief, the same as Act I. So the one modest victory figure (pentatonic, open fifths) stays, with no triumphant boss fanfare. act1_mix_pass `--act 2`: 62 handovers, none with a step over 3 LU. Victory → field is level in every Act II zone (-16.0 against -16.0 to -16.1, at most 0.1 LU).
+  - **Zone ambience against env-art-b's ambient life** (env-art-b @ 9a85e089, not on integration yet):
+    - **What it added:** flames that flicker (the Lacquer Court's eight lanterns at 0.15; Hollowmere's seven warm lamps at 0.3 and four bound-teal conduit lights at 0.12), and tide debris that drifts at Hollowmere, the open sea and round the bridal barge. No birds; the gulls are already in hollowmere_flotilla.
+    - **The flames now sound:** a new close loop, `lamp_flame` (20 s, act2_ambience.py: an oil wick's soft breath wavering at ZoneKitDressing's own flicker rates of 1.7 and 4.3 Hz, and a rare small gutter). It plays under each warm `fire_lights` row with a `flicker` of at least 0.1, through PropAudio and the new `flames` row in prop_sfx.json. The loop is heard within about 9 m and never across the zone, and each flame starts at its own point in the loop, so a row of lanterns doesn't breathe in step. The teal lights flicker but aren't flames, so they stay silent.
+    - **How it hooks in:** it reads only ZoneKitDressing's public `layout`, the `FireLights` children in row order, and the `dressed` signal. It waits for `dressed` if the lights aren't placed yet, and it changes nothing until env-art-b merges.
+    - **The drifting debris needs no new sound:** it rides the swell, and the beds already carry water on hulls and pilings (hollowmere_flotilla, open_sea_night, open_sea_fog).
+  - **Checks:**
+    - Run: render_all `--only act2_ambience` (only `lamp_flame` new, every other bed byte-identical; loudness re-checked); test_audio_loudness OK; validate_data 0; data_check OK; gdlint and gdformat clean.
+    - Godot tests: flame_audio 3/0 (new), prop_audio 2/0, battle_stings 8/0, audio_runtime 11/0, ambience 5/0, footsteps 8/0.
+    - Skipped: screenshots, Blender, coverage.
+  - **PC-QUEUE:** walking past the Lacquer Court's lanterns once env-art-b merges.
+- **BACKLOG EMPTY (after 1ad5bbcfb):** waiting on Ch11 and Ch13 staging, combat's Ch14–Ch16 fights, and env-art-b's merge (the flames go live then).
+- **MERGE-READY @ d04d79422 (unchanged): the Lead's 20:45 item. Ch11 and Ch14–Ch16 were already rendered from the direction notes, so there was nothing to add.**
+  - **Ch11 (`docs/kb/story/beats/act2_ch11_direction.md`):** the table is camera and blocking. Its only sound calls are already met:
+    - the `nhoa_bound` sting on N07 (rendered);
+    - "2 s of silence on V06" and "let the music cut to silence on the walk away (it does)";
+    - its held shots (V00 8 s, V07 3 s, V09 4 s, T00 3 s, T03 5 s, N02–N09). Each has a row in `act2_direction_holds.json` (task 22), and act1_playthrough `--holds` finds no cue ending inside any of them.
+  - **Ch12–Ch16:** a scan of every `@music`/`@sfx`/`@ambience` name in the six direction notes finds every one rendered and in a table: Ch12 6, Ch13 7, Ch14 9, Ch15 10, Ch16 12; missing 0. Ch14–Ch16's holds (three, three and one) pass too. `test_direction_holds` passes.
+  - **When Ch11's staging lands:** I'll rerun act1_playthrough `--act 2 --holds` against it. A staged hold longer than the note's floor is the only thing that can need a cue retimed.
+  - **Checks:** test_direction_holds OK and act1_playthrough `--act 2` (13 items, all known notes). Nothing changed but this log.
+- **MERGE-READY @ d04d79422 (unchanged): the Lead's 20:26 item. There's nothing new to render or score yet.**
+  - **Ch11's scoring as slice-polish stages it:** m2-slice @ e262e104 stages the same Ch11 and Ch12 scenes as before (lowlight, sunken_vey; cloudloom, keth_pass, quellan, inn_fire), and their cues were checked as played at faaa30a0. Every Ch11–Ch13 script difference between m2-slice and audio is audio's own newer side, already on integration @ 46d8a067: m2-slice predates the restored `@sfx pole_no_wake` in ch13_still_city and the `ch13/sanctum` location. I'll rescore Ch11 when slice-polish pushes a new stage.
+  - **Ch12–Ch13 from act2-plan's cue tables:** every cue is rendered and every ref resolves. act1_playthrough `--act 2 --holds` reports no missing cue in Ch11–Ch13, only the four known notes: the Vowbound `fade=0.0` lines play as 0.2 s fades, and ansedra is named twice. Ch13 has no staging on any branch.
+  - **Checks:** none. Nothing changed but this log.
+- **MERGE-READY @ 425b1109: the Lead's 19:45 item.**
+  - **Ch11–Ch13 cutscene cues:** Ch13 has no staging yet on any branch (Ch11 and Ch12's were checked at faaa30a0). act2-plan's cue tables have no missing cue (17:50), so there is nothing to render. I'll rerun the staged check when Ch13 lands.
+  - **The Act II boss themes as played in battle-presentation's intros** (bdc5ef22 and the Ch10–Ch12 intros on big25; choreo.json boss_intro: camera_in 1.1 s, hold 2.0–2.4 s, camera_out 0.8 s; the title card at 0.7 s).
+    - **Found:** BattleBossIntro announces `boss_intro` "as the intro starts", as the camera begins to move, but every boss sting (Act I's and Act II's) hits in its first 0–0.2 s. So the hit came before the boss's name was on screen.
+    - **Fixed in audio's layer** (no battle-presentation change): battle_stings.json rows take a `delay_sec`, and `boss_intro`'s is 0.7 s (= choreo.json `card_at_sec`). StingAudio holds the row and plays it on time from `advance()`. The `boss_intro` duck still starts with the event, so the boss cue dips as the camera moves and the hit lands with the card.
+    - A test ties `delay_sec` to `card_at_sec`, so a retimed card can't leave the sting behind.
+    - **Levels:** the boss cues sit at ~-18 LUFS, -23 under the duck; the stings hit at -16 momentary. The shortest stings now ring until 2.5 s (Drowner) and 2.8 s (Wakefin) of a 3.9–4.3 s intro, and the ducked cue plays under the rest: not silence.
+    - The battle cue enters at the battle's attach (battle_in_sec 0.3), before the reveal, as Act I's do.
+  - **Checks:** validate_data 0; Godot battle_stings 8/0 (one new), battle_audio 22/0 (test_battle_audio_live now steps through the delay), audio_runtime 11/0, impact_audio 6/0. **Skipped:** screenshots, Blender, coverage.
+  - **PC-QUEUE:** a boss intro by ear (the hit with the card).
+- **BACKLOG EMPTY (after 425b1109):** waiting on Ch13's staging, combat's Ch14–Ch16 fights, and the listening verdict.
 - **MERGE-READY @ 3d9476ea: the Lead's 19:25 item, the music of Act I's emotional beats as played** (cbc63b39 WIP, 3d9476ea).
   - **Scenes checked:** each key scene's cues traced against the scene's timeline (`act1_playthrough.py`'s pacing, including the player-paced hold gates): the Prologue, the Ch1 storm (the rising, going under, the Hullgnaw), the Drownbell, the Ch4 wake, Corrow (the storm against the wind, the Reach, Virel's binding, the Ebbing) and the Act I end (the road out, the vigil, the act card, the end card).
   - **Fine as they were:** the rising's loop gains its stem on cue; going_under fades 3 s before its own end; Hullgnaw, the Reach and the wake are loops; the storm against the wind is silent on purpose. The Drownbell is battle-driven (its stems on the Flood).
