@@ -1310,3 +1310,17 @@ SELF-RENDERED @ baf421df: the Lacquer Court from the Barge, Steps and CourtEntry
   - **Checks:** test_brine_shoals_kit OK, Godot ch06 5 and brine 5 pass, validate_data OK.
   - **MERGE-READY @ 7e7a4d38.**
 - **Rows still waiting:** 78 (7ddf44d4, ready, unmerged); 62, 79 and 80 (env-art's kit previews: the LEAD-ASK above); 84 (M3-ENV-1331, env-art's texture).
+
+### Act I sign-off rows 79, 80 and 62 in env-art's kits (Lead 05:22, leave granted); each fix in its own commit, notes in env-art.md
+- **79, the plume:** 07300860, `ac_plume_day` reads as smoke, with the zone's look plus translucent, wispy edges.
+- **79, A10's mound:** d73f0c89, the macro layer on `ac_ground` and `ac_ground_far`.
+- **79, A01's hands:** 9f8a36f1, a low fill under the gate. It also fixes the preview generator, which `ash_drift` (M3-ENV-1310) had broken.
+- **80, Pemakar's hillside:**
+  - 6b437b0c: the optional macro layer in `env_weathering_body.gdshaderinc`, value noise over every layer, default off.
+  - d250de79 and 5a6e4596: `kit_volcanic_far` takes the macro layer and loses its grazing sky sheen.
+  - 4a82f498: the day haze is halved (preview and zone).
+  - **What I learned on the way:** the macro first sat under the moss, which hid it. With it moved over every layer, the upper hill still read flat until the sheen and the haze came down.
+- **62, the day weir:** 982d4842, the macro layer on `kit_weir_stone` at stone size. It's a small change on lavapipe, so the PC's GPU is the judge.
+- **Viewed** (lavapipe): a01 (the hands modelled), a10 (smoke and a grained mound), a02, p04 (the hillside patched, less haze), p11, ch05_pemakar_harbour_day and ch05_pemakar_weir.
+- **Checks:** test_pemakar_kit and test_ashcrown_kit OK; Godot pemakar 10 and ashcrown 22 pass; validate_data OK.
+- **MERGE-READY @ 982d4842,** covering every commit above, together with 7ddf44d4 (78) and 7e7a4d38 (81), which aren't merged yet. 84 waits on M3-ENV-1331 (the laterite texture), which the leave covers only if the Lead says so.

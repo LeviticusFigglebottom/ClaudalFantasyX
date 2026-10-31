@@ -2410,3 +2410,19 @@ Done or in review: M2-ART-01/02/03 (done); M1-ENV-10, M2-ENV-06, M2-ENV-07, M2-E
 - 2026-10-24: merged the Art sign-offs (3c3fa19, aa3b4ca, f067ba4). Gates: validate_data, taskboard --check, palette.json parses (docs only, no Godot run).
 - 2026-10-24: set up the branch and toolchain; claimed the queue's tasks.
 - 2026-10-30 (note by env-art-b, with the Lead's leave): M4-A2P-114 done in your kit, `haluna/lowlight.py` `PIER_AT`'s south-middle pier (0, 9.5) -> (0, 11.0), and `engine_hall.glb` rebuilt (f6442153). The pier stood where the battle camera rests after rest_fit (0.7, 4.0, 9.8) and filled the left of `lowlight_engine_hall`'s frame. Ch11's zone dressing places the same hall: the pier is 1.5 m nearer the south wall there too. Checks: test_lowlight, test_lowlight_housing, test_ch11_lowlight_dressing, test_haluna_kit, test_arenas; Godot ch11 and arena. Please review the task.
+
+### Note from env-art-b (2026-10-31, the Lead's leave for the Act I sign-off: PC pass 7 rows 79, 80 and 62)
+These edits are in env-art's kits, each in its own commit on claude/env-art-b, for env-art's review:
+- **6b437b0c, `env_weathering_body.gdshaderinc`:** an optional macro layer. `macro_strength` (default 0, so nothing changes elsewhere), `macro_scale_m`, `col_macro_dark` and `col_macro_light`. Two octaves of world-space value noise, applied over every layer just before the output. It breaks one-piece terrain up at range, where the base tile has mipmapped to one tone.
+- **07300860, `ac_materials.py` `ac_plume_day`:** the Ch5 zone's proven plume look (warm ash, feathered billows, rim and back-scatter, the ember up the column), plus a little translucency and wispier edges, so a10 reads as smoke, not clay.
+- **d73f0c89, `ac_materials.py`:** `ac_ground` (0.9 at 6 m) and `ac_ground_far` (0.85 at 24 m) take the macro layer, for A10's crater-rim mound.
+- **9f8a36f1, `ac_preview_layout.py`:**
+  - **A01's hands:** a low fill under the open-hand gate (#E8D2B8, 3.5, range 14). A01 looks up at the hands' undersides against the overcast, which made them black cut-outs. The Ch5 zone reads these lights too.
+  - **Generator fix:** it skipped no kit piece missing from `FAR_LOD1_M`, and `ash_drift` (M3-ENV-1310) broke it. It now skips such pieces; the layout is unchanged apart from the new light.
+- **d250de79, `pemakar_materials.py` `kit_volcanic_far`:** the macro layer (0.85 at 36 m), for row 80's hillside. In progress: the upper hillside in p04 may be another mesh, which I'm tracing.
+- **Viewed** (lavapipe, scratch): a10 (smoke, a grained mound), a01 (the hands modelled from below), a02 (no change).
+- (env-art-b, continued)
+  - **5a6e4596, `kit_volcanic_far`:** specular 0.12, roughness 1.0. At the hill's grazing angle the sky's sheen washed the far slopes to one pale tone and hid the macro layer.
+  - **4a82f498, the preview's hand-authored `pemakar_day_environment.tres`:** fog density 0.0018 → 0.0009, aerial perspective 0.5 → 0.3. The Ch5 zone copies the same grade.
+  - **982d4842, `kit_weir_stone`** (mine, written by ch05_pemakar_dressing.py and taken by your preview's weir row): the macro layer at 0.9 m (0.75), so each block of the courses takes its own tone.
+  - **Viewed:** p04 (the hillside now shows darker patches and gullies, and the haze is lighter) and p11 (the weir: a small change on lavapipe, which the PC's GPU will judge).
