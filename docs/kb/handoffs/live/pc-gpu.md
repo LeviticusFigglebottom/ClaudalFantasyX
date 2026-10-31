@@ -8,7 +8,9 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 > `session_01Bg3iP7cPGyjbX4CyniBahc`; the integration branch is **`claude/new-session-mj8c3c`**.
 > **This copy, on `gpu/act1-qa-3`, is the newest.**
 
-## PASS 7 @ 2026-10-31 (big33 @ 5695a69c; the Lead's 23:30 brief) — in progress
+## PASS 7 @ 2026-10-31 (big33 @ 5695a69c; the Lead's 23:30 brief)
+
+- **GPU-QA-DONE pass7 @ gpu/act1-qa-7.** See the "Pass 7" summary in act1_gpu_qa.md. New rows 85–87 (85: the 59 GB log at exit, which filled the disk). Not completed: the Act I visual walk re-run (stopped by Claude Code for low memory) and 3 Act II locations.
 
 - **Row 74, ReturnPark (the Lead's ask):** on 9317c6b6 + claude/hero-integration (ADR 0209), the Drownbell → Haluna
   return takes 2.87–3.03 s to the field (8.2–8.6 s before).
@@ -25,8 +27,6 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
   gap plus a 15 m / 12 s grace; tools/act1/encounter_pacing.py). It's data-driven, the same on any machine.
 - **Pass 7 shots (all 769, no script errors, no material-null):** rows 17 (mine, partly), 18 (regressed: no harrier),
   46, 54–56, 58 (fixed), 59, 61–63 (63 fixed), and new beauty rows 75–84.
-- **Still to run** (the chain was paused for row 74): the Act I walk, the budget walk, Act II, the swap sweep, and Haluna
-  cold ×3.
 
 ## PASS 5 @ 2026-10-30 (big20, integration @ 7dc3ab41)
 

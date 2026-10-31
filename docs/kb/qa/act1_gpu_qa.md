@@ -52,6 +52,33 @@ every zone, one battle per arena and every Act I boss intro. Contact sheets go o
   - Ashcrown greybox (26); Corrow's sphere rocks (28).
 - Rows 21–22 and 30–42 need the walk (next).
 
+**Pass 7 (2026-10-31), the Act I sign-off check: integration claude/new-session-mj8c3c @ 5695a69c (big33), RX 9070 XT, High 2560×1440.** Sheets are in `docs/kb/qa/gpu/act1/pass7/` (rows_*, beauty_* with index_beauty.txt, the jog filmstrip); the Act II first look is in `docs/kb/qa/gpu/act2/first_look/`.
+- **Pass A: all 769 shots**, with no script errors and no material-null.
+  - Rows: 58 and 63 fixed. 17 partly (my fix is in; arcs remain). 18 regressed (no harrier). 46, 54 partly. 55, 56, 59, 61, 62 still open.
+  - The beauty passes were reviewed with spot-checks: rows 75–84. The day zones read beautifully. The weak spots are night and storm exposure (Oruvel storm, Corrow storm, the going-under cutscene), unfinished backdrops (the Ashcrown plume, the Pemakar hillside, the Oruvel horizon boxes) and a ground seam at the Brine camp.
+  - Underway caustics: good (a moving web on the floor; a warm lantern pool in the arenas).
+- **The human's playtest fixes, on the GPU:**
+  - **Jog:** brisk, yes; organic, mostly. The legs and arms are good; the torso is slightly stiff.
+  - **Battle return (row 74):** same-zone returns take 0.9–1.0 s. The cross-zone Drownbell → Haluna is 1.24–1.35 s on integration-qa's branch (target met), but with new in-fight stutter.
+  - **Oruvel dock edges:** the water guard holds.
+  - **Encounter spacing:** 31–44 s between fights in every zone.
+  - **New Game into the Prologue:** 1.5 s (pass 3), not re-run.
+- **Zone-entry hitches (ADR 0205, ≤ 2 s hidden): all pass.**
+  - Clean walk: every hidden frame under 1.2 s (Ch5 1200, launch 1141).
+  - Fresh-process probes:
+    - Oruvel 497, Underway 516, Haluna 539, the causeway 256, the shrine 252, Brightwater 296;
+    - the wake 609, Ashcrown 526, Brine Shoals 384, the Bell Galleries 888;
+    - Tamsule 739–767, Coilspire 778–826, Pemakar 1131–1292.
+  - **Haluna's first entry** (cold, no resident warm): 430–435 ms hidden, but a **12.2–12.5 s covered entry** (10.5 s with residents). The black wait is long, though no frame breaks the bar.
+- **Crashes (row 68) are frequent on big33.** Fresh processes segfault with no log:
+  - Pemakar 2 of 3; Haluna cold 1 of 3;
+  - the Act I walk once, at the Prologue spawns; the jog 1 of 3; the Drownbell probe 1 of 2.
+
+  On integration-qa's branch: 0 of 5.
+- **Not completed:**
+  - The Act I visual walk re-run: Claude Code stopped it for low system memory after 66 stills, so it wasn't restarted. Pass A and the budget walk cover the same zones.
+  - Act II's Cloudloom, Sanctum and Lamp Archive stills, lost when the disk filled (row 85). Ansedra and Sanctum also produced no load numbers.
+
 **Battle-UI pass (2026-10-30, the Lead's pillar-4 ask), integration @ 0347aa74 (big21), High 2560×1440.** One fight per chapter: the Oil Slug, the tideline, the causeway shore, the Drownbell, the Spar-wraith, the Cinder Matron, Moll, the Tidecup match (Ch7) and the Undertow's Reach. Stills every 3 s; the sheets are in `docs/kb/qa/gpu/act1/pass5/battle_ui/`.
 - **Reads well:**
   - the timeline (who acts next, foes marked);
@@ -230,6 +257,9 @@ every zone, one battle per arena and every Act I boss intro. Contact sheets go o
 | 82 | ch08_corrow_storm, ch08_corrow_flood, ch08_corrow_lake | Storm frames crushed to black: corrow_storm has 59% of pixels under 20/255, with the watcher heads pure silhouettes. corrow_flood's figures are black on a bright wall. corrow_lake is muddy, with a flat roof plane filling the foreground. They need rim or fill light. | env-art-b, act1-chapters (corrow_lake's camera) | open | pass 7 beauty-pass lighting (2026-10-30, 5695a69c, High 1440p; reviewed and spot-checked) |
 | 83 | ch01_bell_room | Still a heavy yellow-green haze over a flat wall (since row 23 was fixed, the haze changed colour but stays dense). | env-art | open | pass 7 beauty-pass lighting (2026-10-30, 5695a69c, High 1440p; reviewed and spot-checked) |
 | 84 | ch08_coilspire_gate, crowd_zone_corrow (low) | Up close, the torch-lit laterite's speckle reads as blocky low-resolution splotches. | env-art-b | open | pass 7 beauty-pass lighting (2026-10-30, 5695a69c, High 1440p; reviewed and spot-checked) |
+| 85 | Shutdown of a slice_sweep budget walk (big33) | After the walk finished, the process looped `Parameter "material" is null` at material_set_shader. Its log reached **59 GB and filled the C: drive** (the Act II stills that followed failed to write). The process also held 6.3 GB. Likely the same freed-material path as row 44, now in a loop at exit. | hero-integration / tech (shutdown order), creatures (the storm figure's material) | open | pass 7 (2026-10-31, big33 @ 5695a69c) |
+| 86 | Act II first look: Ansedra Lacquer Court (dusk), Keth Pass spawns, Ossa Fen, Lamp Archive | The Lacquer Court's party are near-black silhouettes in a deep orange hall, and its Barge spawn is a dark box. Keth Pass's Encounter/FromQuellan spawns put the camera against a flat wall; RamArena's puts it inside Rhen. Ossa Fen is a flat dark mud plane with stark white water-edge cut-outs. Lamp Archive's Door spawn looks down on a plain grey slab (greybox?). Lowlight has a jagged white floor decal. (First look, 8 of 11 locations.) | env-art / env-art-b (Act II zones), act1-chapters (spawn cameras) | open | pass 7 (2026-10-31, big33 @ 5695a69c) |
+| 87 | Act II hitches: Quellan fight and five spawns | Every Act II hidden frame is under 1 s (worst Keth Pass 579, Ossa Fen 570). Visible frames over 50 ms: the Quellan Avalanche Ram fight 176; spawns Sunken Vey Landing 72, Lowlight Gate 96, Keth Pass PassFoot 102, Lamp Archive Door 53, Ansedra CourtEntry 53. | battle-presentation (Quellan, likely row 64's hero search), tech | open | pass 7 (2026-10-31, big33 @ 5695a69c) |
 
 ## Pass 3 hitches (2026-10-30, ADR 0205: hidden ≤ 2 s, visible ≤ 50 ms), High 2560×1440
 
