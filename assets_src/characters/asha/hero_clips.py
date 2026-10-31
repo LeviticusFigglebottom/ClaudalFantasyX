@@ -2829,6 +2829,10 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
 # on the plain solve (the transitions join it there) and its last frame is set to its first, so the loop closes.
 SKIRT_TRAIL = 0.6  # the share of the previous frame's extra swing kept, per 15 fps frame
 SKIRT_TRAIL_CLIPS = {"walk", "run"}
+# row 56 (big38, real GPU: the run's skirt still a bell, "no legs showing"): below the knee the outer skirt now rides the
+# legs' own weights (build_asha OUTER_LEG_SHARE), so in the locomotion clips (LOCO_CLIPS: the cycles and their starts,
+# stops and turns, so they still join) the knee and hem panels swing out only this share of the clearance solve
+SKIRT_LOCO_SWING = 0.6
 SKIRT_TRAIL_FRONT = 0.3  # panels facing further forward than this (about 72 deg either side) keep the plain solve
 SKIRT_TRAIL_STAFF_X, SKIRT_TRAIL_STAFF_Z = -0.6, -0.4  # and the panels out on the staff hand's side, short of the back
 
@@ -2898,6 +2902,9 @@ def helper_pose(sk: "Skeleton", g: dict, out: dict, hips=None) -> None:
     rq_h = sk.rest_q[HIPS]
     scales = out.setdefault(SCALE_KEY, {})
     sk.last_skirt = skirt_solve(sk, g, hips)  # prop_pivot poses the cloth from the same solve
+    if getattr(sk, "skirt_loco", False):  # row 56: in the locomotion clips the legs' own weights carry the hem
+        sk.last_skirt = {h: (ax, (an[0],) + tuple(x * SKIRT_LOCO_SWING for x in an[1:]), sc)
+                         for h, (ax, an, sc) in sk.last_skirt.items()}
     if getattr(sk, "skirt_trail", None) is not None:  # row 56: the hem's momentum in the walk and run cycles
         sk.last_skirt = _skirt_trail(sk, sk.last_skirt)
     for h, (axis, angs, sc) in sk.last_skirt.items():
@@ -5202,6 +5209,7 @@ def build(hero: str, names: list | None = None) -> str:
         keys_pq: list = []  # and its pivot in the fist (prop_pivot)
         keys_g: dict = {}  # and the grip
         sk.skirt_trail = None
+        sk.skirt_loco = clip in LOCO_CLIPS
         if loop and clip in SKIRT_TRAIL_CLIPS and sk.skirt and hero in LOCO_GAIT:
             # row 56: the trail starts at rest on the first frame (the plain solve, which the start and stop
             # transitions join exactly); by the cycle's end what it carries back to that frame is negligible
@@ -5226,6 +5234,7 @@ def build(hero: str, names: list | None = None) -> str:
                 keys_h[b][0].append((t, local[POS_KEY][b]))
                 keys_h[b][1].append((t, local[b]))
             keys_p.append((t, sk.rest_t[HIPS] + np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)))
+        sk.skirt_loco = False
         if sk.skirt_trail is not None:  # row 56: the trailed cycle closes on its own first frame exactly
             for b in sk.helpers:
                 keys_q[b][-1] = (keys_q[b][-1][0], keys_q[b][0][1])
