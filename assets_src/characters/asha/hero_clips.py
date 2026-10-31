@@ -2506,6 +2506,7 @@ SKIRT_DRAPE_BELOW = float(_SK["drape_below_gather"])  # it drapes only cloth tha
 SKIRT_FOLD = math.radians(float(_SK["fold_deg"]))
 SKIRT_FOLD_FROM = math.radians(float(_SK["fold_from_deg"]))
 SKIRT_FOLD_EASE = math.radians(float(_SK["fold_ease_deg"]))
+SKIRT_FOLD_TUCK = math.radians(float(_SK["fold_tuck_deg"]))
 SCALE_KEY = "_scale"  # local_pose's entry for the helper bones' scales: {bone: (x, y, z)}
 
 
@@ -2822,20 +2823,19 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
     return derive_folds({h: (ax, tuple(an), sc) for h, ax, an, sc in zip(sk.skirt, axes, angs, gathers)})
 
 
-# PC pass 7, row 56 (Asha's run read as a rigid bell that slides): the skirt is solved frame by frame against the
-# legs, so the hem snapped to wherever the legs put it. In the walk and run cycles (SKIRT_TRAIL_CLIPS) the knee and
-# hem bones of each panel keep SKIRT_TRAIL of their last frame's swing while the solve lets them fall back in (they
-# still kick out at once, as far as the leg needs): the hem flicks out with the stride and drifts back. The cycle starts
-# on the plain solve (the transitions join it there) and its last frame is set to its first, so the loop closes.
-SKIRT_TRAIL = 0.75  # share of the previous frame's extra swing kept per 15 fps frame (cloud pass 6: more lag)
-SKIRT_TRAIL_CLIPS = {"walk", "run"}
-SKIRT_EDGE = 0.25  # the width (in the panel direction's components) over which the trail and the back's full swing fade
-# row 56 (big38, real GPU: the run's skirt still a bell, "no legs showing"): below the knee the outer skirt now rides the
-# legs' own weights (build_asha OUTER_LEG_SHARE), so in the locomotion clips (LOCO_CLIPS: the cycles and their starts,
-# stops and turns, so they still join) the knee and hem panels swing out only this share of the clearance solve
-SKIRT_LOCO_SWING = 0.6  # cloud pass 6: at 0.35 the hem gathered at the ankles
-SKIRT_LOCO_BACK = -0.2  # the back panels (their outward direction's +Z below this) keep the full clearance: the back of
-# the hem spans both legs (half on each), so a heel kicked back would pass through it
+# PC pass 7, row 56 (Asha's run read as a rigid bell that slides): the cycles start on the plain drive (the
+# transitions join them there) and each last frame is set to its first, so the loop closes.
+SKIRT_TRAIL_CLIPS = {"walk", "run"}  # the cycles whose panel drive carries its momentum (SKIRT_LAG) frame to frame
+# GPU QA row 56 (cloud pass 6, the human's own complaint: leg-weighted cloth read as trousers): in the locomotion clips
+# (LOCO_CLIPS: the cycles, eased in over the starts and out over the stops) each panel is driven by both thighs, the
+# front and back panels leading with the thigh that swings their way and the sides taking the mean, with pendulum lag;
+# the clearance solve stays the floor (the cloth never enters a leg) and the cloth below the hip rides the panels only
+SKIRT_DRIVE_GAIN = 0.8  # of the thighs' swing (from rest) toward the panel
+SKIRT_DRIVE_PROFILE = (1.0, 0.9, 0.75)  # the swing from the vertical at the hip, knee and hem bones (the cloth hangs back)
+SKIRT_CLEAR_FLOOR = 0.5  # the share of the clearance solve's knee and hem swing kept as the floor (all of it bells)
+SKIRT_LAG = 0.55  # the share of the previous frame's drive kept per 15 fps frame
+SKIRT_NEIGHBOUR_DEG = 20.0  # neighbouring panels (22.5 deg apart) never differ by more (cloud pass 6's notch: a derived
+# back panel swung 41 deg beside one at 0, and the cloth between them folded over)
 
 
 def skirt_loco_weight(clip: str, u: float) -> float:
@@ -2848,30 +2848,45 @@ def skirt_loco_weight(clip: str, u: float) -> float:
     if clip.endswith("_stop") and clip in LOCO_CLIPS:
         return 1.0 - smooth(u)
     return 0.0
-SKIRT_TRAIL_FRONT = 0.3  # panels facing further forward than this (about 72 deg either side) keep the plain solve
-SKIRT_TRAIL_STAFF_X, SKIRT_TRAIL_STAFF_Z = -0.6, -0.4  # and the panels out on the staff hand's side, short of the back
+def _thigh_swings(sk: "Skeleton", g: dict) -> list:
+    """Each thigh's direction (hip to knee) in the pelvis's frame, for global rotations g."""
+    inv_dp = qinv(qmul(g[HIPS], qinv(sk.rest_q[HIPS])))
+    A, B = _leg_segments(sk, g)
+    n = len(SKIRT_LEG_SEGMENTS)
+    return [qrot(inv_dp, B[i * n] - A[i * n]) for i in (0, 1)]
 
 
-def _skirt_trail(sk: "Skeleton", res: dict) -> dict:
+def _skirt_drive(sk: "Skeleton", g: dict, clear: dict, w: float) -> dict:
+    """Row 56: the panels driven by both thighs (SKIRT_DRIVE_*), lagged frame to frame where sk.skirt_trail holds the
+    previous frame's drive, never inside the clearance solve `clear`, and neighbours kept within SKIRT_NEIGHBOUR_DEG."""
+    A0, B0 = sk._rest_legs  # skirt_solve set it
+    n = len(SKIRT_LEG_SEGMENTS)
+    rest = [B0[i * n] - A0[i * n] for i in (0, 1)]
+    now = _thigh_swings(sk, g)
     prev = sk.skirt_trail
-    out = {}
-    for h, (ax, angs, sc) in res.items():
-        p = prev.get(h)
-        a = list(angs)
-        out_x, out_z = float(ax[2]), -float(ax[0])  # the panel's outward direction (ax = down x out)
-        # the front and the staff side (her right, -X; the staff's pivot steers round those panels) stay on the solve
-        # cloud pass 6 (a white notch through the back panel): faded over SKIRT_EDGE, not cut, so neighbouring panels
-        # never part
-        staff_side = smooth((SKIRT_TRAIL_STAFF_X - out_x) / SKIRT_EDGE + 0.5) * smooth(
-            (out_z - SKIRT_TRAIL_STAFF_Z) / SKIRT_EDGE + 0.5)
-        f = SKIRT_TRAIL * smooth((SKIRT_TRAIL_FRONT - out_z) / SKIRT_EDGE + 0.5) * (1.0 - staff_side)
-        if p is not None and f > 0.0:
-            for lv in range(1, len(a)):  # the knee and hem bones; the hip bone stays on the solve
-                if p[lv] > a[lv]:
-                    a[lv] = a[lv] + f * (p[lv] - a[lv])
-        out[h] = (ax, tuple(a), sc)
-    sk.skirt_trail = {h: v[1] for h, v in out.items()}
-    return out
+    lag, out = {}, {}
+    for h, (ax, an, sc) in clear.items():
+        d = np.array([float(ax[2]), 0.0, -float(ax[0])])  # the panel's outward direction (ax = down x out)
+        sw = [math.atan2(float(t @ d), -float(t[1])) - math.atan2(float(t0 @ d), -float(t0[1]))
+              for t, t0 in zip(now, rest)]
+        f = abs(float(d[2]))  # front and back lead with the thigh that swings their way; the sides take the mean
+        drive = max(0.0, (1.0 - f) * 0.5 * (sw[0] + sw[1]) + f * max(sw))
+        tgt = [SKIRT_DRIVE_GAIN * drive * k for k in SKIRT_DRIVE_PROFILE]
+        if prev is not None and h in prev:
+            tgt = [p + (1.0 - SKIRT_LAG) * (x - p) for x, p in zip(tgt, prev[h])]
+        lag[h] = tuple(tgt)
+        kc = [1.0] + [1.0 - w * (1.0 - SKIRT_CLEAR_FLOOR)] * (len(an) - 1)  # below the hip, part of the clearance
+        out[h] = [ax, [max(c * k, w * x) for c, k, x in zip(an, kc, tgt)], sc]
+    if prev is not None:
+        sk.skirt_trail = lag
+    num = sorted(out, key=lambda h: int(h[len(SKIRT_BONE):]))
+    lim = math.radians(SKIRT_NEIGHBOUR_DEG)
+    was = {h: list(v[1]) for h, v in out.items()}
+    for i, h in enumerate(num):  # raise (never lower) a panel to within lim of its neighbours (one step, no ratchet)
+        for lv in range(len(out[h][1])):
+            nb = max(was[num[i - 1]][lv], was[num[(i + 1) % len(num)]][lv])
+            out[h][1][lv] = max(out[h][1][lv], nb - lim / max(w, 1e-6))  # eased in with w
+    return derive_folds({h: (ax, tuple(an), sc) for h, (ax, an, sc) in out.items()})
 
 
 def skirt_derived(name: str) -> bool:
@@ -2895,6 +2910,7 @@ def derive_folds(res: dict) -> dict:
         _, an_b, sc_b = res[num[(k + 1) % n]]
         an = [max(x, y) for x, y in zip(an_a, an_b)]  # the outer of the two: the mean cut into a thigh between them
         an[-1] = 0.5 * (an_a[-1] + an_b[-1])  # but the hem their mean: the outer of the two folded it into spikes
+        an[-1] = max(an[-1], an[-2] - SKIRT_FOLD_TUCK)  # row 56: never tucked under the knee (cloud pass 6's notch)
         an[-1] = min(an[-1] + SKIRT_FOLD * smooth((an[-1] - SKIRT_FOLD_FROM) / SKIRT_FOLD_EASE),
                      math.radians(SKIRT_MAX_SWING))
         out[h] = (res[h][0], tuple(an), 0.5 * (sc_a + sc_b))
@@ -2924,15 +2940,8 @@ def helper_pose(sk: "Skeleton", g: dict, out: dict, hips=None) -> None:
     sk.skirt_clear = None
     w = float(getattr(sk, "skirt_loco", 0.0))
     if w > 0.0:
-        sk.skirt_clear = sk.last_skirt  # row 56: the staff still keeps clear of the full clearance swing's cloth  # row 56: in the locomotion clips the legs' own weights carry the front and sides of the hem
-        k = 1.0 - w * (1.0 - SKIRT_LOCO_SWING)
-        res = {}
-        for h, (ax, an, sc) in sk.last_skirt.items():
-            kb = k + (1.0 - k) * smooth((SKIRT_LOCO_BACK - -float(ax[0])) / SKIRT_EDGE + 0.5)  # faded, no step
-            res[h] = (ax, (an[0],) + tuple(x * kb for x in an[1:]), sc)
-        sk.last_skirt = res
-    if getattr(sk, "skirt_trail", None) is not None:  # row 56: the hem's momentum in the walk and run cycles
-        sk.last_skirt = _skirt_trail(sk, sk.last_skirt)
+        sk.skirt_clear = sk.last_skirt  # the staff keeps clear of the clearance solve's cloth as well
+        sk.last_skirt = _skirt_drive(sk, g, sk.last_skirt, w)
     for h, (axis, angs, sc) in sk.last_skirt.items():
         flare = 1.0 + SKIRT_FLARE * (1.0 - sc)  # pooled cloth spreads a little sideways
         scales[h + SKIRT_LEVELS[-1]] = (round(flare, 6), round(sc, 6), round(flare, 6))

@@ -29,6 +29,8 @@
     "fold_deg": 6.0,
     "fold_from_deg": 40.0,
     "fold_ease_deg": 20.0,
+    "fold_tuck_deg": 8.0,
+    "_doc_fold_tuck": "GPU QA row 56 (cloud pass 6: a white notch through the back of the run's skirt): a derived panel's hem may swing at most fold_tuck_deg less than its knee bone, so the cloth between them never folds under itself (the knee takes the larger of the neighbours' swings, the hem only their mean).",
     "overhang_from_deg": 55.0,
     "overhang_ease_deg": 20.0,
     "overhang_margin_m": 0.08,
