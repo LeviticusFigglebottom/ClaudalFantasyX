@@ -54,3 +54,14 @@ SKILL_CAGE_LAMPTONGUE,Lamptongue
 SKILL_CAGE_CHAINS,The Chains
 HUD_SWAP_CH20_TOMA_LINE,Toma holds the line: he stays in until the Cage breaks.
 LOCATION_CH20_UNDERTOW_LAYERS,"The Undertow, the layers"
+ENEMY_DROWNED_LANTERN,Drowned Lantern
+LORE_DROWNED_LANTERN,"A lamp of a remembered room gone wrong: a lantern-jelly with held light in its bell. Where one breaks, the room brightens."
+ENEMY_HELD_SHOAL,Held Shoal
+LORE_HELD_SHOAL,"The sea's memory of fish, made of held light. It drifts out of reach until the light of its room is broken."
+PHASE_HELD_SHOAL_DRIFT,Drifting
+PHASE_HELD_SHOAL_TURNED,Turned
+SKILL_SHOAL_TURN,The Turn
+SKILL_LANTERN_STING,Sting
+SKILL_LANTERN_DRAW,Draw the Light
+ENC_CH20_LAYER_LANTERNS,Drowned Lanterns
+ENC_CH20_LAYER_SHOAL,The Drowned Gallery
