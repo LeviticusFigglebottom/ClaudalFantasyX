@@ -1551,3 +1551,18 @@ BACKLOG EMPTY: every open ui row waits on another track.
 - The released flags wait on combat (M5-A3P-1013).
 - The revisit flags and the ledger mount wait on cinematics (M5-A3P-1704 and M5-A3P-1707).
 - The credits' content waits on the human (LEAD-ASK).
+
+- **The Lead's 10-31 note (Act III UI):**
+  - **The Kite map:** done (M3-UI-205, M5-A3P-1702), with the log (M5-A3P-1703).
+  - **Flight HUD:** none is needed by the sheets. A flight is the chart's question and Fly, and on landing the area
+    title names the place. K01's maiden flight is a cutscene with no flying play. Say if you want a flight card
+    anyway.
+  - **Ending and credits:** the credits are done and facts-only. E7 waits on M5-A3P-1015.
+  - **New-game-plus:** no Act III sheet or SPEC line calls for it, so none was built.
+  - **Post-game:** SPEC §6.11's Memories gallery is the post-game piece.
+- **M5-A3P-1710, the Memories gallery holds the rest of Act I:**
+  - Ten key scenes from Ch4 to Ch9. Each unlocks on a flag that is always set when it plays, and replays as first
+    seen.
+  - **Tests and checks:** memories 22/0, including `test_the_rest_of_act_one_replays_cleanly`, where each of the
+    ten plays to its end on its stage, with lines, no event and the record unchanged. validate_data 0/0; taskboard ok.
+  - **Next:** Act II's memories (Ch10 to Ch16), the same way.
