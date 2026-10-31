@@ -1077,3 +1077,27 @@ BACKLOG EMPTY: all my Act III bosses are built and in review (M5-A3P-1850 Kesh h
 Matron, 1853 the Old Shoal). M4-A2P-1980 is in review (characters). M4-A2P-1850 is battle-presentation's. What's
 left on these is other roles' (Combat's enemy rows and skills, characters' founders, battle presentation's effects
 and framing) or the LEAD-ASKs above (the Undertow heart's owner, the old_leviathan rename).
+
+## 2026-10-31 ~01:45: the Lead's 01:21 (Act III bosses, then the finale's Undertow heart)
+- The Act III bosses from M5-A3P-1852 onward were already built (see above). Your message answers the heart
+  LEAD-ASK: it is mine.
+
+MERGE-READY @ 44fb48a8d: M5-A3P-1855, the Undertow-heart (to review: combat).
+- **What it is:** the battle body of Sefir's phase 2 (H06), sheeted at docs/kb/art/creatures/act3/undertow_heart.md.
+  - Three helical bands of held light turn so their stripes sink in a seamless loop.
+  - Salt-glass shards torn from the column's sleeves orbit him, two tendrils make the draw, and a ring of light lies
+    at his feet.
+  - His figure is the characters track's, at the scene's `Sefir` node. Env-art's column, floor and eyewall stay
+    theirs.
+- **Light:** `glimmer_held` only. The KO `let_go` sinks the bands under the KO fade, so held light never rises
+  (colour-script rule 1). The lift is the effects layer's.
+- **Size:** 3.2k triangles, 17 bones, byte-reproducible.
+- **Checks:** Godot creature 163/0, portrait 22/0; validate_data 0/0; tools test_sefir_heart OK.
+- **Viewed:** the portrait and a scratch render of `cast`.
+- **For Combat:** Sefir's phase-2 row (this body as his phase-2 model, or a second row; the sheet's questions).
+- **Battle-presentation's row 61 (Surge model):** nothing has come in from them yet. I'll take it if they ask in
+  their log or a task.
+
+BACKLOG EMPTY: the Act III bosses (1850 Kesh held, 1851 the Cage, 1852 the Tide Matron, 1853 the Old Shoal) and the
+Undertow-heart (1855) are built and in review. M4-A2P-1980 is in review. What's left is other roles' (Combat's rows
+and skills, characters' founders and Sefir's figure) or the old_leviathan rename LEAD-ASK.
