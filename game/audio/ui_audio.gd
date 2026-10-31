@@ -92,10 +92,13 @@ func watch(node: Node) -> void:
 		for sig: String in sigs:
 			var argc := _arg_count(node, StringName(sig))
 			var play := request.bind(StringName(str(sigs[sig])))
-			if argc >= 0:
-				node.connect(StringName(sig), play.unbind(argc) if argc > 0 else play)
-		if hook.has("on_exit"):
-			node.tree_exiting.connect(request.bind(StringName(str(hook["on_exit"]))))
+			var call := play.unbind(argc) if argc > 0 else play
+			# and never twice, whatever path brings the node back (M3-HER-1169's guard)
+			if argc >= 0 and not node.is_connected(StringName(sig), call):
+				node.connect(StringName(sig), call)
+		var leave := request.bind(StringName(str(hook.get("on_exit", ""))))
+		if hook.has("on_exit") and not node.tree_exiting.is_connected(leave):
+			node.tree_exiting.connect(leave)
 	var exprs: Array[Dictionary] = []
 	for row: Variant in hook.get("watch", []):
 		var e := Expression.new()

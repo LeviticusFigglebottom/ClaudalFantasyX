@@ -66,6 +66,44 @@ func test_a_menu_back_from_a_resident_battle_is_not_connected_twice() -> void:
 	_done()
 
 
+func test_a_field_interactable_back_from_a_resident_return_connects_used_once() -> void:
+	# cloud-qa's `used` count: an Interactable is watched by both UiAudio (the soft touch) and InteractAudio (its
+	# own sound), the way the director routes it; out of the tree for the battle and back, twice
+	var dir := AudioDirector.new()
+	_host.add_child(dir)
+	dir.set_process(false)
+	var played: Array[StringName] = []
+	dir.ui.player = func(id: StringName) -> void: played.append(id)
+	var area := Interactable.new()
+	_host.add_child(area)
+	for round in 3:
+		dir.interact.watch(area)
+		dir.ui.watch(area)
+		dir.ui.step()
+		if round < 2:
+			_host.remove_child(area)
+			dir.ui.step()
+			_host.add_child(area)
+	assert_eq(_errors(), [], "no engine error over two resident returns")
+	assert_eq(area.used.get_connections().size(), 2, "one connection each: UiAudio and InteractAudio")
+	# a path that loses the node's mark (a node duplicated, its meta cleared) still never connects twice
+	area.remove_meta(UiAudio.META_CONNECTED)
+	_host.remove_child(area)
+	dir.ui.step()
+	_host.add_child(area)
+	dir.ui.watch(area)
+	assert_eq(_errors(), [], "no engine error with the mark gone")
+	assert_eq(area.used.get_connections().size(), 2, "still one each")
+	played.clear()
+	area.used.emit(area)
+	dir.ui.step()
+	assert_eq(played.count(&"ui_interact"), 1, "the soft touch plays once (%s)" % [played])
+	area.free()
+	dir.stop_all_players()
+	dir.free()
+	_done()
+
+
 func test_the_trials_three_argument_signal_connects_without_unbind_zero() -> void:
 	var ash := AshcrownAudio.new(AudioData.table(AudioData.ASHCROWN_SFX))
 	var heard: Array = []

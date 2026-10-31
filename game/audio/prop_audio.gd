@@ -7,6 +7,8 @@ extends RefCounted
 ## on each warm `fire_lights` row that flickers (`flicker` >= min_flicker), once its lights are placed (`dressed`).
 ## The bound-teal lamps flicker too but aren't flames: a light whose colour is cooler than warm (blue over red) is
 ## left silent.
+## A props row with `light` names an OmniLight3D in the prop (the Ch13 Archive's lamp): the loop's level follows that
+## light's energy, so a scene's `@light <name> off` puts the flame's sound out with its light. step() reads it.
 
 const PLAYER := &"PropLoop"
 const FLAME_PLAYER := &"FlameLoop"
@@ -21,6 +23,8 @@ const FLAME_PHASE := Vector2(7.3, 3.1)
 
 ## prop_sfx.json.
 var data: Dictionary = {}
+## Loops that follow a light: [player, light, the light's energy at attach, the player's volume_db].
+var followers: Array[Array] = []
 
 
 func _init(table: Dictionary = {}) -> void:
@@ -59,7 +63,28 @@ func attach(prop: Node) -> AudioStreamPlayer3D:
 	prop.add_child(p)
 	if p.is_inside_tree():
 		p.play()
+	var light := prop.find_child(str(row.get("light", "")), true, false) as Light3D if row.has("light") else null
+	if light != null and light.light_energy > 0.0:
+		followers.append([p, light, light.light_energy, p.volume_db])
 	return p
+
+
+## Each frame (AudioDirector): a light-following loop sits at its light's share of the energy it started with, and
+## stops when the light is out.
+func step() -> void:
+	var alive: Array[Array] = []
+	for f: Array in followers:
+		var p := f[0] as AudioStreamPlayer3D
+		var light := f[1] as Light3D
+		if not is_instance_valid(p) or not is_instance_valid(light):
+			continue
+		var share := clampf(light.light_energy / float(f[2]), 0.0, 1.0)
+		if share <= 0.0:
+			p.stop()
+			continue
+		p.volume_db = float(f[3]) + linear_to_db(share)
+		alive.append(f)
+	followers = alive
 
 
 ## Starts a loop under each warm flickering flame of `dressing` (once each), now if its lights are placed, else when it
