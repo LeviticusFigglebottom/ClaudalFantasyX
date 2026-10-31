@@ -40,5 +40,5 @@ func test_the_kit_covers_the_greybox_and_the_lamps_are_lit() -> void:
 		if n is Node3D and (n as Node3D).scene_file_path.get_file() in ["hm_oil_lamp.glb", "hm_signal_lamp.glb"]:
 			lamps += 1
 	var lights := zone.get_node(^"Dressing").find_children("*", "OmniLight3D", true, false).size()
-	assert_eq(lights, lamps + 1, "a light for every lamp, and the supper's")
+	assert_eq(lights, lamps + 2, "a light for every lamp, the supper's and the dock-master's table lamp (Ch17)")
 	close()

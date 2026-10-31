@@ -75,4 +75,12 @@ in the mud under the water.
   berth, and walks between berths). The walk collision for the hull (deck, hatch ramp, cabin floor) and the berths
   follows that layout; env-art-b adds it when the path exists.
 
+- 2026-10-30, env-art-b (8f052ec7): **the dock-master's house** (B07, B11: `fathers_door`, `fathers_table`).
+  `hm_dockmaster_house` (4,102 / 368 triangles) is hm_lashed_hulls with the deckhouse furnished: his table and two
+  benches, a lamp hook, a shelf of clay jars and a rolled chart, a sleeping mat with a red blanket, and a net on the
+  west wall. It replaces HousePlatform1's house, where the greybox's `fathers_door` (28, 0, -16.6) stands. The table's
+  centre is world (27.55, y 0, -21.05), for the `fathers_table` mark, with a flickering oil-lamp light 1.6 m over the
+  deck. Viewed from inside at the door. Tests: test_ch15_hollowmere_dressing (Ch17 rooms) and Godot
+  test_hollowmere_dressing (the light count).
+
 ## Review log
