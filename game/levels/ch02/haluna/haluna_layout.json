@@ -4976,7 +4976,7 @@
   "net_float_cluster"
  ],
  "story_sets": {
-  "_doc": "M3-ENV-709 (M3-C04-03): Ch4's wake night at the causeway head. HalunaDresser builds each set hidden as StorySet_<name>; Ch4's zone shows it by flag. ch04_wake: about 100 oil lamps lining the path to the Pilgrim's Wake and ringing it, the feast on the sand, Ysolde's ink kit at the gap, ten warm lights. The shells: Asha's (ch04_shell_set, freshly inked) beside Imra's, faded until it is re-inked.",
+  "_doc": "M3-ENV-709 (M3-C04-03): Ch4's wake night at the causeway head. PC pass 7 row 24 (10-31): the wake's lamps also line the dock out to the water (twelve on its deck, four lights), so the DockShore arrival is not a dark pier. HalunaDresser builds each set hidden as StorySet_<name>; Ch4's zone shows it by flag. ch04_wake: about 100 oil lamps lining the path to the Pilgrim's Wake and ringing it, the feast on the sand, Ysolde's ink kit at the gap, ten warm lights. The shells: Asha's (ch04_shell_set, freshly inked) beside Imra's, faded until it is re-inked.",
   "ch04_wake": {
    "pieces": [
     {
@@ -5835,6 +5835,114 @@
      ],
      "yaw_deg": -34.0,
      "dy": 0.02
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -5.26,
+      58.44
+     ],
+     "y": 1.4,
+     "yaw_deg": 340.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -4.28,
+      59.84
+     ],
+     "y": 1.4,
+     "yaw_deg": 20.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      0.07,
+      54.72
+     ],
+     "y": 1.4,
+     "yaw_deg": 17.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      1.04,
+      56.11
+     ],
+     "y": 1.4,
+     "yaw_deg": 57.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      5.8,
+      50.7
+     ],
+     "y": 1.4,
+     "yaw_deg": 54.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      6.77,
+      52.09
+     ],
+     "y": 1.4,
+     "yaw_deg": 94.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      11.53,
+      46.69
+     ],
+     "y": 1.4,
+     "yaw_deg": 91.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      12.51,
+      48.08
+     ],
+     "y": 1.4,
+     "yaw_deg": 131.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      17.27,
+      42.67
+     ],
+     "y": 1.4,
+     "yaw_deg": 128.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      18.24,
+      44.06
+     ],
+     "y": 1.4,
+     "yaw_deg": 168.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      22.18,
+      39.23
+     ],
+     "y": 1.4,
+     "yaw_deg": 165.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      23.16,
+      40.62
+     ],
+     "y": 1.4,
+     "yaw_deg": 205.0
     }
    ],
    "lights": {
@@ -5892,6 +6000,26 @@
       4.0,
       0.6,
       -112.0
+     ],
+     [
+      -3.95,
+      2.0,
+      58.57
+     ],
+     [
+      4.65,
+      2.0,
+      52.54
+     ],
+     [
+      13.66,
+      2.0,
+      46.23
+     ],
+     [
+      21.85,
+      2.0,
+      40.5
      ]
     ]
    }

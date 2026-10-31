@@ -236,7 +236,7 @@
     2.2,
     7.9
    ],
-   "energy": 1.2,
+   "energy": 1.8,
    "range": 8.0,
    "shadow": false,
    "attenuation": 1.2,
@@ -248,7 +248,7 @@
     2.6,
     2.9
    ],
-   "energy": 0.9,
+   "energy": 1.4,
    "range": 8.0,
    "shadow": false,
    "attenuation": 1.2,
@@ -260,7 +260,7 @@
     2.6,
     12.9
    ],
-   "energy": 0.9,
+   "energy": 1.4,
    "range": 8.0,
    "shadow": false,
    "attenuation": 1.2,
@@ -272,8 +272,30 @@
     0.22,
     9.2
    ],
-   "energy": 1.1,
-   "range": 6.0,
+   "energy": 1.6,
+   "range": 8.0,
+   "shadow": false,
+   "attenuation": 1.2
+  },
+  {
+   "at": [
+    10.4,
+    0.22,
+    5.3
+   ],
+   "energy": 1.6,
+   "range": 8.0,
+   "shadow": false,
+   "attenuation": 1.2
+  },
+  {
+   "at": [
+    12.6,
+    0.22,
+    10.3
+   ],
+   "energy": 1.6,
+   "range": 8.0,
    "shadow": false,
    "attenuation": 1.2
   }
@@ -802,6 +824,24 @@
    ],
    "y": 0.4,
    "yaw_deg": 0.0
+  },
+  {
+   "piece": "ferry_lantern",
+   "at": [
+    10.4,
+    5.3
+   ],
+   "y": 0.4,
+   "yaw_deg": 37.0
+  },
+  {
+   "piece": "ferry_lantern",
+   "at": [
+    12.6,
+    10.3
+   ],
+   "y": 0.4,
+   "yaw_deg": 74.0
   }
  ]
 }
