@@ -345,3 +345,14 @@ For a crowd too big for skinned actors (Ch20 U04's remembered Reefball crowd, 30
   the lagoon. The watchers' own rows carry `not_flag`.
 - A crowd person's `flag` row stands at its own `CrowdSpots/<name>` with an `at` (validate_npc). Rows set their pose
   through `tuning.clips.work`.
+
+## Ch20's held shapes (M5-A3P-1809, 2026-10-31)
+`zones/ch20_undertow_layers.json`: the memory layers' remembered townsfolk as held light.
+- **Near shapes:** silhouette rows (`body` + `silhouette` `#7FC6D9`), still to the party (glance, face, stop and
+  release radii 0), each posed by `tuning.clips.work`, on the left of each floor:
+  - Oruvel's market (U01): 5;
+  - the Lanternfall terrace on lantern-night (U02): 4;
+  - a Corrow kitchen (U03): 3.
+- **A zone's `far` block** is CrowdFar data inline. VillagerLayer adds a `CrowdFar` child once its rows are in, and it
+  builds off the main thread. Used here for the Tidecup gallery's 30 cheering shapes (U04). validate_npc checks the
+  block: glow, frames, fps, unique ids, crowd bodies, clips, points.

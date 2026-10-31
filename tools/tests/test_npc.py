@@ -224,6 +224,22 @@ class Crowd(unittest.TestCase):
         data["villagers"][0]["flag"] = "ch02_heard_pila"  # a flag row of a crowd person stands at its own `at` spot
         self.assertTrue(any("stands at its own CrowdSpots" in e for e in self._zone_errors(data)))
 
+    def test_a_far_block_is_checked(self) -> None:
+        """M5-A3P-1809: a zone's `far` block (CrowdFar) names crowd bodies, a clip and points, with unique ids."""
+        data = copy.deepcopy(_load(CROWD_ZONE))
+        data["far"] = {"glow": "#7FC6D9", "frames": 4, "fps": 8.0,
+                       "people": [{"id": "a", "body": "crowd_man_lean_a", "clip": "cheer", "at": [0, 0, 0, 90]}]}
+        self.assertEqual(self._zone_errors(data), [])
+        data["far"]["people"].append({"id": "a", "body": "nobody", "clip": "", "at": [0]})
+        data["far"]["frames"] = 0
+        errs = " | ".join(self._zone_errors(data))
+        for needle in ("frames is not a positive integer", "appears twice"):
+            self.assertIn(needle, errs)
+        held = _load("game/data/world/npc/zones/ch20_undertow_layers.json")
+        self.assertEqual(len(held["villagers"]), 12)
+        self.assertEqual(len(held["far"]["people"]), 30)
+        self.assertTrue(all(r["silhouette"] == "#7FC6D9" and r["tuning"]["face_radius_m"] == 0.0 for r in held["villagers"]))
+
     def test_crowd_rows_must_match_their_person(self) -> None:
         data = copy.deepcopy(_load(CROWD_ZONE))
         self.assertEqual(self._zone_errors(data), [])

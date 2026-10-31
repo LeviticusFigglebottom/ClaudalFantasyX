@@ -157,6 +157,37 @@ def person_stand_in(person: dict) -> str:
     return actor if "/" in actor else STAGE_ACTORS + actor
 
 
+def _far_errors(root: Path, rel: str, far: object) -> list[str]:
+    """A zone's `far` block (CrowdFar, M5-A3P-1809): glow, frames, fps and people of crowd bodies at `at` points."""
+    if far is None:
+        return []
+    where = f"{rel}: far"
+    if not isinstance(far, dict):
+        return [f"{where}: not an object"]
+    errs: list[str] = []
+    if not re.fullmatch(r"#[0-9A-Fa-f]{6}", str(far.get("glow", ""))):
+        errs.append(f"{where}: glow is not a #RRGGBB colour")
+    if not (isinstance(far.get("frames"), int) and far["frames"] > 0):
+        errs.append(f"{where}: frames is not a positive integer")
+    if not (isinstance(far.get("fps"), (int, float)) and far["fps"] > 0):
+        errs.append(f"{where}: fps is not positive")
+    seen: set[str] = set()
+    for i, p in enumerate(far.get("people", [])):
+        w = f"{where}.people[{i}]"
+        pid = str(p.get("id", "")) if isinstance(p, dict) else ""
+        if not pid or pid in seen:
+            errs.append(f"{w}: no id, or its id appears twice")
+            continue
+        seen.add(pid)
+        if not (root / CROWD_ACTOR.format(id=str(p.get("body", "")))).exists():
+            errs.append(f"{w}: body {p.get('body')!r} has no crowd actor scene")
+        if not str(p.get("clip", "")):
+            errs.append(f"{w}: no clip")
+        if not _point(p.get("at")):
+            errs.append(f"{w}: at is not [x, y, z] or [x, y, z, yaw_deg]")
+    return errs
+
+
 def _crowd_row_errors(root: Path, where: str, zone: str, row: dict, people: dict[str, dict]) -> list[str]:
     errs: list[str] = []
     pid = str(row.get("crowd", ""))
@@ -193,6 +224,7 @@ def zone_errors(root: Path, rel: str, locations: set[str], flags: set[str],
             errs.append(f"{rel}: zone {zone!r} does not name the file")
         if zone not in locations:
             errs.append(f"{rel}: zone {zone!r} is not a location in {LOCATIONS_FILE}")
+    errs += _far_errors(root, rel, data.get("far"))
     flag = str(data.get("storm_flag", ""))
     if flag and flag not in flags:
         errs.append(f"{rel}: storm_flag {flag!r} is not declared in {FLAGS_FILE}")

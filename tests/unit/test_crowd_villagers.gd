@@ -826,3 +826,28 @@ func test_the_revisited_towns_crowds_change_with_the_act3_flags() -> void:
 	Game.set_flag(lifted, was_lifted)
 	Game.set_flag(tide, was_tide)
 	_done()
+
+
+## M5-A3P-1809: Ch20's memory layers carry their held shapes: the remembered townsfolk as held light, still to the
+## party, on their floors; the Tidecup gallery's crowd is the zone's `far` block, a CrowdFar.
+func test_the_undertow_layers_hold_their_held_shapes() -> void:
+	var zone := (
+		(load("res://game/levels/ch20/undertow_layers/undertow_layers.tscn") as PackedScene).instantiate() as Node3D
+	)
+	_holder().add_child(zone)
+	var layer := VillagerLayer.wire(zone, &"ch20/undertow_layers")
+	layer.build()
+	var floors := {"market": -3.0, "terrace": -6.0, "kitchen": -9.0}
+	var n := 0
+	for npc in layer.villagers:
+		var part := String(npc.npc_id).split("_")
+		assert_true(part.size() == 3 and floors.has(part[1]), "%s is a held shape of a layer" % npc.npc_id)
+		assert_true(npc.silhouette.a > 0.0 and npc.actor != null, "%s is a silhouette" % npc.npc_id)
+		assert_true(absf(npc.global_position.y - float(floors[part[1]])) < 0.05, "%s stands on its floor" % npc.npc_id)
+		assert_eq(npc._num("face_radius_m"), 0.0, "%s never turns to the party" % npc.npc_id)
+		n += 1
+	assert_eq(n, 12, "twelve near shapes")
+	var far := layer.get_node(^"CrowdFar") as CrowdFar
+	far.wait_built()
+	assert_eq(far.person_count(), 30, "the gallery's thirty")
+	_done()
