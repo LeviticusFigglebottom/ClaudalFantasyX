@@ -1465,6 +1465,11 @@ The six relays from 23:06 to 03:02 reached this session only at 03:35, after the
   3. **Ch17 and Ch18 as you ruled:** my Ch17 stands, and my Hollowmere `aboard` already goes to ch18/kite Deck
      (test_ch17_thread asserts it), so M5-A3P-1020 is done on this branch. act2-plan's Ch18 rebases on mine.
   Until you answer I build nothing more in Ch18–Ch21.
+- **Godot on the merged tree:** ch12 5/0, ch17 3/0, ch18 1/0, ch19 2/0, ch20 4/0, ch21 4/0, kesh 3/0, battle_sim 55/0,
+  set_piece 48/0, vowbound 119/0, qa_capsules 3/0, battle_act2_ability_vfx 2/0, qa_threads 1/0 (the known Act III
+  staging row now covers the Ending's `ending_*` scenes).
+- MERGE-READY @ 758ce108a. This covers the fights, regulars, reds, PC rows 82/86 and the audits. The Ch20/Ch21/Ending
+  zones and flows wait on the LEAD-ASK above: take them, or take act2-plan's.
 
 ## Exact next step
 **Waiting on the LEAD-ASK above (the Act III overlap with act2-plan)**, then BACKLOG EMPTY. Every Act III row assigned to act1-chapters is built and in review (M5-A3P-1001, 1004,
