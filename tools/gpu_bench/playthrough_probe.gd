@@ -30,6 +30,7 @@ const SKIP_REHOLD_S := 10.0
 const CANCEL_AFTER_S := 30.0
 const SOFTLOCK_S := 180.0
 const RESULT_READ_S := 1.0
+const RESULT_LOG_S := 30.0
 const SETTLE_INPUT_S := 1.0
 const STALL_S := 4.0
 const STALL_GAIN_M := 0.5
@@ -51,6 +52,8 @@ const FLOOR_SEARCH_M := 4
 var _opts: Dictionary = {}
 var _skip_holding := false
 var _skip_since := 0.0
+var _next_accept := 0.0
+var _result_logged := false
 var _t0 := 0
 var _last_progress := 0.0
 var _flags: Array[String] = []
@@ -128,6 +131,7 @@ func _run() -> void:
 			result_at = await _battle_step(cur as FieldBattle, result_at, t)
 			continue
 		result_at = -1.0
+		_result_logged = false
 		var p := _player(cur)
 		var live := (
 			p != null
@@ -309,9 +313,14 @@ func _battle_step(ctl: FieldBattle, result_at: float, t: float) -> float:
 	if ctl.state == BattleController.STATE_RESULT:
 		if result_at < 0.0:
 			return t
-		if t - result_at > RESULT_READ_S:
+		# Return again every RESULT_READ_S: one pressed before the panel shows (or while it counts) does nothing.
+		if t - result_at > RESULT_READ_S and t >= _next_accept:
+			_next_accept = t + RESULT_READ_S
+			ctl.hud.result.finish_open()
 			ctl.hud.result.accept()
-			return t + 1000.0
+			if t - result_at > RESULT_LOG_S and not _result_logged:
+				_result_logged = true
+				print("PLAY_RESULT %.1f outcome %s: the result stays open after Return" % [t, ctl.hud.result.outcome])
 		return result_at
 	if int(t / TAP_S) != int((t - 0.02) / TAP_S):
 		# A tap that opened target selection on a party turn is backed out of, so the command step acts.
