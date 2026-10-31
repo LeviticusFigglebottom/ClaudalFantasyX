@@ -1567,9 +1567,13 @@ _WALK = {"beta": 0.6, "c": 0.0, "width": 0.0, "hs": 14.0, "to": 24.0, "rh": 0.12
 # compact counter-swing with the forward swing folded only a little and barely opened (no elbows flying up), a slight
 # lean, a soft bob, a clear heel strike; the stride (S, per hero below) matched to the field's run speed at about
 # 165 steps a minute, and the cycles keyed cubic (CUBIC_CLIPS), not linear, so the 15 fps keys read as one curve
+# PC pass 7 (real GPU, 2026-10-31): "brisk, yes; organic, mostly", but the upper body read stiff, the torso barely
+# counter-rotating. The chest now turns 9 degrees against a 5 degree pelvis (was 3.5 against 4), the head takes back
+# 95% of it (a steady head, was 80%), and the nod is halved
 _RUN = dict(_WALK, beta=0.36, c=-0.08, hs=8.0, to=26.0, rh=0.06, rb=0.26, clear=0.09, peak=0.4, bump=6.0, drop=0.06,
-            bob=0.03, run=True, sway=0.012, yaw=4.0, tilt=1.5, chest=3.5, lean=7.0, flex=2.5, nod=1.0, arm=18.0,
-            elbow=8.0, fore=85.0, fore_s=40.0, abd=4.0, lag=0.02, staff=2.5, fwd=0.6, fwd_elbow=10.0, fwd_abd=2.0)
+            bob=0.03, run=True, sway=0.012, yaw=5.0, tilt=1.5, chest=9.0, lean=7.0, flex=2.5, nod=0.5, arm=18.0,
+            elbow=8.0, fore=85.0, fore_s=40.0, abd=4.0, lag=0.02, staff=2.5, fwd=0.6, fwd_elbow=10.0, fwd_abd=2.0,
+            head=0.95)
 CUBIC_CLIPS = {"walk", "run"}  # the three heroes' cycles: keyed cubic (smooth through the 15 fps keys)
 LOCO_GAIT = {
     # asha.md §1: stillness (sway 0.4): a short, level, quiet walk, the staff carried upright in the right hand

@@ -60,7 +60,7 @@
   "_hair": {
     "grey_strands": true,
     "brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.4"},
-    "hairline_feather": 1.0,
+    "hairline_feather": 0.45,
     "kind": "cropped",
     "tufts": true,
     "card_width_m": [0.0025, 0.004],
@@ -80,7 +80,7 @@
     "colour": "#9E978C",
     "grey": "#D6D2CA",
     "grey_share": 0.35,
-    "underpaint": "#7A6E64",
+    "underpaint": "#ABA49A",
     "brow": "#8E877C",
     "spec": "#CFC8BC",
     "grey_width_k": 1.3
