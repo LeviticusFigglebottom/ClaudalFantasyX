@@ -13,3 +13,21 @@ FIELD_PROMPT_CH18_COURSE_QUELLAN,Set a course for Quellan
 FIELD_PROMPT_CH18_COURSE_ANSEDRA,Fly over Ansedra
 FIELD_PROMPT_CH18_COURSE_ISKARRA,Set a course for Iskarra
 FIELD_PROMPT_CH18_BACK_TO_KITE,Back aboard the Kite
+ENEMY_TIDE_MATRON,Tide Matron
+LORE_TIDE_MATRON,"The Cinder Matron's kin on the reef: a coral kiln with no fire, her heart bound in salt-glass."
+PHASE_TIDE_MATRON_CRUST,The Crust
+PHASE_TIDE_MATRON_POUR,The Pour
+SKILL_TIDE_LADLE,Ladle Swing
+SKILL_TIDE_BANK,Bank the Kiln
+SKILL_SALT_POUR,Salt Pour
+SKILL_TIDE_RECRUST,Salt-Glass
+ENC_CH18_TIDE_MATRON,The Tide Matron
+ENEMY_OLD_LEVIATHAN,The Old Leviathan
+LORE_OLD_LEVIATHAN,"A sea turtle the size of a whale, older than the Calm, its shell a reef. It has no wounds. It simply never stopped growing."
+PHASE_OLD_LEVIATHAN_ASLEEP,Asleep
+PHASE_OLD_LEVIATHAN_WAKING,Waking
+PHASE_OLD_LEVIATHAN_ROUSED,Roused
+SKILL_LEVIATHAN_SWELL,The Shoal Lifts
+SKILL_LEVIATHAN_SETTLE,Settle
+SKILL_LEVIATHAN_FLIPPER,Flipper
+ENC_CH18_OLD_LEVIATHAN,The Secret Shoal
