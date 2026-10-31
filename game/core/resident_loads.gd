@@ -47,6 +47,10 @@ var _done_count := 0
 var _resident_wanted: Dictionary = {}
 ## The scene load_scene() last loaded for (M3-HER-1167: the title starts the first zone's loads early).
 var _scene_path := ""
+## The paths the change in progress needs (the zone's own and the party's heroes): queued first, and the only ones
+## the swap's hold waits for. The rest (the heroes not in the party yet, kept for the session) load on after the reveal
+## (the PC's ~12 s first Haluna entry: Liss's, Sefir's, Kerrid's and Pell's bodies held a Ch2 swap, 16.9 s -> 10 s).
+var _needed: Dictionary = {}
 
 
 ## Adds a ResidentLoads under `router` and connects it to the router's change_started. Idempotent.
@@ -109,6 +113,9 @@ func warm() -> void:
 	var party: Array[StringName] = []
 	if Game.state != null:
 		party = Game.state.party_ids.duplicate()
+	_needed = {}
+	for path in paths_for(party_data(_data), party):
+		_needed[path] = true
 	for path in paths_for(_data, party):
 		_resident_wanted[path] = true
 		if scene.has(path):  # loaded for a zone first: it stays now
@@ -142,6 +149,8 @@ func load_scene(scene_path: String) -> void:
 		if not wanted.has(path):
 			scene.erase(path)
 	_scene_wanted = wanted
+	for path: String in wanted:
+		_needed[path] = true
 	# The same zone asked again (the title started its loads; now its change starts): what is in and still waits
 	# for the prewarm stays queued, so its pipelines still compile under the cover.
 	if scene_path != _scene_path:
@@ -220,7 +229,7 @@ func take_prewarm(n: int) -> Array[Resource]:
 
 ## True while a zone load is still coming in or a loaded one waits for the prewarm.
 func prewarm_pending() -> bool:
-	return not _prewarm_queue.is_empty() or not pending.is_empty()
+	return not _prewarm_queue.is_empty() or not needed_ready()  # the other heroes never reach the prewarm
 
 
 ## True when every resident path is in.
@@ -228,10 +237,26 @@ func is_ready() -> bool:
 	return pending.is_empty()
 
 
-## Holds the parent router's swap until the pending loads are in (a no-op when none are).
+## True when every path the change in progress needs is in (the others may still load).
+func needed_ready() -> bool:
+	for path in pending:
+		if _needed.has(path):
+			return false
+	return true
+
+
+## `data` with every source kept to the party's own rows (party_only): the heroes a change needs now.
+static func party_data(data: Dictionary) -> Dictionary:
+	var out := data.duplicate(true)
+	for src: Dictionary in out.get("sources", []):
+		src["party_only"] = true
+	return out
+
+
+## Holds the parent router's swap until the needed loads are in (a no-op when none are pending).
 func hold() -> void:
 	var router := get_parent()
-	if pending.is_empty() or holding or router == null or not router.has_method(&"hold_swap"):
+	if needed_ready() or holding or router == null or not router.has_method(&"hold_swap"):
 		return
 	router.call(&"hold_swap", self)
 	holding = true
@@ -254,8 +279,9 @@ func poll() -> void:
 			push_warning("ResidentLoads: could not load %s" % path)
 			_done_with(path)
 	_pump()
-	if pending.is_empty():
+	if needed_ready():
 		_release()
+	if pending.is_empty():
 		set_process(false)
 
 
@@ -276,7 +302,16 @@ func _on_change_started(scene_path: String) -> void:
 ## resources crashed Godot 4.6.3: ADR 0029, and this class's own tests at 300 at once).
 func _pump() -> void:
 	var cap := maxi(int(_data.get("max_in_flight", 1)), 1)
+	var order := PackedStringArray()  # what the change needs first
 	for path in pending:
+		if _needed.has(path):
+			order.append(path)
+	var router := get_parent()
+	var changing := router != null and router.has_method(&"is_busy") and bool(router.call(&"is_busy"))
+	for path in pending:
+		if not _needed.has(path) and not changing:  # the rest wait until the change is over (they slowed its
+			order.append(path)  # instantiate fivefold, 1.9 -> 10 s, sharing the loader with it)
+	for path in order:
 		if _in_flight.size() >= cap:
 			break
 		if _in_flight.has(path):
