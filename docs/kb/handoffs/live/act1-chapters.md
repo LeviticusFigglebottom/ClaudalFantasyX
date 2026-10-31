@@ -1483,6 +1483,10 @@ The six relays from 23:06 to 03:02 reached this session only at 03:35, after the
     `aboard` beat sets `ch17_complete`, then `go` goes to `ch18/kite` Deck, exactly as the patch reads.
     test_ch17_thread asserts the hand-off. Nothing to change; act2-plan can close the task.
 - MERGE-READY @ e4a239266 (unchanged code since 758ce108a; this entry is the log only).
+- **big40 (05:43):** merged the integration branch, clean. The red `test_battle_party_kits` is fixed: `wardens_go_home`
+  and `cage_chains` (physical, all foes) stage as `cast` in choreo.json, as `hook_sweep` and `rod_sweep` do.
+  - Checks: battle_party_kits 4/0, ch17 3/0, ch18 1/0, ch19 2/0, ch20 4/0, ch21 4/0; validate_data, taskboard and gdlint clean.
+- MERGE-READY @ a5e41aca6
 
 ## Exact next step
 **BACKLOG EMPTY (the Lead answered the overlap at 04:43: zones and flows are mine).** Every Act III row assigned to act1-chapters is built and in review (M5-A3P-1001, 1004,
