@@ -2,7 +2,7 @@
 id: M5-A3P-1402
 title: "Ch20 Undertow: the rest landing (R1, R2: a landing between the layers)"
 role: environment
-status: doing
+status: review
 owner_session: "claude/env-art"
 depends_on: [M5-A3P-1400]
 reviewer: art
@@ -21,8 +21,14 @@ The well the Kite drops down (U00) can use `heart_eyewall` (undertow_heart.py) s
 staging; no new piece.
 
 ## Acceptance criteria
-- [ ] `memory_landing` built within 4k / 300 triangles, with glb, import, PROVENANCE row and manifest row; the
+- [x] `memory_landing` built within 4k / 300 triangles, with glb, import, PROVENANCE row and manifest row; the
       undertow_layers.md table updated.
-- [ ] Viewed; the floor is flat at y 0 where the party stands; tests extended.
+- [x] Viewed; the floor is flat at y 0 where the party stands; tests extended.
+
+**Done (env-art, 2026-10-31):**
+- memory_landing: 1754 / 274 triangles, with glb, import, PROVENANCE row and manifest row.
+- It hangs in the undertow_cage arena at (-14, 16, -46).
+- Viewed at a walker's eye and from away.
+- test_undertow_layers checks that the floor is flat round the middle and the light is held only.
 
 ## Review log
