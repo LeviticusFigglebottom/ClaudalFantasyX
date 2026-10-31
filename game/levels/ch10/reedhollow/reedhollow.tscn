@@ -12,6 +12,7 @@
 script = ExtResource("1_zone")
 location_id = &"ch10/reedhollow"
 layout_path = "res://game/levels/ch10/reedhollow/reedhollow_layout.json"
+hold_field_path = "res://game/data/flow/act3_field.json"
 
 [node name="Cast" type="Node" parent="."]
 script = ExtResource("90_cast")

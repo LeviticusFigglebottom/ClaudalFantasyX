@@ -12,6 +12,7 @@
 script = ExtResource("1_zone")
 location_id = &"ch17/hollowmere"
 layout_path = "res://game/levels/ch17/hollowmere/hollowmere_layout.json"
+hold_field_path = "res://game/data/flow/act3_field.json"
 
 [node name="Water" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.9, 0)

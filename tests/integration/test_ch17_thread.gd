@@ -65,7 +65,7 @@ func test_the_chapter_runs_to_the_hull() -> void:
 	assert_true(bool(Game.get_flag(&"ch17_verse_begun")), "B11")
 	assert_true(_trigger(&"ch17_board").try_interact())
 	assert_true(bool(Game.get_flag(&"ch17_complete")), "B12: boarding ends the chapter")
-	assert_eq(hand_offs.back()[0], ZoneStory.KIND_SCENE, "the end card until Ch18's Kite zone exists")
+	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch18/kite", "spawn": "Deck"}], "aboard the Kite")
 	_close()
 	Game.state = saved_state
 

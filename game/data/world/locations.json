@@ -206,6 +206,13 @@
       "_note": "M4-C16-02: the Drowned Choir at moonrise (act_outline Ch16), a greybox zone (Ch16Zone): the ring of colossal mouths, Kesh's place, Sefir's."
     },
     {
+      "id": "ch18/kite",
+      "scene": "res://game/levels/ch18/kite/kite.tscn",
+      "spawn": "Deck",
+      "name_key": "LOCATION_CH18_KITE",
+      "_note": "M5-A3P-1004: the Kite in flight (act3_ch18.md), a greybox zone (Ch18Zone): Dace's hull, its deck the whole walkable world."
+    },
+    {
       "id": "ch06/brine_shoals",
       "scene": "res://game/levels/ch06/brine_shoals/brine_shoals.tscn",
       "spawn": "Entry",

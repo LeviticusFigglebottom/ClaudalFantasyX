@@ -212,7 +212,7 @@ def reedhollow() -> dict:
     blocks.append(box("Shore", shore[0], -0.25, shore[1], 8.0, WALK_T, 12.0, color=COL_PLATFORM))
     blocks.append(box("ShoreBoundE", shore[0] + 4.5, 1.0, shore[1], 1.0, 2.0, 12.0, color=COL_RAIL))
     blocks.append(box("ClutchStone", shore[0] + 1.5, 0.4, shore[1], 1.2, 0.8, 1.2, color=COL_BANK))
-    return {
+    return reedhollow_act3({
         "doc": "M4-C10-02 greybox (tools/act1/ch10_greybox.py; do not edit by hand): Reedhollow, the Kirru village, "
         "at the overcast dusk (colour script ch10). A reed causeway from Ossa Fen (west, Gate) to a ring of platforms "
         "round the lagoon, reed houses off the ring, and the shore on its east side (Shore, ClutchStone) where the "
@@ -255,7 +255,55 @@ def reedhollow() -> dict:
                      {"id": "shore", "activation": "touch", "at": [61.8, 0.0, 0.0], "size": [2.0, 0, 3.0],
                       "requires_flag": "ch10_reached_reedhollow", "blocked_by_flag": "ch10_complete",
                       "payload": {"beat": "shore"}, "yaw": 0.0}],
-    }
+    }, shore, child)
+
+
+def reedhollow_act3(layout: dict, shore: tuple[float, float], child: tuple[float, float, float]) -> dict:
+    """Act III's return (Ch18 K03-K06 and Pell's heirloom; M5-A3P-1004, act3_ch18.md §2): Pell through the gate first,
+    Owa and the name-carver at the clutch's stone, the farewell-tide taught on the shore, the child grown, Ressa's
+    reed-spear. Every trigger waits on a Ch18 flag, so Ch10 never sees them; the day light is a variant."""
+    sx, sz = shore
+    layout["marks"].update({
+        "clutch_stone": [r3(sx + 1.5), 0.0, r3(sz - 1.2), 270.0], "clutch_stone_b": [r3(sx + 1.5), 0.0, r3(sz + 1.2), 270.0],
+        "shore_teach": [r3(sx - 1.3), 0.0, r3(sz - 1.0), 270.0], "shore_teach_b": [r3(sx - 1.3), 0.0, r3(sz + 1.0), 270.0],
+        "shore_edge": [r3(sx - 3.2), 0.0, r3(sz), 270.0], "sea": [r3(sx + 14.0), 0.0, r3(sz), 0.0],
+        "lagoon": [LAGOON[0], 0.0, LAGOON[1], 0.0],
+        "platform_edge_child": [r3(child[0] + 0.6), 0.0, r3(child[1] + 0.6), r3(child[2])],
+    })
+    layout["actors"].update({
+        "owa": {"at": [r3(sx + 2.7), 0.0, r3(sz - 1.2), 270.0], "color": "#7a6a4a", "radius": 0.34, "height": 1.8,
+                "hidden": True},
+        "kirru": {"at": [r3(sx + 2.7), 0.0, r3(sz + 1.2), 270.0], "color": "#8a7a5a", "radius": 0.34, "height": 1.75,
+                  "hidden": True},
+    })
+    layout["shots"].update({
+        "K05": {"pos": [8.0, 1.8, 2.5], "look_at": [0.5, 1.3, 0.0], "fov": 40},  # Pell through the gate, first
+        "K06": {"pos": [r3(sx - 2.8), 1.7, r3(sz - 3.0)], "look_at": [r3(sx + 1.5), 1.3, r3(sz - 1.2)], "fov": 40},
+        "K07": {"pos": [r3(sx - 0.8), 1.4, r3(sz + 2.8)], "look_at": [r3(sx + 1.5), 1.0, r3(sz + 1.2)], "fov": 35},
+        "K08": {"pos": [r3(sx - 5.3), 1.6, r3(sz + 1.5)], "look_at": [r3(sx + 0.5), 1.4, r3(sz)], "fov": 40},
+        "K09": {"pos": [r3(sx + 2.7), 2.0, r3(sz + 4.0)], "look_at": [r3(sx - 1.8), 1.2, r3(sz)], "fov": 45},
+        "K10": {"pos": [r3(sx + 0.7), 1.6, r3(sz - 1.6)], "look_at": [r3(sx - 1.3), 1.5, r3(sz - 1.0)], "fov": 32},
+        "K11": {"pos": [r3(sx + 0.7), 1.6, r3(sz + 1.6)], "look_at": [r3(sx - 1.3), 1.5, r3(sz + 1.0)], "fov": 32},
+        "K12": {"pos": [r3(child[0] + 3.5), 1.3, r3(child[1] + 3.0)], "look_at": [r3(child[0] + 0.6), 0.9,
+                                                                                  r3(child[1] + 0.6)], "fov": 40},
+    })
+    layout["triggers"] += [
+        {"id": "ch18_shore_teach", "activation": "touch", "at": [r3(sx - 2.0), 0.0, r3(sz)], "size": [2.0, 0, 3.0],
+         "requires_flag": "ch18_pell_named", "blocked_by_flag": "ch18_learned_farewell_tide",
+         "payload": {"beat": "ch18_farewell"}, "yaw": 0.0},
+        {"id": "ch18_child", "activation": "interact", "at": [r3(child[0] + 0.6), 0.0, r3(child[1] + 0.6)],
+         "size": [1.4, 0, 1.4], "prompt_key": "FIELD_PROMPT_LISTEN", "requires_flag": "ch10_child_asked",
+         "blocked_by_flag": "ch18_child_answered", "payload": {"beat": "ch18_child"}},
+        {"id": "ch18_heirloom_pell", "activation": "interact", "at": [r3(sx + 1.5), 0.0, r3(sz)], "size": [1.4, 0, 1.4],
+         "prompt_key": "FIELD_PROMPT_LOOK", "requires_flag": "ch18_pell_named", "blocked_by_flag": "ch18_heirloom_pell",
+         "payload": {"dialogue": "ch18_heirloom_pell"}},
+    ]
+    # Ch18 is day: the overcast lifts (act3_ch18.md §6); the child is on her platform
+    layout["variants"] = [{"when": {"set": ["ch18_started"]},
+                           "sun": {"pitch_deg": -40.0, "yaw_deg": 150.0, "energy": 1.0, "color": "#f4efe2"},
+                           "environment": {"background": "#b4b8b0", "ambient_color": "#8a96a0", "ambient_energy": 0.9},
+                           "show": ["kirru_child"]}]
+    return layout
 
 
 def main() -> None:

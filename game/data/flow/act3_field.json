@@ -1,0 +1,25 @@
+{
+ "doc": "Act III field tunables (M5-A3P-1001; act3 beat sheets). Read by Ch05Zone through a zone scene's hold_field_path (game/levels/ch05/ch05_zone.gd): hollowmere.tscn, reedhollow.tscn, kite.tscn. hold: the no-fail held input, as ch09_field.json's (CutsceneHoldGate; docs/kb/tech/cutscenes.md 'Held input'): between <<event hold_input <prompt>>> and <<event hold_input_end>> the scene's time runs only while `action` is held. prompts maps each event's prompt id to its loc key (game/data/loc/ch17.csv onward): Ch17's ledger page-turns and first lamp; Ch18's maiden flight and farewell-tide; Ch19's hitch and engine; the Ending's strain on the Kite's sheet.",
+ "hold": {
+  "action": "field_interact",
+  "prompts": {
+   "turn_page": "FIELD_PROMPT_CH17_TURN_PAGE",
+   "hold_steady": "FIELD_PROMPT_CH17_HOLD_STEADY",
+   "turn_collar": "FIELD_PROMPT_CH17_TURN_COLLAR",
+   "seat_it": "FIELD_PROMPT_CH17_SEAT_IT",
+   "lift_one": "FIELD_PROMPT_CH18_LIFT_ONE",
+   "lift_two": "FIELD_PROMPT_CH18_LIFT_TWO",
+   "lift_three": "FIELD_PROMPT_CH18_LIFT_THREE",
+   "turn_back": "FIELD_PROMPT_CH18_TURN_BACK",
+   "tie": "FIELD_PROMPT_CH19_TIE",
+   "load": "FIELD_PROMPT_CH19_LOAD",
+   "pull": "FIELD_PROMPT_CH19_PULL",
+   "lever_one": "FIELD_PROMPT_CH19_LEVER_ONE",
+   "lever_two": "FIELD_PROMPT_CH19_LEVER_TWO",
+   "lever_three": "FIELD_PROMPT_CH19_LEVER_THREE",
+   "take_the_strain": "FIELD_PROMPT_ENDING_TAKE_THE_STRAIN"
+  },
+  "layer": 33,
+  "bottom_px": 96.0
+ }
+}

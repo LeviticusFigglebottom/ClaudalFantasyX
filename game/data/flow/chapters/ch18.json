@@ -1,0 +1,224 @@
+{
+ "doc": "M5-A3P-1004 (docs/kb/tech/chapter_flow.md; act3_ch18.md \u00a72): Ch18 'The Kite', the critical path. K01 the maiden flight (arrive on the Kite: Ch17's boarding goes here), K02 the chart table (the world opens: kite_flying, the Kite's world map in the field menu), then the map to Reedhollow (its Act III block here; ChapterRegistry gives this file the zone from chapter 18): K03-K04 through the gate on arrival, K05 the farewell-tide taught on the shore, which takes them back aboard at night for K07, then K08 at the chart table: Iskarra. K06 (the child, optional) and Pell's heirloom are triggers at Reedhollow; Ysolde's heirloom and Ansedra from the air are on the deck. The other revisits and heirlooms (Oruvel, Pemakar, Tamsule, Corrow, Quellan, Hollowmere, Haluna) come with their zones. The exit is the end card until Ch19's Iskarra (M5-A3P-1007).",
+ "chapter": "ch18",
+ "zones": {
+  "ch18/kite": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch18_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Deck"
+      },
+      {
+       "chapter": 18
+      },
+      {
+       "party": {
+        "party": [
+         "rhen",
+         "asha",
+         "toma"
+        ],
+        "reserve": [
+         "ysolde",
+         "kerrid",
+         "liss"
+        ]
+       }
+      },
+      {
+       "play": "ch18_maiden_flight"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch18_learned_farewell_tide"
+      ],
+      "unset": [
+       "ch18_night_aboard"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Deck"
+      },
+      {
+       "zone": "apply_variant"
+      },
+      {
+       "play": "ch18_night_aboard"
+      },
+      {
+       "zone": "rest"
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch18_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Deck"
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "ch18_chart": {
+     "when": {
+      "set": [
+       "ch18_started"
+      ],
+      "unset": [
+       "ch18_world_open"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch18_the_chart_table"
+      },
+      {
+       "set": "kite_flying"
+      }
+     ]
+    },
+    "ch18_iskarra": {
+     "when": {
+      "set": [
+       "ch18_night_aboard"
+      ],
+      "unset": [
+       "ch18_complete"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch18_iskarra"
+      },
+      {
+       "scene": "res://game/flow/end_card.tscn"
+      }
+     ]
+    }
+   }
+  },
+  "ch10/reedhollow": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "set": [
+       "ch18_world_open"
+      ],
+      "unset": [
+       "ch18_pell_named"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Gate"
+      },
+      {
+       "zone": "apply_variant"
+      },
+      {
+       "play": "ch18_through_the_gate"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch18_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Gate"
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "ch18_farewell": {
+     "when": {
+      "set": [
+       "ch18_pell_named"
+      ],
+      "unset": [
+       "ch18_learned_farewell_tide"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch18_farewell_tide_taught"
+      },
+      {
+       "go": {
+        "location": "ch18/kite",
+        "spawn": "Deck"
+       }
+      }
+     ]
+    },
+    "ch18_child": {
+     "when": {
+      "set": [
+       "ch18_pell_named"
+      ],
+      "unset": [
+       "ch18_child_answered"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch18_child_older"
+      }
+     ]
+    }
+   }
+  }
+ }
+}

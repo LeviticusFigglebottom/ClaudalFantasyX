@@ -1,0 +1,506 @@
+{
+ "doc": "M5-A3P-1004 greybox (tools/act3/ch18_kite_greybox.py; do not edit by hand): the Kite in flight, its deck the whole walkable world (act3_ch18.md \u00a72): the wheel, the chart table, the stern and bow rails, the lamps under the deck, the masts and the flare-kite sails. Day; the night aboard (K07) is a variant.",
+ "sun": {
+  "pitch_deg": -45.0,
+  "yaw_deg": 150.0,
+  "energy": 1.1,
+  "color": "#f6f0e2"
+ },
+ "environment": {
+  "background": "#9ab8d0",
+  "ambient_color": "#a8b8c8",
+  "ambient_energy": 0.9
+ },
+ "block_color": "#6a5640",
+ "blocks": [
+  {
+   "id": "Deck",
+   "pos": [
+    12.0,
+    -0.25,
+    0.0
+   ],
+   "size": [
+    24.0,
+    0.5,
+    8.0
+   ],
+   "color": "#6a5640"
+  },
+  {
+   "id": "DeckWallN0",
+   "pos": [
+    12.0,
+    0.5,
+    -4.0
+   ],
+   "size": [
+    24.0,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "DeckWallS0",
+   "pos": [
+    12.0,
+    0.5,
+    4.0
+   ],
+   "size": [
+    24.0,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "DeckWallW0",
+   "pos": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "size": [
+    0.5,
+    1.0,
+    8.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "DeckWallE0",
+   "pos": [
+    24.0,
+    0.5,
+    0.0
+   ],
+   "size": [
+    0.5,
+    1.0,
+    8.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "Hull",
+   "pos": [
+    12.0,
+    -1.6,
+    0.0
+   ],
+   "size": [
+    24.6,
+    2.4,
+    8.6
+   ],
+   "color": "#8a6a3a",
+   "solid": false
+  },
+  {
+   "id": "Wheel",
+   "pos": [
+    2.0,
+    0.6,
+    0.0
+   ],
+   "size": [
+    0.4,
+    1.2,
+    1.2
+   ],
+   "color": "#5a4636"
+  },
+  {
+   "id": "ChartTable",
+   "pos": [
+    10.0,
+    0.45,
+    1.6
+   ],
+   "size": [
+    2.2,
+    0.9,
+    1.2
+   ],
+   "color": "#5a4636"
+  },
+  {
+   "id": "EngineHatch",
+   "pos": [
+    6.0,
+    0.1,
+    -2.0
+   ],
+   "size": [
+    2.0,
+    0.2,
+    1.6
+   ],
+   "color": "#8a6a3a"
+  },
+  {
+   "id": "Mast0",
+   "pos": [
+    8.0,
+    4.5,
+    0.0
+   ],
+   "size": [
+    0.3,
+    9.0,
+    0.3
+   ],
+   "color": "#5a4636"
+  },
+  {
+   "id": "Sail0",
+   "pos": [
+    8.3,
+    6.0,
+    0.0
+   ],
+   "size": [
+    0.1,
+    4.0,
+    7.0
+   ],
+   "color": "#d8d0c0",
+   "solid": false
+  },
+  {
+   "id": "Mast1",
+   "pos": [
+    16.0,
+    4.5,
+    0.0
+   ],
+   "size": [
+    0.3,
+    9.0,
+    0.3
+   ],
+   "color": "#5a4636"
+  },
+  {
+   "id": "Sail1",
+   "pos": [
+    16.3,
+    6.0,
+    0.0
+   ],
+   "size": [
+    0.1,
+    4.0,
+    7.0
+   ],
+   "color": "#d8d0c0",
+   "solid": false
+  }
+ ],
+ "spawns": {
+  "Deck": [
+   12.0,
+   0.0,
+   0.0,
+   270.0
+  ]
+ },
+ "marks": {
+  "kite_wheel": [
+   2.8,
+   0.0,
+   0.0,
+   270.0
+  ],
+  "chart_table": [
+   10.0,
+   0.0,
+   2.8,
+   0.0
+  ],
+  "stern_rail": [
+   0.9,
+   0.0,
+   -2.0,
+   90.0
+  ],
+  "bow_rail": [
+   23.0,
+   0.0,
+   0.0,
+   270.0
+  ],
+  "kite_lamps": [
+   6.0,
+   -0.6,
+   -2.0,
+   0.0
+  ],
+  "sails": [
+   12.0,
+   6.0,
+   0.0,
+   0.0
+  ],
+  "flotilla": [
+   -30.0,
+   -40.0,
+   10.0,
+   0.0
+  ],
+  "iskarra": [
+   10.0,
+   1.0,
+   1.6,
+   0.0
+  ],
+  "ansedra": [
+   90.0,
+   -60.0,
+   -50.0,
+   0.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "K01": {
+   "pos": [
+    26.0,
+    4.0,
+    8.0
+   ],
+   "look_at": [
+    10.0,
+    2.0,
+    0.0
+   ],
+   "fov": 50
+  },
+  "K02": {
+   "pos": [
+    -10.0,
+    -4.0,
+    12.0
+   ],
+   "look_at": [
+    8.0,
+    1.0,
+    0.0
+   ],
+   "fov": 50
+  },
+  "K03": {
+   "pos": [
+    6.0,
+    2.0,
+    -2.5
+   ],
+   "look_at": [
+    12.0,
+    6.0,
+    0.0
+   ],
+   "fov": 45
+  },
+  "K04": {
+   "pos": [
+    12.5,
+    2.0,
+    4.2
+   ],
+   "look_at": [
+    10.0,
+    0.9,
+    1.6
+   ],
+   "fov": 42
+  },
+  "K13": {
+   "pos": [
+    11.6,
+    1.8,
+    3.8
+   ],
+   "look_at": [
+    10.0,
+    0.9,
+    1.6
+   ],
+   "fov": 32
+  },
+  "K14": {
+   "pos": [
+    4.0,
+    2.2,
+    3.0
+   ],
+   "look_at": [
+    0.9,
+    1.5,
+    -2.0
+   ],
+   "fov": 45
+  },
+  "K22": {
+   "pos": [
+    21.0,
+    2.0,
+    2.5
+   ],
+   "look_at": [
+    90.0,
+    -60.0,
+    -50.0
+   ],
+   "fov": 40
+  },
+  "K23": {
+   "pos": [
+    21.0,
+    2.0,
+    2.5
+   ],
+   "look_at": [
+    90.0,
+    -60.0,
+    -50.0
+   ],
+   "fov": 10
+  }
+ },
+ "camera_volumes": [
+  {
+   "id": "Deck",
+   "mode": "pan_follow",
+   "at": [
+    12.0,
+    1.5,
+    0.0
+   ],
+   "size": [
+    24.0,
+    4.0,
+    8.0
+   ],
+   "pos": [
+    12.0,
+    7.0,
+    9.0
+   ],
+   "look_at": [
+    12.0,
+    0.8,
+    0.0
+   ],
+   "fov": 55,
+   "priority": 1
+  }
+ ],
+ "triggers": [
+  {
+   "id": "ch18_chart",
+   "activation": "interact",
+   "at": [
+    10.0,
+    0.0,
+    2.6
+   ],
+   "size": [
+    2.2,
+    0,
+    1.0
+   ],
+   "prompt_key": "FIELD_PROMPT_CH18_CHART",
+   "requires_flag": "ch18_started",
+   "blocked_by_flag": "ch18_world_open",
+   "payload": {
+    "beat": "ch18_chart"
+   }
+  },
+  {
+   "id": "ch18_iskarra",
+   "activation": "interact",
+   "at": [
+    10.0,
+    0.0,
+    2.6
+   ],
+   "size": [
+    2.2,
+    0,
+    1.0
+   ],
+   "prompt_key": "FIELD_PROMPT_CH18_CHART",
+   "requires_flag": "ch18_night_aboard",
+   "blocked_by_flag": "ch18_complete",
+   "payload": {
+    "beat": "ch18_iskarra"
+   }
+  },
+  {
+   "id": "ch18_heirloom_ysolde",
+   "activation": "interact",
+   "at": [
+    14.0,
+    0.0,
+    -2.8
+   ],
+   "size": [
+    1.4,
+    0,
+    1.0
+   ],
+   "prompt_key": "FIELD_PROMPT_LOOK",
+   "requires_flag": "ch18_world_open",
+   "blocked_by_flag": "ch18_heirloom_ysolde",
+   "payload": {
+    "dialogue": "ch18_heirloom_ysolde"
+   }
+  },
+  {
+   "id": "ch18_ansedra",
+   "activation": "interact",
+   "at": [
+    22.6,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    0,
+    3.0
+   ],
+   "once": true,
+   "prompt_key": "FIELD_PROMPT_LOOK",
+   "requires_flag": "ch18_world_open",
+   "payload": {
+    "dialogue": "ch18_revisit_ansedra"
+   }
+  }
+ ],
+ "variants": [
+  {
+   "when": {
+    "set": [
+     "ch18_learned_farewell_tide"
+    ],
+    "unset": [
+     "ch18_night_aboard"
+    ]
+   },
+   "sun": {
+    "pitch_deg": -30.0,
+    "yaw_deg": 200.0,
+    "energy": 0.12,
+    "color": "#8090b0"
+   },
+   "environment": {
+    "background": "#0e1420",
+    "ambient_color": "#2a3444",
+    "ambient_energy": 0.35
+   }
+  }
+ ]
+}

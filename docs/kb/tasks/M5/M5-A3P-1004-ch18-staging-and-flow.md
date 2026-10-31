@@ -2,8 +2,8 @@
 id: M5-A3P-1004
 title: "Request (staging + flow): Ch18: the Kite zone, the K01–K23 shots, the marks, and the flow with its revisits"
 role: cinematics
-status: todo
-owner_session: ""
+status: doing
+owner_session: "claude/act2-plan (supplementing act1-chapters/cinematics, the Lead 2026-10-30 23:26; ADR 0207)"
 depends_on: [M5-A3P-1003, M5-A3P-1001]
 reviewer: narrative
 milestone: M5
@@ -40,5 +40,30 @@ revisits, Haluna's lifting), §5 (the heirlooms). File-to-beat map: drafts READM
 ## Acceptance criteria
 - [ ] The shots, marks and the `ch18/kite` zone exist, and no Ch18 scene warns about an unknown shot or mark.
 - [ ] The flow plays the critical path in order and offers the revisits and heirlooms; Godot `act3` stays green.
+
+## Done so far (act2-plan, supplementing): the critical path
+- **The Kite zone `ch18/kite`:**
+  - `tools/act3/ch18_kite_greybox.py` (new) builds the deck with the wheel, chart table, rails, engine hatch, masts and sails.
+  - It adds the marks, shots K01–K04, K13, K14, K22 and K23, and 4 triggers: the chart, Iskarra, Ysolde's heirloom, and Ansedra from the air.
+  - The night aboard is a light variant.
+  - Also new: `Ch18Zone`, `kite.tscn`, the `locations.json` row and `LOCATION_CH18_KITE`.
+- **Reedhollow (`reedhollow_act3()` in `tools/act1/ch10_greybox.py`):**
+  - marks (the clutch's stone, the shore teaching, the child's platform, the sea, the lagoon);
+  - Owa and the name-carver as stand-in actors;
+  - shots K05–K12;
+  - three Ch18-gated triggers: the farewell-tide, the child, and Pell's heirloom;
+  - Ch18's day light as a variant.
+  - Ch10's content is unchanged.
+- **Held inputs:** `Ch05Zone` has an optional `CutsceneHoldGate` (`hold_field_path`). It is set on the Kite, Reedhollow and Hollowmere scenes, and every Act III prompt is in `game/data/flow/act3_field.json`. This replaces Ch17's own field file.
+- **Flow:** `game/data/flow/chapters/ch18.json`:
+  - the Kite: K01 on arrival; K02 at the chart (sets `kite_flying`, so the world map opens); K07 on the arrival after the farewell-tide; K08 at the chart → the end card until Ch19's Iskarra;
+  - Reedhollow's Act III block: K03–K04 on arrival; K05 on the shore → back aboard; K06 optional.
+  - Ch17's boarding now goes to the Kite.
+- **Test:** `tests/integration/test_ch18_thread.gd` covers the critical path and the child's gate.
+
+## Still to do here
+- The revisits and heirlooms in their own zones: Oruvel, Pemakar, Tamsule, Corrow, Quellan, Hollowmere.
+- **Haluna** (`ch18_backs_to_the_water`, `ch18_heirloom_asha`) needs a story hook. `ch02/haluna` runs on HalunaStory, not ZoneStory (ADR 0035), so it is a tech question.
+- Ch18's objective rows and zone map for the Kite.
 
 ## Review log

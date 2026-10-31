@@ -1,5 +1,5 @@
 {
- "doc": "M5-A3P-1001 (docs/kb/tech/chapter_flow.md; act3_ch17.md \u00a72): Ch17 'The Wright's Son' at Hollowmere, Act III's first chapter, on the Ch15 zone (ChapterRegistry gives this file the zone from chapter 16 on). B01 the sea and the ship (arrive, from the ShipDeck spawn: Ch16's swept-away must hand off here with {\"chapter\": 17} or straight to this zone), B03 the dock-master walks them to the dry-dock (a touch on the jetty), B04 the hull's three interactables (barks), B05-B06 the ledger and the rail at dusk, B07 the first berth (optional), B08 the choice at night (walking back onto the hull), then the night's rest and morning, B10 the first lamp, B11 Ysolde's table, B12 the barks, and boarding the hull ends the chapter (ch17_complete). B09 (Kesh's call bark) waits on a Vowbound-menu hook. The exit is the end card until Ch18's Kite zone exists (M5-A3P-1004): repoint it to {\"go\": {\"location\": \"ch18/kite\", ...}} then. Light by time of day: the layout's variants (tools/act1/ch15_16_greybox.py).",
+ "doc": "M5-A3P-1001 (docs/kb/tech/chapter_flow.md; act3_ch17.md \u00a72): Ch17 'The Wright's Son' at Hollowmere, Act III's first chapter, on the Ch15 zone (ChapterRegistry gives this file the zone from chapter 16 on). B01 the sea and the ship (arrive, from the ShipDeck spawn: Ch16's swept-away must hand off here with {\"chapter\": 17} or straight to this zone), B03 the dock-master walks them to the dry-dock (a touch on the jetty), B04 the hull's three interactables (barks), B05-B06 the ledger and the rail at dusk, B07 the first berth (optional), B08 the choice at night (walking back onto the hull), then the night's rest and morning, B10 the first lamp, B11 Ysolde's table, B12 the barks, and boarding the hull ends the chapter (ch17_complete). B09 (Kesh's call bark) waits on a Vowbound-menu hook. Boarding goes to the Kite (ch18/kite, Deck: Ch18's maiden flight). Light by time of day: the layout's variants (tools/act1/ch15_16_greybox.py).",
  "chapter": "ch17",
  "zones": {
   "ch17/hollowmere": {
@@ -239,7 +239,10 @@
        "set": "ch17_complete"
       },
       {
-       "scene": "res://game/flow/end_card.tscn"
+       "go": {
+        "location": "ch18/kite",
+        "spawn": "Deck"
+       }
       }
      ]
     }

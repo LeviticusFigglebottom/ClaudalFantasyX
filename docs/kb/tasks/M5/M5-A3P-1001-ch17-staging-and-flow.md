@@ -54,7 +54,7 @@ zone Ch15 already uses. Beat order and modes: docs/kb/story/act3/act3_ch17.md §
   - In `tools/act1/ch15_16_greybox.py`, `hollowmere_drydock()` builds the jetty, the quay, the first berth and Dace's hull (deck, cabin, engine housing, tool rack, masts, sails). It also adds the dock-master's table.
   - `hollowmere_act3()` adds the spawns `Quay` and `ShipDeck`, 21 marks, 4 stand-in actors (shown or hidden by variant), shots D01–D18, a follow volume, 16 triggers, and 4 light variants (noon, dusk, night, morning).
   - Ch15's own content and staging are unchanged.
-- **Held inputs:** `Ch17Zone` has a `CutsceneHoldGate`, as Ch9 does; `game/data/flow/ch17_field.json` maps the prompts.
+- **Held inputs:** Ch05Zone has an optional `CutsceneHoldGate` (`hold_field_path`, set on hollowmere.tscn, reedhollow.tscn and kite.tscn), with every Act III prompt in `game/data/flow/act3_field.json`.
 - **Flow:** `game/data/flow/chapters/ch17.json`, registered in `chapters.json`:
   - arrive rows: the sea, a mid-chapter return, and the default;
   - beats B03, B05–B06, B07, B08 (night, then the rest and the morning), B10, B11 and boarding;

@@ -15,6 +15,15 @@ extends Ch01Zone
 
 const KEY_VARIANTS := "variants"
 const KEY_ENVIRONMENT_RES := "environment_res"
+const KEY_HOLD_FIELD := "hold"
+
+## Act III (M5-A3P-1001): a no-fail held input for this zone's scenes, as Ch9's Ebbing has (CutsceneHoldGate). Between
+## <<event hold_input <id>>> and <<event hold_input_end>> a scene's time runs only while the player holds the field's
+## interact action. The file's "hold" block names the action and maps each prompt id to its loc key
+## (game/data/flow/act3_field.json). Empty: no gate.
+@export_file("*.json") var hold_field_path: String = ""
+## The held input, when hold_field_path is set.
+var field_hold_gate: CutsceneHoldGate
 
 var _base_environment: Environment
 var _environment_res := ""
@@ -30,6 +39,11 @@ func _build_blocks() -> void:
 func _ready() -> void:
 	super()
 	apply_variant()
+	if hold_field_path != "":
+		field_hold_gate = CutsceneHoldGate.new()
+		field_hold_gate.name = "HoldGate"
+		add_child(field_hold_gate)
+		field_hold_gate.setup(story.sequencer, read_json(hold_field_path).get(KEY_HOLD_FIELD, {}))
 
 
 ## Gives `items` and `lume` (Ch01Zone.give) only when `flag` is set. Returns true when it gave.
