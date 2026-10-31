@@ -11,7 +11,11 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 ## PASS 7 @ 2026-10-31 (big33 @ 5695a69c; the Lead's 23:30 brief)
 
 - **big37 @ f5305b15 re-measure (2026-10-31): Act I sign-off NOT YET.**
-  - Row 74 regressed: 1.36–9.05 s, 1 segfault in 5, in-fight frames up to 148 ms.
+  - **CORRECTION: row 74's "regression" was environmental.** The bisect's big36 control is just as slow tonight
+    (1.7–10.2 s), and the keep-display-on had expired, so the monitor was off. **Real-GPU timings from tonight are
+    invalid until the screen is on.** The human's hands are needed: the monitor must be physically on.
+    keep_display_on.ps1 was restarted for 24 h. None of the three reverts (row 85, the storm material, the jog)
+    changes anything.
   - Asha's skirt is not fixed; the lighting rows are unchanged from big36.
   - **C: has 79 GB free.** Every Godot run is under `timeout`, with output capped at 30 MB.
 
