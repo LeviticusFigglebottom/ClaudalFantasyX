@@ -811,3 +811,4 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
   - validate_data, dlgc, taskboard, gdlint and gdformat clean.
   - Godot `ch18_thread` 5/0; ch05 4/0, ch07 5/0, ch08 6/0, ch10, ch12 2/0, ch17 3/0.
   - Tools: chapter_flow, corrow_kit, pemakar_kit, ch12_keth_dressing, keth OK. The dressing generators re-run with no change to their output.
+- MERGE-READY Ch18 revisits (M5-A3P-1004 part 2) @ 8f35b42ab
