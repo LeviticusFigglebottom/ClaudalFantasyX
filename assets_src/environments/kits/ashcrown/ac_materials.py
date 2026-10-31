@@ -90,15 +90,20 @@ MATERIALS: dict[str, dict] = {
                          cavity_darken=0.4, salt_coverage="Vector2(0.1, 0.5)"),
     # The plume by day (the preview's override for Pemakar's ash_plume): the same shader, its ash lit by
     # the noon sky (paler, less darkened), the ember kept low to the vent, no festival glow.
+    # The PC's pass 7, row 79 (env-art-b with the Lead's leave, 10-31): the kit's day plume read as solid, lumpy, cool
+    # clay in a10. It takes the Ch5 zone's proven look (ch05_ashcrown_dressing.py PLUME_LOOK, viewed at the tiers, the
+    # forecourt, the crown and the court): warm ash grey-brown, softer feathered billows, the sun through its edges and
+    # on its rim, the crater's fire up the column's foot, a shade side that keeps its shadow; and, so it reads as smoke
+    # not a solid, a little translucency with wispier, broken edges.
     "ac_plume_day": {"shader": PLUME, "params": {
-        "col_body": hexc("#6F7E8E"),  # overcast_slate: the column's ash in daylight, cooler than the sky
-        "col_body_top": hexc("#8C8882"),  # ash_fall (proposed): thinner ash aloft
-        "body_darken": 0.8, "mottle": 0.4, "edge_soft": 0.55, "ember_energy": 0.45, "ember_height": 0.06, "ember_underside": 1.0,
-        "town_glow": 0.0, "rim_energy": 0.0, "opacity": 1.0, "alpha_mottle": 0.04,
-        # Close up (M3-ENV-11): the shaded side keeps the sky's value, the edges glow looking sunward, and the
-        # vent's ember climbs the foot; all fade out by 800 m, so the far read is the plume's own.
-        "col_shade": hexc("#98A4B0"), "shade_lift": 0.3, "lift_all_round": 0.6, "back_scatter": 0.5, "vent_glow": 0.9,
-        "vent_glow_height": 0.1, "billow_shade": 0.6, "sky_up": 0.6, "near_detail": 0.8, "near_detail_m": 9.0, "detail_bump": 0.8, "near_fade_m": "Vector2(400, 800)"}},
+        "col_body": hexc("#857D75"),  # warm ash grey-brown in daylight
+        "col_body_top": hexc("#9E968C"),  # thinner, paler ash aloft
+        "body_darken": 0.8, "mottle": 0.3, "edge_soft": 0.75, "ember_energy": 0.6, "ember_height": 0.18, "ember_underside": 1.0,
+        "town_glow": 0.0, "rim_energy": 0.35, "opacity": 0.92, "alpha_mottle": 0.25,
+        # Close up (M3-ENV-11): the edges glow looking sunward, and the vent's ember climbs the foot; all fade out by
+        # 800 m, so the far read is the plume's own.
+        "col_shade": hexc("#A19C99"), "shade_lift": 0.15, "lift_all_round": 0.6, "back_scatter": 0.7, "vent_glow": 0.9,
+        "vent_glow_height": 0.16, "billow_shade": 0.6, "sky_up": 0.6, "near_detail": 0.6, "near_detail_m": 9.0, "detail_bump": 0.35, "near_fade_m": "Vector2(400, 800)"}},
 }
 
 COPPER = {"albedo_color": hexc("#5F8A78"), "metallic": 0.35, "roughness": 0.55}  # bronze_patina (as Pemakar)
