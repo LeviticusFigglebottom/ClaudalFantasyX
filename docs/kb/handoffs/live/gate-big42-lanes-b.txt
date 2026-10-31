@@ -1,0 +1,7 @@
+# sha 64e308dbcefea8065c825a3e789f110b8da02f9d
+res://tests/integration/test_ch09_thread.gd
+res://tests/unit/test_battle_stings.gd
+res://tests/unit/test_hero_idle_micro.gd
+res://tests/unit/test_prewarm_zone_feed.gd
+res://tests/unit/test_resident_loads.gd
+res://tests/unit/test_scene_router_swap.gd
