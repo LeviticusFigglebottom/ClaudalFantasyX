@@ -122,6 +122,41 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## STATUS (08:00): the Lead's 06:43 render ask, done (lavapipe; framing, geometry, presence and motion only)
+**Asha's run, 12 phases, side (Profile) and front:** 19e7f01c vs claude/characters fccc3a1bf ("Row 56: Asha rebuilt
+with the outer hem on the legs"). Sheets: `docs/kb/qa/cloud/pass6/asha_run_{profile,front}_{0,1}_19e7_vs_fccc3a1bf.jpg`
+(row 1 is 19e7f01c, row 2 is fccc3a1bf; phases 0–5 and 6–11).
+- **19e7f01c:** the outer skirt is a rigid bell. Its hem stays a level ring whatever the legs do, and the whole skirt
+  swings back like a cape (profile 0 and 9–11). The white underskirt is a stiff cylinder, with the feet poking out of
+  its base.
+- **fccc3a1bf: the skirt follows the legs.** In profile, the hem drops onto the leading and trailing legs through the
+  cycle (0, 5, 6, 10, 11), and both feet now show fore and aft. In phases 1–4 and 7–9, where the legs pass, the hem
+  closes up with them. Front: the forward leg's side of the skirt rises and bulges with the knee (0, 10, 11). No cape
+  swing remains.
+- **For characters to judge (not blockers from the cloud):**
+  - **(1) Below the knee it reads as trousers.** From the front, the outer skirt balloons around each leg and gathers
+    near the ankle (front 0 and 9–11). In profile, the white underskirt splits into two leg tubes with a gap between
+    them (profile 0, 6, 11).
+  - **(2) A pinch at phase 8.** In profile phase 8 the hem pinches in sharply between the knees.
+  - **(3) A white notch.** A white "1"-shaped notch shows on the outer skirt's back panel in profile 0 and 11: the
+    underskirt seen through a gap or backface. It was faintly there on 19e7f01c (profile 0 and 11) and is larger now.
+
+**Ashcrown and Pemakar shots on big41 (89c4aaf20), rendered to scratch,** beside the committed baselines (last
+updated 1fa92b815). Sheets: `docs/kb/qa/cloud/pass6/<id>_big41_vs_baseline.jpg`.
+- **`ashcrown_a01_approach`:** framing unchanged. The plume behind the stair is now soft warm-tan smoke (the baseline
+  has a lumpy blue-grey solid). The left foreground pillar is now lit and shows its stone; it was a near-black
+  silhouette. The stair, the tiers, the copper veins and the crown spire are the same.
+- **`ashcrown_a10_plume_from_the_rim`:** framing unchanged. The plume is tan and translucent, with wispy filaments at
+  its edges, where the baseline had an opaque blue-grey lumpy column. The rim landform in the foreground is now
+  sculpted with ridges and shading; it was a flat-shaded slope. The temple's stepped flank and its spire are the same.
+- **`pemakar_p04_harbour_day`:** framing unchanged. The slope below the houses now has boulders and scattered pebbles
+  and darker, warmer ground (the baseline has a bare, uniform slope). The harbour wall, its bollards and posts, the
+  row of houses with lit doorways, and the terraces above are the same. The water is the same.
+- **`pemakar_p11_sea_cut_weir_day`:** framing unchanged. The baseline's flat, untextured grey slab across the weir top
+  is gone. The weir is now a run of stone blocks with water spilling through a cut at its left end, and small rocks
+  dot the slope. The round stone pier on the right and the house above are the same.
+- No hole, z-fight, floating piece or missing mesh in any of the four.
+
 ## STATUS (07:05): Act II smoke on big36; the Lead's big41 render ask (Asha's run, Ashcrown and Pemakar shots)
 **Act II smoke (1983de0a2):** the Ch9 start with every Act I flag, then `--location=ch10/ossa_fen --spawn=FenEdge`.
 - **Ch10 plays:** the Drowner (31 s); "what went up" (the probe held skip on a stuck cutscene at 121 s); Reedhollow;
