@@ -7,3 +7,16 @@ FIELD_PROMPT_CH19_PULL,Hold to pull the tail
 FIELD_PROMPT_CH19_LEVER_ONE,Hold to draw the lever
 FIELD_PROMPT_CH19_LEVER_TWO,Hold to draw it further
 FIELD_PROMPT_CH19_LEVER_THREE,Hold to bring it home
+ENC_CH19_ABIDING_WARDENS,The Abiding Wardens
+ENEMY_HESPER_OAN,Warden Hesper Oan
+ENEMY_ILSABET_RUE,Ilsabet Rue
+LORE_HESPER_OAN,"One of the Abiding, the Order's hidden watch. Held alive by bound light at the post the founders gave her, four hundred years and never relieved. She believes the engine is mercy."
+LORE_ILSABET_RUE,"Warden Oan's scribe, who has kept her watch roll for four hundred years. She writes as she fights."
+PHASE_HESPER_WATCH,The Watch
+PHASE_HESPER_RELIEVED,Unrelieved
+PART_ILSABET_YSOLDE,Only Ysolde can read the watch roll back into silence.
+SKILL_WARDENS_NOTED,Noted
+SKILL_WARDENS_READ_THE_ROLL,The Roll Read Back
+SKILL_WARDENS_ANSWER,The Watch Answers
+SKILL_WARDENS_GO_HOME,Go Home
+SKILL_WARDENS_WATCH_STRIKE,Watch Strike
