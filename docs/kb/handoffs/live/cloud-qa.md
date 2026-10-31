@@ -122,6 +122,19 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## STATUS (08:40): Asha's run on big43 (a86c366ff) vs fccc3a1bf: none of the three issues is gone
+Lavapipe, 12 phases, side and front. Sheets: `docs/kb/qa/cloud/pass6/asha_run_{profile,front}_{0,1}_fccc3a1bf_vs_a86c366ff.jpg`
+(row 1 is fccc3a1bf, row 2 is a86c366ff) and the zoom `asha_run_issues_zoom_fccc3a1bf_vs_a86c366ff.jpg`.
+- **What changed:** only the back of the hem. Per frame, at a luminance threshold of 24, 2.7k–7.6k px change in
+  profile, all on the outer skirt's back panels and the hem below the knee. Those panels trail a little lower and
+  further behind in 0, 4–7 and 10–11. Front: 61–1.6k px, small hem-edge shifts only.
+- **The trousers look: not gone.** Front 9–11 is unchanged. The outer skirt still balloons round each leg and gathers
+  at the ankle. The white underskirt still splits into two tubes around the legs (profile 0, 6, 11; front 10).
+- **The phase-8 pinch: not gone.** Profile 8 is unchanged (2.7k px, at the hem edge). The outer hem still cuts in
+  between the knees, and the underskirt shows as a narrow tube below it.
+- **The white notch: not gone.** It's still on the outer skirt's back panel in profile 0 and 11, now a slightly
+  larger wedge in the same place.
+
 ## STATUS (08:00): the Lead's 06:43 render ask, done (lavapipe; framing, geometry, presence and motion only)
 **Asha's run, 12 phases, side (Profile) and front:** 19e7f01c vs claude/characters fccc3a1bf ("Row 56: Asha rebuilt
 with the outer hem on the legs"). Sheets: `docs/kb/qa/cloud/pass6/asha_run_{profile,front}_{0,1}_19e7_vs_fccc3a1bf.jpg`
