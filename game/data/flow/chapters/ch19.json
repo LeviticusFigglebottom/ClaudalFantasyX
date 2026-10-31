@@ -1,5 +1,5 @@
 {
- "doc": "M5-A3P-1007 (act3_ch19.md §1-§5; docs/kb/tech/chapter_flow.md): Ch19 'Iskarra' on ch19/iskarra_spire. The Kite comes down and the vigil on arrival (I01-I02, played at the spire's own plaza: the Prologue's scene is slice-polish's); the hitch at the plaza's edge (I03), the words on the steps (I04, optional); the spire's gate opens; its four tiers (I06, the spire's fights); the signatures in the antechamber, then the Wardens (I07-I08, ch19_abiding_wardens); the engine stops on the return to the crown (I09-I10, ch19_complete). Ch20's dive waits on ch20/undertow_layers (M5-A3P-1011).",
+ "doc": "M5-A3P-1007 (act3_ch19.md §1-§5; docs/kb/tech/chapter_flow.md): Ch19 'Iskarra' on ch19/iskarra_spire. The Kite comes down and the vigil on arrival (I01-I02, played at the spire's own plaza: the Prologue's scene is slice-polish's); the hitch at the plaza's edge (I03), the words on the steps (I04, optional); the spire's gate opens; its four tiers (I06, the spire's fights); the signatures in the antechamber, then the Wardens (I07-I08, ch19_abiding_wardens); the engine stops on the return to the crown (I09-I10, ch19_complete). then the dive: the flow goes to ch20/undertow_layers (Ch20).",
  "chapter": "ch19",
  "zones": {
   "ch19/iskarra_spire": {
@@ -52,6 +52,12 @@
       },
       {
        "play": "ch19_the_engine_stops"
+      },
+      {
+       "go": {
+        "location": "ch20/undertow_layers",
+        "spawn": "FirstFloor"
+       }
       }
      ]
     }
