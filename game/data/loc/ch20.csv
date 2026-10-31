@@ -9,3 +9,47 @@ CHAR_ORIN_TESK,Orin Tesk
 CHAR_HALDE_MOOR,Halde Moor
 CHAR_ISSE_VARAN,Isse Varan
 CHAR_CAEL_IMBREY,Cael Imbrey
+ENEMY_ILUN_HELD,Ilun
+ENEMY_KAHRE_HELD,Kahre
+ENEMY_VIREL_HELD,Virel
+ENEMY_HESK_HELD,Hesk
+ENEMY_NHOA_HELD,Nhoa
+ENEMY_ETHREN_HELD,Ethren
+ENC_CH20_ILUN,The Market at Noon
+ENC_CH20_KAHRE,The Terrace on Lantern-Night
+ENC_CH20_VIREL,The Corrow Kitchen
+ENC_CH20_HESK,The Crowd Mid-Roar
+ENC_CH20_NHOA,The Drowned Gallery
+ENC_CH20_ETHREN,The Still Gold Square
+LORE_ILUN_HELD,"Ilun, held: the tide-spirit of Oruvel, bound in Ch3, met again in the Undertow among the market's held shapes. The light in it is ready to go."
+PHASE_ILUN_HELD,Held
+PHASE_ILUN_HELD_RELEASE,Letting Go
+LORE_KAHRE_HELD,"Kahre, held: Pemakar's forge, bound in Ch5. On the lantern-night terrace it fights as it always fought for them."
+PHASE_KAHRE_HELD,Held
+PHASE_KAHRE_HELD_RELEASE,Letting Go
+LORE_VIREL_HELD,"Virel, held: Coilspire's flare, bound in Ch8. Its shape is the Kite's."
+PHASE_VIREL_HELD,Held
+PHASE_VIREL_HELD_RELEASE,Letting Go
+LORE_HESK_HELD,"Hesk, held: the weaving-hall's knot-light, bound in Ch12, amid a Reefball crowd that roars and makes no sound."
+PHASE_HESK_HELD,Held
+PHASE_HESK_HELD_RELEASE,Letting Go
+LORE_NHOA_HELD,"Nhoa, held: Ressa, Pell's sister, bound in Lowlight in Ch11. Pell turns his back, the Kirru way."
+PHASE_NHOA_HELD,Held
+PHASE_NHOA_HELD_RELEASE,Letting Go
+LORE_ETHREN_HELD,"Ethren, held: the Sanctum's still light, bound before Ysolde in Ch13, in a square of gold where nothing moves."
+PHASE_ETHREN_HELD,Held
+PHASE_ETHREN_HELD_RELEASE,Letting Go
+ENC_CH20_THE_CAGE,The Cage
+ENEMY_CAGE_ORIN,Orin Tesk
+ENEMY_CAGE_HALDE,Halde Moor
+ENEMY_CAGE_ISSE,Isse Varan
+ENEMY_CAGE_CAEL,Cael Imbrey
+LORE_CAGE_ORIN,"One of the four founders, chained into a seat of bound light round the well since the first binding."
+LORE_CAGE_HALDE,"One of the four founders, chained into a seat of bound light round the well since the first binding."
+LORE_CAGE_ISSE,"One of the four founders, chained into a seat of bound light round the well since the first binding."
+LORE_CAGE_CAEL,"One of the four founders, chained into a seat of bound light round the well since the first binding."
+PHASE_CAGE_SEAT,Chained
+PHASE_CAGE_STRONGER,The Rest Grow Stronger
+SKILL_CAGE_LAMPTONGUE,Lamptongue
+SKILL_CAGE_CHAINS,The Chains
+HUD_SWAP_CH20_TOMA_LINE,Toma holds the line: he stays in until the Cage breaks.
