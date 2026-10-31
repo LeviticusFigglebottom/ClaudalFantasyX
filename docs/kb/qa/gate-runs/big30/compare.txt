@@ -1,4 +1,4 @@
-# big30: 468 shots: 174 PASS, 180 DRIFT (0 size mismatch), 114 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big30: 484 shots: 174 PASS, 180 DRIFT (0 size mismatch), 130 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 NO-BASELINE slice_end_card (pending_baseline)
 PASS glimmer_dusk rmse 0.00000 (limit 0.00800)
 PASS glimmer_night_held rmse 0.00000 (limit 0.00800)
@@ -467,3 +467,19 @@ NO-BASELINE ch01_bell_room (pending_baseline)
 NO-BASELINE ch01_scale_hull (pending_baseline)
 NO-BASELINE ch01_kell_stall (pending_baseline)
 NO-BASELINE ch01_net_pen (pending_baseline)
+NO-BASELINE ch01_hullgnaw_rises (pending_baseline)
+NO-BASELINE ch01_going_under (pending_baseline)
+NO-BASELINE ch01_going_under_u10 (pending_baseline)
+NO-BASELINE ch01_going_under_u11 (pending_baseline)
+NO-BASELINE ch01_current_shaft_u09 (pending_baseline)
+NO-BASELINE slice_prologue_p01 (pending_baseline)
+NO-BASELINE crowd_lineup_a
+NO-BASELINE crowd_lineup_b
+NO-BASELINE crowd_lineup_c
+NO-BASELINE kirru_lineup_front
+NO-BASELINE kirru_lineup_faces
+NO-BASELINE crowd_market
+NO-BASELINE crowd_work
+NO-BASELINE crowd_mourners
+NO-BASELINE crowd_zone_pemakar
+NO-BASELINE crowd_zone_brine_shoals
