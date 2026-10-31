@@ -59,3 +59,4 @@ and reports; it never edits game or test files.
   Berths and stands 0.7-1.0 m deep in the water, x 76-90, y -2). Result: gate-big36-lanes-b-result.md.
 - big37 @ b76e6c32 (HEAD checked): lanes B 22 files, 02:16-02:23 UTC (7 min). **All 22 green.**
   Result: gate-big37-lanes-b-result.md.
+- big38 @ bdfd9311: the lanes B list held 0 test files (d2dcb965d); nothing to run, empty result pushed.
