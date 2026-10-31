@@ -20,3 +20,18 @@ SKILL_WARDENS_READ_THE_ROLL,The Roll Read Back
 SKILL_WARDENS_ANSWER,The Watch Answers
 SKILL_WARDENS_GO_HOME,Go Home
 SKILL_WARDENS_WATCH_STRIKE,Watch Strike
+ENC_CH19_SPIRE,The Lamp Spire
+ENEMY_WICK_CRAWLER,Wick Crawler
+ENEMY_CHAIN_LAMP,Chain Lamp
+ENEMY_SPIRE_MOTH,Spire Moth
+ENEMY_SPIRE_CONDUIT_CRAWLER,Conduit Crawler
+LORE_WICK_CRAWLER,"A Lit Age lamp-tending machine, a brass body on many fine legs. It crawls the spire's lamp-ropes trimming wicks that went out a thousand years ago."
+LORE_CHAIN_LAMP,"A hanging lamp-cage on a chain. Its bound light pulses on a slow, fixed beat, steady between beats."
+LORE_SPIRE_MOTH,"Moths that have lived for centuries on the spire's warm lamp-glass: glass-winged and pale."
+SKILL_WICK_RELIGHT,Relight
+SKILL_WICK_TRIM,Trim
+SKILL_CHAIN_LAMP_GATHER,The Lamp Gathers
+SKILL_CHAIN_LAMP_BEAM,Beam
+SKILL_CHAIN_LAMP_SWING,Swing
+SKILL_SPIRE_GLASS_FLARE,Glass Flare
+SKILL_SPIRE_PALE_RAKE,Pale Rake
