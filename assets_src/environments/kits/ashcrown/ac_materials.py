@@ -77,13 +77,17 @@ MATERIALS: dict[str, dict] = {
     "ac_ground": weather(PTEX + "ash_soil_albedo.png", PTEX + "ash_soil_normal.png", (2.0, 2.0), base_triplanar=True,
                          normal_strength=1.0, roughness_base=0.95, specular_base=0.3, cavity_darken=0.3,
                          ao_strength=0.6, variation_value=0.06, salt_coverage="Vector2(0.15, 0.6)",
-                         salt_cavity_gather=0.2),
+                         salt_cavity_gather=0.2,
+                         # the PC's pass 7 row 79: A10's mound read untextured; a finer macro breakup (env_weathering)
+                         macro_strength=0.9, macro_scale_m=6.0),
     # The far mountain below: as Pemakar's kit_volcanic_far (moss bands on the terraces).
     "ac_ground_far": weather(PTEX + "volcanic_stone_albedo.png", PTEX + "volcanic_stone_normal.png", (8.0, 8.0),
                              base_triplanar=True, normal_strength=0.5, roughness_base=0.92, cavity_darken=0.2,
                              ao_strength=0.5, variation_value=0.08, detail_scale_m=6.0, use_moss=True,
                              moss_coverage=0.85, moss_normal_y=0.35, moss_north_facing=0.2,
-                             salt_coverage="Vector2(0.1, 0.45)"),
+                             salt_coverage="Vector2(0.1, 0.45)",
+                             # the PC's pass 7 row 79: A10's crater-rim mound read untextured (env_weathering macro)
+                             macro_strength=0.85, macro_scale_m=24.0),
     # The vent's cinder: dark, rust-flecked (laterite brick map read as scoria at a large tile, tinted down).
     "ac_cinder": weather(PTEX + "ash_soil_albedo.png", PTEX + "ash_soil_normal.png", (3.0, 3.0), base_triplanar=True,
                          col_tint="Color(0.78, 0.7, 0.66, 1)", normal_strength=1.4, roughness_base=0.97,
