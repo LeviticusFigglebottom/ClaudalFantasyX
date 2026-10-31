@@ -4,6 +4,27 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+### 2026-10-31 ~02:40: the Lead's 02:22 (PC row 87: a 176 ms frame in the Quellan Avalanche Ram fight)
+- **Not row 64's pattern.** Row 64's fix (7c3307df) already frames every boss intro at the first turn, behind the
+  fade, Act II's included. The Ram's framing is cheap anyway (bdc5ef22 turned its hero search off).
+- **Measured headless** (shared CPU):
+  | Boss | `_frame_boss` | `start_battle` (loading, behind the fade) |
+  |---|---|---|
+  | Avalanche Ram | 3 ms | 7.3 s |
+  | Mangrove Drowner | 9 ms | 4.2 s |
+  | Lamp Engine | 57 ms | 4.7 s |
+  | Wakefin | 0 ms | 4.1 s |
+- **So the 176 ms frame is something else.** Candidates, which only a GPU trace can tell apart:
+  1. First-draw pipeline compiles of the Ram's actor materials. Actors are instanced from enemies.json at runtime,
+     so ShaderPrewarm's scene harvest can't see them.
+  2. Its first effects: snow and grit in the ramped particle variants, which are warmed since 65e776af.
+  3. A fight started without the router's fade (from a cutscene), which leaves nothing behind the reveal.
+- **LEAD-ASK / PC-QUEUE:** row 87 needs a frame trace of the 176 ms frame (pipeline compiles or script). If it is
+  the Ram's materials, the fix is prewarm entries for Act II boss actors (creatures-b's materials plus
+  prewarm_materials.json), and I'll pair on it.
+  - If the fight opens without a fade, BattleBossIntro already frames at the first turn. The fix then is to put that
+    turn behind the cutscene's cut.
+
 ### 2026-10-31 ~01:30: the Lead's 00:44 (PC pass 7 row 61 still open)
 **MERGE-READY @ 34bb40ca.** The Reach's rest frame looks up its arm.
 - **Why ef997f3d wasn't enough:** the rest frame kept the authored look point, so the lens looked down into the
@@ -485,6 +506,7 @@ element (voice_glimmer, level_hand, still_water).
     sky; that is the arena's light.
 
 ### PC-QUEUE
+- Row 87: a frame trace of the Ram fight's 176 ms frame (pipeline compiles or script). The boss framing measures 3 ms headless.
 - Row 61 re-check (34bb40ca: the Reach's rest frame 8 m back, its look raised 2.4 m): battle_arena_seawall_stairhead_surge.
 - Row 64 re-measure (7c3307df, the search behind the fade): the 60 frames after the fade at tideline, causeway, the Drownbell, the Hermit and Moll; and the Drownbell's phase and fall moments.
 - GPU QA row 36 (the Reach): re-check in live play on the RX 9070 XT (M3-BPR-425's rest frame).
