@@ -2055,6 +2055,23 @@
         ["{blender}", "--python", "assets_src/crowd/kirru/build_kirru.py", "--", "--body", "kirru_youngster", "--bake-dir", "{scratch}/kirru_youngster_bake"],
         ["{python}", "assets_src/crowd/kirru/kirru_textures.py", "--body", "kirru_youngster", "--bake-dir", "{scratch}/kirru_youngster_bake"]
       ]
+    },
+    {
+      "id": "props_act3_hand",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M5-A3P-1982: the Act III hand props (Ilsabet Rue's watch roll and stylus) on wick.py's mesh helpers, with their StandardMaterial3D slots.",
+      "sources": [
+        "assets_src/characters/props/act3_hand_props.py",
+        "assets_src/characters/props/wick.py"
+      ],
+      "outputs": [
+        "assets/characters/props/act3/*.glb",
+        "assets/characters/props/act3/materials/*.tres"
+      ],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/props/act3_hand_props.py"]
+      ]
     }
   ]
 }
