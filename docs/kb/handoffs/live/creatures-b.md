@@ -1064,8 +1064,8 @@ MERGE-READY @ 1c658c5ce: the Cage, built (to review: combat).
   The_cage.md is unchanged. What the build does differently from it is in docs/kb/art/creatures/act3/the_cage_seats.md.
 - **The model:** four seats on the arc, chained at the wrists and ankles, with lit salt-glass bars, crown lamps and
   keystone clasps (one spawn_wound seam each).
-  - Each quarter is  / , swapped by four **cumulative**  phases.
-  - The scene has  placeholders at the seats.
+  - Each quarter is `Q<n>Whole` / `Q<n>Broken`, swapped by four **cumulative** `break_q<n>` phases.
+  - The scene has `FounderQ1..Q4` placeholders at the seats.
   - 47 bones, 17.4k triangles (budget 22k), byte-reproducible.
 - **New pieces:** Blender job `creature_the_cage`, a portrait, PROVENANCE rows and tools/tests/test_the_cage.py.
 - **Checks:** Godot creature 163/0, portrait 22/0; validate_data 0/0.
