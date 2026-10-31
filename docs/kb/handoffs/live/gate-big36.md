@@ -56,3 +56,9 @@ GATE-BUILT @ 7d5693ac
   the Reach's rest frame looks up its arm) and slice-polish's **row 18** (4edda074 and ff50ec33: C07 frames the harrier; its
   aim_node comes from the causeway generator), plus row 75's dive rim (dd808caa, not yet viewed). All clean; checks clean.
 - Re-gate: a fresh import plus the 38 files these merges touch, with the `Parameter "t" is null` scan.
+- LEAD-ANSWERED (01:41):
+  1. Ch17 flow: **act1-chapters' version stands** (9a42a42a, 4a6418b5; it owns `game/levels/ch1x`). act2-plan's a2bc108d stays out;
+     act2-plan merges integration and rebases its Ch18 work (36c65c41) onto act1-chapters' Ch17.
+  2. The .res conversion: **characters' own rebuild stands** (abf7391b). creatures-b's a0ba7200 stays out; creatures-b drops or
+     reverts it and files the .res idea as a request task to characters. The rest of creatures-b's head (the Act III bosses)
+     joins a batch once it's rebased.
