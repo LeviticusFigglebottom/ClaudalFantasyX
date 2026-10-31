@@ -1275,3 +1275,16 @@ SELF-RENDERED @ db1ce910: ch08_corrow_storm, _flood and _lake before and after; 
 - **MERGE-READY @ baf421df.**
 SELF-RENDERED @ baf421df: the Lacquer Court from the Barge, Steps and CourtEntry spawns (before, first try, after) and the Lamp Archive from the Door spawn (before, after), all viewed.
 - **Pass 7 rows still open:** 78, 79, 80, 81 (see above). They come next.
+
+### PC pass 7, the big37 re-measure (Lead 03:22): rows 78–81 and 84
+- **Merge check:** in f5305b15 are 82 (ca8ad639, plus the fill_lights feature) and 62/84 (db1ce910). Row 86 (baf421df) isn't merged yet. The PC's pass 7 sheets (gpu/act1-qa-7) predate those fixes. Correction: two shas I quoted in chat summaries (4f8a3d92, 9d2c7a35) were wrong; the MERGE-READY lines in this log are the right ones.
+- **78 Ashcrown court: fixed (7ddf44d4).** The plume's shader takes no omni light, so the loggia's flat grey opening is fixed in my zone plume material instead: the crater's ember glow now reaches 18% up the column (to the hall's height) at 0.6, the vent glow climbs higher, and the shade side keeps its shadow. Two warm, shadowless bounce lights down the nave edge the black pillars and the brazier figure.
+  - **Viewed:** ch05_ashcrown_court shows fire-lit ash through the loggia and lit pillar edges. ch05_ashcrown_tiers shows the plume's foot glowing orange.
+  - **Checks:** test_ashcrown_kit OK, Godot ashcrown 22 pass.
+- **79: not my zone.** a01 and a10 are the Ashcrown kit preview's own shots (env-art's `_tests/ashcrown_kit`), which use the kit's unchanged `ac_plume_day`. My plume fix lives in the zone. Filed **M3-ENV-1332** for env-art, with PLUME_LOOK's exact values to adopt, plus the mound and the hands.
+- **80 Pemakar hillside: traced, requested, my attempts reverted.** An id-pick shows it's `mountain_massif` at LOD1 in `kit_volcanic_far`.
+  - **What I tried:** more relief changed nothing, and a 40 m tile left the far slope smooth while making the near slope blotchy. Both reverted.
+  - **The cause:** the shader has no large-scale term. Filed **M3-ENV-1333** for env-art to add a world-space macro layer to env_weathering.
+- **81 Brine camp seam: traced, not fixed yet.** id-picks on the flats return nothing: the ground's material is re-set each frame (most likely by the Tide node's wet sand), so the picker can't see it. My hypothesis: the "lighter plane" is the tide water (y -0.15) showing where a mudflat piece dips below it, and its straight edge is a piece's edge. Next: probe the tide and mudflat pieces' heights at the seam.
+- **84 Coilspire laterite:** what's left is texture resolution, **M3-ENV-1331** (env-art).
+- **MERGE-READY @ 7ddf44d4** (row 78). The requests are 2c7287d3 and this commit.
