@@ -1567,3 +1567,11 @@ BACKLOG EMPTY: every open ui row waits on another track.
     ten plays to its end on its stage, with lines, no event and the record unchanged. validate_data 0/0; taskboard ok.
   - **Next:** Act II's memories (Ch10 to Ch16), the same way.
 MERGE-READY @ 965126340: M5-A3P-1710, the Memories gallery Ch4-Ch9.
+- **M5-A3P-1710, Act II (01597d03a):**
+  - Twelve more memories, Ch10 to Ch16: The Farewell-Tide, Nhoa, Hesk, Ethren, The Pact, The Vows on Still Water,
+    The First Ripple, The Confession, The Current-Song, Let Me Carry Him, Kesh and Swept Away.
+  - The gallery now runs from the prologue to Ch16 (17 chapters, 30 memories).
+  - **Tests:** memories 22/0. `test_acts_one_and_two_replay_cleanly` plays all 22 Ch4-Ch16 memories cleanly. The
+    lines check is skipped where a scene has no spoken lines (Ch15's current-song is sung and staged only).
+  - **Next:** Act III's memories once its zones are staged (cinematics M5-A3P-1001/1004/1007/1011/1015).
+MERGE-READY @ 01597d03a: M5-A3P-1710, the Memories gallery through Act II.
