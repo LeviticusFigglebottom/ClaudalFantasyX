@@ -38,3 +38,4 @@ GATE-BUILT @ 8c1ab2d3
 
 ## Fast gate
 - Selected: 44 test files.
+- Lane A (mine): 22; lane B (GATE-HELPER): 22, in `gate-big37-lanes-b.txt` @ b76e6c32.
