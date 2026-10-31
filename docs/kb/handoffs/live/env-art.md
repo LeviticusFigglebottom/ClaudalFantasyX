@@ -589,6 +589,28 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **PC pass 7 row 77 (the Lead, 03:22), done properly: MERGE-READY @ 6c08bd85.**
+  - Traced on lavapipe against the PC's GPU sheet (pass7 beauty_05), one cause at a time:
+    - **The pale straight bands** were the storm swell itself: a single 34 m swell from one bearing laid long,
+      parallel faces that caught the pale sky. Hiding the sun's shadows or the drowned city changed nothing; hiding
+      the water removed them. The storm wave set is now a crossed sea of three long swells at spread bearings
+      (`ov_preview_layout.STORM_WAVES`).
+    - **The thin diagonal streaks** were the sun's glint path under the cloud's bright spot. The preview's storm phase
+      now veils the water's glint to 0.15 along with the sun (`oruvel_preview.gd`).
+    - **The grey-box horizon:** each tower crown in `reef_edge_far` gains one to three broken shafts, 6–15 m with
+      slanted caps, stepped neighbours and window slots. The skyline now reads as drowned towers. 5550 / 1310
+      triangles, in budget.
+  - **My earlier note was wrong.** At 01:10 I guessed the streaks were the storm stream's shadows and routed them;
+    that is withdrawn. Both causes were in env-art's files.
+  - **GPU:** the sea should read as a confused storm swell with no straight bands. The horizon should read as a line
+    of broken towers, about 10–25 px tall at 1080p.
+  - **Note for act1-chapters:** the Ch1 zone's own storm (oruvel_zone.gd) uses its own wave set and glint. If O17's
+    framing is used in the zone, the same two values apply there (single-swell storm waves, full glint).
+  - **Checks:**
+    - Tools: test_oruvel_kit and test_oruvel_moorings OK.
+    - Godot `--filter=oruvel`: 17/0.
+    - gdlint and gdformat clean; validate_data clean.
+  - **Baselines that move (none written):** oruvel_o17_pen_split, and the oruvel kit preview storm shots (O12, O16).
 - **PC row 86 (the Lead, 02:22), Act II first look. MERGE-READY @ 2707ac2a**, with one cause routed (below).
   - **Ossa Fen, white water-edge cut-outs: fixed.** The tannin_fen look (Ossa Fen, Reedhollow and the fen arena)
     now has no shore foam, a soft weak sun glint (0.12, min roughness 0.2) and no SSR. On lavapipe the flakes on the
