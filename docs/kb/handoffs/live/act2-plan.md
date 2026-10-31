@@ -764,3 +764,34 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
 - **Next for this track:** Act III objective text once 1001/1004/1007/1011/1015 land flags and POIs, the word-budget growth if the Lead says so (LEAD-ASK above), and any FAST-TRACK first.
 - MERGE-READY Act III Ch21 + Ending (M5-A3P-1014) @ ac9bc6521
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1015; M4-A2P-112 items 3, 5 and 6; M5-A3P-1001/1002/1004/1005/1007/1008/1009/1011/1012/1013/1015/1016/1017.
+
+## 2026-10-31: Act III wired. Ch17 and the Ch18 critical path play (Lead 23:26: "continue Act III production, plus the requests")
+- **Word budget:** answered ("lean is fine; fill out where a beat feels thin"). No beat felt thin once staged, so no lines were added.
+- **Supplementing** act1-chapters and cinematics on M5-A3P-1001 and 1004, per the Lead's message. Each task file names `claude/act2-plan` as `owner_session` and says it is supplementing. The owner tracks keep the paths and the review.
+- **Engine, small:**
+  - `ChapterRegistry.zone()` picks a shared zone's block by `Game.state.chapter`: the first file whose chapter is the current one or later, else the first. It has a unit test, `tools/chapter_flow_check.py` takes every file's beats for a zone, and `chapter_flow.md` has a "Shared zones" section. Act I/II behave as before: no zone was in two files.
+  - `Ch05Zone` has an optional held input (`hold_field_path` → `CutsceneHoldGate`), with every Act III prompt in `game/data/flow/act3_field.json`.
+- **One file per bark:** ZoneStory plays scene files, not nodes. The hull's three interactables, Hollowmere's five barks and the seven heirlooms are now one file each; flags and requests were updated to match.
+- **M5-A3P-1001, Ch17 (review):**
+  - Greybox (`hollowmere_drydock()` and `hollowmere_act3()` in `tools/act1/ch15_16_greybox.py`):
+    - the dry-dock jetty, quay, first berth, and Dace's hull (deck, cabin, engine, tool rack, masts, sails);
+    - 21 marks, shots D01–D18, 16 triggers, and light variants for noon, dusk, night and morning;
+    - stand-ins cast as villagers (aldous, clerk, vendor, fisher).
+  - `ch17.json` and its objectives (7 rows, 3 POIs).
+  - `test_ch17_thread`: out of Ch16 Hollowmere is Ch17's, Ch15 keeps its own, and the chapter runs to boarding.
+  - The Hollowmere dressing was regenerated (env-art-b's generator, unchanged) for the new jetty.
+- **M5-A3P-1004, Ch18 (doing):**
+  - New zone `ch18/kite` (`tools/act3/ch18_kite_greybox.py`, `Ch18Zone`, `kite.tscn`, location, zone map).
+  - Reedhollow's Act III block (`reedhollow_act3()` in `tools/act1/ch10_greybox.py`): marks, K05–K12, Owa and the name-carver cast as Kirru, the child cast, day light.
+  - `ch18.json`: maiden flight → chart table (sets `kite_flying`, the world map) → Reedhollow (gate, farewell-tide) → night aboard → Iskarra, then the end card until Ch19's Iskarra exists.
+  - Ch18 objectives and `test_ch18_thread`.
+  - Still to do: the revisits in Oruvel, Pemakar, Tamsule, Corrow, Quellan and Hollowmere. Haluna needs a HalunaStory hook (ADR 0035): a tech question.
+- **qa_known.json (appended):**
+  - an Act III staging row (`M5-A3P-1001`; the party's heroes have no stage actor headless, as with Act II's M4-A2P-075);
+  - five "unraised" reasons for objective rows in shared zones: Ch15's three in `ch17/hollowmere`, Ch18's two in `ch10/reedhollow`.
+- **Checks:**
+  - validate_data, dlgc and taskboard clean; gdlint and gdformat clean on `game` and `tests`.
+  - Godot threads after merging integration: ch10, 11, 12, 13, 14_16, 17 and 18 are all green, as are `chapter_registry` 4/0, `zone_story` 19/0, `objective` 18/0, `act3` and `act2_dialogue`.
+  - `qa_threads`: the only failures are `.ogg` imports (LFS pointers in this container).
+  - `qa_capsules`: zones clean. Its one red is Act II battle foes with no body (`abiding_*`, `court_stillguard`): not mine.
+  - Tools: chapter_flow, ch10_fen_dressing, ch15_hollowmere_dressing, qa_flag_reach, locations, kite and loc tests all OK.
