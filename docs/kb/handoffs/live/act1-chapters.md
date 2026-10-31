@@ -1313,6 +1313,28 @@ done and in `status: review` (reviewer: narrative). Each task file's **Done** se
 
 - MERGE-READY @ f46ec395b
 
+### After the FAST-TRACK (10-31): M4-A2P-019, 106, 018, 017; Act III Ch17 (ADR 0207)
+- **M4-A2P-019 (review):** Act II loadouts per chapter in `sim_policies.json` (`ch10_fen` … `ch16_rim`), and every
+  Act II suite runs on its own. At 500 seeds all are in band except the Wakefin masher's p90 (91 against 80), which
+  comes from the sim's Vowbound call rule re-calling Ilun. That's filed as **M4-A2P-1202** (it would move Act I's
+  numbers too).
+- **M4-A2P-106 (review):** the Drowned Choir laid out to the kit's amphitheatre (dais, channel and bridges, six
+  tiers, the south gap, the north aisle ramp; Kesh and Sefir on the tiers; the singers at r 44). Walked, and the
+  POI views were viewed.
+- **M4-A2P-018 (review):** the Act II greybox generators moved to `tools/act2/` (with an ownership row).
+- **M4-A2P-017 (doing):** met in every zone through env-art-b's dressing (`hide_all`), except the Choir, which
+  waits on its dressing.
+- **Staging is slice-polish's:** M4-A2P-1011 and 1013 are addressed to them, so I've withdrawn the 071–075 LEAD-ASK.
+- **Act III, Ch17 (M5-A3P-1001, the flow half):**
+  - Hollowmere is now Ch15's and Ch17's zone: Ch17Zone reads `chapters/ch17.json` after Act II, and
+    `chapter_flow_check` accepts a shared zone's beats from either chapter file.
+  - The flow plays B01–B12 in order, with the gangway, the berth walk and the hull's floors on env-art-b's
+    coordinates, and the held inputs (`ch17_field.json`). Ch16 hands on to it.
+  - Five barks and two hull scenes are nodes inside other files: **M5-A3P-1200** asks story to split them.
+  - The Act III staging warnings are known under M5-A3P-1001 in `qa_known.json`.
+  - Tests: ch17 2/0, ch14_16 5/0 (the dry-dock walk included), the chapter-flow tools test, qa_threads 1/0.
+- MERGE-READY @ 4a6418b52
+
 ## Exact next step
 **2026-10-30 ~23:50:** the FAST-TRACK and the Act II flows (M4-A2P-1003, 1012, 104, 105) are done and pushed.
 Next, in order:
@@ -1321,7 +1343,8 @@ Next, in order:
    suite re-run on it (`sim.py --suite X --suite Y ...`, one flag per suite). Pell has no kit (M3-C09-07), and the
    Lattice needs a sim hook, so both stay out (to be noted in the task).
 2. M4-A2P-106 (the Choir relayout to the kit), 018 (move the Act II generators to tools/act2), 017 (the kit swaps).
-3. The staging rows 071–075 wait on the LEAD-ASK above (slice-polish has staged Ch10–12).
+3. Act III next: Ch18 (M5-A3P-1004: the new `ch18/kite` zone, the world opening, the revisits), then
+   Ch19–21 flows and the encounters (M5-A3P-1009, 1013, 1017).
 4. Then Act III (ADR 0207): M5-A3P-1001/1004/1007/1011/1015 (staging and flow) and 1009/1013/1017 (encounters).
 
 ### Earlier exact next step (superseded 10-30 ~23:50)
