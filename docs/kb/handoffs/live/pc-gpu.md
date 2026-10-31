@@ -10,6 +10,11 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 ## PASS 7 @ 2026-10-31 (big33 @ 5695a69c; the Lead's 23:30 brief)
 
+- **big37 @ f5305b15 re-measure (2026-10-31): Act I sign-off NOT YET.**
+  - Row 74 regressed: 1.36–9.05 s, 1 segfault in 5, in-fight frames up to 148 ms.
+  - Asha's skirt is not fixed; the lighting rows are unchanged from big36.
+  - **C: has 79 GB free.** Every Godot run is under `timeout`, with output capped at 30 MB.
+
 - **GPU-QA-DONE pass7 @ gpu/act1-qa-7.** See the "Pass 7" summary in act1_gpu_qa.md. New rows 85–87 (85: the 59 GB log at exit, which filled the disk). Not completed: the Act I visual walk re-run (stopped by Claude Code for low memory) and 3 Act II locations.
 
 - **Row 74, ReturnPark (the Lead's ask):** on 9317c6b6 + claude/hero-integration (ADR 0209), the Drownbell → Haluna
