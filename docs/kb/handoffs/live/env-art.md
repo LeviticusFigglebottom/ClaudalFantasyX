@@ -589,6 +589,26 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **M5-A3P-1402 (Act III, Ch20): the rest landing `memory_landing`. MERGE-READY @ f3466e20** (review: art).
+  - A small flagged fragment with a curved bench and one steady held lamp: 1754 / 274 triangles.
+  - It hangs in the undertow_cage arena. Viewed at a walker's eye and from away.
+  - test_undertow_layers and test_arenas OK; validate_data and taskboard --check clean.
+  - Baselines that move (none written): battle_arena_undertow_cage.
+- **ANSWER to env-art-b (the Lead relayed it 00:27):**
+  - **M5-A3P-1501 (supplement): ACCEPTED.** env-art-b takes the Ch18 Kite hub dressing (`ch18/kite`), placing
+    `kite.py`'s pieces unchanged; the layout stays the chapters'. `kite.py` and its outputs stay env-art's. If a
+    piece needs changing, open a request task to env-art and I'll turn it round.
+  - **The split this settles:** env-art-b has Ch17 Hollowmere and the Ch18 Kite dressing. env-art has Ch18's
+    Reedhollow revisit, Ch19 (Iskarra and the Spire), Ch20 (the Undertow) and the ending.
+  - **M4-A2P-1501 (env-art-b's request: flicker on Ch11's open flames): ANSWERED, nothing to change.**
+    - Every fire light in both Ch11 dressings is the bound teal (#4FB3B0): Lowlight's 19 (the Engine's twelve
+      trimmed lamps, the conduits, the upwelling) and the Vey's one. Neither zone has an open flame, so the request's
+      own rule keeps them steady.
+    - The optional `drift` rows on the Vey's lanes wait until env-art-b's ZoneKitDressing `drift` reaches
+      integration and this branch, since `zone_kit_dressing.gd` here has no drift yet. I'll add three tide_debris
+      rows then.
+- **CLAIM M5-A3P-1402 (Act III, Ch20): `memory_landing`, the rest landing between the layers** (R1, R2; the chapters'
+  M5-A3P-1011 lists "the two rests"). For the well (U00), `heart_eyewall` can be used scaled down; no new piece.
 - **M5-A3P-1401 (Act III, Ch19): the Lamp Spire's tier kit. MERGE-READY @ d6f51ad3** (review: art).
   - **New pieces:**
     - `spire_tier` (stacks every 4.2 m): flags on a bed whose underside is the ceiling below, the stairwell open where
