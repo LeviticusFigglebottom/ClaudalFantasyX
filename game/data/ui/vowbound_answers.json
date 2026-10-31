@@ -1,0 +1,9 @@
+{
+  "vowbound_answers": {
+    "doc": "What a Vowbound says back as it is called (M5-A3P-1708; act3_ch17 B09 'Kesh, once more', act3_threads T-13; drafts README decision 6: the call bark plays from the Vowbound menu). BattleBarks says it over the Vowbound after the caller's own call_bark_key (vowbound.json). Rows are tried in order for the called Vowbound: the first whose when_flag is set (empty: always) is said; a Vowbound with no row says nothing (Ilun to Ethren answer with their presence). key is the line's loc key in its scene (`scene`, game/data/dialogue), so the words are the script's; test_battle_barks checks each key and flag against that scene. Flags are the save's in a live battle and unset in a capture or a test that doesn't pass its own.",
+    "rows": [
+      {"vowbound": "kesh", "when_flag": "ch17_chose_the_unbinding", "key": "DLG_CH17_KESH_001", "scene": "ch17_bark_kesh_chosen"},
+      {"vowbound": "kesh", "when_flag": "", "key": "DLG_CH17_KESH_002", "scene": "ch17_bark_kesh_chosen"}
+    ]
+  }
+}

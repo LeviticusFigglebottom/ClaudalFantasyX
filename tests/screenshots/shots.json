@@ -9064,6 +9064,16 @@
       "scene": "res://game/levels/_tests/credits/credits_roll.tscn"
     },
     {
+      "id": "kite_log",
+      "pending_baseline": true,
+      "scene": "res://game/ui/kite/shots/kite_log.tscn"
+    },
+    {
+      "id": "ledger_reader",
+      "pending_baseline": true,
+      "scene": "res://game/ui/ledger/shots/ledger_reader.tscn"
+    },
+    {
       "id": "document_reader_three",
       "pending_baseline": true,
       "scene": "res://game/levels/_tests/document_reader/document_reader_three.tscn"

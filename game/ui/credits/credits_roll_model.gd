@@ -5,9 +5,10 @@ extends RefCounted
 ##
 ## Time runs in roll seconds: `lead_in_sec` of black, then the roll climbs from 0 to 1 over `roll_sec`, then it holds
 ## `end_hold_sec` on the last line and is done. A vignette (`vignettes`: id, `at` as a fraction of the roll, hold_sec)
-## stops the roll at its point: the roll fades out over fade_sec, the vignette plays for hold_sec (the view emits its
-## id), and the roll fades back in. Holding Confirm runs the roll `fast_factor` times faster, never through a
-## vignette. Once the credits have been seen in full (`seen_before`), holding Cancel for skip_hold_sec ends them.
+## stops the roll at its point: the roll fades out over fade_sec, the vignette's `scene` plays for hold_sec (the view
+## puts it behind the roll and emits its id), and the roll fades back in. A vignette with no scene yet is passed over.
+## Holding Confirm runs the roll `fast_factor` times faster, never through a vignette. Once the credits have been seen
+## in full (`seen_before`), holding Cancel for skip_hold_sec ends them.
 
 enum Phase { LEAD_IN, ROLL, VIGNETTE, END_HOLD, DONE }
 
@@ -101,6 +102,18 @@ func alpha() -> float:
 	return 1.0
 
 
+## The vignettes that will play: those naming the in-engine scene that plays them (a row whose `scene` is empty, or
+## not there yet, is passed over, so the roll never stops on black for a vignette that cannot show).
+func vignettes() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for v: Variant in data.get("vignettes", []):
+		var row := v as Dictionary
+		var scene := str(row.get("scene", ""))
+		if scene != "" and ResourceLoader.exists(scene):
+			out.append(row)
+	return out
+
+
 ## How long the vignette on show holds the roll (its own hold_sec).
 func vignette_sec() -> float:
 	return float(vignette.get("hold_sec", 0.0))
@@ -114,16 +127,15 @@ func is_done() -> bool:
 func total_sec() -> float:
 	var total := float(data.get("lead_in_sec", 0.0)) + float(data.get("roll_sec", 0.0))
 	total += float(data.get("end_hold_sec", 0.0))
-	for v: Variant in data.get("vignettes", []):
-		total += float((v as Dictionary).get("hold_sec", 0.0))
+	for row in vignettes():
+		total += float(row.get("hold_sec", 0.0))
 	return total
 
 
 func _roll(step: float) -> StringName:
 	var roll := maxf(float(data.get("roll_sec", 0.0)), 0.001)
 	var next := minf(progress + step / roll, 1.0)
-	for v: Variant in data.get("vignettes", []):
-		var row := v as Dictionary
+	for row in vignettes():
 		var id := StringName(str(row.get("id", "")))
 		var at := float(row.get("at", 2.0))
 		if not played.has(id) and progress < at and next >= at:

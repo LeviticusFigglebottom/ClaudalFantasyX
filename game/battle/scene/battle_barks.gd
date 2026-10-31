@@ -9,15 +9,22 @@ extends Node
 ## A skill or Vowbound without one stays silent (Flare Line; Virel has no line). A view: it listens to
 ## the engine and never writes combat state. The controller only attaches it (one line); it lives as a
 ## node under the HUD, so a retry's new attach replaces it. `barked` fires for audio's voice blips.
+## M5-A3P-1708 (act3_ch17 B09): the called Vowbound may answer, after its caller, from
+## game/data/ui/vowbound_answers.json (the first row for it whose when_flag is set). Kesh's answer changes once Asha
+## has chosen the Unbinding.
 
 ## A bark was said: who said it and its loc key.
 signal barked(speaker: StringName, key: String)
 
 const NODE_NAME := &"BattleBarks"
+const ANSWERS_PATH := "res://game/data/ui/vowbound_answers.json"
 
 var ctl: BattleController
 ## Every line said this battle, oldest first: {"speaker": id, "text": String} (tests and captures).
 var said: Array[Dictionary] = []
+## Reads a story flag for the answers: Callable(flag: StringName) -> bool. Unset: the save's flags in a live battle
+## (persist_progress), none in a capture or test, so a baseline never moves with a save.
+var read_flag: Callable = Callable()
 var _engine: BattleEngine
 
 
@@ -61,6 +68,31 @@ func _on_called(vowbound: BattleCombatant) -> void:
 	var caller := StringName(str(_vowbound_row(vowbound.id).get("caller", "")))
 	var speaker := caller if ctl.stage.has_fighter(caller) else vowbound.id
 	_say(speaker, _call_key(vowbound.id))
+	_say(vowbound.id, answer_key(vowbound.id))
+
+
+## The loc key of what Vowbound `vowbound_id` says back as it is called ("" when nothing).
+func answer_key(vowbound_id: StringName) -> String:
+	for r: Variant in answer_rows():
+		var row := r as Dictionary
+		if StringName(str(row.get("vowbound", ""))) != vowbound_id:
+			continue
+		var flag := StringName(str(row.get("when_flag", "")))
+		if flag == &"" or _flag(flag):
+			return str(row.get("key", ""))
+	return ""
+
+
+static func answer_rows() -> Array:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(ANSWERS_PATH))
+	var sec: Variant = (parsed as Dictionary).get("vowbound_answers") if parsed is Dictionary else null
+	return (sec as Dictionary).get("rows", []) as Array if sec is Dictionary else []
+
+
+func _flag(flag: StringName) -> bool:
+	if read_flag.is_valid():
+		return bool(read_flag.call(flag))
+	return ctl != null and ctl.persist_progress and Game.get_flag(flag) == true
 
 
 func _say(speaker: StringName, key: String) -> void:
