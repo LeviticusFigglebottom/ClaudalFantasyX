@@ -2197,6 +2197,7 @@
    ],
    "prompt_key": "FIELD_PROMPT_LOOK",
    "requires_flag": "ch17_saw_the_hull",
+   "blocked_by_flag": "ch17_complete",
    "payload": {
     "dialogue": "ch17_hull_sails"
    }
@@ -2216,6 +2217,7 @@
    ],
    "prompt_key": "FIELD_PROMPT_LOOK",
    "requires_flag": "ch17_saw_the_hull",
+   "blocked_by_flag": "ch17_complete",
    "payload": {
     "dialogue": "ch17_hull_tool_rack"
    }
@@ -2235,6 +2237,7 @@
    ],
    "prompt_key": "FIELD_PROMPT_LOOK",
    "requires_flag": "ch17_saw_the_hull",
+   "blocked_by_flag": "ch17_complete",
    "payload": {
     "dialogue": "ch17_hull_chart_wall"
    }
@@ -2372,8 +2375,69 @@
    ],
    "prompt_key": "FIELD_PROMPT_CH17_BOARD",
    "requires_flag": "ch17_verse_begun",
+   "blocked_by_flag": "ch17_complete",
    "payload": {
     "beat": "ch17_board"
+   }
+  },
+  {
+   "id": "ch18_revisit",
+   "activation": "interact",
+   "at": [
+    28.0,
+    0.0,
+    -15.6
+   ],
+   "size": [
+    1.6,
+    0,
+    1.0
+   ],
+   "once": true,
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch18_world_open",
+   "payload": {
+    "dialogue": "ch18_revisit_hollowmere"
+   }
+  },
+  {
+   "id": "ch18_heirloom_rhen",
+   "activation": "interact",
+   "at": [
+    68.4,
+    0.0,
+    -24.0
+   ],
+   "size": [
+    1.2,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LOOK",
+   "requires_flag": "ch18_world_open",
+   "blocked_by_flag": "ch18_heirloom_rhen",
+   "payload": {
+    "dialogue": "ch18_heirloom_rhen"
+   }
+  },
+  {
+   "id": "ch18_heirloom_liss",
+   "activation": "interact",
+   "at": [
+    25.5,
+    0.0,
+    -16.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.0
+   ],
+   "prompt_key": "FIELD_PROMPT_LOOK",
+   "requires_flag": "ch18_world_open",
+   "blocked_by_flag": "ch18_heirloom_liss",
+   "payload": {
+    "dialogue": "ch18_heirloom_liss"
    }
   },
   {

@@ -420,26 +420,6 @@
    }
   },
   {
-   "id": "ch18_iskarra",
-   "activation": "interact",
-   "at": [
-    10.0,
-    0.0,
-    2.6
-   ],
-   "size": [
-    2.2,
-    0,
-    1.0
-   ],
-   "prompt_key": "FIELD_PROMPT_CH18_CHART",
-   "requires_flag": "ch18_night_aboard",
-   "blocked_by_flag": "ch18_complete",
-   "payload": {
-    "beat": "ch18_iskarra"
-   }
-  },
-  {
    "id": "ch18_heirloom_ysolde",
    "activation": "interact",
    "at": [

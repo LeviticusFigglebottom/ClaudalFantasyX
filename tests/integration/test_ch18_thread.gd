@@ -1,10 +1,12 @@
 extends TestCase
 ## M5-A3P-1004: Ch18 "The Kite", the critical path, headless, on the real chapter data
 ## (game/data/flow/chapters/ch18.json): the maiden flight, the chart table (the world opens), Reedhollow's Act III block
-## (Pell through the gate, the farewell-tide taught), back aboard at night, and Iskarra at the chart table.
+## (Pell through the gate, the farewell-tide taught), back aboard at night and Iskarra at the chart table in the
+## morning; and the Hollowmere revisit with its two heirlooms.
 
 const KITE := "res://game/levels/ch18/kite/kite.tscn"
 const REEDHOLLOW := "res://game/levels/ch10/reedhollow/reedhollow.tscn"
+const HOLLOWMERE := "res://game/levels/ch17/hollowmere/hollowmere.tscn"
 
 var saved_state: GameStateData
 var zone: Ch05Zone
@@ -24,7 +26,6 @@ func test_the_kite_flies_to_reedhollow_and_on_to_iskarra() -> void:
 	story.begin()
 	assert_eq(Game.state.chapter, 18, "the chapter step")
 	assert_true(bool(Game.get_flag(&"ch18_started")), "K01 the maiden flight")
-	assert_false(_trigger(&"ch18_iskarra").is_available(), "Iskarra waits on the night aboard")
 	assert_true(_trigger(&"ch18_chart").try_interact())
 	assert_true(bool(Game.get_flag(&"ch18_world_open")), "K02")
 	assert_true(bool(Game.get_flag(&"kite_flying")), "the Kite's world map opens")
@@ -43,8 +44,7 @@ func test_the_kite_flies_to_reedhollow_and_on_to_iskarra() -> void:
 	_open(KITE)
 	story.begin()
 	assert_true(bool(Game.get_flag(&"ch18_night_aboard")), "K07 on arrival")
-	assert_true(_trigger(&"ch18_iskarra").try_interact())
-	assert_true(bool(Game.get_flag(&"ch18_complete")), "K08")
+	assert_true(bool(Game.get_flag(&"ch18_complete")), "K08 in the morning, on the same arrival")
 	assert_eq(hand_offs.back()[0], ZoneStory.KIND_SCENE, "the end card until Ch19's Iskarra exists")
 	_close()
 	Game.state = saved_state
@@ -63,6 +63,25 @@ func test_the_child_waits_on_her_question() -> void:
 	story.begin()
 	assert_true(_trigger(&"ch18_child").try_interact())
 	assert_true(bool(Game.get_flag(&"ch18_child_answered")), "K06")
+	_close()
+	Game.state = saved_state
+
+
+func test_hollowmere_in_ch18_is_the_kites_berth() -> void:
+	Game.state.chapter = 18
+	for f: StringName in [
+		&"ch15_reached_hollowmere", &"ch17_started", &"ch17_complete", &"ch18_started", &"ch18_world_open"
+	]:
+		Game.set_flag(f)
+	_open(HOLLOWMERE)
+	story.begin()
+	assert_false(_trigger(&"ch17_tool_rack").is_available(), "Ch17's hull interactables end with Ch17")
+	assert_false(_trigger(&"ch17_board").is_available())
+	assert_true(_trigger(&"ch18_heirloom_rhen").try_interact())
+	assert_true(bool(Game.get_flag(&"ch18_heirloom_rhen")), "Dace's hooks")
+	assert_true(_trigger(&"ch18_heirloom_liss").try_interact())
+	assert_true(bool(Game.get_flag(&"ch18_heirloom_liss")), "Tobin's drawings")
+	assert_true(_trigger(&"ch18_revisit").try_interact(), "the dock-master working again")
 	_close()
 	Game.state = saved_state
 

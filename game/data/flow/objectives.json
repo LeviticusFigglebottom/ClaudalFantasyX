@@ -124,7 +124,6 @@
       {"id": "k_chart", "line_key": "OBJ_CH18_CHART", "requires": ["ch18_started"], "until": "ch18_world_open", "zone": "ch18/kite", "target": {"zone": "ch18/kite", "poi": "chart"}},
       {"id": "k_reedhollow", "line_key": "OBJ_CH18_REEDHOLLOW", "requires": ["ch18_world_open"], "until": "ch18_pell_named"},
       {"id": "r_teach", "line_key": "OBJ_CH18_TEACH", "requires": ["ch18_pell_named"], "until": "ch18_learned_farewell_tide", "zone": "ch10/reedhollow", "target": {"zone": "ch10/reedhollow", "poi": "shore"}},
-      {"id": "k_iskarra", "line_key": "OBJ_CH18_ISKARRA", "requires": ["ch18_night_aboard"], "until": "ch18_complete", "zone": "ch18/kite", "target": {"zone": "ch18/kite", "poi": "chart"}},
       {"id": "r_side_heirloom", "line_key": "OBJ_CH18_SIDE_REED_SPEAR", "requires": ["ch18_pell_named"], "until": "ch18_heirloom_pell", "zone": "ch10/reedhollow", "side": true, "target": {"zone": "ch10/reedhollow", "poi": "clutch"}},
       {"id": "k_side_parcel", "line_key": "OBJ_CH18_SIDE_PARCEL", "requires": ["ch18_world_open"], "until": "ch18_heirloom_ysolde", "zone": "ch18/kite", "side": true}
     ]
