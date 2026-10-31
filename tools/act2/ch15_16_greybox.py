@@ -145,7 +145,100 @@ def open_sea() -> dict:
 
 # --- Ch15/17: Hollowmere ----------------------------------------------------------------------------------------------
 
+# --- Ch17 (Act III, M5-A3P-1001): Dace's dry-dock on Hollowmere's east -----------------------------------------------
+# env-art-b's placement (M5-A3P-1500): Dace's hull at DACE_AT, yaw 30, its frame's y over the water at DACE_Y; the
+# berths in a row along its beam, 8.5 m apart, the first nearest the dock's east end, Tobin's post at its outer corner.
+# The hull's +X (bow) runs along BOW, the row (first berth to Dace's) along ROW.
+DACE_AT = (78.0, -24.0)
+DACE_Y = -0.9
+HULL_YAW = 30.0
+BOW = (math.cos(math.radians(HULL_YAW)), -math.sin(math.radians(HULL_YAW)))
+ROW = (BOW[1], -BOW[0])
+FIRST_BERTH = (90.75, -1.92)
+THIRD_BERTH = (82.25, -16.64)
+TOBINS_POST = (98.7, -2.9)
+ROW_SIDE_M = 3.0  # the walk runs this far off the berths' heads, toward the dock
+
+
+def hull_point(x: float, y: float, z: float = 0.0) -> list[float]:
+    """A point in Dace's hull's frame (x along it, bow +X; y over the water; z across), in the zone."""
+    wx = DACE_AT[0] + x * BOW[0] - z * BOW[1]
+    wz = DACE_AT[1] + x * BOW[1] + z * BOW[0]
+    return [r3(wx), r3(y + DACE_Y), r3(wz)]
+
+
+def act3_dry_dock() -> dict:
+    """M5-A3P-1001: the gangway from the dock's east end to the first berth, the walk along the berths' heads, Tobin's
+    berth, and floors for the hull's deck, cabin and engine bay (env-art-b's frame; its kit collision replaces them).
+    Hidden until Ch17 (variants); in Ch17 the dock's east bound opens."""
+    g1 = (r3(FIRST_BERTH[0] - BOW[0] * ROW_SIDE_M), r3(FIRST_BERTH[1] - BOW[1] * ROW_SIDE_M))
+    g3 = (r3(THIRD_BERTH[0] - BOW[0] * ROW_SIDE_M), r3(THIRD_BERTH[1] - BOW[1] * ROW_SIDE_M))
+    blocks = walk("Gangway", (60.0, 0.0), g1, trim=WALK_W * 0.5, posts=("GangPile", 0.3, 2.0, COL_HULL),
+                  colors=(COL_PLANK, COL_HULL))
+    blocks += walk("BerthWalk", g1, g3, trim=WALK_W * 0.5, posts=("BerthPile", 0.3, 2.0, COL_HULL),
+                   colors=(COL_PLANK, COL_HULL))
+    mid = ((FIRST_BERTH[0] + TOBINS_POST[0]) * 0.5, (FIRST_BERTH[1] + TOBINS_POST[1]) * 0.5)
+    dx, dz = TOBINS_POST[0] - FIRST_BERTH[0], TOBINS_POST[1] - FIRST_BERTH[1]
+    blocks.append(box("FirstBerthDeck", mid[0], -0.25, mid[1], r3(math.hypot(dx, dz) + 3.0), 0.5, 3.0,
+                      math.degrees(math.atan2(-dz, dx)), color=COL_PLANK))
+    deck, cabin, engine = hull_point(-4.0, 3.8), hull_point(-3.55, 1.85), hull_point(-0.6, 1.85)
+    blocks.append(box("HullDeck", deck[0], r3(deck[1] - 0.25), deck[2], 4.4, 0.5, 3.0, HULL_YAW, color=COL_PLANK))
+    blocks.append(box("HullCabinFloor", cabin[0], r3(cabin[1] - 0.15), cabin[2], 3.1, 0.3, 2.4, HULL_YAW,
+                      color=COL_PLANK))
+    blocks.append(box("HullEngineFloor", engine[0], r3(engine[1] - 0.15), engine[2], 2.0, 0.3, 2.4, HULL_YAW,
+                      color=COL_PLANK))
+    ids = [b["id"] for b in blocks]
+    face_bow, face_row = r3(-60.0), r3(30.0)  # yaw that faces BOW, and ROW
+    spawns = {"HullDeck": deck + [face_bow], "Cabin": hull_point(-2.8, 1.85, -0.23) + [face_bow],
+              "EngineBay": engine + [face_bow], "Berths": [g1[0], 0.0, g1[1], face_row],
+              "Fathers": [28.0, 0.0, -17.5, 0.0]}
+    marks = {"cabin_seat": hull_point(-2.8, 1.85, -0.23) + [face_bow],
+             "cabin_seat_b": hull_point(-2.8, 1.85, 0.6) + [face_bow],
+             "deck_centre": deck + [face_bow], "deck_rail": hull_point(-4.0, 3.8, -1.3) + [face_bow],
+             "deck_rail_b": hull_point(-4.0, 3.8, 1.3) + [face_bow],
+             "engine_bench": engine + [face_bow], "engine_bench_b": hull_point(-0.6, 1.85, 0.8) + [face_bow],
+             "fathers_table": [28.0, 0.0, -19.5, 0.0],
+             "first_berth": [r3(TOBINS_POST[0] - BOW[0] * 1.2), 0.0, r3(TOBINS_POST[1] - BOW[1] * 1.2), 120.0],
+             "first_berth_b": [r3(TOBINS_POST[0] - BOW[0] * 2.4), 0.0, r3(TOBINS_POST[1] - BOW[1] * 2.4), 120.0],
+             "berth_walk": [r3((g1[0] + g3[0]) * 0.5), 0.0, r3((g1[1] + g3[1]) * 0.5), face_row]}
+    gangway_x = 64.0
+    triggers = [
+        # B03: on the gangway, the dock-master walks them to the berths and points at the last one
+        {"id": "a3_berths", "activation": "touch", "at": [gangway_x, 0.0, -0.1], "size": [2.0, 0, WALK_W],
+         "once": True, "requires_flag": "ch17_started", "blocked_by_flag": "ch17_saw_the_hull",
+         "payload": {"beat": "berths"}, "yaw": 0.0},
+        # B04: the hull from the walk's end (the sails), then aboard (the ladder) to its rack, chart wall and cabin
+        listen("a3_hull_sails", "ch17_hull_sails", (g3[0], 0.0, g3[1]), "ch17_saw_the_hull", prompt="FIELD_PROMPT_LOOK"),
+        {"id": "a3_board", "activation": "interact", "at": [r3(g3[0] - ROW[0] * 1.6), 0.0, r3(g3[1] - ROW[1] * 1.6)],
+         "size": [1.6, 0, 1.6], "prompt_key": "FIELD_PROMPT_CLIMB", "requires_flag": "ch17_saw_the_hull",
+         "payload": {"beat": "board"}, "yaw": 0.0},
+        # the tool rack and the chart wall are nodes of ch17_hull_sails, not scenes a trigger can start: they wait on
+        # M5-A3P-1202 (one scene per file), as do the tally keeper, the chandler, Pell at the windmills and Ysolde
+        # asleep (nodes of ch17_bark_lookout)
+        # B05-B06: the hatch to the cabin: the ledger, then dusk on the deck
+        {"id": "a3_hatch", "activation": "interact", "at": hull_point(-3.0, 3.8), "size": [1.4, 0, 1.4],
+         "prompt_key": "FIELD_PROMPT_CLIMB", "requires_flag": "ch17_saw_the_hull",
+         "blocked_by_flag": "ch17_read_the_ledger", "payload": {"beat": "ledger"}, "yaw": 0.0},
+        # B08-B11: night on the deck (the choice), the first lamp next morning, Ysolde's table
+        {"id": "a3_night", "activation": "interact", "at": hull_point(-2.4, 3.8), "size": [1.4, 0, 1.4],
+         "prompt_key": "FIELD_PROMPT_REST", "requires_flag": "ch17_read_the_ledger",
+         "blocked_by_flag": "ch17_chose_the_unbinding", "payload": {"beat": "night"}, "yaw": 0.0},
+        # B07 (optional): the first berth, at Tobin's post
+        listen("a3_first_berth", "ch17_first_berth", (r3(TOBINS_POST[0] - BOW[0] * 1.8), 0.0,
+                                                      r3(TOBINS_POST[1] - BOW[1] * 1.8)),
+               "ch17_read_the_ledger", "ch17_first_berth"),
+        # B12: Hollowmere at work, and the hull boarded for the maiden flight (ch17_complete)
+        {"id": "a3_aboard", "activation": "interact", "at": hull_point(-5.4, 3.8), "size": [1.4, 0, 1.4],
+         "prompt_key": "FIELD_PROMPT_CH15_SHIP", "requires_flag": "ch17_verse_begun",
+         "blocked_by_flag": "ch17_complete", "payload": {"beat": "aboard"}, "yaw": 0.0},
+        overheard("ch17_bark_lookout", (30.0, 0.0, 0.0), (2.0, 0, WALK_W), "ch17_started")]
+    variants = [{"when": {"unset": ["ch17_started"]}, "hide": ids},
+                {"when": {"set": ["ch17_started"]}, "hide": ["DockBoundE"], "show": ids}]
+    return {"blocks": blocks, "spawns": spawns, "marks": marks, "triggers": triggers, "variants": variants}
+
+
 def hollowmere() -> dict:
+    act3 = act3_dry_dock()
     blocks = water(-40.0, 90.0, -50.0, 40.0, color=COL_FOG_SEA)
     blocks += walk("Dock", (0.0, 0.0), (60.0, 0.0), trim=WALK_W * 0.5, posts=("Pile", 0.4, 3.0, COL_HULL),
                    colors=(COL_PLANK, COL_HULL), rails=(False, False))
@@ -166,6 +259,7 @@ def hollowmere() -> dict:
         blocks.append(box(f"HullHouse{k}", x, 2.2, -21.0, 7.0, 4.4, 4.0, color=COL_HULL))
     blocks.append(box("PyreRaft", 66.0, -0.15, 0.0, 3.0, 0.3, 4.0, color=COL_PLANK, solid=False))
     blocks.append(box("Ship", 30.0, 1.0, 7.0, 16.0, 3.0, 5.0, color=COL_HULL))
+    blocks += act3["blocks"]
     return {
         "doc": "M4-C15-02 greybox (tools/act2/ch15_16_greybox.py; do not edit by hand): Hollowmere at dawn in the fog, "
         "its first visit (colour script ch15; Act III's zone). The dock the barge comes in to (Dock), jetties to "
@@ -176,12 +270,12 @@ def hollowmere() -> dict:
         "environment": {"background": "#a8b0b8", "ambient_color": "#8a96a0", "ambient_energy": 0.6},
         "block_color": COL_PLANK,
         "blocks": blocks,
-        "spawns": {"Dock": [2.0, 0.0, 0.0, 270.0]},
+        "spawns": {"Dock": [2.0, 0.0, 0.0, 270.0], **act3["spawns"]},
         "marks": {"fathers_door": [28.0, 0.0, -16.6, 0.0], "pyre_raft": [60.5, 0.0, 0.0, 270.0],
                   "supper": [40.0, 0.0, -0.8, 180.0],
                   # M4-A2P-015: Toma and Liss by the bier at the dock's end (C6); Liss's father across the table (C8)
                   "confess_toma": [57.0, 0.0, 0.6, 90.0], "confess_liss": [58.4, 0.0, -0.4, 270.0],
-                  "supper_father": [40.0, 0.0, 1.0, 0.0]},
+                  "supper_father": [40.0, 0.0, 1.0, 0.0], **act3["marks"]},
         "actors": {},
         "shots": {"H01": {"pos": [-1.0, 2.6, 2.0], "look_at": [40.0, 1.5, -10.0], "fov": 45},
                   # M4-A2P-015: C6 Toma and Liss by the bier, close; C7 the pyre-raft pushed off, wide; C8 the supper
@@ -194,7 +288,7 @@ def hollowmere() -> dict:
         + follow_volumes("FathersJetty", [(28.0, -1.8), (28.0, -19.0)]),
         "triggers": [{"id": "ship", "activation": "interact", "at": [30.0, 0.0, 1.6], "size": [6.0, 0, 1.2],
                       "prompt_key": "FIELD_PROMPT_CH15_SHIP", "requires_flag": "ch15_pyre_raft",
-                      "payload": {"beat": "to_rim"}, "yaw": 0.0},
+                      "blocked_by_flag": "ch15_complete", "payload": {"beat": "to_rim"}, "yaw": 0.0},
                      # M4-A2P-1012: the bier at the dock's end: "Let me carry him." (B12), then the pyre-raft (B13)
                      {"id": "jetty", "activation": "touch", "at": [56.0, 0.0, 0.0], "size": [2.0, 0, WALK_W],
                       "once": True, "requires_flag": "ch15_liss_told_father", "blocked_by_flag": "ch15_toma_confessed",
@@ -215,16 +309,18 @@ def hollowmere() -> dict:
                             "ch15_toma_on_the_tally", "FIELD_PROMPT_LOOK"),
                      listen("camp", "ch15_camp_the_bottom_step", (44.0, 0.0, -17.0), "ch15_kerrid_revealed",
                             "ch15_camp_talk", "FIELD_PROMPT_REST"),
-                     listen("npc_wright", "ch15_bark_wright_pump", (20.0, 0.0, -1.4), "ch15_reached_hollowmere"),
-                     listen("npc_outside", "ch15_bark_outside_the_level", (20.0, 0.0, 1.4), "ch15_reached_hollowmere"),
-                     listen("npc_widow", "ch15_bark_widow", (34.0, 0.0, -1.4), "ch15_reached_hollowmere"),
-                     listen("npc_lookout", "ch15_bark_lookout", (48.0, 0.0, -1.4), "ch15_reached_hollowmere"),
-                     listen("npc_cook", "ch15_bark_raft_cook", (52.0, 0.0, 1.4), "ch15_reached_hollowmere"),
-                     listen("npc_kerrid", "ch15_bark_kerrid_night", (28.0, 0.0, -8.0), "ch15_pyre_raft"),
-                     overheard("ch15_bark_current_singer", (5.0, 0.0, 0.0), (2.0, 0, WALK_W), "ch15_reached_hollowmere"),
-                     overheard("ch15_bark_child_pell", (16.0, 0.0, 0.0), (2.0, 0, WALK_W), "ch15_reached_hollowmere"),
-                     overheard("ch15_bark_kerrid_floors", (38.0, 0.0, 0.0), (2.0, 0, WALK_W), "ch15_kerrid_revealed"),
-                     overheard("ch15_bark_raft_child", (46.0, 0.0, 0.0), (2.0, 0, WALK_W), "ch15_pyre_raft")],
+                     listen("npc_wright", "ch15_bark_wright_pump", (20.0, 0.0, -1.4), "ch15_reached_hollowmere", "ch15_complete"),
+                     listen("npc_outside", "ch15_bark_outside_the_level", (20.0, 0.0, 1.4), "ch15_reached_hollowmere", "ch15_complete"),
+                     listen("npc_widow", "ch15_bark_widow", (34.0, 0.0, -1.4), "ch15_reached_hollowmere", "ch15_complete"),
+                     listen("npc_lookout", "ch15_bark_lookout", (48.0, 0.0, -1.4), "ch15_reached_hollowmere", "ch15_complete"),
+                     listen("npc_cook", "ch15_bark_raft_cook", (52.0, 0.0, 1.4), "ch15_reached_hollowmere", "ch15_complete"),
+                     listen("npc_kerrid", "ch15_bark_kerrid_night", (28.0, 0.0, -8.0), "ch15_pyre_raft", "ch15_complete"),
+                     overheard("ch15_bark_current_singer", (5.0, 0.0, 0.0), (2.0, 0, WALK_W), "ch15_reached_hollowmere", "ch15_complete"),
+                     overheard("ch15_bark_child_pell", (16.0, 0.0, 0.0), (2.0, 0, WALK_W), "ch15_reached_hollowmere", "ch15_complete"),
+                     overheard("ch15_bark_kerrid_floors", (38.0, 0.0, 0.0), (2.0, 0, WALK_W), "ch15_kerrid_revealed", "ch15_complete"),
+                     overheard("ch15_bark_raft_child", (46.0, 0.0, 0.0), (2.0, 0, WALK_W), "ch15_pyre_raft", "ch15_complete")]
+        + act3["triggers"],
+        "variants": act3["variants"],
     }
 
 
