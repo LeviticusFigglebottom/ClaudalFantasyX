@@ -1530,3 +1530,7 @@ MERGE-READY @ 9807c2d55: M4-A2P-1708 (KNOWN_EMPTY dropped) and M5-A3P-1709 (requ
     - A13: a cure names what it cures, so Cord Lift lists all seven.
     - The other rows are answered: A5 and A9 wait on M3-UI-1240/1241; A1, A2, A18 and A19 are already met.
     - Tests: tutorial_tips 10/0 and battle_help_lines 2/0.
+- **Full battle suite after these pushes:** 871 run, 1 failed. The failure is not this track's:
+  `test_battle_act2_ability_vfx::test_every_act_two_foe_skill_has_its_own_effect`. The flat-engine's `flat_pulse` and
+  `engine_churn` (combat, M4-A2P-1200, fa9ac41ff on the integration branch) have no ability effect yet. That is for
+  rendering or VFX, and nothing in this track touches skills.json or the effects.
