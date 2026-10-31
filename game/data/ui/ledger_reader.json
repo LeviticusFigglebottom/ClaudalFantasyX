@@ -1,0 +1,15 @@
+{
+  "ledger_reader": {
+    "doc": "The ledger page (LedgerReader, M5-A3P-1706; act3_ch17 B05 'The ledger', held page-turns and a blank-page end). Rects x, y, w, h at the 1920 x 1080 reference, multiples of 3. The page sits above the subtitles: a Panel at `page` with `pad` inside, the record's name (title_key) in its head, then each entry the scene writes, top to bottom, line_gap apart, in the reader's hand (entry_variation). A line is written on the page when its line id starts with `line_prefix` (the scene's #narration entries; they still caption below). The page turns when a held gate opened with `turn_prompt` closes (CutsceneHoldGate's hold_input / hold_input_end): the written page slides `turn_px` left and fades over turn_sec, and the next comes up blank. After the last entry there is nothing more to write, so every page after it stays blank (ADR 0022 sweep-J). The page fades in at its first entry or turn and out over fade_sec when the scene ends. canvas_layer: above the field, under the dialogue box.",
+    "canvas_layer": 60,
+    "line_prefix": "ch17_ledger_page_",
+    "turn_prompt": "turn_page",
+    "title_key": "LEDGER_TITLE_DACE",
+    "entry_variation": "FlavorLabel",
+    "page": {"rect": [480, 96, 960, 645], "pad": 42, "title_height": 54, "rule_gap": 18},
+    "line_gap": 18,
+    "turn_sec": 0.6,
+    "turn_px": 120,
+    "fade_sec": 0.8
+  }
+}

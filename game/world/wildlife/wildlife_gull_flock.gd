@@ -8,7 +8,9 @@ extends RefCounted
 ## plunges") on a row with a `water_y` sometimes leaves its perch in a plunge: wings folded, down to the water
 ## dive_reach_m ahead of the perch, a moment there, and back up to the same perch, which it keeps meanwhile. The party
 ## coming within flush_radius_m of a perch lifts the bird off it after its own flush_delay_s (so a row of gulls goes
-## up one after another, not as one), and a landing bird never picks a perch the party is standing by.
+## up one after another, not as one), and a landing bird never picks a perch the party is standing by. A row with a
+## `follow` (M5-A3P-1808, the Kite's gulls) flies in a moving node's space: its centre, perches and birds are that
+## node's, and the layer sets `frame` (the node's transform in the layer's space) every step, so the flock rides along.
 
 enum State { SOAR, APPROACH, PERCHED, TAKEOFF, DIVE, SURFACE }
 
@@ -61,7 +63,12 @@ var water_y := NAN
 ## Perches: (x, y, z, yaw radians).
 var perches: Array[Vector4] = []
 var gulls: Array[Gull] = []
+## In the flock's own space (the followed node's, for a `follow` row): world_bounds() is it in the layer's.
 var bounds := AABB()
+## A row's `follow`: the moving node's path from the layer (empty = the flock flies in the layer's space).
+var follow := NodePath()
+## The followed node's transform in the layer's space (identity without a `follow`).
+var frame := Transform3D.IDENTITY
 
 var _kind: Dictionary = {}
 var _rng := RandomNumberGenerator.new()
@@ -86,6 +93,7 @@ func _init(row: Dictionary, kind: Dictionary, seed_value: int, count: int) -> vo
 	radius = float(row.get("radius_m", 1.0))
 	altitude = WildlifeConfig.vec2(row.get("altitude_m", [1.0, 1.0]))
 	water_y = float(row["water_y"]) if row.has("water_y") else NAN
+	follow = NodePath(str(row.get("follow", "")))
 	for p: Variant in row.get("perches", []):
 		var a: Array = p
 		perches.append(Vector4(float(a[0]), float(a[1]), float(a[2]), deg_to_rad(float(a[3]))))
@@ -158,9 +166,15 @@ func perched_count() -> int:
 	return n
 
 
+## The bounds in the layer's space (moved with `frame`).
+func world_bounds() -> AABB:
+	return frame * bounds
+
+
 ## `player` is in the layer's space; `has_player` false = nobody to flush them.
 func step(delta: float, player := Vector3.ZERO, has_player := false) -> void:
-	_player = Vector2(player.x, player.z)
+	var local := frame.affine_inverse() * player
+	_player = Vector2(local.x, local.z)
 	_has_player = has_player
 	for g in gulls:
 		match g.state:
@@ -360,8 +374,13 @@ func _step_surface(g: Gull, delta: float) -> void:
 
 
 ## The bird's transform: in flight it faces along its velocity, pitched within pitch_max and banked into its
-## turn (the lift tilts toward the turn's acceleration, within bank_max); on a perch it faces the perch's yaw.
+## turn (the lift tilts toward the turn's acceleration, within bank_max); on a perch it faces the perch's yaw. In the
+## layer's space (carried by `frame`).
 func transform_of(g: Gull) -> Transform3D:
+	return frame * _local_transform_of(g)
+
+
+func _local_transform_of(g: Gull) -> Transform3D:
 	if g.state == State.PERCHED:
 		var p := perches[g.perch]
 		return Transform3D(Basis(Vector3.UP, p.w).scaled(Vector3.ONE * g.scale), g.pos)

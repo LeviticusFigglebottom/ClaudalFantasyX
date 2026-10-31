@@ -58,6 +58,9 @@ RES_ZONE = "res://game/levels/ch05/pemakar/"
 KIT = "res://assets/environments/kits/pemakar/"
 FERRY_KIT = "res://assets/environments/kits/brightwater_ferry/"
 VEG = "res://assets/environments/vegetation/"
+# The perf pass (10-30): 393 lamp omnis, each in the clustered light list wherever the camera stands. Beyond about
+# 70 m a lamp's pool is a few pixels and its glow is the far_lights quad, so the omnis fade out there.
+LAMP_FADE_M = (70.0, 20.0)
 NIGHT_BLOCK = "Lamps"  # the greybox's lamp line: the day variant hides it, and the festival with it
 TIERS = pc.TOWN_TIERS
 QUAY_FRONT_Z = 27.0
@@ -371,6 +374,7 @@ def dressing() -> dict:
         "greybox": {"hide_all": True, "keep": []},
         "fire_light_color": "#FFA757",
         "fire_lights": lights,
+        "fire_light_fade": list(LAMP_FADE_M),
         "multimeshes": [{"name": "LeafBoats", "piece": boats["piece"], "transforms": boats["transforms"],
                          "block": NIGHT_BLOCK}],
         "far_lights": far,

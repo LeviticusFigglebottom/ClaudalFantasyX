@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -53,7 +54,7 @@ JETTY_SPAN = (-1.8, -15.0)  # from the dock's north edge to the house platform's
 HOUSE_YAW = 180.0  # the deckhouse on the platform's north half, its door to the jetty
 HOMES = ((4.0, -33.0, 15.0), (20.0, -35.0, -10.0), (36.0, -33.0, 5.0), (52.0, -31.0, 20.0), (60.0, -18.0, 80.0),
          (12.0, -47.0, 0.0), (30.0, -49.0, 30.0), (48.0, -46.0, -20.0), (68.0, -34.0, 10.0), (-8.0, -20.0, 70.0))
-WINDMILLS = ((-12.0, -40.0, 30.0), (76.0, -10.0, -60.0), (70.0, -55.0, 10.0), (22.0, -62.0, 180.0), (55.0, 15.0, 200.0))
+WINDMILLS = ((-12.0, -40.0, 30.0), (66.0, -14.0, -60.0), (70.0, -55.0, 10.0), (22.0, -62.0, 180.0), (55.0, 15.0, 200.0))
 TIDE_WHEELS = ((4.0, -27.5, 0.0), (20.0, -27.5, 0.0), (36.0, -27.5, 0.0))
 SIGNAL_LAMPS = ((7.6, -15.6), (23.6, -15.6), (48.4, -15.6), (-1.0, -1.6))
 SIGNAL_COLOR = "#4FB3B0"
@@ -73,6 +74,17 @@ LAMP_FLAME = (0.0, 1.55, 0.45)  # hollowmere.LAMP_FLAME
 SUPPER_AT = (42.0, 0.95, 0.0)  # by the father's place, against the south rail: the walk from the supper mark to the
 #   pyre-raft runs along the north half (z -0.8 to 0), so the table's box (stools at +-0.87 m) stays 0.4 m clear of a body
 DACE_AT = (78.0, -24.0, 30.0)  # seen at the zone's edge in Ch15 (Ch17's heart)
+# Ch17's dry-dock row (M5-A3P-1500): three empty berths beside Dace's, along his hull's beam toward the dock's east end,
+# BERTH_PITCH_M apart, the first (Tobin's post, B07) nearest the dock and Dace's "the last one" (B03).
+BERTH_PITCH_M = 8.5
+# Aldous Varrow's house (fathers_door at HousePlatform1's door): the furnished deckhouse, his table lit by a hanging oil
+# lamp (Ch17 B07, B11). TABLE_AT is hollowmere.py's, in the piece's frame; LAMP_OVER_TABLE_M its flame over the deck.
+DOCKMASTER_BLOCK = "HousePlatform1"
+DOCKMASTER_PIECE = "hm_dockmaster_house"
+DM_TABLE_AT = (0.45, 2.05)
+DM_DECK_Y = 0.9
+LAMP_OVER_TABLE_M = 1.6
+BERTHS = ("hm_drydock_berth", "hm_drydock_berth", "hm_drydock_berth_first")
 FLOTILLA_AT = (25.0, -5.0)
 
 WATER_NAME = "hollowmere_dawn_water_material.tres"
@@ -151,7 +163,8 @@ def _row(piece: str, x: float, z: float, y: float = 0.0, yaw: float = 0.0, **ext
 def dressing() -> dict:
     b = blocks()
     pieces = dock_rows(b) + jetty_rows(b)
-    pieces += [_row("hm_lashed_hulls", v["pos"][0], v["pos"][2], WATER_Y, HOUSE_YAW)
+    pieces += [_row(DOCKMASTER_PIECE if k == DOCKMASTER_BLOCK else "hm_lashed_hulls", v["pos"][0], v["pos"][2], WATER_Y,
+                    HOUSE_YAW)
                for k, v in sorted(b.items()) if k.startswith("HousePlatform") and k[13:].isdigit()]
     pieces += [_row("hm_lashed_hulls", x, z, WATER_Y, yaw) for x, z, yaw in HOMES]
     pieces += [_row("hm_windmill", x, z, WATER_Y, yaw) for x, z, yaw in WINDMILLS]
@@ -162,6 +175,10 @@ def dressing() -> dict:
     pieces.append(_row("pyre_raft", b["PyreRaft"]["pos"][0], b["PyreRaft"]["pos"][2], WATER_Y))
     pieces.append(_row("hm_ship", b["Ship"]["pos"][0], b["Ship"]["pos"][2], WATER_Y))
     pieces.append(_row("dace_hull_frame", DACE_AT[0], DACE_AT[1], WATER_Y, DACE_AT[2]))
+    beam = (math.sin(math.radians(DACE_AT[2])), math.cos(math.radians(DACE_AT[2])))  # the hull's +Z in the zone
+    for k, piece in enumerate(BERTHS, 1):
+        pieces.append(_row(piece, r3(DACE_AT[0] + beam[0] * BERTH_PITCH_M * k), r3(DACE_AT[1] + beam[1] * BERTH_PITCH_M * k),
+                           WATER_Y, DACE_AT[2]))
     pieces.append(_row("hm_far_flotilla", FLOTILLA_AT[0], FLOTILLA_AT[1], WATER_Y))
     # The dock's mooring piles, where the greybox stood them (DockPile*: the gulls' perches, tops y 2.7; the wildlife
     # audit found the perches over open water with the greybox hidden): a stilt post from the bed, scaled to the top.
@@ -171,6 +188,12 @@ def dressing() -> dict:
                for x, z, yaw in DEBRIS_AT]
     lights = [{"at": _flame(x, z, yaw), "energy": OIL_ENERGY, "range": OIL_RANGE_M, "flicker": OIL_FLICKER}
               for x, z, yaw in OIL_LAMPS]
+    hp = b[DOCKMASTER_BLOCK]["pos"]
+    yaw = math.radians(HOUSE_YAW)
+    tx = hp[0] + DM_TABLE_AT[0] * math.cos(yaw) + DM_TABLE_AT[1] * math.sin(yaw)
+    tz = hp[2] - DM_TABLE_AT[0] * math.sin(yaw) + DM_TABLE_AT[1] * math.cos(yaw)
+    lights.append({"at": [r3(tx), r3(WATER_Y + DM_DECK_Y + LAMP_OVER_TABLE_M), r3(tz)], "energy": 0.7, "range": 4.0,
+                   "flicker": OIL_FLICKER})
     lights.append({"at": [SUPPER_AT[0] + 0.15, 0.75, SUPPER_AT[1] - 0.2], "energy": 0.6, "range": 3.5,
                    "flicker": OIL_FLICKER})
     lights += [{"at": [x + 0.55, 3.0, z], "energy": 0.8, "range": 6.0, "color": SIGNAL_COLOR, "flicker": SIGNAL_FLICKER}

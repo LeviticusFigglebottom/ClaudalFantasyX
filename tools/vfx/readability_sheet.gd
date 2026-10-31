@@ -134,10 +134,11 @@ func _check_labels(ctl: BattleController, tag: String, moment: String, checks: D
 
 ## Damage numbers and float words over the turn order or the party panel.
 func _check_floats(ctl: BattleController, tag: String, checks: Dictionary) -> void:
-	var keep := {
-		"timeline": HudLayout.rect_of(HudLayout.section(&"timeline")),
-		"party": HudLayout.rect_of(HudLayout.section(&"party")),
-	}
+	var keep := {}  # every panel the floats keep clear of (battle_hud.json damage.avoid), as shown
+	for row: Variant in HudLayout.section(&"damage").get("avoid", []):
+		var r := HudLayout.panel_rect(row as Dictionary, ctl.hud)
+		if r.has_area():
+			keep[str((row as Dictionary).get("node", ""))] = r
 	for n in ctl.hud.get_node(^"%DamageLayer").get_children():
 		var d := n as Control
 		if d == null or not d.visible:

@@ -229,6 +229,16 @@ class InsectValidatorTest(unittest.TestCase):
         stage = _load(vw.STAGE_FILE)
         self.assertIn("moth", {s["type"] for s in stage["swarms"]}, "the review stage shows the moths")
 
+    def test_the_kite_flock_follows_its_node(self) -> None:
+        """M5-A3P-1808: the Kite's gulls ride a moving node (`follow`); the row validates, a blank follow doesn't."""
+        budgets = _load(vw.KINDS_FILE)["budgets"]
+        kite = _load(vw.KITE_STAGE_FILE)
+        self.assertEqual(vw.zone_errors(kite, vw.KITE_STAGE_FILE, budgets, None), [])
+        self.assertEqual([(f["id"], f["follow"]) for f in kite["flocks"]], [("kite_wake", "../Kite")])
+        bad = copy.deepcopy(kite)
+        bad["flocks"][0]["follow"] = ""
+        self.assertTrue(any("follow: a node path" in e for e in vw.zone_errors(bad, "k", budgets, None)))
+
 
 class PipelineTest(unittest.TestCase):
     def setUp(self) -> None:

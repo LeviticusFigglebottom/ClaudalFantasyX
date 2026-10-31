@@ -649,9 +649,9 @@ func test_town_vignettes_come_alive_in_their_zones() -> void:
 	_done()
 
 
-## Reedhollow lived in (the Lead, 2026-10-30), as still as the Kirru are: fishers wading the lagoon, a pair talking in
+## Reedhollow lived in (the Lead, 2026-10-30), as still as the Kirru are: fishers at the ring's edge, a pair talking in
 ## bouts on the ring, a youngster watching, on the Kirru's own clips.
-func test_reedhollow_vignettes_wade_talk_and_watch() -> void:
+func test_reedhollow_vignettes_fish_talk_and_watch() -> void:
 	var zone := (load("res://game/levels/ch10/reedhollow/reedhollow.tscn") as PackedScene).instantiate() as Node3D
 	_holder().add_child(zone)
 	var layer := VillagerLayer.wire(zone, &"ch10/reedhollow")
@@ -659,8 +659,6 @@ func test_reedhollow_vignettes_wade_talk_and_watch() -> void:
 	for id: StringName in [&"fisher_1", &"fisher_2", &"fisher_3", &"talker_1", &"talker_2", &"shore_youngster"]:
 		var npc := layer.villager(id)
 		assert_true(npc != null and npc.actor != null, "%s stands in Reedhollow wearing a Kirru body" % id)
-		if npc != null and id.begins_with("fisher"):
-			assert_true(npc.global_position.y < -1.0, "%s wades the lagoon" % id)
 	assert_eq(layer.villager(&"talker_1").partner, layer.villager(&"talker_2"), "the pair talk together")
 	_done()
 
@@ -691,3 +689,37 @@ func test_each_row_names_the_actor_scene_it_will_wear() -> void:
 	)
 	assert_eq(layer._actor_path("not a row"), "", "nothing for a bad row")
 	layer.free()
+
+
+## M5-A3P-1810: a row's `flag` shows its villager only while the flag is set, its `not_flag` only until then, so a
+## zone swaps a person's row for a changed one when a story flag lands (checked each tick).
+func test_flag_rows_swap_when_the_flag_is_set() -> void:
+	var flag := &"ch02_heard_pila"
+	var was: Variant = Game.get_flag(flag)
+	Game.set_flag(flag, false)
+	var zone := _holder()
+	var before := {
+		"npc_id": "haluna_dock_mender",
+		"crowd": "haluna_dock_mender",
+		"stand_in": "CrowdSpots/before",
+		"at": [0.0, 0.0, -2.0, 0.0],
+		"not_flag": String(flag)
+	}
+	var after := {
+		"npc_id": "haluna_dock_mender_after",
+		"crowd": "haluna_dock_mender",
+		"stand_in": "CrowdSpots/after",
+		"at": [0.0, 0.0, -2.0, 180.0],
+		"flag": String(flag)
+	}
+	var layer := _layer(zone, [before, after])
+	assert_eq(layer.build(), 2, "both rows are built")
+	var a := layer.villager(&"haluna_dock_mender")
+	var b := layer.villager(&"haluna_dock_mender_after")
+	assert_true(a.visible and not b.visible, "before the flag: the person's own row")
+	assert_eq(b.process_mode, Node.PROCESS_MODE_DISABLED, "the hidden variant is stopped")
+	Game.set_flag(flag, true)
+	layer.tick(DT)
+	assert_true(not a.visible and b.visible, "once it lands: the changed row instead")
+	Game.set_flag(flag, was)
+	_done()

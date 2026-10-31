@@ -67,6 +67,26 @@ def island(iid: str, cx: float, cz: float, h: float, dome: bool, gaps: dict) -> 
 
 # --- Ansedra ----------------------------------------------------------------------------------------------------------
 
+def overheard(dialogue: str, at: tuple[float, float, float], size: tuple[float, float, float],
+              requires: str = "ch13_started", blocked_by: str = "") -> dict:
+    """M4-A2P-1003 E5: a bark heard once in passing (a touch box; the dialogue plays overheard, the walk goes on)."""
+    row = {"id": dialogue.removeprefix("ch13_"), "activation": "touch", "at": list(at), "size": list(size),
+           "once": True, "requires_flag": requires, "payload": {"dialogue": dialogue, "overheard": True}, "yaw": 0.0}
+    if blocked_by:
+        row["blocked_by_flag"] = blocked_by
+    return row
+
+
+def listen(tid: str, dialogue: str, at: tuple[float, float, float], requires: str, blocked_by: str = "",
+           prompt: str = "FIELD_PROMPT_LISTEN", beat: str = "") -> dict:
+    """M4-A2P-1003 E5: someone (or something) to stop at: an interact box with a prompt."""
+    row = {"id": tid, "activation": "interact", "at": list(at), "size": [1.6, 0, 1.6], "prompt_key": prompt,
+           "requires_flag": requires, "payload": {"beat": beat} if beat else {"dialogue": dialogue}, "yaw": 0.0}
+    if blocked_by:
+        row["blocked_by_flag"] = blocked_by
+    return row
+
+
 def ansedra() -> dict:
     blocks = water(-60.0, 60.0, -120.0, 30.0, color=COL_MIRROR)
     blocks += island("Moorings", 0.0, 10.0, 8.0, False, {"n": (-2.2, 2.2)})
@@ -130,7 +150,37 @@ def ansedra() -> dict:
         "triggers": [{"id": "to_sanctum", "activation": "touch", "at": [0.0, 0.0, -84.0], "size": [4.0, 0, 1.5],
                       "payload": {"beat": "to_sanctum"}, "yaw": 0.0},
                      {"id": "to_archive", "activation": "touch", "at": [46.0, 0.0, -40.0], "size": [2.0, 0, 4.0],
-                      "payload": {"beat": "to_archive"}, "yaw": 0.0}],
+                      "payload": {"beat": "to_archive"}, "yaw": 0.0},
+                     # M4-A2P-1003 E8: the pact at the moorings, where Kerrid sits out the nights (B10)
+                     {"id": "pact", "activation": "touch", "at": [-6.0, 0.0, 14.0], "size": [3.0, 0, 3.0],
+                      "once": True, "requires_flag": "ch13_archive_read", "blocked_by_flag": "ch13_pact_of_silence",
+                      "payload": {"beat": "pact"}, "yaw": 0.0},
+                     # E1: Sefir's door: the night's rest, then the Lacquer Court in the morning
+                     listen("rest", "", (2.5, 0.0, -41.6), "ch13_pact_of_silence", prompt="FIELD_PROMPT_REST",
+                            beat="rest"),
+                     # E5: the city's barks, side scenes and the guest house's camp
+                     overheard("ch13_bark_liss_palm", (0.0, 0.0, -4.0), (4.0, 0, 2.0)),
+                     overheard("ch13_bark_pilgrim", (0.0, 0.0, -18.0), (4.0, 0, 2.0)),
+                     overheard("ch13_bark_stillguard", (-22.0, 0.0, -40.0), (2.0, 0, 4.0)),
+                     overheard("ch13_bark_ysolde_holiness", (22.0, 0.0, -40.0), (2.0, 0, 4.0)),
+                     overheard("ch13_bark_tender", (0.0, 0.0, -62.0), (4.0, 0, 2.0)),
+                     listen("npc_bargeman", "ch13_bark_bargeman", (7.0, 0.0, 8.0), "ch13_started"),
+                     # the still basin on the moorings, a save shrine (ShrineServices)
+                     {"id": "shrine", "activation": "interact", "at": [4.0, 0.0, 15.0], "size": [1.6, 0, 1.6],
+                      "prompt_key": "FIELD_PROMPT_REST", "requires_flag": "ch13_started",
+                      "payload": {"beat": "shrine", "save_shrine": "ansedra_shrine"}, "yaw": 0.0},
+                     # the purveyor on the central island (shops.json ansedra_purveyor)
+                     {"id": "shop", "activation": "interact", "at": [-6.0, 0.0, -44.0], "size": [1.6, 0, 1.6], "prompt_key": "SHOP_PROMPT",
+                      "requires_flag": "ch13_started", "payload": {"shop": "ansedra_purveyor"}, "yaw": 0.0},
+                     listen("npc_seamstress", "ch13_bark_seamstress", (-6.0, 0.0, -35.0), "ch13_wedding_announced"),
+                     listen("side_the_leaning_flame", "ch13_side_the_leaning_flame", (6.0, 0.0, -34.0),
+                            "ch13_wedding_announced"),
+                     listen("side_corran_house", "ch13_someone_elses_house", (-44.0, 0.0, -39.0), "ch13_started",
+                            "ch13_corran_house", "FIELD_PROMPT_LOOK"),
+                     listen("moorings_kerrid", "ch13_moorings_kerrid", (-4.5, 0.0, 14.0), "ch13_guest_of_sefir",
+                            "ch13_sat_at_moorings"),
+                     listen("camp", "ch13_camp_twenty_four_years", (8.0, 0.0, -41.0), "ch13_ethren_bound",
+                            "ch13_camp_talk", "FIELD_PROMPT_REST")],
     }
 
 
@@ -176,7 +226,12 @@ def sanctum() -> dict:
                      # M4-A2P-114: the basin's edge among the pilgrims, where Ethren is bound (B05-B06)
                      {"id": "ledge", "activation": "touch", "at": [0.0, 0.0, -19.4], "size": [4.0, 0, 1.5],
                       "requires_flag": "ch13_entered_sanctum", "blocked_by_flag": "ch13_ethren_bound",
-                      "payload": {"beat": "ledge"}, "yaw": 0.0}],
+                      "payload": {"beat": "ledge"}, "yaw": 0.0},
+                     # M4-A2P-1003 E5: the kneelers at the ledge, and Wenna's third mark behind the vestibule's rail
+                     listen("npc_kneeler", "ch13_bark_kneeler", (-4.0, 0.0, -17.5), "ch13_entered_sanctum"),
+                     listen("npc_pilgrim_child", "ch13_bark_pilgrim_child", (4.0, 0.0, -17.5), "ch13_entered_sanctum"),
+                     listen("wenna_mark", "ch13_wenna_mark", (-4.0, 0.0, -8.0), "ch13_entered_sanctum",
+                            "ch13_found_wenna_mark", "FIELD_PROMPT_LOOK")],
     }
 
 
@@ -220,13 +275,15 @@ def lamp_archive() -> dict:
              "pos": [0.0, 3.5, -15.0], "look_at": [1.0, 0.8, -24.0], "fov": 50, "priority": 1}],
         "triggers": [{"id": "to_city", "activation": "touch", "at": [0.0, 0.0, 0.5], "size": [4.0, 0, 1.0],
                       "payload": {"beat": "to_city"}, "yaw": 0.0},
-                     # M4-A2P-114: the ledger table (B07, the first day) and the Cantor roll's table (B08, the second)
+                     # M4-A2P-114: the ledger table (B07, the first day; E2: once Ethren is bound); the Cantor roll (B08) is the
+                     # second day's arrival (E9)
                      {"id": "ledgers", "activation": "touch", "at": [-3.2, 0.0, -12.0], "size": [1.5, 0, 3.0],
-                      "requires_flag": "ch13_entered_archive", "blocked_by_flag": "ch13_read_ledgers",
+                      "requires_flag": "ch13_ethren_bound", "blocked_by_flag": "ch13_read_ledgers",
                       "payload": {"beat": "ledgers"}, "yaw": 0.0},
-                     {"id": "roll", "activation": "touch", "at": [3.2, 0.0, -24.0], "size": [1.5, 0, 3.0],
-                      "requires_flag": "ch13_read_ledgers", "blocked_by_flag": "ch13_read_cantor_roll",
-                      "payload": {"beat": "roll"}, "yaw": 0.0}],
+                     # M4-A2P-1003 E5: the clerk, and the pilgrims' register on its stand by the door
+                     listen("npc_archivist", "ch13_bark_archivist", (3.0, 0.0, -4.0), "ch13_entered_archive"),
+                     listen("velamir_register", "ch13_find_velamir_register", (-3.0, 0.0, -3.5),
+                            "ch13_entered_archive", "ch13_found_velamir_register", "FIELD_PROMPT_LOOK")],
     }
 
 

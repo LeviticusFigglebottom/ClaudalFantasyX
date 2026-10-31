@@ -1,0 +1,26 @@
+{
+ "format": 1,
+ "scene": "ch20_kahre_release",
+ "source": "game/data/dialogue/ch20/ch20_kahre_release.dlg",
+ "start": "ch20_kahre_release",
+ "nodes": {
+  "ch20_kahre_release": {
+   "headers": {"location": "ch20/undertow_layers"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 6},
+    {"op": "cue", "cue": "camera", "args": ["U11"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "music", "args": ["release_sting"], "kwargs": {"fade": 0.0}, "src": 8},
+    {"op": "cue", "cue": "anim", "args": ["kahre", "set_down", "hammer"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 10},
+    {"op": "line", "id": "ch20_kahre_002", "key": "DLG_CH20_KAHRE_002", "speaker": "kahre", "emotion": "soft_smile", "voice": "", "src": 11, "name_key": "DLG_NAME_KAHRE_DARO"},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "nod", "kahre"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "kahre", "count": 40, "motion": "spiral_up", "rate": "slow"}, "src": 13},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "smiths_hammer", "count": 1, "motion": "spiral_up", "rate": "slow"}, "src": 15},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 16},
+    {"op": "set", "flag": "ch20_kahre_released", "value": ["lit", true], "src": 17},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 18}
+   ]
+  }
+ }
+}

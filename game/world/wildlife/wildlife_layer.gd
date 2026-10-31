@@ -426,11 +426,15 @@ func _step_flocks(
 	var flying: WildlifeBuffer = buffers.get(fly_key)
 	var perched: WildlifeBuffer = buffers.get(perch_key)
 	var base := 0
+	var refit := false
 	for f in list:
-		var vis := _visibility(f.bounds, camera)
+		var moved := _follow(f)
+		refit = refit or moved
+		var vis := _visibility(f.world_bounds(), camera)
 		if vis == VIS_ACTIVE:
 			f.step(delta, player, has_player)
-		if _changed(g, vis):
+		# a paused flock on a moving node is still carried along with it
+		if _changed(g, vis) or (moved and vis == VIS_PAUSED):
 			if vis == VIS_HIDDEN:
 				for i in f.count():
 					flying.hide(base + i)
@@ -441,7 +445,32 @@ func _step_flocks(
 			dirty[perch_key] = true
 		base += f.count()
 		g += 1
+	if refit:
+		for key: StringName in [fly_key, perch_key]:
+			if multimeshes.has(key):
+				(multimeshes[key] as MultiMeshInstance3D).multimesh.custom_aabb = _union_world(list)
 	return g
+
+
+## A `follow` flock (M5-A3P-1808): sets its frame from the followed node; true when the node moved.
+func _follow(f: WildlifeGullFlock) -> bool:
+	if f.follow.is_empty() or not is_inside_tree():
+		return false
+	var node := get_node_or_null(f.follow) as Node3D
+	if node == null:
+		return false
+	var fr := global_transform.affine_inverse() * node.global_transform
+	if fr.is_equal_approx(f.frame):
+		return false
+	f.frame = fr
+	return true
+
+
+func _union_world(list: Array[WildlifeGullFlock]) -> AABB:
+	var out := AABB()
+	for i in list.size():
+		out = list[i].world_bounds() if i == 0 else out.merge(list[i].world_bounds())
+	return out
 
 
 ## Whether group g must be rewritten: always while active, else only when its visibility changed.

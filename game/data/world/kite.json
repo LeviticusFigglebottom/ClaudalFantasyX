@@ -1,6 +1,6 @@
 {
   "kite": {
-    "doc": "The Kite's world map (SPEC §6.6, Act III; act_outline.md Ch18; M3-UI-205, ui-menus). The chart is Maresh's sea in grid cells, columns A..H west to east and rows 1..6 north to south; every 'at' is [column, row] as fractions of the chart (0..1, x east, y south). regions: where each people lives (bible §5), drawn as a name on the chart. destinations: places the Kite can land, each a locations.json location and spawn, shown once requires_flag is set (the Kite itself needs open_flag). secrets: coordinate-search places (SPEC §6.6): the cell the player names, the flag set when it is found (then it is a destination), and its location. The Act I rows are the revisitable places that exist today; M3-UI-205 added Act II's towns and Lowlight (Ansedra stays off: the party are heretics there after Ch14); Act III adds its towns as their zones land. Positions are provisional, for Narrative and art to move.",
+    "doc": "The Kite's world map (SPEC §6.6, Act III; act_outline.md Ch18; M3-UI-205, ui-menus). The chart is Maresh's sea in grid cells, columns A..H west to east and rows 1..6 north to south; every 'at' is [column, row] as fractions of the chart (0..1, x east, y south). regions: where each people lives (bible §5), drawn as a name on the chart. destinations: places the Kite can land, each a locations.json location and spawn, shown once requires_flag is set (the Kite itself needs open_flag). secrets: coordinate-search places (SPEC §6.6): the cell the player names, the flag set when it is found (then it is a destination), and its location. The Act I rows are the revisitable places that exist today; M3-UI-205 added Act II's towns and Lowlight (Ansedra stays off: the party are heretics there after Ch14); Act III adds its towns as their zones land. M5-A3P-1702 (act3_ch18 §4): Oruvel joins the revisits; Ansedra is listed from Ch13 but `refused_flag` (ch14_declared_heretics) greys it with `refused_key`: the Kite can't land there. Positions are provisional, for Narrative and art to move.",
     "open_flag": "kite_flying",
     "columns": ["A", "B", "C", "D", "E", "F", "G", "H"],
     "rows": 6,
@@ -24,7 +24,9 @@
       {"id": "reedhollow", "region": "ossa_fen", "location_id": "ch10/reedhollow", "spawn": "Gate", "requires_flag": "ch10_reached_reedhollow", "at": [0.66, 0.22]},
       {"id": "lowlight", "region": "sunken_vey", "location_id": "ch11/lowlight", "spawn": "Gate", "requires_flag": "ch11_reached_lowlight", "at": [0.32, 0.38]},
       {"id": "quellan", "region": "ullar", "location_id": "ch12/quellan", "spawn": "FromPass", "requires_flag": "ch12_reached_quellan", "at": [0.50, 0.12]},
-      {"id": "hollowmere", "region": "hollowmere", "location_id": "ch17/hollowmere", "spawn": "Dock", "requires_flag": "ch15_reached_hollowmere", "at": [0.24, 0.66]}
+      {"id": "hollowmere", "region": "hollowmere", "location_id": "ch17/hollowmere", "spawn": "Dock", "requires_flag": "ch15_reached_hollowmere", "at": [0.24, 0.66]},
+      {"id": "oruvel", "region": "low_reaches", "location_id": "ch01/oruvel", "spawn": "ScaleHull", "requires_flag": "ch01_started", "at": [0.08, 0.72]},
+      {"id": "ansedra", "region": "ansedra", "location_id": "ch13/ansedra", "spawn": "Moorings", "requires_flag": "ch13_started", "refused_flag": "ch14_declared_heretics", "refused_key": "KITE_CLOSED_HERETICS", "at": [0.86, 0.54]}
     ],
     "secrets": []
   }

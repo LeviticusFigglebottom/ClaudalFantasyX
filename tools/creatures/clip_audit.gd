@@ -41,7 +41,7 @@ const HIT_PEAK_S := 0.25
 const HIT_EARLY := 0.7  # of its travel by HIT_PEAK_S
 const FLOAT_FLAG_CM := 4.0
 ## KOs that go under on purpose: the hullgnaw slides back down into its breach (build_hullgnaw.ko_clip).
-const KO_SUBMERGES: Array[String] = ["hullgnaw"]
+const KO_SUBMERGES: Array[String] = ["hullgnaw", "hull_rasp"]
 const IDLE_CLIPS: Array[String] = ["idle", "idle_b"]
 const MOTION_STRIDE := 7  # every 7th skinned vertex for the idle and hit motion
 const HIT_CLIPS: Array[String] = ["hit", "hit_b"]

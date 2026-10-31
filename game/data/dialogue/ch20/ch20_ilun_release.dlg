@@ -1,0 +1,33 @@
+// M5-A3P-1010. Ch20 U01 the release: Ilun (Teyo Marrin, the 50th Cantor, sixteen; vowbound §1).
+// When he weakens he asks, in a BOY'S VOICE, whether Pila had a good life. If ch02_heard_pila Asha tells him (ninety-one
+// years; Grandmother Osu is her granddaughter); if not, she says honestly that she doesn't know. He lifts either way.
+// If ch18_haluna_lifted Asha adds that Haluna lifts its own now. The first goodbye that doesn't hurt. The net-float
+// (the keepsake) is the last thing to go up. RULE 2: a release is the only thing that rises.
+title: ch20_ilun_release
+location: ch20/undertow_layers
+---
+@letterbox on
+@camera U07
+@music silence fade=1.0
+@wait 2.0
+Ilun as "Teyo" [worried]: Did Pila have a good life? #line:ch20_ilun_001 #tn:"Ilun speaks in the voice of Teyo Marrin, a sixteen-year-old boy. Pila is the little sister he sang in place of."
+@wait 2.0
+<<if $ch02_heard_pila>>
+    Asha [tender]: She lived to ninety-one. Her granddaughter is the eldest in Haluna now. #line:ch20_ilun_002
+    Ilun as "Teyo" [soft_smile]: Ninety-one. She'd have hated being old. #line:ch20_ilun_003
+<<else>>
+    Asha [sad]: I don't know. I hope so. #line:ch20_ilun_004
+    Ilun as "Teyo" [neutral]: That's all right. I hope so too. #line:ch20_ilun_005
+<<endif>>
+<<if $ch18_haluna_lifted>>
+    Asha [tender]: Haluna lifts its own now. Backs to the water. #line:ch20_ilun_006
+<<endif>>
+@music release_sting fade=0.0
+@vfx glimmer_lift at=ilun count=40 motion=spiral_up rate=slow
+@wait 6.0
+@camera U08
+@vfx glimmer_lift at=net_float count=1 motion=spiral_up rate=slow
+@wait 4.0
+<<set $ch20_ilun_released = true>>
+@letterbox off
+===

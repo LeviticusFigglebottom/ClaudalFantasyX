@@ -93,3 +93,16 @@ lifts `root` so the curled body lies on the floor and not through it.
   prop and a grounding exemption, so the floor is the proposal.
 - **The Lamp Spire is on the cut list** ("shorten it to a single boss arena", act_outline Cut Notes). If the spire is
   cut, does the wick crawler move into the boss arena as an add, or go?
+
+## As built (M5-A3P-1800, 2026-10-30)
+`assets_src/creatures/wick_crawler/build_wick_crawler.py`, as the sheet:
+- **Shape:** 5,648 triangles, 44 bones. The taper's light sits 1.39 m up.
+- **Rig:** the spine is chained from the tail to the head, so the head rears without moving the pole.
+- **Slots:** `body`, `leg`, `glass`, `taper`, plus a fifth slot, `seam`, for the weak point's hairline ring round
+  the reservoir's filler cap (pulsing, unlike the steady taper).
+- **Grounding:** the feet are pinned (common/grounding.py) through the idle, the trim, the relight and the hits.
+- **KO:** each pair's leg curl is eased over 0.55 s, and the roll onto its side over 0.65 s, so nothing pops. Only
+  the collapse's slide flags in the clip audit, as for the other KOs.
+- **Fixed:** the taper's thimble, its cup and the reservoir were inside out (ck.lathe's outward faces run top to
+  bottom); they are turned right, as found while building the chain lamp.
+- **Still open:** `clip_by_skill` waits for Combat's skill ids. Portrait, and review shot `creature_wick_crawler`.

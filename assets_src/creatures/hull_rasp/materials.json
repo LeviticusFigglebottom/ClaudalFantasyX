@@ -1,0 +1,10 @@
+{
+  "_doc": "Hull rasp (M5-A3P-1806, Ch17): the hullgnaw's two slots. carapace: the spawn body, its salt scabs dry and rough (the vertex wetness drops under the crust), its bore-holes and main seam glowing spawn_wound a little faster than the Ch1 boss's; rib: the salt-white keel timbers, rougher and drier than the hullgnaw's oak. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "carapace": {"roughness_dry": 0.75, "roughness_wet": 0.24, "specular": 0.5, "clearcoat_wet": 0.45,
+                 "detail_scale": 24.0, "detail_albedo": 0.16, "detail_bump": 0.9, "cavity_albedo": 0.45,
+                 "emission_color": "#3FE0C8", "emission_energy": 2.3, "emission_pulse_hz": 0.38, "emission_pulse_depth": 0.45},
+    "rib": {"roughness_dry": 0.92, "roughness_wet": 0.5, "wet_darken": 0.5, "clearcoat_wet": 0.15,
+            "detail_scale": 44.0, "detail_albedo": 0.26, "detail_bump": 0.8, "cavity_albedo": 0.55}
+  }
+}

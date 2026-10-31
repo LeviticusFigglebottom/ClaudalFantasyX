@@ -1,0 +1,40 @@
+// M5-A3P-1010. Ch20 fight lines (vowbound §1-§6; act3_ch20.md §5): one node per trigger. There is NO
+// MID-BATTLE LINE HOOK yet (only lead-in barks): Combat plays each node at its trigger. The six Vowbound speak as the
+// people they were. Kahre's line to Kerrid is vowbound.md's, verbatim. The Cage's founders speak Lamptongue only (the
+// help line carries Ysolde's translation; lamptongue.md §3) except "thank you", said in the common tongue as each seat
+// breaks.
+title: ch20_bark_vowbound_fights
+location: ch20/undertow_layers
+---
+// Ilun, through the fight: he keeps putting himself between Asha and the dark, out of habit.
+Ilun as "Teyo" [worried]: Stay behind me. It's dark past here. #line:ch20_fight_001
+===
+title: ch20_bark_kahre_kerrid
+---
+// Kahre, mid-fight, if Kerrid is in the active party: the dead to the dead. Kerrid doesn't answer; he nods.
+Kahre as "Daro" [tender]: It doesn't hurt, son. It's like setting the tools down. #line:ch20_fight_002 #tn:"vowbound.md, verbatim: the old smith to Kerrid, both of them dead. Comfort, not dread."
+@anim kerrid nod kahre
+===
+title: ch20_bark_kahre_garo
+---
+// Kahre, once, if ch05_told_the_smith: Garo's folding in a boat on the channel.
+<<if $ch05_told_the_smith>>
+    Kahre as "Daro" [soft_smile]: That boat's folded right. Somebody taught that hand. #line:ch20_fight_003
+<<endif>>
+===
+title: ch20_bark_nhoa_echo
+---
+// Nhoa copies the last action; Pell fights her silently. No line from Pell in the fight.
+Nhoa as "Ressa" [neutral]: You always did that. Now me. #line:ch20_fight_004
+===
+title: ch20_bark_cage_seat
+---
+// Each time a seat's chains break: that founder stops fighting and thanks them (the others grow stronger).
+Orin_tesk as "Orin Tesk" [tender]: Thank you. #line:ch20_fight_005
+===
+title: ch20_bark_cage_lamptongue
+---
+// The founders' Lamptongue (lamptongue.md §3: kept as written; the founders speak in pieces of the verses, from
+// mir, tash, oan, ennu, una only). The help line carries Ysolde's reading: "Stay, stay. Let go."
+Isse_varan as "Isse Varan" [grief]: Mir, mir. Tash. #line:ch20_fight_006 #lamptongue #notr #tn:"Lamptongue: keep exactly as written. Never translated on screen; the help line carries the meaning."
+===

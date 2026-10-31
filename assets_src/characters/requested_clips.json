@@ -1,5 +1,5 @@
 {
- "_doc": "M3-CHR-05: the story clips the chapters' dialogue calls (`@anim <hero> <clip>`) past each hero's own clips, built by assets_src/characters/asha/hero_clips.py (see its M3-CHR-05 block for the gesture vocabulary). A spec is `frames` (15 fps) and either `alias` (a clip the hero already has, `reverse` to play it backwards) or a base posture (`from`, default stand; `to` with `change` = [start, end] fractions for a change of posture) plus `keys`: [u, [gesture, ...]] eased between. `like` names a spec in `shared`. One-shots hold their last frame; most gestures settle back to the base. act1-chapters may add clips here (a request task to characters). `field` holds the field-life clips (loops unless noted): idle and talk variants, a listening nod, and look_left/right/up/down key poses (two frames, the head and neck only on the idle's first frame) for a runtime look-at blend; HeroIdleMicro (hero-integration) layers breathing and weight shifts on top.",
+ "_doc": "M3-CHR-05: the story clips the chapters' dialogue calls (`@anim <hero> <clip>`) past each hero's own clips, built by assets_src/characters/asha/hero_clips.py (see its M3-CHR-05 block for the gesture vocabulary). A spec is `frames` (15 fps) and either `alias` (a clip the hero already has, `reverse` to play it backwards) or a base posture (`from`, default stand; `to` with `change` = [start, end] fractions for a change of posture) plus `keys`: [u, [gesture, ...]] eased between. `like` names a spec in `shared`. One-shots hold their last frame; most gestures settle back to the base. act1-chapters may add clips here (a request task to characters). `field` holds the field-life clips (loops unless noted): idle and talk variants, a listening nod, and look_left/right/up/down key poses (two frames, the head and neck only on the idle's first frame) for a runtime look-at blend; HeroIdleMicro (hero-integration) layers breathing and weight shifts on top. M4-A2P-1980: `fist` closes a free hand to a fist for that clip only: `[\"R\"]` (the whole clip, eased in and out) or `{\"R\": [a, b, c, d]}` (in from a to b, out from c to d; c past 1.0 keeps it closed, as Rhen's knock does).",
  "doc": "Body clips the Act I dialogue (M3, m2-slice) stages with `@anim <hero> <clip>` that the heroes don't have yet: requested from the character track in docs/kb/tasks/M3/M3-CHR-1000-act1-body-clips.md. Until a clip is built its call is skipped at runtime (CutsceneSequencer checks has_animation). tools/tests/test_hero_clips.py allows these and still fails on any call that is neither built nor listed here (a typo). Remove a clip from here when it is built.",
  "task": "M3-CHR-1000",
  "clips": {},
@@ -787,17 +787,18 @@
      0.55,
      [
       [
-       "turn",
-       42
+       "bone",
+       "DEF-spine.005",
+       0,
+       7,
+       0
       ],
       [
-       "look",
-       34,
-       6
-      ],
-      [
-       "lean",
-       3
+       "bone",
+       "DEF-spine.006",
+       6,
+       22,
+       0
       ]
      ]
     ],
@@ -805,17 +806,18 @@
      1.0,
      [
       [
-       "turn",
-       50
+       "bone",
+       "DEF-spine.005",
+       0,
+       8,
+       0
       ],
       [
-       "look",
-       40,
-       12
-      ],
-      [
-       "lean",
-       5
+       "bone",
+       "DEF-spine.006",
+       10,
+       24,
+       0
       ]
      ]
     ]
@@ -1122,14 +1124,13 @@
      [
       [
        "lean",
-       14,
-       6
+       10
       ],
       [
        "look",
        6,
        30,
-       8
+       3
       ]
      ]
     ],
@@ -1138,14 +1139,13 @@
      [
       [
        "lean",
-       12,
-       4
+       9
       ],
       [
        "look",
        4,
        26,
-       6
+       3
       ]
      ]
     ],
@@ -2970,14 +2970,13 @@
       [
        [
         "lean",
-        14,
-        6
+        10
        ],
        [
         "look",
         6,
         30,
-        8
+        3
        ]
       ]
      ]
@@ -2991,7 +2990,25 @@
       []
      ],
      [
-      0.55,
+      0.22,
+      [
+       [
+        "look",
+        3,
+        4,
+        2
+       ],
+       [
+        "reach",
+        "L",
+        40,
+        60,
+        90
+       ]
+      ]
+     ],
+     [
+      0.45,
       [
        [
         "look",
@@ -3002,9 +3019,9 @@
        [
         "reach",
         "L",
-        140,
-        16,
-        138
+        155,
+        -12,
+        85
        ]
       ]
      ],
@@ -3020,9 +3037,9 @@
        [
         "reach",
         "L",
-        138,
-        16,
-        136
+        155,
+        -12,
+        85
        ]
       ]
      ]
@@ -3036,19 +3053,36 @@
       []
      ],
      [
-      0.45,
+      0.22,
       [
+       [
+        "look",
+        0,
+        4
+       ],
        [
         "reach",
         "L",
-        112,
-        12,
-        118
-       ],
+        40,
+        60,
+        90
+       ]
+      ]
+     ],
+     [
+      0.45,
+      [
        [
         "look",
         0,
         6
+       ],
+       [
+        "reach",
+        "L",
+        155,
+        -12,
+        85
        ]
       ]
      ],
@@ -3056,16 +3090,33 @@
       0.6,
       [
        [
-        "reach",
-        "L",
-        112,
-        12,
-        118
-       ],
-       [
         "look",
         0,
         10
+       ],
+       [
+        "reach",
+        "L",
+        150,
+        -12,
+        88
+       ]
+      ]
+     ],
+     [
+      0.8,
+      [
+       [
+        "look",
+        0,
+        11
+       ],
+       [
+        "reach",
+        "L",
+        36,
+        50,
+        80
        ]
       ]
      ],
@@ -3073,16 +3124,16 @@
       1.0,
       [
        [
+        "look",
+        0,
+        12
+       ],
+       [
         "reach",
         "L",
         20,
         4,
         40
-       ],
-       [
-        "look",
-        0,
-        12
        ]
       ]
      ]
@@ -6423,6 +6474,14 @@
    },
    "knock": {
     "frames": 30,
+    "fist": {
+     "R": [
+      0.1,
+      0.25,
+      2.0,
+      3.0
+     ]
+    },
     "keys": [
      [
       0.0,
@@ -6434,9 +6493,9 @@
        [
         "reach",
         "R",
-        70,
+        55,
         -2,
-        70,
+        80,
         0,
         -20
        ]
@@ -6448,9 +6507,9 @@
        [
         "reach",
         "R",
-        70,
+        55,
         -2,
-        70,
+        80,
         0,
         10
        ]
@@ -6462,9 +6521,9 @@
        [
         "reach",
         "R",
-        70,
+        55,
         -2,
-        70,
+        80,
         0,
         -20
        ]
@@ -6476,9 +6535,9 @@
        [
         "reach",
         "R",
-        70,
+        55,
         -2,
-        70,
+        80,
         0,
         10
        ]
@@ -6490,9 +6549,9 @@
        [
         "reach",
         "R",
-        70,
+        55,
         0,
-        70
+        80
        ]
       ]
      ]
@@ -6549,16 +6608,16 @@
        [
         "reach",
         "R",
-        74,
-        -4,
+        58,
+        4,
         40,
         40
        ],
        [
         "reach",
         "L",
-        66,
-        -6,
+        54,
+        2,
         46,
         40
        ]
@@ -7080,7 +7139,7 @@
       [
        [
         "lean",
-        12
+        16
        ],
        [
         "look",
@@ -7099,9 +7158,9 @@
        [
         "reach",
         "R",
-        40,
+        30,
         6,
-        -15,
+        0,
         0,
         30
        ]
@@ -7112,7 +7171,7 @@
       [
        [
         "lean",
-        12
+        16
        ],
        [
         "look",
@@ -7131,9 +7190,9 @@
        [
         "reach",
         "R",
-        40,
+        30,
         6,
-        -15,
+        0,
         0,
         30
        ]
@@ -7142,7 +7201,77 @@
     ]
    },
    "laugh": {
-    "like": "laugh_standing"
+    "frames": 30,
+    "keys": [
+     [
+      0.0,
+      []
+     ],
+     [
+      0.2,
+      [
+       [
+        "lean",
+        -6
+       ],
+       [
+        "look",
+        0,
+        -12,
+        3
+       ]
+      ]
+     ],
+     [
+      0.35,
+      [
+       [
+        "lean",
+        -2
+       ],
+       [
+        "look",
+        0,
+        -8,
+        -2
+       ]
+      ]
+     ],
+     [
+      0.5,
+      [
+       [
+        "lean",
+        -7
+       ],
+       [
+        "look",
+        0,
+        -13,
+        3
+       ]
+      ]
+     ],
+     [
+      0.65,
+      [
+       [
+        "lean",
+        4
+       ],
+       [
+        "look",
+        0,
+        2,
+        0
+       ]
+      ]
+     ],
+     [
+      1.0,
+      []
+     ]
+    ]
    },
    "let_cords_fall": {
     "frames": 36,
@@ -7150,6 +7279,10 @@
      [
       0.0,
       [
+       [
+        "lean",
+        8
+       ],
        [
         "look",
         0,
@@ -7166,9 +7299,9 @@
        [
         "reach",
         "R",
-        36,
+        30,
         -8,
-        -5,
+        0,
         30
        ]
       ]
@@ -7324,19 +7457,37 @@
       []
      ],
      [
+      0.2,
+      [
+       [
+        "look",
+        0,
+        6
+       ],
+       [
+        "reach",
+        "L",
+        40,
+        60,
+        90
+       ]
+      ]
+     ],
+     [
       0.4,
       [
        [
         "look",
         0,
-        10
+        12,
+        -14
        ],
        [
         "reach",
         "L",
-        140,
-        22,
-        135
+        104,
+        -15,
+        128
        ]
       ]
      ],
@@ -7346,14 +7497,33 @@
        [
         "look",
         0,
-        10
+        12,
+        -14
        ],
        [
         "reach",
         "L",
-        138,
-        22,
-        130
+        104,
+        -15,
+        128
+       ]
+      ]
+     ],
+     [
+      0.75,
+      [
+       [
+        "look",
+        0,
+        12
+       ],
+       [
+        "reach",
+        "L",
+        36,
+        40,
+        90,
+        20
        ]
       ]
      ],
@@ -7467,7 +7637,7 @@
       [
        [
         "lean",
-        14
+        18
        ],
        [
         "look",
@@ -7477,17 +7647,17 @@
        [
         "reach",
         "L",
-        20,
+        10,
         2,
-        -25,
+        0,
         0
        ],
        [
         "reach",
         "R",
-        20,
+        10,
         12,
-        -25,
+        0,
         0
        ]
       ]
@@ -7497,7 +7667,7 @@
       [
        [
         "lean",
-        14
+        18
        ],
        [
         "look",
@@ -7507,17 +7677,17 @@
        [
         "reach",
         "L",
-        20,
+        10,
         2,
-        -20,
+        0,
         0
        ],
        [
         "reach",
         "R",
-        20,
+        10,
         -8,
-        -20,
+        0,
         0
        ]
       ]
@@ -7527,7 +7697,7 @@
       [
        [
         "lean",
-        14
+        18
        ],
        [
         "look",
@@ -7620,7 +7790,7 @@
       [
        [
         "lean",
-        14
+        18
        ],
        [
         "look",
@@ -7630,17 +7800,17 @@
        [
         "reach",
         "L",
-        20,
+        10,
         -4,
-        -25,
+        0,
         0
        ],
        [
         "reach",
         "R",
-        20,
+        10,
         -4,
-        -25,
+        0,
         0
        ]
       ]
@@ -7650,7 +7820,7 @@
       [
        [
         "lean",
-        14
+        18
        ],
        [
         "look",
@@ -7660,17 +7830,17 @@
        [
         "reach",
         "L",
-        20,
+        10,
         -8,
-        -20,
+        0,
         0
        ],
        [
         "reach",
         "R",
-        20,
+        10,
         -8,
-        -20,
+        0,
         0
        ]
       ]
@@ -7680,7 +7850,7 @@
       [
        [
         "lean",
-        14
+        18
        ],
        [
         "look",
@@ -7690,17 +7860,17 @@
        [
         "reach",
         "L",
-        20,
+        10,
         -4,
-        -25,
+        0,
         0
        ],
        [
         "reach",
         "R",
-        20,
+        10,
         -4,
-        -25,
+        0,
         0
        ]
       ]
@@ -7710,7 +7880,7 @@
       [
        [
         "lean",
-        14
+        18
        ],
        [
         "look",
@@ -7720,17 +7890,17 @@
        [
         "reach",
         "L",
-        20,
+        10,
         -8,
-        -20,
+        0,
         0
        ],
        [
         "reach",
         "R",
-        20,
+        10,
         -8,
-        -20,
+        0,
         0
        ]
       ]
@@ -8744,7 +8914,106 @@
     "like": "take_r"
    },
    "pick_up": {
-    "like": "lift_up"
+    "frames": 33,
+    "keys": [
+     [
+      0.0,
+      []
+     ],
+     [
+      0.35,
+      [
+       [
+        "crouch",
+        0.16
+       ],
+       [
+        "lean",
+        22
+       ],
+       [
+        "look",
+        0,
+        20
+       ],
+       [
+        "reach",
+        "L",
+        56,
+        12,
+        22,
+        30
+       ],
+       [
+        "reach",
+        "R",
+        56,
+        12,
+        22,
+        30
+       ]
+      ]
+     ],
+     [
+      0.5,
+      [
+       [
+        "crouch",
+        0.16
+       ],
+       [
+        "lean",
+        22
+       ],
+       [
+        "look",
+        0,
+        20
+       ],
+       [
+        "reach",
+        "L",
+        56,
+        12,
+        22,
+        30
+       ],
+       [
+        "reach",
+        "R",
+        56,
+        12,
+        22,
+        30
+       ]
+      ]
+     ],
+     [
+      1.0,
+      [
+       [
+        "lean",
+        4
+       ],
+       [
+        "reach",
+        "L",
+        40,
+        12,
+        56,
+        30
+       ],
+       [
+        "reach",
+        "R",
+        40,
+        12,
+        56,
+        30
+       ]
+      ]
+     ]
+    ]
    },
    "hold_out_hand": {
     "like": "hold_out_r"
@@ -9423,7 +9692,7 @@
         "reach",
         "L",
         36,
-        -10,
+        -4,
         44,
         30
        ],
@@ -9431,7 +9700,7 @@
         "reach",
         "R",
         44,
-        -16,
+        -6,
         40,
         0
        ]
@@ -9453,7 +9722,7 @@
         "reach",
         "L",
         36,
-        -10,
+        -4,
         44,
         30
        ],
@@ -9461,7 +9730,7 @@
         "reach",
         "R",
         44,
-        -10,
+        -6,
         40,
         0,
         -20
@@ -9484,7 +9753,7 @@
         "reach",
         "L",
         36,
-        -10,
+        -4,
         44,
         30
        ]
@@ -9561,7 +9830,7 @@
        [
         "look",
         0,
-        22
+        14
        ],
        [
         "reach",
@@ -9574,9 +9843,9 @@
        [
         "reach",
         "R",
-        36,
+        46,
         -10,
-        34,
+        22,
         20
        ]
       ]
@@ -9591,7 +9860,7 @@
        [
         "look",
         0,
-        23
+        15
        ],
        [
         "reach",
@@ -9604,9 +9873,9 @@
        [
         "reach",
         "R",
-        36,
+        46,
         -2,
-        34,
+        22,
         20
        ]
       ]
@@ -9621,7 +9890,7 @@
        [
         "look",
         0,
-        22
+        14
        ],
        [
         "reach",
@@ -9634,9 +9903,9 @@
        [
         "reach",
         "R",
-        36,
+        46,
         -10,
-        34,
+        22,
         20
        ]
       ]
@@ -10552,8 +10821,8 @@
         "reach",
         "R",
         18,
-        -26,
-        70
+        -10,
+        80
        ]
       ]
      ],
@@ -10578,8 +10847,8 @@
         "reach",
         "R",
         16,
-        -28,
-        74
+        -12,
+        80
        ],
        [
         "look",
@@ -10682,8 +10951,8 @@
         "reach",
         "R",
         18,
-        -26,
-        70
+        -10,
+        80
        ]
       ]
      ],
@@ -10708,8 +10977,8 @@
         "reach",
         "R",
         16,
-        -28,
-        74
+        -12,
+        80
        ],
        [
         "look",
@@ -10812,8 +11081,8 @@
         "reach",
         "R",
         18,
-        -26,
-        70
+        -10,
+        80
        ]
       ]
      ],
@@ -10838,8 +11107,8 @@
         "reach",
         "R",
         16,
-        -28,
-        74
+        -12,
+        80
        ],
        [
         "look",
@@ -10942,8 +11211,8 @@
         "reach",
         "R",
         18,
-        -26,
-        70
+        -10,
+        80
        ]
       ]
      ],
@@ -10968,8 +11237,8 @@
         "reach",
         "R",
         16,
-        -28,
-        74
+        -12,
+        80
        ],
        [
         "look",
@@ -11072,8 +11341,8 @@
         "reach",
         "R",
         18,
-        -26,
-        70
+        -10,
+        80
        ]
       ]
      ],
@@ -11098,8 +11367,8 @@
         "reach",
         "R",
         16,
-        -28,
-        74
+        -12,
+        80
        ],
        [
         "look",
@@ -11202,8 +11471,8 @@
         "reach",
         "R",
         18,
-        -26,
-        70
+        -10,
+        80
        ]
       ]
      ],
@@ -11228,8 +11497,8 @@
         "reach",
         "R",
         16,
-        -28,
-        74
+        -12,
+        80
        ],
        [
         "look",
@@ -11550,7 +11819,67 @@
     "like": "tie_knot"
    },
    "turn_back": {
-    "like": "turn_back"
+    "frames": 33,
+    "keys": [
+     [
+      0.0,
+      []
+     ],
+     [
+      0.55,
+      [
+       [
+        "turn",
+        -8
+       ],
+       [
+        "bone",
+        "DEF-spine.005",
+        0,
+        -7,
+        0
+       ],
+       [
+        "bone",
+        "DEF-spine.006",
+        6,
+        -22,
+        0
+       ],
+       [
+        "lean",
+        3
+       ]
+      ]
+     ],
+     [
+      1.0,
+      [
+       [
+        "turn",
+        -10
+       ],
+       [
+        "bone",
+        "DEF-spine.005",
+        0,
+        -8,
+        0
+       ],
+       [
+        "bone",
+        "DEF-spine.006",
+        10,
+        -24,
+        0
+       ],
+       [
+        "lean",
+        5
+       ]
+      ]
+     ]
+    ]
    }
   }
  },

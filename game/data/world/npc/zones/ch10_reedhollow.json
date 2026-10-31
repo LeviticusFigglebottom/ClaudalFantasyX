@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "doc": "Reedhollow's Kirru (the Lead, 2026-10-30: the creatures track builds the Kirru crowd bodies, assets_src/crowd/kirru; characters keep the named Pell, Owa and the Kirru child). The clutch: eight bodies on the greybox's clutch_0..7 stage actors on the Shore, so the farewell-tide (B09) shows Kirru, not capsules (the stage actors stay hidden until the story shows them); the bodies alternate so no two neighbours in either line match. The watchers (R01: the Kirru are already watching from the platforms, very tall, very still): one on each house platform, facing the lagoon, each row's `at` making its stand-in at CrowdSpots/<id>. Pell is never inside (rule 3); the gate and the causeway are clear. `body` rows: Kirru wear no tints. Each row's `tuning`: the Kirru's eye height (2.05 m, the youngster's 1.45 m) so their look-ats meet the party's eyes, and their stillness (bible section 8; pell.md section 1): a slower look-about, a longer and rarer glance, a narrow idle pace. The vignettes (the Lead, 2026-10-30: the Act II towns lived in; ground probed against the zone's collision, 2026-10-30), still as the Kirru are and on the clips they have (Pell's idle and talk): three fishers wading the lagoon to the hip with their staffs, heron-still, facing into it; two talking in bouts on the south ring (a chat pair); a youngster at the ring's inner edge watching the fishers. The lagoon's middle and the shore stay clear for the farewell-tide.",
+  "doc": "Reedhollow's Kirru (the Lead, 2026-10-30: the creatures track builds the Kirru crowd bodies, assets_src/crowd/kirru; characters keep the named Pell, Owa and the Kirru child). The clutch: eight bodies on the greybox's clutch_0..7 stage actors on the Shore, so the farewell-tide (B09) shows Kirru, not capsules (the stage actors stay hidden until the story shows them); the bodies alternate so no two neighbours in either line match. The watchers (R01: the Kirru are already watching from the platforms, very tall, very still): one on each house platform, facing the lagoon, each row's `at` making its stand-in at CrowdSpots/<id>. Pell is never inside (rule 3); the gate and the causeway are clear. `body` rows: Kirru wear no tints. Each row's `tuning`: the Kirru's eye height (2.05 m, the youngster's 1.45 m) so their look-ats meet the party's eyes, and their stillness (bible section 8; pell.md section 1): a slower look-about, a longer and rarer glance, a narrow idle pace. The vignettes (the Lead, 2026-10-30: the Act II towns lived in; ground probed against the zone's collision, 2026-10-30), still as the Kirru are and on the clips they have (Pell's idle and talk): three fishers on the ring's inner edge with their staffs out over the lagoon's mangrove water, heron-still; two talking in bouts on the south ring (a chat pair); a youngster at the ring's inner edge watching the fishers. The lagoon's middle and the shore stay clear for the farewell-tide.",
   "zone": "ch10/reedhollow",
   "storm_flag": "",
   "villagers": [
@@ -368,7 +368,7 @@
       "npc_id": "fisher_1",
       "body": "kirru_man",
       "stand_in": "CrowdSpots/fisher_1",
-      "at": [38.5, -1.6, -7.5, -150.9],
+      "at": [41.0, 0.0, -11.5, -180.0],
       "tuning": {
         "look_around": {
           "every_sec": [10.0, 18.0],
@@ -390,7 +390,7 @@
       "npc_id": "fisher_2",
       "body": "kirru_elder_woman",
       "stand_in": "CrowdSpots/fisher_2",
-      "at": [52.5, -1.6, -6.0, 135.0],
+      "at": [57.5, 0.0, 3.5, 90.0],
       "tuning": {
         "look_around": {
           "every_sec": [10.0, 18.0],
@@ -412,7 +412,7 @@
       "npc_id": "fisher_3",
       "body": "kirru_woman",
       "stand_in": "CrowdSpots/fisher_3",
-      "at": [49.0, -1.6, 7.5, 35.5],
+      "at": [36.0, 0.0, 11.6, -0.0],
       "tuning": {
         "look_around": {
           "every_sec": [10.0, 18.0],

@@ -26,7 +26,7 @@ Aldous_varrow as "Dock-master" [neutral]: Came back years after. Built a hull in
     @anim aldous_varrow set_bowl liss
     @wait 2.0
 <<endif>>
-Rhen [sad]: He hummed the same song every night. Came home from the Low Reaches with salt in his beard. #line:ch15_daces_008
+Rhen [sad]: He hummed the same song every night. Came home off the wrecks with salt in his beard. #line:ch15_daces_008
 Rhen [sad]: Went up the coast for wall-work when I was eight. Didn't come back. #line:ch15_daces_009
 Rhen [neutral]: He left his lantern on its hook. That's the one thing he finished. #line:ch15_daces_010
 @wait 3.0

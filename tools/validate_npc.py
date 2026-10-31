@@ -8,7 +8,8 @@
   villager whose model it wears) has an actor scene, is
   unique in the zone and has a stand_in path; chat_with names another row that chats back; route entries are
   points or {at, pause_sec, activity} with a known activity; shelter and work_at are [x, y, z] or
-  [x, y, z, yaw_deg]; storm_flag (when set) is a declared flag.
+  [x, y, z, yaw_deg]; storm_flag (when set) is a declared flag, and so are a row's flag and not_flag (a `flag` row
+  is a variant of its crowd person's own row, so it doesn't count as their second).
 * Crowd rows (M3-CRE-659, ADR 0152): a row's `crowd` names a person in game/data/world/npc/crowd.json who stands
   in this zone at this stage actor (stand_in CutsceneStage/Actors/<stage_actor>, or the stage actor itself when it is
   a scene path with a "/", attach child); their body's actor
@@ -230,6 +231,9 @@ def zone_errors(root: Path, rel: str, locations: set[str], flags: set[str],
                             f"not {row.get('stand_in')!r}")
         if "silhouette" in row and not re.fullmatch(r"#[0-9A-Fa-f]{6}", str(row["silhouette"])):
             errs.append(f"{where}: silhouette is not a #RRGGBB colour")
+        for key in ("flag", "not_flag"):  # VillagerLayer: shown while the flag is set / until it is set
+            if key in row and str(row[key]) not in flags:
+                errs.append(f"{where}: {key} {row[key]!r} is not declared in {FLAGS_FILE}")
         if "shown" in row and row["shown"] not in SHOWN:
             errs.append(f"{where}: shown {row['shown']!r} is not one of {sorted(SHOWN)} (none: always)")
         if "tuning" in row and not isinstance(row["tuning"], dict):
@@ -473,7 +477,8 @@ def crowd_errors(root: Path, locations: set[str]) -> list[str]:
     zone_files = sorted((root / ZONES_DIR).glob("*.json")) if (root / ZONES_DIR).is_dir() else []
     for f in zone_files:
         for r in _load(f, []).get("villagers", []):
-            if isinstance(r, dict) and "crowd" in r:
+            # a `flag` row is a variant of the person's own row (shown once the flag is set), not a second person
+            if isinstance(r, dict) and "crowd" in r and "flag" not in r:
                 rows[str(r["crowd"])] = rows.get(str(r["crowd"]), 0) + 1
     for pid in sorted(ids):
         if rows.get(pid, 0) != 1:

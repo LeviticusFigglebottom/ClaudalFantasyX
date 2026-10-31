@@ -589,6 +589,75 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **M5-A3P-1401 (Act III, Ch19): the Lamp Spire's tier kit. MERGE-READY @ d6f51ad3** (review: art).
+  - **New pieces:**
+    - `spire_tier` (stacks every 4.2 m): flags on a bed whose underside is the ceiling below, the stairwell open where
+      the flight arrives, conduit rings, six window bays, and the flight curving up the wall.
+    - `spire_lamp_engine`: bound and steady.
+    - `spire_quarters`: the founders' room, the child's height marks on the door post.
+  - Viewed in a staged stack at a walker's eye. Two fixes after viewing: wedge gaps between the flags (now on a bed),
+    and the deck's underside normals.
+  - **Checks:**
+    - Tools: test_iskarra_spire (+2 checks), test_iskarra and test_haluna_kit OK.
+    - validate_data and taskboard --check clean.
+  - The ch19 greybox and the stacking of the tiers are the Act III chapters' track's; iskarra.md §3 describes the kit
+    for them.
+- **CONFIRMED 23:27 (the Lead's check-in): all pushed to origin/claude/env-art** (the head is 55188ef9 and later).
+  - The last Oruvel outrigger, M3-ENV-1391: MERGE-READY @ 0de280e2.
+  - The Ch4 derelict hatch lip, M4-A2P-1403: MERGE-READY @ bcb96e0a (its log commit; the fix is just before it).
+  - M5-A3P-1400, Ch20's three memory rooms: MERGE-READY @ 23805774.
+- **CLAIM M5-A3P-1401 (Act III, Ch19): the Lamp Spire's four tiers' interior kit** (`spire_tier`,
+  `spire_lamp_engine`, `spire_quarters` in iskarra_spire.py; task file in docs/kb/tasks/M5/). Lead, please record
+  the claim. The zone split proposal to env-art-b (below) has no answer yet; Ch19 is in my lane under it either way.
+- **M5-A3P-1400 (Act III): Ch20's three missing memory rooms. MERGE-READY @ 83fbf95e** (review: art).
+  - **New pieces:** `memory_terrace` (U02), `memory_gallery` (U05) and `memory_square` (U06), each within 7k / 500
+    triangles, with glbs, imports, PROVENANCE rows and manifest rows.
+  - **The undertow_cage arena now hangs all six rooms.** The gallery replaces its stand-in second kitchen.
+  - **Viewed in the arena:**
+    - the square's pool and flags were raised onto the island's top (they first sat under it);
+    - the terrace's boats became pointed hulls;
+    - the gallery's columns read dark under the top-down key, which Ch20's staging will light.
+  - **Checks:**
+    - Tools: test_undertow_layers (+2 checks), undertow_heart, haluna_kit and arenas, 51 OK.
+    - Godot `--filter=arena`: 18/0.
+    - validate_data clean; no banned terms.
+  - **Baselines that move (none written):** battle_arena_undertow_cage.
+  - **Next (still waiting for env-art-b to confirm the split):** Ch19's Iskarra (the full dusk version, and the Lamp
+    Spire's floors beyond its crown, M3-ENV-726).
+- **ACT III (ADR 0207): CLAIM M5-A3P-1400, Ch20's three missing memory rooms** (`memory_terrace`, `memory_gallery`,
+  `memory_square` in undertow_layers.py; task file in docs/kb/tasks/M5/). Lead, please record the claim on integration.
+  - **Ownership row appended:** Act III env-art covers the Undertow and Heart kits, Ch19 Iskarra and the Spire, the
+    ending grades, Ch18's Reedhollow revisit, and `tools/act3/ch19_*`/`ch20_*`.
+  - **ZONE SPLIT, proposed to env-art-b** (please confirm or amend in env-art-b.md):
+    - env-art-b: Ch17 Hollowmere (already claimed, M5-A3P-1500) and Ch18's Kite (Dace's hull is the Kite, and the
+      hull is yours).
+    - env-art: Ch18's Reedhollow revisit, Ch19 (the full Iskarra dusk and the Lamp Spire), Ch20 (the Undertow layers)
+      and the ending (Ch21's heart and grades). I wrote those kits and briefs (iskarra, undertow_layers, ending).
+- **The Ch10–Ch12 beauty pass is complete (M4-A2P-1402, review: art). MERGE-READY @ f3df9d62.**
+  - **Ch12 at eye height** (Keth Pass, Quellan, Cloudloom): the volcanic crag read as flat black masses (keth_pass.md
+    calls for "grey crags"), and the road's granite read near black.
+    - `kit_keth_crag` now has a neutral grey tint over 1. The first, cool tint read blue (99692b06); this commit
+      corrects it.
+    - `kit_keth_road` (also the dry-stone walls) lifts a step.
+  - Reedhollow reads well.
+  - **Checks:**
+    - Tools: the keth and haluna kit tests OK.
+    - Godot `--filter=ch12` is green; validate_data clean.
+  - **Baselines that move (none written):** the Ch12 zone shots and the keth_seep_terrace arena.
+  - **Next:** Act III per ADR 0207. First, claim the paths in ownership.md and agree the zone split with env-art-b
+    here.
+- **LEAD (21:56, ADR 0207), noted.** When the queue is empty: supplement others, or start Act III environments in my lane
+  (M5-A3P-1400..1499). I'll claim the paths in ownership.md first and agree the zone split with env-art-b here.
+  The order: the hatch lip (done, M4-A2P-1403), then the rest of the Ch10–Ch12 pass (Reedhollow and the Ch12 zones,
+  rendering now), then Act III.
+- **LEAD (21:46), answered: the derelict's hold-hatch corner (M4-A2P-1403, review: qa). MERGE-READY @ b36f94ef.**
+  - The hatch's collider is now an octagon with 0.25 m chamfers (`derelict_hatch()` in
+    `tools/act1/ch04_ferry_dressing.py`); the mesh is unchanged.
+  - A headless probe walked along -x at the corner. At lateral offsets 0.0 and 0.1 m, the old square stopped the hero
+    after 0.5 m; the octagon slides him on 4.35 m. Walking into the flat face still stops him.
+  - Godot `--filter=ch04` is green; validate_data and taskboard --check are clean.
+  - Next: back to the Ch10–Ch12 beauty pass. M4-A2P-1402 covers the fen, Lowlight and the Vey; Reedhollow and the
+    Ch12 zones follow.
 - **CONFIRMED 21:06: the last Oruvel outrigger fix (M3-ENV-1391) is pushed.** It is 0de280e2 on origin/claude/env-art,
   MERGE-READY.
 - **LEAD (21:05), answered: the Act II Ch10–Ch12 beauty pass (M4-A2P-1402, review: art). MERGE-READY @ a60417fc.**

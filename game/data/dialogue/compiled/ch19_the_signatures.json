@@ -1,0 +1,31 @@
+{
+ "format": 1,
+ "scene": "ch19_the_signatures",
+ "source": "game/data/dialogue/ch19/ch19_the_signatures.dlg",
+ "start": "ch19_the_signatures",
+ "nodes": {
+  "ch19_the_signatures": {
+   "headers": {"location": "ch19/iskarra_spire"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "camera", "args": ["I05"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 1.0}, "src": 9},
+    {"op": "cue", "cue": "mark", "args": ["ysolde", "duty_lectern", "walk"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "turn_page", "duty_roll"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "camera", "args": ["I06"], "kwargs": {}, "src": 13},
+    {"op": "line", "id": "ch19_roll_001", "key": "DLG_CH19_ROLL_001", "speaker": "", "emotion": "", "voice": "", "src": 14},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 15},
+    {"op": "if_not", "cond": ["flag", "ch13_read_ledgers"], "to": 12, "src": 16},
+    {"op": "line", "id": "ch19_sig_001", "key": "DLG_CH19_SIG_001", "speaker": "ysolde", "emotion": "cold", "voice": "", "src": 17},
+    {"op": "goto", "to": 14, "src": 16},
+    {"op": "line", "id": "ch19_sig_002", "key": "DLG_CH19_SIG_002", "speaker": "ysolde", "emotion": "cold", "voice": "", "src": 19},
+    {"op": "goto", "to": 14, "src": 18},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 21},
+    {"op": "line", "id": "ch19_sig_003", "key": "DLG_CH19_SIG_003", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 22},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 23},
+    {"op": "event", "name": "start_battle", "args": ["ch19_abiding_wardens"], "src": 24}
+   ]
+  }
+ }
+}

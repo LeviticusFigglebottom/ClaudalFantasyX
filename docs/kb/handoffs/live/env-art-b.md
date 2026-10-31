@@ -1206,3 +1206,40 @@ SELF-RENDERED @ d2263160: the 18 Ch13–Ch16 hero shots before; the four archive
 - **Checks:** gdlint and gdformat OK. Godot `--filter` zone_kit_dressing 10, hollowmere 2, lacquer 2, open_sea 2, ch14 5, zone_snap 1 and ambient_life 1 all pass. Tools tests for lacquer court, hollowmere and hollowmere-kit (17) OK. validate_data and taskboard OK.
 - **MERGE-READY @ 683ce87f.**
 SELF-RENDERED @ 1a51d418: ch15_hollowmere_dock, ch15_hollowmere_arrival, ch15_sea_wide, ch15_sea_deck, ch14_court_ceremony and the open sea from above (scratch), all viewed.
+
+### Perf check: Pemakar, Brine Shoals, Corrow, Ch13–Ch16 (Lead 21:25)
+- **Report:** `docs/kb/qa/gpu/2026-10-30-env-art-b-zone-counts.md`. It covers 16 hero shots on lavapipe through the shot rigs, with draws (and shadow draws), objects, primitives, meshes, multimeshes, lights and the most repeated meshes per shot, plus a node-by-node timing of each zone's entry.
+- **Draws are low everywhere.** Godot batches the kit's shared meshes: Pemakar has 2,526 objects in view but only 311 draws. The worst frame is Corrow's strand at about 1,600 draws counting shadows. No zone is over the proposed budget, so no props were converted to MultiMeshes. Pemakar's graves and terraces would only cut node count, and they carry collision.
+- **Triangles:** Pemakar is the heavy one at 1.8–1.9 M in view; it's the row for the PC's `gpu_bench` at the minimum tier. Everything else is under 0.9 M.
+- **Lights:** Pemakar's 393 lamp omnis now fade out from 70 m over 20 m. ZoneKitDressing's new `fire_light_fade` (96c82b27, tested) does this, and Pemakar uses it (4cd6ed12). ch05_pemakar_harbour, _crown and _weir look the same by eye; the far glow is already the far_lights quads.
+- **Entry time:** 11–24 s on this box for Pemakar, Brine Shoals and Corrow, but the dressing is about 2 s of it at Pemakar and 0.55 s at Corrow. Most of the rest is the cutscene heroes' bodies and AnimationTrees (1.6–2.7 s each), which ADR 0111's resident loads take out of the swap frame in the game (the probe bypasses SceneRouter). The first UI label adds another 1.2–1.9 s.
+- **LEAD-ASK:** no per-zone draw or instance budget is written in docs/kb/tech or ADR 0111. Proposed in the report: ≤ 800 visible draws (≤ 2,000 with shadows), ≤ 3,000 objects, ≤ 2 M triangles, ≤ 400 omnis, and the dressing ≤ 0.5 s on a desktop CPU. Adopt it, or name the tech doc that should hold it.
+- **Checks:** gdlint and gdformat OK. Godot `--filter` ambient_life 2, zone_kit_dressing 10 and pemakar 10 pass. test_pemakar_kit and validate_data OK.
+- **MERGE-READY @ b0bfb31e.**
+SELF-RENDERED @ 4cd6ed12: ch05_pemakar_harbour, _crown and _weir with the lamp fade, compared against the beauty-pass renders, all viewed.
+
+### Act III opens (Lead 21:56, ADR 0207): M5-A3P-1500, Ch17's dry-dock and Dace's hull
+- The perf check is done (above). My queue is empty, so under ADR 0207 I'm starting Act III in my lane. **CLAIM (Lead, please record on integration):** M5-A3P-1500, Ch17 Hollowmere's dry-dock berths and Dace's hull. Ownership row appended. Hollowmere's kit module and dressing are already mine; the Ch17 layout and marks stay the Act III chapters' track's.
+- **The reading:** one hull serves Ch15, Ch17 and Ch18's Kite. The stern third is decked, with a hatch down to the cabin (ledger, chart wall, tool rack, bunk). The engine bay forward of it holds an empty lift-engine bed. The bow stays bare ribs, as Ch15 sees it. The keel gets a brass shoe, and the mast carries one kite wing half-rigged. Four berths stand in a row, Dace's last, with Tobin's post at the first. Spelled out in the task file, for the story track to overrule in review.
+- **Next:** revise `dace_hull_frame` in hollowmere.py, add `hm_drydock_berth`, rebuild both, then dress and render.
+- **M5-A3P-1500 step 1 (7fd8e3e5):** `dace_hull_frame` revised in hollowmere.py and rebuilt (4,648 / 850 triangles, with its manifest row).
+  - **The stern third:** planked both sides and decked, with an open hatch, a ladder down, and a bulkhead that follows the rib with a doorway.
+  - **The cabin:** bunk, fold-down desk with the open ledger, stool, the chart wall (Corrow in a red ring), and the tool rack with copper hooks.
+  - **The engine bay:** an empty bed (bearers, chocks, a bronze mounting ring), a brass keel shoe, the mast, and the +Z kite wing with two panels bent on and the rest furled.
+  - **Unchanged:** Ch15's view from the arrival side (bare ribs and the near-side strakes forward).
+  - **Viewed** at eye height in the zone (exterior, cabin, engine bay, deck). The cabin first showed the sea through its one-sided planking; the planking, deck underside and bulkhead now have both faces.
+  - **Checks:** test_hollowmere 5, test_haluna_kit, Godot hollowmere 2, ambient_life 2 and validate_data all OK.
+  - **Marks** for the Act III chapters are in the task file.
+  - **Next:** `hm_drydock_berth` ×4 (Tobin's post at the first), then the berth row's dressing and the walk collision.
+- **M5-A3P-1500 step 2 (07fb3f7f):** `hm_drydock_berth` and `hm_drydock_berth_first` are built, with PROVENANCE, manifest rows and the kit's import settings including post_import. Three berths stand in a row beside Dace's along his beam, the first nearest the dock's east end. Tobin's post has its pale top and an old rope coil, and the first hull's keel ribs show just under the water. The Ch15 windmill at (76, -10) stood against the row and moves to (66, -14). Viewed along the row, at the post and at the keel. test_hollowmere, test_haluna_kit, test_ch15_hollowmere_dressing, Godot hollowmere and ambient_life, and validate_data are OK.
+  - **Waiting on the Act III chapters** for the walk path (a gangway from the dock to the berths). The walk collision and the cabin lamp follow it. The marks are in the task file.
+  - **MERGE-READY @ 07fb3f7f** for the kit pieces and the row. Ch15's Hollowmere shots that see the dry-dock (ch15_hollowmere_dock and _arrival look the other way) may change.
+- **M5-A3P-1500 step 3 (8f052ec7, Lead 23:26):** the dock-master's house for B07 and B11.
+  - **The piece:** `hm_dockmaster_house`, hm_lashed_hulls with the deckhouse furnished: table, benches, lamp hook, shelf of jars and a chart, sleeping mat, net. Built with its manifest row, PROVENANCE row and import settings.
+  - **Placement:** HousePlatform1, where the greybox's `fathers_door` stands. The `fathers_table` mark should go by the table at world (27.55, 0, -21.05), lit by a flickering lamp over it.
+  - **Viewed** inside from the door.
+  - **Tests:** test_ch15_hollowmere_dressing gains Ch17-room tests (the oil-lamp count +1). Godot test_hollowmere_dressing's light count is +1. Both green, as are test_hollowmere, test_haluna_kit, Godot ambient_life and validate_data.
+  - **MERGE-READY @ 8f052ec7.**
+  - **Next in the claim:** the hull's walk collision and its cabin lamp, which wait on M5-A3P-1001 (chapters: marks, and the path to the berths). The Ch17 dusk and night grades for B06 and B08 (the zone is at dawn) need the chapters' states rows first. Otherwise my Act III claim is done; next I offer env-art help by request task.
+- **Supplement offer (ADR 0207 §1): M5-A3P-1501.** I've offered env-art the Ch18 Kite hub dressing (`ch18/kite`, which nobody has claimed), placing env-art's kite.py pieces unchanged, with the layout staying the chapters'. Alternatives are listed in the task. I claim nothing until env-art answers.
+  - **LEAD-ASK:** relay to env-art, or assign me directly if you'd rather.

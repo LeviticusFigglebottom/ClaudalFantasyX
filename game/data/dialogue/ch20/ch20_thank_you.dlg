@@ -1,0 +1,28 @@
+// M5-A3P-1010. Ch20 U08 "Thank you." (C, 2 min). act3_ch20.md §2 U08. The four founders fall one by
+// one, each saying thank you. The last, Cael Imbrey, says it to Asha and then, looking past her down the well, names
+// nobody (rule 5: Imra and Dace are not seen or named in Ch20). The Cage's bars are bound light; when it breaks THE
+// FOUNDERS DON'T LIFT YET (only the Vowbound release in Ch20: rule 2). They lie in the dark water, held, waiting for
+// H09. §10 Q6: cut Cael's second line if Cinematics wants silence.
+title: ch20_thank_you
+location: ch20/undertow_layers
+---
+@letterbox on
+@camera U29
+@music thank_you fade=1.0
+Orin_tesk as "Orin Tesk" [tender]: Thank you. #line:ch20_thanks_001
+@wait 2.0
+Halde_moor as "Halde Moor" [tender]: Thank you. #line:ch20_thanks_002
+@wait 2.0
+Isse_varan as "Isse Varan" [tender]: Thank you. #line:ch20_thanks_003
+@wait 3.0
+@camera U30
+Cael_imbrey as "Cael Imbrey" [tender]: Thank you. #line:ch20_thanks_004
+@anim cael_imbrey look_at well_down
+@wait 3.0
+Cael_imbrey as "Cael Imbrey" [neutral]: She's waiting for you. Both of them are. #line:ch20_thanks_005
+@vfx glimmer_held at=founders count=4
+@wait 4.0
+<<set $ch20_complete = true>>
+@fade out 2.0
+@letterbox off
+===
