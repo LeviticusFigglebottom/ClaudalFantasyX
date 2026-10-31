@@ -1,4 +1,4 @@
-# big39: 198 shots: 96 PASS, 81 DRIFT (0 size mismatch), 21 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big39: 223 shots: 97 PASS, 98 DRIFT (0 size mismatch), 28 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 NO-BASELINE slice_end_card (pending_baseline)
 DRIFT battle_hud_preview rmse 0.06883 (limit 0.00800)
 DRIFT battle_swap_menu rmse 0.06883 (limit 0.00800)
@@ -196,4 +196,29 @@ PASS ch08_coilspire_path rmse 0.00574 (limit 0.00800)
 PASS ch08_coilspire_hall rmse 0.00737 (limit 0.00800)
 DRIFT ch07_bell_galleries rmse 0.00838 (limit 0.00800)
 PASS ch07_bell_moorings rmse 0.00458 (limit 0.00800)
+DRIFT npc_haluna_dock rmse 0.06115 (limit 0.00800)
+DRIFT npc_haluna_market rmse 0.01846 (limit 0.00800)
 DRIFT npc_haluna_chapel rmse 0.11799 (limit 0.00800)
+DRIFT npc_haluna_lane rmse 0.01893 (limit 0.00800)
+DRIFT wildlife_zone_brine_flats rmse 0.02683 (limit 0.00800)
+DRIFT wildlife_zone_brine_wrecks rmse 0.03287 (limit 0.00800)
+NO-BASELINE wildlife_zone_ossa_fen_walk0
+NO-BASELINE wildlife_zone_ossa_fen_pocket
+NO-BASELINE wildlife_zone_ossa_fen_rail0
+NO-BASELINE wildlife_zone_keth_pass_foot
+NO-BASELINE wildlife_zone_keth_pass_saddle
+NO-BASELINE wildlife_zone_pale_rim_wade
+NO-BASELINE wildlife_zone_hollowmere_dock
+DRIFT wildlife_zone_underway_crown rmse 0.03394 (limit 0.00800)
+DRIFT battle_boss_intro_reach rmse 0.10756 (limit 0.00800)
+DRIFT battle_arena_wall_head rmse 0.12188 (limit 0.00800)
+DRIFT dialogue_voice_over rmse 0.02545 (limit 0.00800)
+DRIFT battle_ch08_stair_hold rmse 0.01936 (limit 0.00800)
+DRIFT creature_mangrove_drowner rmse 0.14349 (limit 0.00800)
+DRIFT creature_mangrove_drowner_risen rmse 0.14597 (limit 0.00800)
+DRIFT creature_lamp_engine rmse 0.05021 (limit 0.00800)
+DRIFT creature_lamp_engine_opened rmse 0.05482 (limit 0.00800)
+PASS npc_wake_feast rmse 0.00200 (limit 0.00800)
+DRIFT creature_avalanche_ram rmse 0.02548 (limit 0.00800)
+DRIFT creature_wakefin rmse 0.02191 (limit 0.00800)
+DRIFT slice_haluna_villagers_village rmse 0.13457 (limit 0.00800)
