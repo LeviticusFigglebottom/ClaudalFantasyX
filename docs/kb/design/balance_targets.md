@@ -332,3 +332,11 @@ Measured at 500 seeds (2026-10-31). The suites are in `tools/balance/targets.jso
   unguarded, and Sefir can't be felled (an `hp_floor_pct`), so a masher who never covers the verse loses. That is the
   fight's point. Every Stilled strength that lifted the masher to 10% pushed the role answer (Toma covering, Kerrid
   breaking the Stilled) past 95%: str 7 gave 12 and 99.5; str 10 at defence 45 gives 0.4 and 89.6.
+- **The Ch18 optional bosses** (combat rows for creatures-b's M5-A3P-1852/1853; no models yet, so qa capsules; placement
+  waits on Design's Kite world map and secret coordinates, SPEC §6.6):
+  - `ch18_tide_matron` (the Cinder Matron's rig as a coral kiln: the Crust, then the Pour at 60% with its telegraphed
+    recrust) is in the Act III boss band: role 68.6, smart 100 at 30.2 mean turns.
+  - `ch18_old_leviathan`, the superboss, has its own band: naive ≤ 2%, smart 50–90% with ≥ 60 mean turns, p90 ≤ 160,
+    and role report only. A role answer that never heals can't last a fight that is long by design. At 500 seeds:
+    smart 84.2 at 134 turns, p90 146. Settle gives Protect and Shell, not Regen; Regen on 8000 HP outhealed every
+    policy.

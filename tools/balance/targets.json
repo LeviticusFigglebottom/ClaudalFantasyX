@@ -2385,6 +2385,74 @@
       "p90_turns_max": 45,
       "loadout": "ch17_moorings",
       "swell": "good"
+    },
+    {
+      "id": "ch18_tide_matron",
+      "chapter": "Ch18 optional boss (the Tide Matron, the Cinder Matron as a coral kiln: Crust, then the Pour at 60% with a telegraphed recrust; Kerrid's break answers her; the Act III boss band, smart report only with an ease floor; tuned by the chapters combat seat; the Ch19 kit)",
+      "kind": "boss",
+      "encounter": "ch18_tide_matron",
+      "active": [
+        "kerrid",
+        "rhen",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "asha"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          2
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          50,
+          75
+        ],
+        "smart": null,
+        "ward_guard": null
+      },
+      "p90_turns_max": 90,
+      "loadout": "ch19_iskarra",
+      "swell": "good",
+      "mean_turns_min": {
+        "smart": 30
+      }
+    },
+    {
+      "id": "ch18_old_leviathan",
+      "chapter": "Ch18 superboss (the Old Leviathan on the secret shoal: a long, patient fight, Settle every fourth turn, waking at two thirds and roused at one third; the superboss band: smart wins over a long fight; the role answer, which never heals, is report only; tuned by the chapters combat seat; the Ch19 kit)",
+      "kind": "boss",
+      "encounter": "ch18_old_leviathan",
+      "active": [
+        "kerrid",
+        "rhen",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "asha"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          2
+        ],
+        "naive_swell": null,
+        "role_answer": null,
+        "smart": [
+          50,
+          90
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 160,
+      "loadout": "ch19_iskarra",
+      "swell": "good",
+      "mean_turns_min": {
+        "smart": 60
+      }
     }
   ]
 }
