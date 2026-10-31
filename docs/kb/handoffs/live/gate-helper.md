@@ -65,3 +65,5 @@ and reports; it never edits game or test files.
 - big40 @ 9c120402 (HEAD checked): lanes B 21 files, 05:02-05:07 UTC (5 min). 20 green, 1 red:
   test_battle_party_kits (1 failed: hesper_oan's wardens_go_home and cage_chains on cage_orin, cage_halde, cage_isse and
   cage_cael stage as a melee run at one hero, which this reach test does not expect). Result: gate-big40-lanes-b-result.md.
+- big41 @ 4eb49fff (HEAD checked): lanes B 5 files, 05:50-06:00 UTC (10 min). **All 5 green.**
+  Result: gate-big41-lanes-b-result.md.
