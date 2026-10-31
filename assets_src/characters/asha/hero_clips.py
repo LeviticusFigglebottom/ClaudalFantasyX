@@ -2916,8 +2916,10 @@ def helper_pose(sk: "Skeleton", g: dict, out: dict, hips=None) -> None:
     rq_h = sk.rest_q[HIPS]
     scales = out.setdefault(SCALE_KEY, {})
     sk.last_skirt = skirt_solve(sk, g, hips)  # prop_pivot poses the cloth from the same solve
+    sk.skirt_clear = None
     w = float(getattr(sk, "skirt_loco", 0.0))
-    if w > 0.0:  # row 56: in the locomotion clips the legs' own weights carry the front and sides of the hem
+    if w > 0.0:
+        sk.skirt_clear = sk.last_skirt  # row 56: the staff still keeps clear of the full clearance swing's cloth  # row 56: in the locomotion clips the legs' own weights carry the front and sides of the hem
         k = 1.0 - w * (1.0 - SKIRT_LOCO_SWING)
         sk.last_skirt = {h: (ax, an if -float(ax[0]) < SKIRT_LOCO_BACK else (an[0],) + tuple(x * k for x in an[1:]), sc)
                          for h, (ax, an, sc) in sk.last_skirt.items()}
@@ -3521,7 +3523,8 @@ def _skirt_cloth_posed(sk: "Skeleton", g: dict, hips) -> np.ndarray:
     dp = qmul(g[HIPS], qinv(rq_h))
     base = sk.rest_t[HIPS] + (np.zeros(3) if hips is None else np.asarray(hips, dtype=float))
     pts = []
-    for h, (ax, angs, _) in sk.last_skirt.items():
+    solves = [sk.last_skirt] + ([sk.skirt_clear] if getattr(sk, "skirt_clear", None) else [])
+    for h, (ax, angs, _) in ((h, v) for d in solves for h, v in d.items()):
         heads = _skirt_chain(sk, h)[0]
         at = _skirt_heads_posed(heads, ax, angs)
         pts += [_rot_about(sk.skirt_cloth[h + x], k, ax, ang) + (p - k)
