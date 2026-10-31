@@ -234,6 +234,13 @@
       "_note": "M5-A3P-1011: inside the Undertow (act3_ch20.md), Ch20Zone on env-art's Undertow kit: six memory layers, two landings, the Cage."
     },
     {
+      "id": "ch21/heart",
+      "scene": "res://game/levels/ch21/heart/heart.tscn",
+      "spawn": "HeartEdge",
+      "name_key": "LOCATION_CH21_HEART",
+      "_note": "M5-A3P-1015: the Heart of the Undertow (act3_ending.md), Ch21Zone on env-art's Heart kit: Kesh, Sefir, the Letting, the Great Unbinding."
+    },
+    {
       "id": "ch06/brine_shoals",
       "scene": "res://game/levels/ch06/brine_shoals/brine_shoals.tscn",
       "spawn": "Entry",

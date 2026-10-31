@@ -1,0 +1,223 @@
+{
+ "doc": "M5-A3P-1015 (docs/kb/tech/chapter_flow.md; act3_ending.md): Ch21 'The Heart' and the Ending. H01-H02 on arrival from Ch20's thank-yous; H03 Kesh at the centre (a touch); then each fight's return plays the next stage: Kesh's release and R1 (the seven bands), then Sefir's first phase (ch21_sefir_warden), H05 he takes the heart, H07 the Letting, and after it H08 and H09, the Great Unbinding, which takes them to the Kite. The fights are combat's (M5-A3P-1017): each battle step (ch21_kesh -> ch21_kesh_fought; ch21_sefir_warden -> ch21_warden_fought, after R1; ch21_sefir_heart -> ch21_heart_fought, after H05; ch21_sefir_letting -> ch21_letting_fought, after H07; return_spawn Centre) goes after its play when the encounter exists. The Ending on the Kite (this file's ch18/kite block, chapter 21): E1-E5 in order, the deck's held input on the strain, then the end card until the credits roll has a scene (M5-A3P-1700) and Haluna (E6, the beach rite: M5-A3P-1019) and Oruvel (E7: M5-A3P-1018) can be played.",
+ "chapter": "ch21",
+ "zones": {
+  "ch21/heart": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "set": [
+       "ch21_letting_fought"
+      ],
+      "unset": [
+       "ch21_unbound"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Centre"
+      },
+      {
+       "play": "ch21_sefir_lets_go"
+      },
+      {
+       "play": "ch21_great_unbinding"
+      },
+      {
+       "go": {
+        "location": "ch18/kite",
+        "spawn": "Deck"
+       }
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch21_heart_fought"
+      ],
+      "unset": [
+       "ch21_letting_fought"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Centre"
+      },
+      {
+       "play": "ch21_the_letting"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch21_warden_fought"
+      ],
+      "unset": [
+       "ch21_heart_fought"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Centre"
+      },
+      {
+       "play": "ch21_he_takes_the_heart"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch21_kesh_fought"
+      ],
+      "unset": [
+       "ch21_warden_fought"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Centre"
+      },
+      {
+       "play": "ch21_kesh_release"
+      },
+      {
+       "play": "ch21_seven_bands"
+      }
+     ]
+    },
+    {
+     "when": {
+      "unset": [
+       "ch21_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "HeartEdge"
+      },
+      {
+       "chapter": 21
+      },
+      {
+       "party": {
+        "party": [
+         "rhen",
+         "asha",
+         "toma"
+        ],
+        "reserve": [
+         "ysolde",
+         "kerrid",
+         "liss"
+        ]
+       }
+      },
+      {
+       "play": "ch21_the_last_layer"
+      },
+      {
+       "play": "ch21_two_lamps"
+      },
+      {
+       "set": "ch21_started"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "ch21_kesh": {
+     "when": {
+      "set": [
+       "ch21_started"
+      ],
+      "unset": [
+       "ch21_kesh_fought"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch21_kesh"
+      }
+     ]
+    }
+   }
+  },
+  "ch18/kite": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "set": [
+       "ch21_unbound"
+      ],
+      "unset": [
+       "ending_landed"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Deck"
+      },
+      {
+       "play": "ending_imra"
+      },
+      {
+       "play": "ending_rest_hands"
+      },
+      {
+       "play": "ending_dace"
+      },
+      {
+       "play": "ending_rest_where_he_stood"
+      },
+      {
+       "play": "ending_kerrid"
+      },
+      {
+       "play": "ending_rest_empty_place"
+      },
+      {
+       "play": "ending_the_kite_comes_down"
+      },
+      {
+       "play": "ending_nothing_comes"
+      },
+      {
+       "set": "ending_landed"
+      },
+      {
+       "scene": "res://game/flow/end_card.tscn"
+      }
+     ]
+    }
+   ],
+   "beats": {}
+  }
+ }
+}

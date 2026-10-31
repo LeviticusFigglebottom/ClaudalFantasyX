@@ -402,5 +402,11 @@ flags = {
 "ch20_virel_fought": "Ch20 (M5-A3P-1011): the victory flag of Virel's fight (the encounter ch20_virel, combat's M5-A3P-1013); the flow plays ch20_virel_release on the return.",
 "ch20_hesk_fought": "Ch20 (M5-A3P-1011): the victory flag of Hesk's fight (the encounter ch20_hesk, combat's M5-A3P-1013); the flow plays ch20_hesk_release on the return.",
 "ch20_nhoa_fought": "Ch20 (M5-A3P-1011): the victory flag of Nhoa's fight (the encounter ch20_nhoa, combat's M5-A3P-1013); the flow plays ch20_nhoa_release on the return.",
-"ch20_ethren_fought": "Ch20 (M5-A3P-1011): the victory flag of Ethren's fight (the encounter ch20_ethren, combat's M5-A3P-1013); the flow plays ch20_ethren_release on the return."
+"ch20_ethren_fought": "Ch20 (M5-A3P-1011): the victory flag of Ethren's fight (the encounter ch20_ethren, combat's M5-A3P-1013); the flow plays ch20_ethren_release on the return.",
+"ch21_started": "Ch21 H01 (M5-A3P-1015, the flow): the party reaches the Heart (ch21_the_last_layer, ch21_two_lamps).",
+"ch21_kesh_fought": "Ch21 H03 (M5-A3P-1015): the victory flag of Kesh's fight (the encounter ch21_kesh, combat's M5-A3P-1017); the flow plays ch21_kesh_release on the return.",
+"ch21_warden_fought": "Ch21 H04 (M5-A3P-1015): the victory flag of Sefir's first phase (ch21_sefir_warden, M5-A3P-1017).",
+"ch21_heart_fought": "Ch21 H05-H06 (M5-A3P-1015): the victory flag of Sefir's heart phase (ch21_sefir_heart, M5-A3P-1017).",
+"ch21_letting_fought": "Ch21 H07 (M5-A3P-1015): the victory flag of the Letting's phase (ch21_sefir_letting, M5-A3P-1017); then H08 and H09.",
+"ending_landed": "The Ending (M5-A3P-1015, the flow): E1-E5 have played on the Kite after the Great Unbinding."
 }

@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch21/ch21_zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/heart_floor.glb" id="p_heart_floor"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/heart_column.glb" id="p_heart_column"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/heart_eyewall.glb" id="p_heart_eyewall"]
+
+[node name="Heart" type="Node3D"]
+script = ExtResource("1_zone")
+location_id = &"ch21/heart"
+layout_path = "res://game/levels/ch21/heart/heart_layout.json"
+hold_field_path = "res://game/data/flow/act3_field.json"
+
+[node name="Floor" parent="." instance=ExtResource("p_heart_floor")]
+
+[node name="Column" parent="." instance=ExtResource("p_heart_column")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.5, 0, -12.0)
+
+[node name="Eyewall" parent="." instance=ExtResource("p_heart_eyewall")]
+
+[node name="Cast" type="Node" parent="."]
+script = ExtResource("90_cast")

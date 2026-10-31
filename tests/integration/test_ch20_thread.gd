@@ -39,7 +39,7 @@ func test_down_the_eye_through_six_layers_and_the_cage() -> void:
 	_close()
 	_open()
 	assert_true(bool(Game.get_flag(&"ch20_complete")), "U08: the thank-yous")
-	assert_eq(hand_offs.back()[0], ZoneStory.KIND_SCENE, "the end card until Ch21's heart exists")
+	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch21/heart", "spawn": "HeartEdge"}], "the Heart")
 	_close()
 	Game.state = saved_state
 

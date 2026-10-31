@@ -52,7 +52,14 @@ def kite() -> dict:
                   "stern_rail": [0.9, 0.0, -2.0, 90.0], "bow_rail": [23.0, 0.0, 0.0, 270.0],
                   "kite_lamps": [6.0, -0.6, -2.0, 0.0], "sails": [12.0, 6.0, 0.0, 0.0],
                   "flotilla": [-30.0, -40.0, 10.0, 0.0], "iskarra": [10.0, 1.0, 1.6, 0.0],
-                  "ansedra": [90.0, -60.0, -50.0, 0.0]},
+                  "ansedra": [90.0, -60.0, -50.0, 0.0],
+                  # the Ending on the deck (M5-A3P-1015; act3_ending.md E1-E5): where each goodbye stands
+                  "kite_rail": [20.0, 0.0, 3.0, 180.0], "kite_rail_b": [18.6, 0.0, 3.0, 180.0],
+                  "by_asha": [11.0, 0.0, -1.0, 90.0], "where_dace_stood": [16.0, 0.0, -2.0, 90.0],
+                  "rhen_shoulder": [15.2, 0.0, -1.2, 90.0], "rhen_hitch": [15.4, 1.0, -1.4, 0.0],
+                  "imra": [14.0, 1.5, -3.0, 0.0], "dace": [16.4, 1.5, -2.2, 0.0], "kerrid": [19.8, 1.5, 2.6, 0.0],
+                  "kerrid_hands": [19.8, 1.0, 2.4, 0.0], "sea": [40.0, -10.0, 30.0, 0.0],
+                  "sea_far": [80.0, -20.0, 60.0, 0.0], "sea_last": [30.0, -15.0, 20.0, 0.0]},
         "actors": {},
         "shots": {
             "K01": {"pos": [26.0, 4.0, 8.0], "look_at": [10.0, 2.0, 0.0], "fov": 50},  # the hull lifts
@@ -63,6 +70,17 @@ def kite() -> dict:
             "K14": {"pos": [4.0, 2.2, 3.0], "look_at": [0.9, 1.5, -2.0], "fov": 45},  # the stern at night
             "K22": {"pos": [21.0, 2.0, 2.5], "look_at": [90.0, -60.0, -50.0], "fov": 40},  # Ansedra from the air
             "K23": {"pos": [21.0, 2.0, 2.5], "look_at": [90.0, -60.0, -50.0], "fov": 10},  # Merel's window, close
+            # the Ending (act3_ending.md E1-E5): Imra, Dace, Kerrid, bringing the Kite down by hand, nothing comes
+            "E01": {"pos": [10.0, 2.0, 2.0], "look_at": [14.0, 1.5, -3.0], "fov": 45},
+            "E02": {"pos": [12.4, 1.6, -0.6], "look_at": [14.0, 1.5, -3.0], "fov": 32},
+            "E03": {"pos": [12.0, 2.0, 2.0], "look_at": [16.4, 1.5, -2.2], "fov": 45},
+            "E04": {"pos": [14.6, 1.6, 0.0], "look_at": [16.4, 1.5, -2.2], "fov": 32},
+            "E05": {"pos": [18.0, 1.6, -0.4], "look_at": [15.2, 1.5, -1.2], "fov": 32},
+            "E06": {"pos": [13.0, 3.0, 4.0], "look_at": [16.0, 1.0, -2.0], "fov": 45},
+            "E07": {"pos": [16.0, 2.0, 0.0], "look_at": [19.8, 1.5, 2.6], "fov": 40},
+            "E08": {"pos": [18.6, 1.4, 1.2], "look_at": [19.8, 1.0, 2.4], "fov": 30},
+            "E09": {"pos": [6.0, 2.4, 3.0], "look_at": [2.8, 1.2, 0.0], "fov": 42},
+            "E10": {"pos": [9.0, 2.0, 3.5], "look_at": [30.0, -15.0, 20.0], "fov": 50},
         },
         "camera_volumes": [{"id": "Deck", "mode": "pan_follow", "at": [cx, 1.5, cz], "size": [2 * hx, 4.0, 2 * hz],
                             "pos": [cx, 7.0, 9.0], "look_at": [cx, 0.8, cz], "fov": 55, "priority": 1}],

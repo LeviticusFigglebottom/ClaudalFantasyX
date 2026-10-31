@@ -2,8 +2,8 @@
 id: M5-A3P-1015
 title: "Request (staging + flow): Ch21 in the heart (HT01–HT22) and the Ending (E01–E13), with its flow and credits"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "claude/act2-plan (supplementing act1-chapters/cinematics, the Lead 2026-10-30 23:26; ADR 0207)"
 depends_on: [M5-A3P-1014]
 reviewer: narrative
 milestone: M5
@@ -41,5 +41,21 @@ file-to-beat map: drafts README "Files by beat" (H01–H09, R1, E1–E7).
 
 ## Acceptance criteria
 - [ ] The zone, shots and marks exist, and the flow runs H01 → E7 with the credits before `ending_first_lamp`. Godot `act3` stays green.
+
+## Done (act2-plan, supplementing)
+- **Zone `ch21/heart`:** `Ch21Zone`, and `tools/act1/ch21_greybox.py` (new), which writes the layout and the scene.
+  - The scene instances env-art's Heart kit: `heart_floor`, `heart_column` at (-9.5, -12), `heart_eyewall`.
+  - The layout holds collision only, the spawns HeartEdge and Centre, the anchors the scenes name, and HT01–HT22. H09's seven lights rise round the eyewall; cinematics may cut them to their own places later.
+  - The location row and `LOCATION_CH21_HEART`.
+- **Flow:** `ch21.json`.
+  - **The Heart:** H01–H02 on arrival from Ch20 (Ch20 now goes here), H03 Kesh on a touch at the centre. Each fight's return then plays the next stage: Kesh's release and R1, H05, H07, then H08–H09, which go to the Kite.
+  - **The Ending:** this file's `ch18/kite` block (chapter 21) plays E1–E5 in order, including the strain's held input, then the end card.
+  - **New flags:** `ch21_started`, the four victory flags (`ch21_kesh_fought`, `_warden_fought`, `_heart_fought`, `_letting_fought`) and `ending_landed`.
+- **The Ending's staging on the Kite** (`tools/act1/ch18_greybox.py`): E01–E10, the rails, `where_dace_stood`, `rhen_shoulder`, and the goodbyes' anchors.
+- **Test:** `tests/integration/test_ch21_thread.gd`.
+
+## Open
+- **The fights:** M5-A3P-1017. The battle steps are named in `ch21.json`'s doc.
+- **After E5:** the credits roll (M5-A3P-1700) needs a scene to hand off to, and its `beach_rite` vignette needs Haluna (M5-A3P-1019). E6, the dark sea at Haluna, also needs 1019. E7, the first lamp at Oruvel after the credits, needs M5-A3P-1018 and `credits.json`'s `next_scene`.
 
 ## Review log
