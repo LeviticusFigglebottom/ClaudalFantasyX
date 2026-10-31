@@ -2113,6 +2113,142 @@
       "mean_turns_min": {
         "smart": 30
       }
+    },
+    {
+      "id": "ch21_kesh",
+      "chapter": "Ch21 boss (Kesh's last fight, H03: the six elements in turn by phase, Ysolde's ice and fire answer; act3_ending.md, the Act III boss band, smart report only with an ease floor; tuned by the chapters combat seat; nobody to call)",
+      "kind": "boss",
+      "encounter": "ch21_kesh",
+      "active": [
+        "ysolde",
+        "rhen",
+        "toma"
+      ],
+      "reserve": [
+        "kerrid",
+        "asha"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          2
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          50,
+          75
+        ],
+        "smart": null,
+        "ward_guard": null
+      },
+      "p90_turns_max": 90,
+      "loadout": "ch21_kesh",
+      "swell": "good",
+      "mean_turns_min": {
+        "smart": 30
+      }
+    },
+    {
+      "id": "ch21_sefir_warden",
+      "chapter": "Ch21 boss (Sefir phase 1, the Warden, H04: Patience and Settle; Kerrid's break answers him; the Act III boss band, smart report only with an ease floor; tuned by the chapters combat seat; every Vowbound released)",
+      "kind": "boss",
+      "encounter": "ch21_sefir_warden",
+      "active": [
+        "kerrid",
+        "rhen",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "asha"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          2
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          50,
+          75
+        ],
+        "smart": null,
+        "ward_guard": null
+      },
+      "p90_turns_max": 90,
+      "loadout": "ch21_sefir",
+      "swell": "good",
+      "mean_turns_min": {
+        "smart": 30
+      }
+    },
+    {
+      "id": "ch21_sefir_heart",
+      "chapter": "Ch21 boss (Sefir phase 2, the Undertow-heart, H06: Draw and the storm's note; the Act III boss band, smart report only with an ease floor; tuned by the chapters combat seat; every Vowbound released)",
+      "kind": "boss",
+      "encounter": "ch21_sefir_heart",
+      "active": [
+        "kerrid",
+        "rhen",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "asha"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          2
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          50,
+          75
+        ],
+        "smart": null,
+        "ward_guard": null
+      },
+      "p90_turns_max": 90,
+      "loadout": "ch21_sefir",
+      "swell": "good",
+      "mean_turns_min": {
+        "smart": 30
+      }
+    },
+    {
+      "id": "ch21_sefir_letting",
+      "chapter": "Ch21 set piece (Sefir phase 3, the Letting, H07: protect Asha's verse, five lines, against Sefir's reach and the Stilled; Toma locked in covering it; the Ch8 stair hold's schema and curve; tuned by the chapters combat seat; every Vowbound released)",
+      "kind": "set_piece",
+      "encounter": "ch21_sefir_letting",
+      "active": [
+        "toma",
+        "kerrid",
+        "ysolde"
+      ],
+      "reserve": [
+        "rhen",
+        "liss"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          85,
+          95
+        ],
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 80,
+      "loadout": "ch21_sefir",
+      "swell": "good"
     }
   ]
 }
