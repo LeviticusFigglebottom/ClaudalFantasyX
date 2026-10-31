@@ -814,3 +814,22 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
 - MERGE-READY Ch18 revisits (M5-A3P-1004 part 2) @ 8f35b42ab
 - **Fix to MERGE-READY @ 8f35b42ab:** hero-integration's guard M5-A3P-1981 (`tools/act3/kite_revisit_check.py`) found 6 Ch18 `arrive` rows that would replay on every Kite landing. They only placed the party and re-applied the zone's light, which the landing and the zone's own `_ready` already do. They are removed; each zone keeps its `ch18.json` block, with only beats, so the earlier chapter's arrival can't play. The check now reports 0 problems; `test_kite_revisit_check` OK; Godot `kite_landings` 1/0 and `ch18_thread` 5/0.
 - MERGE-READY Ch18 revisit-replay fix @ 984ed93c6
+
+## 2026-10-31: Ch19 and Ch20 wired, up to combat's fights (M5-A3P-1007 and M5-A3P-1011, supplementing)
+- **Ch19:**
+  - Two zones on env-art's Iskarra kit (`Ch19Zone`; `tools/act1/ch19_greybox.py`):
+    - `ch19/iskarra` instances the Prologue's own `iskarra_city.tscn`, so the vigil is its frame. P01 and P02 are copied from `prologue.tscn`.
+    - `ch19/iskarra_spire` instances `spire_crown_floor` and `anchor_engine`, with a greybox antechamber.
+  - `ch19.json`: I01 → the vigil → the hitch (night, the rest, morning) → the words → the spire (the signatures) → the lever once `ch19_abiding_beaten` → down the eye.
+  - The four plaza scenes now say `location: ch19/iskarra`. Ch18's Iskarra beat goes here.
+- **Ch20:**
+  - `ch20/undertow_layers` on env-art's Undertow kit. `tools/act1/ch20_greybox.py` writes the layout and the scene, which instances `memory_island` and the six rooms.
+  - `ch20.json`: U00, then six layers. Each plays its scene on a touch, then the fight, then on the return the release and the next floor (R1 after Virel, R2 after Ethren). Then the Cage and the thank-yous; the end card until Ch21.
+  - Six new victory flags, `ch20_<vowbound>_fought`.
+- **Fights:** each waits on combat (M5-A3P-1009 Wardens, 1013 the Vowbound and the Cage). The exact battle step to add is in each task file. The threads set the victory flags by hand as stand-ins.
+- **Paths:** the greybox generators live in `tools/act1/ch18_greybox.py`, `ch19_greybox.py` and `ch20_greybox.py`, beside every other chapter's. Env-art claims `tools/act3/ch19_*` and `ch20_*` for its dressing. The greybox story points are the chapters track's (ownership.md).
+- **qa_known.json:** an Act III row for `place_actor` on headless heroes.
+- **Checks:**
+  - Godot `ch17_thread` 3/0, `ch18` 5/0, `ch19` 1/0, `ch20` 1/0, `act3` and `kite_landings` 1/0.
+  - `qa_threads`: only the `.ogg` imports fail (LFS pointers). `qa_capsules`: zones clean; the Act II foes' bodies are the known red.
+  - validate_data, taskboard, gdlint and gdformat clean; `kite_revisit_check` 0 problems.
