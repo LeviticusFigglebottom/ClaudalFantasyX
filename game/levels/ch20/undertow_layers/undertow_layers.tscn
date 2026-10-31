@@ -1,0 +1,64 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch20/ch20_zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_island.glb" id="p_memory_island"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_market.glb" id="p_memory_market"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_terrace.glb" id="p_memory_terrace"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_kitchen.glb" id="p_memory_kitchen"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_stands.glb" id="p_memory_stands"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_gallery.glb" id="p_memory_gallery"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_square.glb" id="p_memory_square"]
+
+[node name="UndertowLayers" type="Node3D"]
+script = ExtResource("1_zone")
+location_id = &"ch20/undertow_layers"
+layout_path = "res://game/levels/ch20/undertow_layers/undertow_layers_layout.json"
+hold_field_path = "res://game/data/flow/act3_field.json"
+
+[node name="Kit" type="Node3D" parent="."]
+
+[node name="Layer1Island" parent="Kit" instance=ExtResource("p_memory_island")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, -12.0, -36.0)
+
+[node name="Layer1Room" parent="Kit" instance=ExtResource("p_memory_market")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, -12.0, -36.0)
+
+[node name="Layer2Island" parent="Kit" instance=ExtResource("p_memory_island")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, -24.0, -72.0)
+
+[node name="Layer2Room" parent="Kit" instance=ExtResource("p_memory_terrace")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, -24.0, -72.0)
+
+[node name="Layer3Island" parent="Kit" instance=ExtResource("p_memory_island")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, -36.0, -108.0)
+
+[node name="Layer3Room" parent="Kit" instance=ExtResource("p_memory_kitchen")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, -36.0, -108.0)
+
+[node name="Layer4Island" parent="Kit" instance=ExtResource("p_memory_island")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, -48.0, -144.0)
+
+[node name="Layer4Room" parent="Kit" instance=ExtResource("p_memory_stands")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, -48.0, -144.0)
+
+[node name="Layer5Island" parent="Kit" instance=ExtResource("p_memory_island")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, -60.0, -180.0)
+
+[node name="Layer5Room" parent="Kit" instance=ExtResource("p_memory_gallery")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, -60.0, -180.0)
+
+[node name="Layer6Island" parent="Kit" instance=ExtResource("p_memory_island")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, -72.0, -216.0)
+
+[node name="Layer6Room" parent="Kit" instance=ExtResource("p_memory_square")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, -72.0, -216.0)
+
+[node name="Rest1Island" parent="Kit" instance=ExtResource("p_memory_island")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.0, -40.0, -122.0)
+
+[node name="Rest2Island" parent="Kit" instance=ExtResource("p_memory_island")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.0, -76.0, -230.0)
+
+[node name="Cast" type="Node" parent="."]
+script = ExtResource("90_cast")

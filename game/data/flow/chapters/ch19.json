@@ -1,5 +1,5 @@
 {
- "doc": "M5-A3P-1007 (docs/kb/tech/chapter_flow.md; act3_ch19.md \u00a72): Ch19 'Iskarra'. I01 the Kite comes down beside the Prologue's plaza (arrive, from Ch18's Iskarra beat), I02 the vigil (walking to Asha on the steps: everyone to their Prologue place, P01 and P02), I03 the hitch at the plaza's edge (night; the rest; morning), I04 the words (optional), then up to the spire: I07 the signatures on arrival, which ends on <<event start_battle ch19_abiding_wardens>>: the fight is combat's (M5-A3P-1009) and its battle step (victory_flag ch19_abiding_beaten) goes after the play when the encounter exists; then I09-I10 at the engine lever, and the end card until Ch20's Undertow (M5-A3P-1011).",
+ "doc": "M5-A3P-1007 (docs/kb/tech/chapter_flow.md; act3_ch19.md \u00a72): Ch19 'Iskarra'. I01 the Kite comes down beside the Prologue's plaza (arrive, from Ch18's Iskarra beat), I02 the vigil (walking to Asha on the steps: everyone to their Prologue place, P01 and P02), I03 the hitch at the plaza's edge (night; the rest; morning), I04 the words (optional), then up to the spire: I07 the signatures on arrival, which ends on <<event start_battle ch19_abiding_wardens>>: the fight is combat's (M5-A3P-1009) and its battle step (victory_flag ch19_abiding_beaten) goes after the play when the encounter exists; then I09-I10 at the engine lever, and on down the eye to Ch20 (ch20/undertow_layers, WellTop).",
  "chapter": "ch19",
  "zones": {
   "ch19/iskarra": {
@@ -214,7 +214,10 @@
        "play": "ch19_the_engine_stops"
       },
       {
-       "scene": "res://game/flow/end_card.tscn"
+       "go": {
+        "location": "ch20/undertow_layers",
+        "spawn": "WellTop"
+       }
       }
      ]
     }

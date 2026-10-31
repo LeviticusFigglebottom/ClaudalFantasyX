@@ -396,5 +396,11 @@ flags = {
 "ch10_what_went_up_seen": "Ch10 B05: ch10_what_went_up (the Drowner's release) has played after its fight, once (M4-A2P-1003 D11).",
 "ch12_herd_cord_seen": "Ch12 B07: ch12_herd_cord (Pell ties the Ram's cord on the pass) has played after the fight, once (M4-A2P-1003 E6).",
 "ch13_guest_of_sefir": "Ch13 B02: after the still city and Tobin, the party are Sefir's guests; Kerrid sits out the nights at the moorings (ADR 0022 (c); the Ansedra layout's state row; M4-A2P-1003 E3).",
-"ch17_night": "Ch17 B08 (M5-A3P-1001, the flow): night falls on the hull before the choice (the layout's night light variant)."
+"ch17_night": "Ch17 B08 (M5-A3P-1001, the flow): night falls on the hull before the choice (the layout's night light variant).",
+"ch20_ilun_fought": "Ch20 (M5-A3P-1011): the victory flag of Ilun's fight (the encounter ch20_ilun, combat's M5-A3P-1013); the flow plays ch20_ilun_release on the return.",
+"ch20_kahre_fought": "Ch20 (M5-A3P-1011): the victory flag of Kahre's fight (the encounter ch20_kahre, combat's M5-A3P-1013); the flow plays ch20_kahre_release on the return.",
+"ch20_virel_fought": "Ch20 (M5-A3P-1011): the victory flag of Virel's fight (the encounter ch20_virel, combat's M5-A3P-1013); the flow plays ch20_virel_release on the return.",
+"ch20_hesk_fought": "Ch20 (M5-A3P-1011): the victory flag of Hesk's fight (the encounter ch20_hesk, combat's M5-A3P-1013); the flow plays ch20_hesk_release on the return.",
+"ch20_nhoa_fought": "Ch20 (M5-A3P-1011): the victory flag of Nhoa's fight (the encounter ch20_nhoa, combat's M5-A3P-1013); the flow plays ch20_nhoa_release on the return.",
+"ch20_ethren_fought": "Ch20 (M5-A3P-1011): the victory flag of Ethren's fight (the encounter ch20_ethren, combat's M5-A3P-1013); the flow plays ch20_ethren_release on the return."
 }

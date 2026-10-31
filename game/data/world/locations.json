@@ -227,6 +227,13 @@
       "_note": "M5-A3P-1007: the Lamp Spire's antechamber and crown (act3_ch19.md), Ch19Zone on env-art's crown floor and anchor-engine: the signatures, the Wardens, the engine."
     },
     {
+      "id": "ch20/undertow_layers",
+      "scene": "res://game/levels/ch20/undertow_layers/undertow_layers.tscn",
+      "spawn": "WellTop",
+      "name_key": "LOCATION_CH20_UNDERTOW",
+      "_note": "M5-A3P-1011: inside the Undertow (act3_ch20.md), Ch20Zone on env-art's Undertow kit: six memory layers, two landings, the Cage."
+    },
+    {
       "id": "ch06/brine_shoals",
       "scene": "res://game/levels/ch06/brine_shoals/brine_shoals.tscn",
       "spawn": "Entry",

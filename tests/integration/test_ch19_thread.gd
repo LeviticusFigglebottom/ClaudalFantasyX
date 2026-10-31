@@ -46,7 +46,9 @@ func test_iskarra_from_the_kite_to_the_engine() -> void:
 	assert_true(_trigger(&"ch19_engine").try_interact())
 	assert_true(bool(Game.get_flag(&"ch19_engine_stopped")), "I09")
 	assert_true(bool(Game.get_flag(&"ch19_complete")), "I10")
-	assert_eq(hand_offs.back()[0], ZoneStory.KIND_SCENE, "the end card until Ch20's Undertow exists")
+	assert_eq(
+		hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch20/undertow_layers", "spawn": "WellTop"}], "the eye"
+	)
 	_close()
 	Game.state = saved_state
 

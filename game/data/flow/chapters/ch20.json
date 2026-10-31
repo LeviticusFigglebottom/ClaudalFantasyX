@@ -1,0 +1,323 @@
+{
+ "doc": "M5-A3P-1011 (docs/kb/tech/chapter_flow.md; act3_ch20.md \u00a72): Ch20 'The Undertow'. U00 down the eye (arrive, from Ch19's engine), then six layers, each a touch on its island that plays the Vowbound's scene (it ends on <<event start_battle ch20_<vowbound>>>), the fight (combat's encounters, M5-A3P-1013: each battle step, with victory_flag ch20_<vowbound>_fought and return_spawn Layer<n>, goes after the play when the encounter exists), and on the return the release, which places the party on the next layer (R1 after Virel, R2 after Ethren). Then the Cage (its battle, victory ch20_cage_broken, also M5-A3P-1013) and, on the return, the thank-yous. The end card until Ch21's heart (M5-A3P-1015). Arrive rows go deepest first: the first that holds plays.",
+ "chapter": "ch20",
+ "zones": {
+  "ch20/undertow_layers": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch20_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "WellTop"
+      },
+      {
+       "chapter": 20
+      },
+      {
+       "party": {
+        "party": [
+         "rhen",
+         "asha",
+         "toma"
+        ],
+        "reserve": [
+         "ysolde",
+         "kerrid",
+         "liss"
+        ]
+       }
+      },
+      {
+       "play": "ch20_down_the_eye"
+      },
+      {
+       "place": "Layer1"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch20_ethren_fought"
+      ],
+      "unset": [
+       "ch20_ethren_released"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Layer6"
+      },
+      {
+       "play": "ch20_ethren_release"
+      },
+      {
+       "place": "Rest2"
+      },
+      {
+       "play": "ch20_rest_two"
+      },
+      {
+       "place": "Cage"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch20_nhoa_fought"
+      ],
+      "unset": [
+       "ch20_nhoa_released"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Layer5"
+      },
+      {
+       "play": "ch20_nhoa_release"
+      },
+      {
+       "place": "Layer6"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch20_hesk_fought"
+      ],
+      "unset": [
+       "ch20_hesk_released"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Layer4"
+      },
+      {
+       "play": "ch20_hesk_release"
+      },
+      {
+       "place": "Layer5"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch20_virel_fought"
+      ],
+      "unset": [
+       "ch20_virel_released"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Layer3"
+      },
+      {
+       "play": "ch20_virel_release"
+      },
+      {
+       "place": "Rest1"
+      },
+      {
+       "play": "ch20_rest_one"
+      },
+      {
+       "place": "Layer4"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch20_kahre_fought"
+      ],
+      "unset": [
+       "ch20_kahre_released"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Layer2"
+      },
+      {
+       "play": "ch20_kahre_release"
+      },
+      {
+       "place": "Layer3"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch20_ilun_fought"
+      ],
+      "unset": [
+       "ch20_ilun_released"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Layer1"
+      },
+      {
+       "play": "ch20_ilun_release"
+      },
+      {
+       "place": "Layer2"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch20_cage_broken"
+      ],
+      "unset": [
+       "ch20_complete"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Cage"
+      },
+      {
+       "play": "ch20_thank_you"
+      },
+      {
+       "scene": "res://game/flow/end_card.tscn"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "ch20_ilun": {
+     "when": {
+      "set": [
+       "ch20_started"
+      ],
+      "unset": [
+       "ch20_ilun_fought"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch20_ilun"
+      }
+     ]
+    },
+    "ch20_kahre": {
+     "when": {
+      "set": [
+       "ch20_ilun_released"
+      ],
+      "unset": [
+       "ch20_kahre_fought"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch20_kahre"
+      }
+     ]
+    },
+    "ch20_virel": {
+     "when": {
+      "set": [
+       "ch20_kahre_released"
+      ],
+      "unset": [
+       "ch20_virel_fought"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch20_virel"
+      }
+     ]
+    },
+    "ch20_hesk": {
+     "when": {
+      "set": [
+       "ch20_virel_released"
+      ],
+      "unset": [
+       "ch20_hesk_fought"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch20_hesk"
+      }
+     ]
+    },
+    "ch20_nhoa": {
+     "when": {
+      "set": [
+       "ch20_hesk_released"
+      ],
+      "unset": [
+       "ch20_nhoa_fought"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch20_nhoa"
+      }
+     ]
+    },
+    "ch20_ethren": {
+     "when": {
+      "set": [
+       "ch20_nhoa_released"
+      ],
+      "unset": [
+       "ch20_ethren_fought"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch20_ethren"
+      }
+     ]
+    },
+    "ch20_cage": {
+     "when": {
+      "set": [
+       "ch20_ethren_released"
+      ],
+      "unset": [
+       "ch20_cage_broken"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch20_the_cage"
+      }
+     ]
+    }
+   }
+  }
+ }
+}
