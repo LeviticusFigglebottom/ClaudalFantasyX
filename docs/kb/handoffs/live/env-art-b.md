@@ -1243,3 +1243,11 @@ SELF-RENDERED @ 4cd6ed12: ch05_pemakar_harbour, _crown and _weir with the lamp f
   - **Next in the claim:** the hull's walk collision and its cabin lamp, which wait on M5-A3P-1001 (chapters: marks, and the path to the berths). The Ch17 dusk and night grades for B06 and B08 (the zone is at dawn) need the chapters' states rows first. Otherwise my Act III claim is done; next I offer env-art help by request task.
 - **Supplement offer (ADR 0207 §1): M5-A3P-1501.** I've offered env-art the Ch18 Kite hub dressing (`ch18/kite`, which nobody has claimed), placing env-art's kite.py pieces unchanged, with the layout staying the chapters'. Alternatives are listed in the task. I claim nothing until env-art answers.
   - **LEAD-ASK:** relay to env-art, or assign me directly if you'd rather.
+- **M5-A3P-1500 step 4 (06fb966c, Lead 00:27):** Ch17's night.
+  - **The night grade:** `hollowmere_night_environment.tres`, the open sea's night with Hollowmere's fog.
+  - **The cabin's light:** an oil-lamp light over Dace's desk, and its glow up through the hatch onto the deck.
+  - **Viewed by night:** the cabin (lamp-lit ledger, chart wall, tool rack, ladder) and the deck (moonlit water, the hatch's glow).
+  - **Tests:** test_ch15_hollowmere_dressing (lamp count, night grade) and Godot test_hollowmere_dressing (light count) OK, as are validate_data and gdformat.
+  - **Request to the Act III chapters** (in the task file): the `environment_res` for each beat. B06 is env-art's ch17 dusk grade, B08 and B09 my night grade with a moon sun at about 0.3, and the rest the dawn grade.
+  - **MERGE-READY @ 06fb966c.**
+  - **Still waiting on M5-A3P-1001:** the walk collision (the path to the berths) and the engine bed's B10 light, which needs a block to follow. My claim has nothing else that isn't waiting on another track.
