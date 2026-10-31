@@ -257,7 +257,11 @@ TRIAL_PIECES = (("Gate_t1", "flue_gate", "foot"), ("Gate_t2", "flue_gate", "foot
 # low, shadowless wall-wash lights at the keepers' wall lamps (wash_lamps), so the stonework reads.
 INNER_SLOT = "cs_laterite_inner"
 INNER_MAT = "coilspire_inner_material"
-INNER_OVERRIDES = {"salt_coverage": "Vector2(0.0, 0.16)", "salt_cavity_gather": "0.3"}
+# The PC's pass 7 (row 84): up close at the gate the laterite's pores (the 512 px block texture over 6 m) read as
+# blocky, low-resolution black blots. Calmer pores (less cavity darkening and relief) and a finer detail grain over
+# them, so the close view gets texture below the base map's texel.
+INNER_OVERRIDES = {"salt_coverage": "Vector2(0.0, 0.16)", "salt_cavity_gather": "0.3", "cavity_darken": "0.3",
+                   "normal_strength": "0.9", "detail_scale_m": "0.15"}
 WASH_PER_TIER = 4
 WASH = {"lift_m": 2.2, "energy": 1.7, "range": 7.5}
 LAMP_TRIES = 12
