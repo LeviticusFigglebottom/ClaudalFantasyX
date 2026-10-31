@@ -38,9 +38,17 @@ class CommittedData(unittest.TestCase):
     def test_haluna_vignettes_work_by_day_and_a_few_by_night(self) -> None:
         """The Lead, 2026-10-30: Haluna lived in. Crowd people at work at the causeway head, in the lane and on the
         dock; the children play by day; the dock's people are gone home at night and one brings a basket home."""
-        rows = [r for r in _load(HALUNA)["villagers"] if "crowd" in r]
+        everyone = [r for r in _load(HALUNA)["villagers"] if "crowd" in r]
+        rows = [r for r in everyone if "flag" not in r]
         people = {p["id"]: p for p in _load(vn.CROWD_FILE)["people"]}
         self.assertEqual(len(rows), 15)
+        # M5-A3P-1811: after "Backs to the Water" four of them stand on the beach, backs to the sea (yaw 90: the sea is +x)
+        lifted = [r for r in everyone if r.get("flag") == "ch18_haluna_lifted"]
+        self.assertEqual(len(lifted), 4)
+        for r in lifted:
+            own = next(o for o in rows if o["crowd"] == r["crowd"])
+            self.assertEqual(own.get("not_flag"), "ch18_haluna_lifted", "each person shows once")
+            self.assertEqual(r["at"][3], 90.0, r["npc_id"])
         works = {people[r["crowd"]]["work"] for r in rows}
         self.assertTrue({"mend", "carry", "fold", "haul", "sweep", "play_stones", "play_clap"} <= works)
         for r in rows:
@@ -213,6 +221,8 @@ class Crowd(unittest.TestCase):
         self.assertEqual(self._zone_errors(data), [])
         data["villagers"][0]["flag"] = "no_such_flag"
         self.assertTrue(any("flag 'no_such_flag' is not declared" in e for e in self._zone_errors(data)))
+        data["villagers"][0]["flag"] = "ch02_heard_pila"  # a flag row of a crowd person stands at its own `at` spot
+        self.assertTrue(any("stands at its own CrowdSpots" in e for e in self._zone_errors(data)))
 
     def test_crowd_rows_must_match_their_person(self) -> None:
         data = copy.deepcopy(_load(CROWD_ZONE))

@@ -773,3 +773,56 @@ func test_flag_rows_swap_when_the_flag_is_set() -> void:
 	assert_true(not a.visible and b.visible, "once it lands: the changed row instead")
 	Game.set_flag(flag, was)
 	_done()
+
+
+## M5-A3P-1811: the Act III revisits change the towns' crowds by flag rows. After "Backs to the Water" four of Haluna's
+## beach people stand on the beach with their backs to the sea; from `ch17_complete` Reedhollow's watchers turn their
+## backs to the lagoon. Each person shows once, on whichever side of the flag it is.
+func test_the_revisited_towns_crowds_change_with_the_act3_flags() -> void:
+	var lifted := &"ch18_haluna_lifted"
+	var tide := &"ch17_complete"
+	var was_lifted: Variant = Game.get_flag(lifted)
+	var was_tide: Variant = Game.get_flag(tide)
+	Game.set_flag(lifted, false)
+	Game.set_flag(tide, false)
+	var haluna := (load("res://game/levels/ch02/haluna/haluna.tscn") as PackedScene).instantiate() as Node3D
+	var hl := VillagerLayer.new()
+	hl.zone_id = &"ch02/haluna"
+	hl.auto_build = false
+	haluna.add_child(hl)
+	_holder().add_child(haluna)
+	hl.build()
+	var reed := (load("res://game/levels/ch10/reedhollow/reedhollow.tscn") as PackedScene).instantiate() as Node3D
+	_holder().add_child(reed)
+	var rl := VillagerLayer.wire(reed, &"ch10/reedhollow")
+	rl.build()
+	var pairs := [
+		[hl, &"haluna_beach_hauler", &"haluna_beach_hauler_lifted"],
+		[hl, &"haluna_dock_folder", &"haluna_dock_folder_lifted"],
+		[rl, &"watcher_1", &"watcher_1_tide"],
+		[rl, &"watcher_11", &"watcher_11_tide"]
+	]
+	for p: Array in pairs:
+		var own := (p[0] as VillagerLayer).villager(p[1])
+		var changed := (p[0] as VillagerLayer).villager(p[2])
+		assert_true(own != null and changed != null, "%s and its Act III row are built" % p[1])
+		assert_true(own.visible and not changed.visible, "before the flag: %s as it was" % p[1])
+	Game.set_flag(lifted, true)
+	Game.set_flag(tide, true)
+	hl.tick(DT)
+	rl.tick(DT)
+	for p: Array in pairs:
+		var own := (p[0] as VillagerLayer).villager(p[1])
+		var changed := (p[0] as VillagerLayer).villager(p[2])
+		assert_true(not own.visible and changed.visible, "after it: %s changed" % p[1])
+	var kneel := hl.villager(&"haluna_dock_folder_lifted")
+	assert_eq(kneel.current_clip, &"kneel_mourn", "the elder kneels in mourning")
+	var turned := rl.villager(&"watcher_1_tide")
+	var before := rl.villager(&"watcher_1")
+	assert_true(
+		absf(angle_difference(turned.global_rotation.y, before.global_rotation.y)) > PI * 0.9,
+		"the watcher has turned round"
+	)
+	Game.set_flag(lifted, was_lifted)
+	Game.set_flag(tide, was_tide)
+	_done()

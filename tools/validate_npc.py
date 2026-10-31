@@ -165,7 +165,11 @@ def _crowd_row_errors(root: Path, where: str, zone: str, row: dict, people: dict
         return [f"{where}: crowd {pid!r} is not a person in {CROWD_FILE}"]
     if str(person.get("zone")) != zone:
         errs.append(f"{where}: crowd {pid!r} stands in {person.get('zone')!r}, not {zone!r}")
-    if str(row.get("stand_in", "")) != person_stand_in(person):
+    # a `flag` row (VillagerLayer flag rows) is the person somewhere else once the flag is set: its own `at` spot
+    if "flag" in row:
+        if not str(row.get("stand_in", "")).startswith(CROWD_SPOTS + "/") or "at" not in row:
+            errs.append(f"{where}: a flag row of crowd {pid!r} stands at its own {CROWD_SPOTS}/<name> with an `at`")
+    elif str(row.get("stand_in", "")) != person_stand_in(person):
         errs.append(f"{where}: crowd {pid!r} stands at stage actor {person.get('stage_actor')!r}, "
                     f"not {row.get('stand_in')!r}")
     body = str(person.get("body", ""))
