@@ -2,8 +2,8 @@
 id: M5-A3P-1202
 title: "Request: battle (and field) bodies for Warden Hesper Oan and her scribe Ilsabet Rue (Ch19's boss)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "claude/characters"
 depends_on: [M5-A3P-1009]
 reviewer: combat
 milestone: M5
