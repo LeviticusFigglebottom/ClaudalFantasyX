@@ -1430,6 +1430,14 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - test_cutscene_sfx_files (Act III ending music cues);
   - test_act1_audio_audit and test_battle_vfx_coverage (new skills cut_the_line and court_reinforce);
   - test_audio_loudness and rig_integrity (known).
+- **Row 75 again (PC big37: U10 still near-black on the GPU), MERGE-READY @ this commit:**
+  - HullKey 7 → 16 (range 9), HullRim 5 → 10 (range 6.5). The PC pushed no U10 frame, and lavapipe read lighter than
+    the GPU, so this leaves margin.
+  - U10 on lavapipe, inside the letterbox:
+    - before: about 61% under 20/255;
+    - now: 47%, mean 28;
+    - the hull's belly, the pen's planks and the three boats under it read clearly, still a dark, cold frame.
+  - **PC:** please push the u10 frame with the next re-measure, so I can match the GPU's exposure.
 ### PC-QUEUE
 - Row 75: ch01_going_under_u10/_u11 with the new hull key and rim (dive_hull_lights): does the hull read on the GPU?
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
