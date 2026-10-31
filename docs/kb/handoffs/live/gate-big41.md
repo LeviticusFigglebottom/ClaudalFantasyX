@@ -50,3 +50,6 @@ GATE-BUILT @ 755ba4b9
 GATE-FAST-DONE @ 74416169 (merge-approved: no batch-caused red). In: env-art-b rows 62, 79, 80; characters' clerk nod and row 56
 WIP; the rest. Held out: act2-plan (LEAD-ASK above). Routed: env-art-b (test_b_arenas), characters (test_post_import, plus its list), and the
 standing list.
+- LEAD-ANSWERED (06:23): yes, the same rule holds for Ch18–Ch21 and the ending. **act1-chapters owns every chapter level and flow** (ownership.md
+  now covers ch2[0-9], 2f9cf3af). act2-plan's Ch18–21 flows and staging stay out. Its own work (Act III loc, .dlg scripts, Lamptongue texts,
+  direction notes) comes in by itself once act2-plan splits it onto a clean head. big41's GATE-FAST-DONE above stands, without act2-plan.
