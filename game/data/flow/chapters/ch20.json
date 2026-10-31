@@ -1,5 +1,5 @@
 {
- "doc": "M5-A3P-1011 (act3_ch20.md §2, U00-U08, R1, R2; docs/kb/tech/chapter_flow.md): Ch20 'The Undertow' on ch20/undertow_layers. Down the eye on arrival (U00, ch20_started); each memory layer's floor plays its Vowbound's scene and fight (ch20_<v>, the answering hero active; victory ch20_<v>_beaten), and the return plays the release (ch20_<v>_release sets ch20_<v>_released) and lifts the veil to the next floor; the two wordless rests set ch20_rest_one and ch20_rest_two; the Cage (U07, ch20_the_cage, victory ch20_cage_broken) and on the return 'Thank you' (U08, ch20_complete). Ch21's hand-off waits on its zone (M5-A3P-1015).",
+ "doc": "M5-A3P-1011 (act3_ch20.md §2, U00-U08, R1, R2; docs/kb/tech/chapter_flow.md): Ch20 'The Undertow' on ch20/undertow_layers. Down the eye on arrival (U00, ch20_started); each memory layer's floor plays its Vowbound's scene and fight (ch20_<v>, the answering hero active; victory ch20_<v>_beaten), and the return plays the release (ch20_<v>_release sets ch20_<v>_released) and lifts the veil to the next floor; the two wordless rests set ch20_rest_one and ch20_rest_two; the Cage (U07, ch20_the_cage, victory ch20_cage_broken) and on the return 'Thank you' (U08, ch20_complete). Then the flow goes down to ch21/heart (Ch21).",
  "chapter": "ch20",
  "zones": {
   "ch20/undertow_layers": {
@@ -66,6 +66,12 @@
       },
       {
        "play": "ch20_thank_you"
+      },
+      {
+       "go": {
+        "location": "ch21/heart",
+        "spawn": "LastLayer"
+       }
       }
      ]
     },

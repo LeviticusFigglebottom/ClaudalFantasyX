@@ -2,8 +2,8 @@
 id: M5-A3P-1015
 title: "Request (staging + flow): Ch21 in the heart (HT01–HT22) and the Ending (E01–E13), with its flow and credits"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "act1-chapters"
 depends_on: [M5-A3P-1014]
 reviewer: narrative
 milestone: M5
@@ -41,5 +41,40 @@ file-to-beat map: drafts README "Files by beat" (H01–H09, R1, E1–E7).
 
 ## Acceptance criteria
 - [ ] The zone, shots and marks exist, and the flow runs H01 → E7 with the credits before `ending_first_lamp`. Godot `act3` stays green.
+
+## Notes (act1-chapters, the Act III chapters track, 2026-10-31)
+- **Zone:** `ch21/heart` (Ch05Zone, from `tools/act3/ch21_greybox.py`):
+  - the last layer's walk;
+  - the heart's floor round the two lamps (light columns inside a ring; `arms_length` where Rhen stops);
+  - the Kite at rest;
+  - the dark Choir-stone (R1: a save, `heart_choir_stone`);
+  - the battle floor.
+  - **Shots:** HT01–HT02 on the walk; HT03–HT22 round the lamps, outside the ring.
+- **Flow (`chapters/ch21.json`):**
+  - H01 on arrival.
+  - The heart's mouth plays H02, then H03 and the fight `ch21_kesh`; the return plays her release (`ch21_kesh_released`)
+    and R1.
+  - Stepping onto the battle floor starts the Warden (decision 13).
+  - Each return plays the next: H05 and the heart phase; the Letting scene and its fight; H08 and H09
+    (`ch21_unbound`), then it goes to the Kite.
+  - The Cage's return (Ch20 U08) now goes down to the heart.
+- **The Ending (`chapters/ending.json`, read by Ch18Zone once `ch21_unbound` is set):**
+  - E1 and its rest on arrival.
+  - E2 at `where_dace_stood`; E3 at the rail.
+  - E4 at the wheel: the held input `take_the_strain` (ch18_field.json), then `ending_nothing_comes`. It sets
+    `ending_landed` and goes to `ch02/haluna` DockNight.
+  - The Kite's courses close after the Unbinding.
+  - **Marks and shots on the Kite:** E01–E10; `by_asha kite_rail kite_rail_b kite_wheel rhen_shoulder
+    where_dace_stood`, plus the `@vfx at=` ids.
+- **Open, requested in M5-A3P-1203:** E5 (Haluna, slice-polish), E6 (the credits' beach-rite vignette, Cinematics' scene)
+  and E7 (the credits' `next_scene` into Oruvel, UI and slice-polish).
+- **Other open items:**
+  - R1's optional per-member lines (`ch21_bands_*`) need the party standing as talkable actors in the heart, like the
+    Act I camps.
+  - H09's montage places (`iskarra_columns`, `tamsule_bell` and others) are inserts in other zones, so they warn
+    here.
+  - T-08 and T-09 are optional inserts with no line (decision 16).
+- **Tests:** `test_ch21_thread.gd`, 3 tests: Ch20 down to the heart; H01–H09; the Ending aboard the Kite to Haluna.
+  `test_ch21_walkable.gd`: the last layer to the lamps and the Choir-stone.
 
 ## Review log
