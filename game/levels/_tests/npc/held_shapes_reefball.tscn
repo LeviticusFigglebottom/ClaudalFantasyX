@@ -50,6 +50,7 @@ mesh = SubResource("Mesh_tier")
 [node name="CrowdFar" type="Node3D" parent="."]
 script = ExtResource("1_crowd")
 data_path = "res://game/levels/_tests/npc/held_shapes_reefball.json"
+threaded = false
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.9944, 0.1061, 0, -0.1061, 0.9944, 0, 3.2, 9)

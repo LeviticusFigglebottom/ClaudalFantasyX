@@ -319,6 +319,10 @@ For a crowd too big for skinned actors (Ch20 U04's remembered Reefball crowd, 30
 - **Review:** `game/levels/_tests/npc/held_shapes_reefball.tscn`, 32 held shapes on four tiers, shot
   `npc_held_shapes_reefball`. Tests: tests/unit/test_crowd_far.gd.
 - **Open:**
-  - The bake runs in `_ready`. A layer loaded under SceneRouter's fade should spread it, as VillagerLayer's
-    `_build_spread` does, against the ≤ 2 s hidden hitch bar. Not measured on a real layer yet.
+  - **Load:** threaded by default. The actor scenes load on ResourceLoader's threads, which is most of the cost
+    (about 0.6 s a body: textures and materials). Posing is the main thread's, and the skinning runs on the
+    WorkerThreadPool. The crowd appears when it's done (`built`).
+    - Measured on the review stage (8 bodies, 6 poses, 4 cores, headless): the worst frame is 48 ms (the posing)
+      and the crowd is in after 1.05 s. All at once it was 5.3 s on the main thread.
+    - `threaded = false` builds in `_ready` (the review stage's shot).
   - The U01–U03 layers' near held shapes stay VillagerLayer `silhouette` rows (skinned, close).

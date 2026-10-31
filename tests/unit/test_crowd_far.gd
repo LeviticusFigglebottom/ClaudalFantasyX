@@ -92,3 +92,20 @@ func _distinct_phases(cf: CrowdFar) -> int:
 		for s in g["shown"] as PackedInt32Array:
 			seen[s] = true
 	return seen.size()
+
+
+## In a zone the skinning runs on the WorkerThreadPool and the crowd shows when it's done, the same meshes as at once.
+func test_a_threaded_build_matches_the_one_at_once() -> void:
+	var a := _crowd()
+	var b := _crowd()
+	a.build()
+	b.build_threaded()
+	b.wait_built()
+	assert_true(b.is_built() and b.person_count() == 32, "the threaded crowd is placed")
+	assert_eq(b.draw_calls(), a.draw_calls(), "the same poses")
+	for gi in a.groups.size():
+		for f in a.frame_count:
+			var ma := ((a.groups[gi]["poses"] as Array)[f] as MultiMeshInstance3D).multimesh.mesh
+			var mb := ((b.groups[gi]["poses"] as Array)[f] as MultiMeshInstance3D).multimesh.mesh
+			assert_true(ma.get_aabb().is_equal_approx(mb.get_aabb()), "pose %d of %s" % [f, a.groups[gi]["body"]])
+	_done()
