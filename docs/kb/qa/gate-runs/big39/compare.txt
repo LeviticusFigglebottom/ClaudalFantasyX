@@ -1,4 +1,4 @@
-# big39: 396 shots: 123 PASS, 155 DRIFT (0 size mismatch), 118 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big39: 431 shots: 123 PASS, 155 DRIFT (0 size mismatch), 153 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 NO-BASELINE slice_end_card (pending_baseline)
 DRIFT battle_hud_preview rmse 0.06883 (limit 0.00800)
 DRIFT battle_swap_menu rmse 0.06883 (limit 0.00800)
@@ -389,9 +389,44 @@ NO-BASELINE ch01_oruvel_storm (pending_baseline)
 NO-BASELINE ch01_drop (pending_baseline)
 NO-BASELINE ch01_bell_room (pending_baseline)
 NO-BASELINE ch01_scale_hull (pending_baseline)
+NO-BASELINE ch01_kell_stall (pending_baseline)
 NO-BASELINE ch01_net_pen (pending_baseline)
 NO-BASELINE ch01_hullgnaw_rises (pending_baseline)
+NO-BASELINE ch01_going_under (pending_baseline)
+NO-BASELINE ch01_going_under_u10 (pending_baseline)
 NO-BASELINE ch01_going_under_u11 (pending_baseline)
+NO-BASELINE slice_prologue_p01 (pending_baseline)
 NO-BASELINE crowd_lineup_a
+NO-BASELINE crowd_lineup_c
 NO-BASELINE kirru_lineup_front
+NO-BASELINE crowd_market
 NO-BASELINE crowd_work
+NO-BASELINE crowd_zone_pemakar
+NO-BASELINE crowd_zone_brine_shoals
+NO-BASELINE crowd_zone_corrow
+NO-BASELINE crowd_lineup_back
+NO-BASELINE field_hud_over_tamsule
+NO-BASELINE ebbing_n08
+NO-BASELINE field_hud_over_pemakar
+NO-BASELINE field_hud_over_coilspire
+NO-BASELINE kirru_elder_face (pending_baseline)
+NO-BASELINE kirru_adult_face (pending_baseline)
+NO-BASELINE kirru_child_face (pending_baseline)
+NO-BASELINE pell_back
+NO-BASELINE pell_face
+NO-BASELINE pell_face_grief
+NO-BASELINE pell_clip_walk
+NO-BASELINE pell_storm_ch8
+NO-BASELINE npc_corrow_storm_figure_near
+NO-BASELINE flow_chapter_card_ch04 (pending_baseline)
+NO-BASELINE ch13_ansedra_causeway
+NO-BASELINE ch13_ansedra_corran_house
+NO-BASELINE ch13_sanctum_vault
+NO-BASELINE ch13_archive_table
+NO-BASELINE ch14_court_ceremony
+NO-BASELINE ch14_ansedra_ripple
+NO-BASELINE kite_log (pending_baseline)
+NO-BASELINE document_reader_one (pending_baseline)
+NO-BASELINE ch15_hollowmere_lanes
+NO-BASELINE ch15_sea_deck
+NO-BASELINE ch16_rim_ship
