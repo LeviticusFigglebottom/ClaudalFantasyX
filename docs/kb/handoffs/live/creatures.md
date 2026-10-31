@@ -1474,3 +1474,12 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - 1809's per-layer rows: the location `ch20/undertow_layers` now exists (one zone for every layer). The held-shapes
     rows wait on the layers' greybox scene (env-art).
 - **MERGE-READY @ 51531a4b8.**
+- **Correction:** the Ch20 greybox does exist (`undertow_layers.tscn`), so **M5-A3P-1809 is done** (review):
+  - 12 held shapes on the memory floors (Oruvel's market, the Lanternfall terrace, a Corrow kitchen): glimmer_held
+    silhouettes, still to the party, posed in each layer's work;
+  - the Tidecup gallery's 30 cheering shapes, through a zone file's new `far` block (VillagerLayer builds a
+    CrowdFar from it);
+  - shots npc_held_shapes_{market,terrace,gallery}, viewed. crowd 28/0, tools test_npc OK.
+- **MERGE-READY @ 8a4a38d82.**
+- My Act III bestiary list is complete; every item is at review. The bosses are creatures-b's. I'll help env-art-b on
+  rows 79 and 80 if they file a request.
