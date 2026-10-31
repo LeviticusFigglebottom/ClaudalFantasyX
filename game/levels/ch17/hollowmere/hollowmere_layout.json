@@ -2251,6 +2251,48 @@
     "beat": "to_kite"
    },
    "yaw": 0.0
+  },
+  {
+   "id": "a3_moorings_one",
+   "activation": "interact",
+   "at": [
+    1.0,
+    0.0,
+    1.2
+   ],
+   "size": [
+    1.4,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_CH17_MOORINGS",
+   "requires_flag": "ch17_started",
+   "blocked_by_flag": "ch17_moorings_scuttlers",
+   "payload": {
+    "beat": "moorings_scuttlers"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "a3_moorings_two",
+   "activation": "interact",
+   "at": [
+    1.0,
+    0.0,
+    1.2
+   ],
+   "size": [
+    1.4,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_CH17_MOORINGS",
+   "requires_flag": "ch17_moorings_scuttlers",
+   "blocked_by_flag": "ch17_moorings_rasp",
+   "payload": {
+    "beat": "moorings_rasp"
+   },
+   "yaw": 0.0
   }
  ],
  "variants": [

@@ -235,7 +235,15 @@ def act3_dry_dock() -> dict:
         # M5-A3P-1004: back aboard the Kite, moored off the dock's head (Ch18)
         {"id": "a3_to_kite", "activation": "interact", "at": [5.0, 0.0, -1.4], "size": [1.4, 0, 1.4],
          "prompt_key": "FIELD_PROMPT_CH18_BACK_TO_KITE", "requires_flag": "ch18_world_open",
-         "payload": {"beat": "to_kite"}, "yaw": 0.0}]
+         "payload": {"beat": "to_kite"}, "yaw": 0.0},
+        # M5-A3P-1849: the outer moorings off the dock's head, optional fights (act3_ch17.md §5): the deep scuttlers on
+        # the hull-lines, then a hull rasp in a moored keel
+        {"id": "a3_moorings_one", "activation": "interact", "at": [1.0, 0.0, 1.2], "size": [1.4, 0, 1.2],
+         "prompt_key": "FIELD_PROMPT_CH17_MOORINGS", "requires_flag": "ch17_started",
+         "blocked_by_flag": "ch17_moorings_scuttlers", "payload": {"beat": "moorings_scuttlers"}, "yaw": 0.0},
+        {"id": "a3_moorings_two", "activation": "interact", "at": [1.0, 0.0, 1.2], "size": [1.4, 0, 1.2],
+         "prompt_key": "FIELD_PROMPT_CH17_MOORINGS", "requires_flag": "ch17_moorings_scuttlers",
+         "blocked_by_flag": "ch17_moorings_rasp", "payload": {"beat": "moorings_rasp"}, "yaw": 0.0}]
     variants = [{"when": {"unset": ["ch17_started"]}, "hide": ids},
                 {"when": {"set": ["ch17_started"]}, "hide": ["DockBoundE"], "show": ids}]
     return {"blocks": blocks, "spawns": spawns, "marks": marks, "triggers": triggers, "variants": variants}

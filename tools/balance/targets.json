@@ -2249,6 +2249,142 @@
       "p90_turns_max": 80,
       "loadout": "ch21_sefir",
       "swell": "good"
+    },
+    {
+      "id": "ch20_layer_lanterns",
+      "chapter": "Ch20 regular (the lanterns of the Oruvel and Corrow rooms, three; Ysolde's ember answers them; act3_roster.md, the Act III regular band; tuned by the chapters combat seat; the Ch20 loadout)",
+      "kind": "regular",
+      "encounter": "ch20_layer_lanterns",
+      "active": [
+        "ysolde",
+        "rhen",
+        "toma"
+      ],
+      "reserve": [
+        "kerrid",
+        "asha"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          25
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          88,
+          100
+        ],
+        "smart": [
+          95,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 45,
+      "loadout": "ch20_layer3",
+      "swell": "good"
+    },
+    {
+      "id": "ch20_layer_shoal",
+      "chapter": "Ch20 regular (the drowned gallery: a held shoal, untargetable until its lantern breaks, and the lantern; Ysolde breaks the lantern, Toma the shoal; act3_roster.md, the Act III regular band; tuned by the chapters combat seat; the Ch20 loadout)",
+      "kind": "regular",
+      "encounter": "ch20_layer_shoal",
+      "active": [
+        "toma",
+        "ysolde",
+        "rhen"
+      ],
+      "reserve": [
+        "kerrid",
+        "asha"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          25
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          88,
+          100
+        ],
+        "smart": [
+          95,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 45,
+      "loadout": "ch20_layer3",
+      "swell": "good"
+    },
+    {
+      "id": "ch17_moorings_scuttlers",
+      "chapter": "Ch17 optional (the outer moorings: three deep scuttlers on the hull-lines; Toma's break answers them; act3_roster.md, the Act III regular band; tuned by the chapters combat seat)",
+      "kind": "regular",
+      "encounter": "ch17_moorings_scuttlers",
+      "active": [
+        "toma",
+        "rhen",
+        "ysolde"
+      ],
+      "reserve": [
+        "kerrid",
+        "asha"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          25
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          88,
+          100
+        ],
+        "smart": [
+          95,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 45,
+      "loadout": "ch17_moorings",
+      "swell": "good"
+    },
+    {
+      "id": "ch17_moorings_rasp",
+      "chapter": "Ch17 optional (the outer moorings: a hull rasp alone; its ribs armour it until they break at 60%; Kerrid's break answers it; act3_roster.md, the Act III regular band; tuned by the chapters combat seat)",
+      "kind": "regular",
+      "encounter": "ch17_moorings_rasp",
+      "active": [
+        "kerrid",
+        "rhen",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "asha"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          25
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          88,
+          100
+        ],
+        "smart": [
+          95,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 45,
+      "loadout": "ch17_moorings",
+      "swell": "good"
     }
   ]
 }

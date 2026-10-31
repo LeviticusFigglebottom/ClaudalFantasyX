@@ -161,6 +161,12 @@ def undertow_layers() -> dict:
         "camera_volumes": [],
         "triggers": triggers,
         "variants": variants,
+        # M5-A3P-1849: the layers' regulars (act3_roster.md Ch20): the drowned lanterns of the remembered rooms, and the
+        # held shoal drifting under one; from the first floor down to the Cage
+        "encounters": {"table": [{"encounter": "ch20_layer_lanterns", "weight": 1},
+                                 {"encounter": "ch20_layer_shoal", "weight": 1}],
+                       "min_m": 70, "max_m": 120, "when": {"set": ["ch20_started"], "unset": ["ch20_cage_broken"]},
+                       "seed": 20},
     }
 
 

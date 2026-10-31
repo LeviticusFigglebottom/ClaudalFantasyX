@@ -2480,5 +2480,28 @@
     "Veil9"
    ]
   }
- ]
+ ],
+ "encounters": {
+  "table": [
+   {
+    "encounter": "ch20_layer_lanterns",
+    "weight": 1
+   },
+   {
+    "encounter": "ch20_layer_shoal",
+    "weight": 1
+   }
+  ],
+  "min_m": 70,
+  "max_m": 120,
+  "when": {
+   "set": [
+    "ch20_started"
+   ],
+   "unset": [
+    "ch20_cage_broken"
+   ]
+  },
+  "seed": 20
+ }
 }
