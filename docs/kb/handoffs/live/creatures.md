@@ -1460,3 +1460,17 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
     `material is null` in the log. If the loop persists, the other instance-uniform writers are
     vegetation_plant.gd and shell_shrine_level.gd (not creatures').
 - **MERGE-READY @ f6c23ed14.**
+- Lead 04:43: continue Act III, and help env-art-b with rows 79 and 80 if they ask. They haven't asked creatures; I'll
+  pick it up if they file a request.
+  - I merged the integration branch (new-session-mj8c3c @ 8b5462854; a fast-forward) and **unblocked M5-A3P-1811**:
+    the Act III flags are declared.
+  - **M5-A3P-1811** (review):
+    - Haluna, after `ch18_haluna_lifted`: four beach people stand on the beach with their backs to the sea, three in
+      vigil and the elder kneeling in mourning;
+    - Reedhollow, from `ch17_complete`: the platform watchers turn their backs to the lagoon;
+    - each person's own row carries `not_flag`, and validate_npc lets a crowd person's flag row stand at its own spot;
+    - tests: crowd 27/0 (the real zones with the flags flipped), villager 50/0, tools test_npc OK. No shot sets these
+      flags, so I made no new render.
+  - 1809's per-layer rows: the location `ch20/undertow_layers` now exists (one zone for every layer). The held-shapes
+    rows wait on the layers' greybox scene (env-art).
+- **MERGE-READY @ 51531a4b8.**
