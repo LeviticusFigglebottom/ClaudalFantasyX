@@ -326,7 +326,9 @@ func _party_act(ctl: FieldBattle) -> void:
 	var foes := ctl.engine.living_foes_of(actor)
 	# A set piece's turn with no foe up (Ch8's stair hold: the Surge summons the next crawlers) still passes: a skill on
 	# the actor himself (Toma's Hold the Stair).
-	var targets: Array[StringName] = [actor.id] if foes.is_empty() else [foes[0].id, actor.id]
+	var targets: Array[StringName] = [actor.id]
+	if not foes.is_empty():
+		targets.push_front(foes[0].id)
 	if not foes.is_empty():
 		var res := ctl.act(&"attack", [foes[0].id])
 		if res == null or res.ok:
