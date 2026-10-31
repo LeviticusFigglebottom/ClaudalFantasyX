@@ -139,6 +139,33 @@ FOES_PENDING = {
                        "The crawler relights a broken part of the engine: bound light drawn back into it, steady (no drift, no flicker)."),
     "crawler_tend": fx("ground", ring("brass", "glimmer_bound", 20, 0.6),
                        "The crawler tends the engine: a small brass ring at its feet; it pays the party no mind."),
+    # The chapters combat seat's Act II people bosses and set pieces (act1-chapters; the Lead routed big35's red here):
+    # Ch14's Lacquer Court (no ice, ADR 0204: lacquer, brass and bound light) and Ch16's Abiding on the Pale Rim
+    "flat_pulse": fx("ground", ring("glimmer_bound", "lacquer_black", 44, 1.4),
+                     "Venn's flat engine pulses: a ring of steady bound light flattening out across the court floor."),
+    "engine_churn": fx("ground", ring("brass", "lacquer_black", 20, 0.6),
+                       "The flat engine churns between pulses: a small brass ring at its base."),
+    "venn_sentence": fx("chest", burst("glimmer_bound", "lacquer_red_deep", 40, -1.0),
+                        "Malcor Venn reads the sentence: bound light and red lacquer breaking on the target."),
+    "grapnel_line": fx("chest", slash("brass", "lacquer_black", 36), "Venn's grapnel line bites: brass and black lacquer."),
+    "rod_sweep": fx("ground", heavy("lacquer_black", "brass", "lacquer_red_deep", "sand_dry", 48),
+                    "Venn's measuring rod sweeps the steps: lacquer chips thrown out low."),
+    "still_hand": fx("chest", sink("lacquer_black", "glimmer_bound", 30, 0.4),
+                     "Venn's still hand settles on a hero: the Level's weight pressing down."),
+    "level_guard": fx("chest", ring("lacquer_red_deep", "glimmer_bound", 30, 0.9),
+                      "Venn levels himself: a ring of red lacquer and bound light round him (a ward)."),
+    "seize_the_line": fx("chest", slash("lacquer_black", "sand_cloth", 30),
+                         "A Stillguard seizes Merel's line: a jerk of rope and lacquer."),
+    "close_ranks": fx("ground", ring("overcast_slate", "glimmer_bound", 36, 1.2),
+                      "The Abiding close ranks: a slate-grey ring drawn round the guard."),
+    "hook_thrust": fx("chest", slash("overcast_slate", "brass", 34), "An Abiding hook thrusts: grey iron and brass."),
+    "hook_sweep": fx("ground", heavy("overcast_slate", "brass", "sand_dry", "overcast_slate", 48),
+                     "The First's hook sweeps the rim: grit and iron thrown out low."),
+    "hook_draw": fx("chest", slash("brass", "overcast_slate", 38), "The First draws a hero in on the hook."),
+    "storm_bearing": fx("ground", ring("overcast_slate", "deep_teal_shadow", 40, 1.3),
+                        "The First takes the storm's bearing: the Abiding braced round a ring of grey."),
+    "storm_drag": fx("ground", spray("deep_teal_shadow", "overcast_slate", 44),
+                     "The undertow drags at the line: dark water hauled back across the rim."),
 }
 
 

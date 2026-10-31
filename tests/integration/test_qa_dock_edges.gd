@@ -4,11 +4,13 @@ extends TestCase
 ## RUN_SEC each, as a player pushing at a dock, pier or hull edge would. Every frame, through the real FieldController
 ## and its FieldShore: he never drops off an edge into the water (a frame's fall of more than shore.edge_drop_m that
 ## ends him under the surface), and never stands grounded deeper than shore.deep_water_m under it. A spawn already
-## more than shore.underwater_m under the surface is a seabed walk (Oruvel's underway) and is skipped.
+## more than shore.underwater_m under the surface is a seabed walk (Oruvel's underway) and is skipped, and so is one
+## with no floor under it in this fresh state (a story variant shows it later: Hollowmere's HullDeck; _stands).
 
 const DT := 1.0 / 60.0
 const DIRECTIONS := 16
 const RUN_SEC := 6.0
+const SETTLE_SEC := 0.5
 const PARTY: Array[StringName] = [&"rhen", &"asha", &"toma"]
 
 var _state_was: GameStateData
@@ -51,6 +53,10 @@ func test_no_hero_steps_off_a_dock_into_the_water() -> void:
 				var start_water := player.shore.water_y(player, player.global_position)
 				if start_water - player.global_position.y > float(cfg["underwater_m"]):
 					continue  # a seabed walk (Oruvel's underway): no shore down there
+				if not _stands(player, float(cfg["edge_drop_m"])):
+					if k == 0:
+						print("  %s %s: no floor in this state (a story variant's), skipped" % [path.get_file(), sp])
+					continue
 				var stick := Vector2.from_angle(TAU * k / DIRECTIONS)
 				player.input_override = stick
 				for i in int(RUN_SEC / DT):
@@ -78,6 +84,17 @@ func test_no_hero_steps_off_a_dock_into_the_water() -> void:
 	Game.state = _state_was
 	print("  zones with water walked: %d" % zones)
 	assert_true(zones >= 5, "the Act I zones with water were found (%d)" % zones)
+
+
+## True when the hero, left alone SETTLE_SEC at the spawn, ends grounded within `drop_m` of it. A spawn whose floor a
+## story variant shows only later (Hollowmere's HullDeck: the hull's floors before ch17_started) has nothing under it
+## in the fresh state this test walks: a fall from it is not a dock edge.
+static func _stands(player: FieldController, drop_m: float) -> bool:
+	var start := player.global_position
+	player.input_override = Vector2.ZERO
+	for i in int(SETTLE_SEC / DT):
+		player.step(DT)
+	return player.grounded() and start.y - player.global_position.y <= drop_m
 
 
 static func _has_water(zone: Node) -> bool:

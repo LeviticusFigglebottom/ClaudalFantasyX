@@ -4,7 +4,7 @@ extends TestCase
 
 const LAYOUT := "res://game/levels/ch02/haluna/haluna_layout.json"
 const MIN_WAKE_LAMPS := 100
-const WAKE_LIGHTS := 10
+const WAKE_LIGHTS := 14  # ten round the wall and the feast, four out along the dock (PC pass 7 row 24)
 
 
 func _dresser() -> HalunaDresser:

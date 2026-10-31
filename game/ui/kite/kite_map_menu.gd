@@ -145,6 +145,7 @@ func fly(destination: StringName) -> bool:
 	flight_chosen.emit(destination)
 	if model.fly(destination):
 		flown = destination
+		_launch_flight_card(destination)
 		close()
 		return true
 	level = Level.LIST
@@ -152,6 +153,15 @@ func fly(destination: StringName) -> bool:
 	_notice = tr("KITE_REFUSED_FMT").format({"place": model.place_name(destination)})
 	_show_rows(_list_rows(), maxi(model.ids().find(destination), 0))
 	return false
+
+
+## M5-A3P-1711: the flight card names where the Kite is bound while the scene changes; only when a change has
+## really started (a flight recorded by a test, or refused, changes nothing on screen).
+func _launch_flight_card(destination: StringName) -> void:
+	var router := get_tree().root.get_node_or_null(^"SceneRouter") if is_inside_tree() else null
+	if router == null or not bool(router.call(&"is_busy")):
+		return
+	KiteFlightCard.launch(self, model.place_name(destination), model.region_name(destination))
 
 
 ## Searches the named cell: a secret there joins the list (and the cursor goes to it); else says so.

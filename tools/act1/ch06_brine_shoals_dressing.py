@@ -30,6 +30,10 @@ ROWS = (-84.0, -60.0, -36.0, -12.0, 12.0, 36.0, 60.0, 84.0)
 APRON_DX = -24.0  # the preview's block spans x -60..84; this zone's spans -84..60
 CHANNEL_X = -24.0
 CHANNEL_FROM_Z = -24.0  # the channel's silted head; cells run north of it
+# The PC's pass 7 (row 81): a hard straight seam along the channel's cells, where a lighter plane ended. The channel
+# pieces' banks rise to y 0.16 against the patches' 0.04, above the tide's wet band, so they read dry and pale and
+# stop dead at the cell's straight edge. Sunk to meet the patches flush, the banks take the same wet tone.
+CHANNEL_SINK_M = -0.12
 
 
 # The Level-stone's kit slot is a flat pale StandardMaterial that read as white plastic on the flats (M3-ENV-1326); it
@@ -75,7 +79,7 @@ def ground() -> list[dict]:
     for i, x in enumerate(COLS):
         for j, z in enumerate(ROWS):
             if x == CHANNEL_X and z < CHANNEL_FROM_Z:
-                rows.append(piece("channel_straight_a" if j % 2 == 0 else "channel_straight_b", x, z))
+                rows.append(piece("channel_straight_a" if j % 2 == 0 else "channel_straight_b", x, z, y=CHANNEL_SINK_M))
             else:  # the preview's a/b and yaw rotation, so no two neighbours repeat
                 rows.append(piece("mudflat_patch_a" if (i + j) % 2 == 0 else "mudflat_patch_b", x, z,
                                   yaw=90.0 * ((i * 3 + j) % 4)))

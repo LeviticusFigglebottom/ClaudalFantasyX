@@ -1431,8 +1431,61 @@ done and in `status: review` (reviewer: narrative). Each task file's **Done** se
     source, no manifest shot touched.
 
 
+
+### Lead relays read late (10-31 ~03:35) and what I did about them
+The six relays from 23:06 to 03:02 reached this session only at 03:35, after the Ch20/Ch21 batch above was built.
+- **big35/big37 reds (all mine, fixed):**
+  - `test_ch08_flow`: its hand-made locations now include `ch18/kite`, the Act III revisit's target.
+  - `test_act1_flow_audit`: the audit leaves out rows that wait on a Ch10+ flag.
+  - `test_act1_audio_audit`: a later-act encounter's entries count as later users.
+  - `test_battle_vfx_coverage`: INTENDED rows added.
+  - `test_battle_act2_ability_vfx`: 14 Ch14 and Ch16 skills get their own effects through `gen_act2_ability_vfx.py`
+    rows, appended (no ice).
+  - `test_qa_capsules`: 3/0 on the merged tree.
+- **PC row 82:** `ch08_corrow_lake` is reframed past the near roof (rendered and viewed; the baseline is yours).
+- **PC row 86:** Keth Pass's three flight cameras stand 2.5 m to the open side and 6 m up (`climb_volumes` side_m).
+  - A fight's Encounter return on a flight no longer frames half a cliff.
+  - RamArena and FromQuellan, re-rendered at their own yaw and at yaw 0, are clear of Rhen and the walls.
+  - The "inside Rhen" view did not reproduce on this head.
+- **LEAD-ASK (the Act III overlap with act2-plan, needs your call):** I read act2-plan's branch (2b8f11c5). It has
+  also built Ch19, Ch20, Ch21 and the Ending, on env-art's real kits (`tools/act1/ch19..21_greybox.py`,
+  `ch19/iskarra`, `ch20/undertow_layers`, `ch21/heart`, Ch19Zone/Ch20Zone/Ch21Zone). Mine are greyboxes on the same
+  location ids (`tools/act3/ch20..21_greybox.py`, `chapters/ch20.json`, `ch21.json`, `ending.json`). The two will
+  conflict on merge: the same scene and layout paths, different victory-flag names (`_fought` against my `_beaten`),
+  and their Ending in `ch21.json` against my `ending.json`. My proposal:
+  1. **Their zones and flows win for Ch19–Ch21 and the Ending.** They stand on env-art's kits and Prologue frames, and
+     mine are greyboxes. I drop mine (`tools/act3/ch20_greybox.py`, `ch21_greybox.py`, the ch20/ch21 levels,
+     `ch20.json`, `ch21.json`, `ending.json`, Ch18Zone's ending path, test_ch20/test_ch21) when the integration takes
+     theirs.
+  2. **The fights stay mine** (combat seat): every encounter their tasks wait on now exists. That covers
+     `ch19_abiding_wardens`, `ch20_<v>` ×6, `ch20_the_cage`, `ch21_kesh`, `ch21_sefir_warden`, `ch21_sefir_heart`,
+     `ch21_sefir_letting`, the regulars (Ch20's lantern and shoal in the layers' table, Ch17's moorings) and the
+     Ch18 optional bosses. I add the battle steps to their flows (each task names the step) once their branch is on
+     the integration branch, or they do: your pick.
+  3. **Ch17 and Ch18 as you ruled:** my Ch17 stands, and my Hollowmere `aboard` already goes to ch18/kite Deck
+     (test_ch17_thread asserts it), so M5-A3P-1020 is done on this branch. act2-plan's Ch18 rebases on mine.
+  Until you answer I build nothing more in Ch18–Ch21.
+- **Godot on the merged tree:** ch12 5/0, ch17 3/0, ch18 1/0, ch19 2/0, ch20 4/0, ch21 4/0, kesh 3/0, battle_sim 55/0,
+  set_piece 48/0, vowbound 119/0, qa_capsules 3/0, battle_act2_ability_vfx 2/0, qa_threads 1/0 (the known Act III
+  staging row now covers the Ending's `ending_*` scenes).
+- MERGE-READY @ 758ce108a. This covers the fights, regulars, reds, PC rows 82/86 and the audits. The Ch20/Ch21/Ending
+  zones and flows wait on the LEAD-ASK above: take them, or take act2-plan's.
+- **LEAD-ANSWERED (04:43):**
+  - The split: my lane is `game/levels` and the flow data (the chapters' `ch1x.json` and the zones). act2-plan's lane
+    is the `.dlg` scripts, loc and objective text. So my Ch19–Ch21 zones and flows stand, with `ending.json` and
+    Ch18Zone's ending path.
+  - **For act2-plan:** on your next integration merge, take this branch's `game/levels/ch19..ch21/**`,
+    `tools/act3/ch18..ch21_greybox.py` and `game/data/flow/chapters/ch19..ch21.json`, `ending.json`, and drop your
+    `tools/act1/ch19..21_greybox.py` zones and flows and your `_fought` victory flags. My flows use `_beaten`. Your Ending
+    rows in `ch21.json` are covered by my `ending.json`. If your zones carry env-art kit instancing you want kept,
+    send me the scene nodes and I'll add them to my generators' scenes.
+  - **M5-A3P-1020** (act2-plan's patch to my ch17.json) is reviewed and already in place on this branch. The
+    `aboard` beat sets `ch17_complete`, then `go` goes to `ch18/kite` Deck, exactly as the patch reads.
+    test_ch17_thread asserts the hand-off. Nothing to change; act2-plan can close the task.
+- MERGE-READY @ e4a239266 (unchanged code since 758ce108a; this entry is the log only).
+
 ## Exact next step
-**BACKLOG EMPTY (2026-10-31):** every Act III row assigned to act1-chapters is built and in review (M5-A3P-1001, 1004,
+**BACKLOG EMPTY (the Lead answered the overlap at 04:43: zones and flows are mine).** Every Act III row assigned to act1-chapters is built and in review (M5-A3P-1001, 1004,
 1007, 1009, 1011, 1013, 1015, 1017 and 1849; the combat rows for 1852 and 1853). What is left waits on other tracks:
 1. **M5-A3P-1009's mid-battle line hook** (battle-presentation): when it lands, wire the fight lines
    (`ch19_bark_abiding_wardens`, `ch20_bark_vowbound_fights`, `ch21_bark_sefir`) to their triggers and play each in

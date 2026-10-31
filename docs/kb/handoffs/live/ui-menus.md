@@ -1575,3 +1575,13 @@ MERGE-READY @ 965126340: M5-A3P-1710, the Memories gallery Ch4-Ch9.
     lines check is skipped where a scene has no spoken lines (Ch15's current-song is sung and staged only).
   - **Next:** Act III's memories once its zones are staged (cinematics M5-A3P-1001/1004/1007/1011/1015).
 MERGE-READY @ 01597d03a: M5-A3P-1710, the Memories gallery through Act II.
+
+- **The Lead's 04:43 note (Act III UI that doesn't wait on staging):**
+  - **M5-A3P-1711, the flight card (3cbba87bc):** while the scene changes after Fly, "The Kite / Bound for {place}" and
+    the region show on the fade's black. The card follows the fade and goes once the new place is up. It is put up
+    only when a change has really started, and the router is not edited.
+    - **Tests and checks:** test_kite_flight_card 3/0; kite 18/0; shot `kite_flight` (pending_baseline), rendered
+      and viewed; validate_data 0/0; taskboard ok; lint ok.
+  - **The optional-content log** is M5-A3P-1703 (the ship's log: revisits and heirlooms).
+  - **The Kite map** has its Act III revisits (M5-A3P-1702).
+MERGE-READY @ 3cbba87bc: M5-A3P-1711, the Kite's flight card.

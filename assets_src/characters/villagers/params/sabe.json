@@ -52,33 +52,7 @@
     "seed": 126,
     "lip": "#6E4236"
   },
-  "_hair": {
-    "brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.15"},
-    "hairline_feather": 0.45,
-    "kind": "short",
-    "tufts": true,
-    "hairline": "female",
-    "seed": 46,
-    "length_m": [
-      0.02,
-      0.035
-    ],
-    "scalp_cards": [
-      220,
-      170,
-      110
-    ],
-    "hairline_cards": 0,
-    "rise": 0.6,
-    "colour": "#BDB7AC",
-    "grey": "#E4E0D8",
-    "grey_share": 0.5,
-    "underpaint": "#BCB6AC",
-    "brow": "#9A948A",
-    "spec": "#D8D2C8",
-    "grey_strands": "all",
-    "grey_width_k": 1.2
-  },
+  "_hair": {"brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.15"}, "hairline_feather": 0.6, "kind": "short", "tufts": true, "hairline": "female", "seed": 46, "length_m": [0.022, 0.036], "scalp_cards": [240, 190, 120], "hairline_cards": 40, "rise": 0.6, "colour": "#B0AAA0", "grey": "#E0DCD4", "grey_share": 0.6, "underpaint": "#948E85", "brow": "#9A948A", "spec": "#D8D2C8", "grey_strands": true, "grey_width_k": 1.2},
   "_eyes": {
     "iris": "#2A1A10"
   },

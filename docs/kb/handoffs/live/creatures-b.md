@@ -1125,3 +1125,24 @@ and skills, characters' founders and Sefir's figure) or the old_leviathan rename
 
 MERGE-READY @ 17bfab43e: the Act III bosses (M5-A3P-1851 the Cage, 1852 the Tide Matron, 1853 the Old Shoal, 1855 the
 Undertow-heart), the a0ba72003 revert and M4-A2P-1981, merged with the integration branch.
+
+## 2026-10-31 ~05:10: the Lead's 04:43 (row 61, the Surge model reads dark in its arena)
+MERGE-READY @ d17cb8db1: row 61, the Reach against the night sky (for battle-presentation and the PC re-check).
+- **Why it read dark:** the creature shader's rim sheen is the surface's own albedo, and the Reach's storm-water and
+  crust are near black. Its existing rim (0.6) rimmed it in black.
+- **The fix:** game/shaders/creature/creature.gdshader gains `rim_color` and `rim_tint`. A tint of 0, the default,
+  computes exactly what it did before, so every other creature is unchanged.
+  - **For creatures:** this is your shader. The change is two uniforms and one mix, default off.
+- **On the Reach** (assets_src/creatures/undertows_reach/materials.json):
+  - The water and crust slots tint the rim to `glimmer_held` #7FC6D9, the Undertow's held light (sheen 0.6 on
+    water, 0.45 on crust).
+  - The crust's wound light goes from 2.4 to 3.0.
+- **Self-rendered battle_arena_seawall_stairhead_surge** (lavapipe, before and after, viewed):
+  - Before: the arm and hand were one black mass against the wall.
+  - After: the hand, each digit and the arm's edge read in cool held light, and the teal wound seams still show.
+- **The shot's baseline changes:** the Lead's to accept; I wrote none. **PC-QUEUE:** row 61 on the GPU.
+- Checks: Godot creature 163/0; validate_data 0/0; no shader errors in the capture.
+- The Act III bosses: all of mine are built and in review (above). Nothing new has come in.
+
+BACKLOG EMPTY: row 61 is done on my side (the GPU re-check is the PC's). The Act III bosses (1850, 1851, 1852, 1853,
+1855) and M4-A2P-1981 wait on other roles' answers.
