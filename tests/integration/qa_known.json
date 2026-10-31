@@ -58,7 +58,9 @@
 "abiding_guard": "characters, M4-A2P-051 (in review)",
 "court_stillguard": "characters, M3-CHR-508 (the Stillguard soldiers)",
 "hesper_oan": "characters, M5-A3P-1202 (the Wardens' bodies)",
-"ilsabet_rue": "characters, M5-A3P-1202"
+"ilsabet_rue": "characters, M5-A3P-1202",
+"chain_lamp": "creatures, M5-A3P-1801 (the chain lamp)",
+"spire_moth": "creatures, M5-A3P-1802 (the spire moth)"
     }
   },
   "unraised_doc": "test_qa_threads.gd: a flag a thread's chapter or main objectives wait on that its thread never raises -> why it isn't a softlock, and the task that closes the gap.",
