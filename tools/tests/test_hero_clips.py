@@ -7,6 +7,7 @@ carry the clips the first-playable scripts call, stay small, and pose the skelet
 kneel drops the hips to kneeling height; Asha's staff hand keeps the staff upright; Ysolde's book at the hip
 and the order of her Glyph Trace).
 """
+import hashlib
 import json
 import re
 import sys
@@ -24,7 +25,8 @@ REQUESTED = {"idle", "walk", "run", "talk", "kneel_over_rhen", "laugh", "rise_to
              "walk_to_chamber", "emerge_doorway", "face_west"}  # docs/kb/tasks/M2/M2-FP-07-asha-clips-request.md
 # M3-CHR-05: 2 -> 3 MB with the Act I story clips (Rhen alone calls 46); they carry only the keys a straight line
 # between neighbours does not give. M2-CHR-515: 3 -> 4 MB with the grips (15 finger tracks per held hand in every
-# clip, mostly track headers). A text sanity bound, under the repo's 5 MB file cap; past it, save them binary (.res).
+# clip, mostly track headers). A text sanity bound, under the repo's 5 MB file cap; past it, save them binary (.res):
+# M4-A2P-1980 did for Asha and Rhen (hero_clips.BINARY_LIBS), checked here by the text's sha256.
 MAX_BYTES = 4 * 1024 * 1024
 # Act I clips requested but not built yet (M3-CHR-1000): the dialogue may call them, nothing else.
 PENDING = {
@@ -54,6 +56,13 @@ def slice_calls(hero: str) -> set:
 class TestHeroClips(unittest.TestCase):
     def test_committed_libraries_rebuild_byte_for_byte(self):
         for hero in hero_clips.PERSONA:
+            if hero in hero_clips.BINARY_LIBS:  # M4-A2P-1980: committed binary; its sha256 names the text it came from
+                text = hero_clips.library_text(hero)
+                digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
+                self.assertEqual(hero_clips.sha_path(hero).read_text(encoding="utf-8").strip(), digest, hero)
+                self.assertFalse(hero_clips.out_path(hero).exists(), f"{hero}: no .tres beside the .res")
+                self.assertLess(hero_clips.res_path(hero).stat().st_size, MAX_BYTES, hero)
+                continue
             path = hero_clips.out_path(hero)
             self.assertEqual(path.read_text(encoding="utf-8"), hero_clips.build(hero), hero)
             self.assertLess(path.stat().st_size, MAX_BYTES, hero)
@@ -64,7 +73,7 @@ class TestHeroClips(unittest.TestCase):
         expected |= {"revive"}  # M2-CHR-513: and the battle's optional revive
         expected |= set(hero_clips.STORY["asha"])  # M3-CHR-05: and the story clips the chapters call
         self.assertEqual(set(hero_clips.CLIPS["asha"]), expected)
-        text = hero_clips.out_path("asha").read_text(encoding="utf-8")
+        text = hero_clips.library_text("asha")
         names = set(re.findall(r'resource_name = &"([a-z_0-9]+)"', text))
         self.assertEqual(names, expected)
         self.assertIn("take_hand", hero_clips.CLIPS["rhen"])  # the request lists Rhen's clip for the shared rig
@@ -84,7 +93,7 @@ class TestHeroClips(unittest.TestCase):
         """M3-CHR-05: every requested clip is in its hero's library, ends on a pose (one-shots hold), and a gesture
         clip that starts standing starts on the idle's first frame, so it joins the idle without a pop."""
         for hero, clips in hero_clips.STORY.items():
-            text = hero_clips.out_path(hero).read_text(encoding="utf-8")
+            text = hero_clips.library_text(hero)
             names = set(re.findall(r'resource_name = &"([a-z_0-9]+)"', text))
             sk = hero_clips.Skeleton(ROOT / "assets" / "characters" / hero / f"{hero}.glb")
             persona = hero_clips.PERSONA[hero]
@@ -174,7 +183,7 @@ class TestTomaClips(unittest.TestCase):
         self.assertTrue(called, "the dialogue calls Toma's clips")
         self.assertEqual(called - set(hero_clips.CLIPS["toma"]) - PENDING.get("toma", set()), set())
         self.assertTrue({"idle", "walk", "run", "talk"} <= set(hero_clips.CLIPS["toma"]))
-        names = set(re.findall(r'resource_name = &"([a-z_0-9]+)"', hero_clips.out_path("toma").read_text(encoding="utf-8")))
+        names = set(re.findall(r'resource_name = &"([a-z_0-9]+)"', hero_clips.library_text("toma")))
         self.assertEqual(names, set(hero_clips.CLIPS["toma"]))
 
     def test_persona_sway_and_wide_planted_stance(self):
@@ -229,7 +238,7 @@ class TestSefirClips(unittest.TestCase):
                                         "hands_joined": True})
         self.assertEqual(hero_clips.CLIPS["sefir"], ["idle", "talk", "raise_palm", "incline_head", "glance", "pivot",
                                                      "walk_glide"] + list(hero_clips.STORY["sefir"]))  # M3-CHR-05
-        names = set(re.findall(r'resource_name = &"([a-z_0-9]+)"', hero_clips.out_path("sefir").read_text(encoding="utf-8")))
+        names = set(re.findall(r'resource_name = &"([a-z_0-9]+)"', hero_clips.library_text("sefir")))
         self.assertEqual(names, set(hero_clips.CLIPS["sefir"]))
         called = set()
         for dlg in (ROOT / "game" / "data" / "dialogue").rglob("*.dlg"):
@@ -321,7 +330,7 @@ class TestYsoldeClips(unittest.TestCase):
         self.assertEqual(hero_clips.CLIPS["ysolde"], ["idle", "walk", "run", "talk", "board_step", "vigil_book_shut",
                                                       "reink_shell", "stand_apart", "book_fan", "cast_glyph"]
                          + list(hero_clips.STORY["ysolde"]))  # M3-CHR-05: then the story clips
-        text = hero_clips.out_path("ysolde").read_text(encoding="utf-8")
+        text = hero_clips.library_text("ysolde")
         self.assertEqual(set(re.findall(r'resource_name = &"([a-z_0-9]+)"', text)), set(hero_clips.CLIPS["ysolde"]))
         for hero in ("asha", "rhen", "toma"):  # the new keys are off by default
             self.assertNotIn("book", hero_clips.PERSONA[hero])
@@ -340,7 +349,7 @@ class TestYsoldeClips(unittest.TestCase):
                 self.assertLess(float(book[2] - hip[2]), 0.32, clip)  # held to the hip, not out in front
 
     def test_book_fan_shape_track(self):
-        text = hero_clips.out_path("ysolde").read_text(encoding="utf-8")
+        text = hero_clips.library_text("ysolde")
         self.assertEqual(text.count('type = "blend_shape"'), 2)
         self.assertIn('NodePath("ysolde_skeleton/Skeleton3D/Book:book_fan")', text)
         self.assertEqual(hero_clips.book_fan_weight("book_fan", 0.0), 0.0)
@@ -349,7 +358,7 @@ class TestYsoldeClips(unittest.TestCase):
         self.assertEqual(hero_clips.book_fan_weight("cast_glyph", hero_clips.LENGTHS["cast_glyph"]), 0.0)
         self.assertIsNone(hero_clips.book_fan_weight("idle", 0.0))
         for hero in ("asha", "rhen", "toma"):
-            self.assertNotIn("blend_shape", hero_clips.out_path(hero).read_text(encoding="utf-8"))
+            self.assertNotIn("blend_shape", hero_clips.library_text(hero))
 
     def test_cast_glyph_traces_the_five_strokes_in_order(self):
         """formulas.md § Swell: down, right, up, right, down, each about 12 cm at the index guard's tip, in front of

@@ -21,7 +21,8 @@ extends RefCounted
 ##                range, so it never vanishes with nothing behind it. Auto-generated LODs are the .import option
 ##                `meshes/generate_lods`, which the rules state so tests can check the wiring.
 ##   animations   `animations.library` (with {asset_dir} and {asset_stem}, minus any `strip_suffixes`)
-##                names an AnimationLibrary resource; when it exists the asset root gets an
+##                names an AnimationLibrary resource (its binary `.res` sibling when the `.tres` is absent);
+##                when it exists the asset root gets an
 ##                AnimationPlayer carrying it (M2-FP-07: the heroes' body clips, which
 ##                CutsceneSequencer plays by name), with the rules' `default_blend_s` between clips.
 ##   placeholder  glTF extras that declare PLACEHOLDER (`hymn_tag: "PLACEHOLDER"` or a `placeholder`
@@ -102,7 +103,15 @@ static func animation_library_path(rules: Dictionary, source_file: String) -> St
 	for suffix: Variant in rules.get("strip_suffixes", []):
 		if stem.ends_with(str(suffix)):
 			stem = stem.trim_suffix(str(suffix))
-	return pattern.replace(ASSET_DIR_TOKEN, source_file.get_base_dir()).replace(ASSET_STEM_TOKEN, stem)
+	var path := pattern.replace(ASSET_DIR_TOKEN, source_file.get_base_dir()).replace(ASSET_STEM_TOKEN, stem)
+	# M4-A2P-1980: a library too big for text is committed binary (Asha's and Rhen's <hero>_clips.res)
+	if (
+		path.ends_with(".tres")
+		and not ResourceLoader.exists(path)
+		and ResourceLoader.exists(path.get_basename() + ".res")
+	):
+		return path.get_basename() + ".res"
+	return path
 
 
 static func _apply_animations(scene: Node, rules: Dictionary, source_file: String, report: Dictionary) -> void:

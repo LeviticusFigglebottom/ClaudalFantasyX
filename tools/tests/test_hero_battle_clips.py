@@ -107,7 +107,7 @@ class TestHeroBattleClips(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.sk = {h: hero_clips.Skeleton(ROOT / "assets" / "characters" / h / f"{h}.glb") for h in HEROES}
-        cls.subs = {h: _subresources(hero_clips.out_path(h).read_text(encoding="utf-8")) for h in HEROES}
+        cls.subs = {h: _subresources(hero_clips.library_text(h)) for h in HEROES}
 
     def _keys(self, hero: str, clip: str):
         """(t, pose) for every key the library writes, as hero_clips.build samples them."""
@@ -215,7 +215,7 @@ class TestHeroBattleClips(unittest.TestCase):
         for hero in HEROES:
             for i, clip in enumerate(EXISTING[hero]):
                 self.assertIn(f'[sub_resource type="Animation" id="clip_{i}"]\nresource_name = &"{clip}"',
-                              hero_clips.out_path(hero).read_text(encoding="utf-8"), f"{hero} {clip}")
+                              hero_clips.library_text(hero), f"{hero} {clip}")
                 if clip not in ("walk", "run"):  # M2-CHR-12 rebuilt the cycles, with footstep markers
                     self.assertNotIn("markers", self.subs[hero][clip], f"{hero} {clip}")
 

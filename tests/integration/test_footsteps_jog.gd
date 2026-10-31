@@ -68,7 +68,10 @@ func _listener(path: String) -> FootstepAudio:
 
 func test_the_jogs_markers_sit_two_to_a_cycle_at_its_cadence() -> void:
 	for hero: String in ["asha", "rhen", "toma"]:
-		var lib := load("res://assets/characters/%s/anim/%s_clips.tres" % [hero, hero]) as AnimationLibrary
+		var path := "res://assets/characters/%s/anim/%s_clips.tres" % [hero, hero]
+		if not ResourceLoader.exists(path):  # M4-A2P-1980: Asha's and Rhen's libraries are binary (.res)
+			path = path.get_basename() + ".res"
+		var lib := load(path) as AnimationLibrary
 		assert_true(lib != null and lib.has_animation(&"run"), "%s has a run" % hero)
 		if lib == null or not lib.has_animation(&"run"):
 			continue

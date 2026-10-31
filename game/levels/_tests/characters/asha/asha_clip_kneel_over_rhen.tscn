@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3]
 
 [ext_resource type="PackedScene" path="res://game/levels/_tests/characters/asha/asha_stage.tscn" id="stage"]
-[ext_resource type="AnimationLibrary" path="res://assets/characters/asha/anim/asha_clips.tres" id="clips"]
+[ext_resource type="AnimationLibrary" path="res://assets/characters/asha/anim/asha_clips.res" id="clips"]
 
 [node name="AshaStage" instance=ExtResource("stage")]
 clip = &"kneel_over_rhen"
