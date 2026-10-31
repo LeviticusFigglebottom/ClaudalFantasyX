@@ -2832,6 +2832,7 @@ SKIRT_TRAIL_CLIPS = {"walk", "run"}  # the cycles whose panel drive carries its 
 # the clearance solve stays the floor (the cloth never enters a leg) and the cloth below the hip rides the panels only
 SKIRT_DRIVE_GAIN = 0.8  # of the thighs' swing (from rest) toward the panel
 SKIRT_DRIVE_PROFILE = (1.0, 0.9, 0.75)  # the swing from the vertical at the hip, knee and hem bones (the cloth hangs back)
+SKIRT_CLEAR_FLOOR = 0.5  # the share of the clearance solve's knee and hem swing kept as the floor (all of it bells)
 SKIRT_LAG = 0.55  # the share of the previous frame's drive kept per 15 fps frame
 SKIRT_NEIGHBOUR_DEG = 20.0  # neighbouring panels (22.5 deg apart) never differ by more (cloud pass 6's notch: a derived
 # back panel swung 41 deg beside one at 0, and the cloth between them folded over)
@@ -2874,16 +2875,17 @@ def _skirt_drive(sk: "Skeleton", g: dict, clear: dict, w: float) -> dict:
         if prev is not None and h in prev:
             tgt = [p + (1.0 - SKIRT_LAG) * (x - p) for x, p in zip(tgt, prev[h])]
         lag[h] = tuple(tgt)
-        out[h] = [ax, [max(c, w * x) for c, x in zip(an, tgt)], sc]
+        kc = [1.0] + [1.0 - w * (1.0 - SKIRT_CLEAR_FLOOR)] * (len(an) - 1)  # below the hip, part of the clearance
+        out[h] = [ax, [max(c * k, w * x) for c, k, x in zip(an, kc, tgt)], sc]
     if prev is not None:
         sk.skirt_trail = lag
     num = sorted(out, key=lambda h: int(h[len(SKIRT_BONE):]))
     lim = math.radians(SKIRT_NEIGHBOUR_DEG)
-    for _ in range(2):  # raise (never lower) a panel to within lim of its neighbours, round the ring
-        for i, h in enumerate(num):
-            for lv in range(len(out[h][1])):
-                nb = max(out[num[i - 1]][1][lv], out[num[(i + 1) % len(num)]][1][lv])
-                out[h][1][lv] = max(out[h][1][lv], nb - lim / max(w, 1e-6))  # eased in with w
+    was = {h: list(v[1]) for h, v in out.items()}
+    for i, h in enumerate(num):  # raise (never lower) a panel to within lim of its neighbours (one step, no ratchet)
+        for lv in range(len(out[h][1])):
+            nb = max(was[num[i - 1]][lv], was[num[(i + 1) % len(num)]][lv])
+            out[h][1][lv] = max(out[h][1][lv], nb - lim / max(w, 1e-6))  # eased in with w
     return derive_folds({h: (ax, tuple(an), sc) for h, (ax, an, sc) in out.items()})
 
 
