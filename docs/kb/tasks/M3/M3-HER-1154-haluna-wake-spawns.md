@@ -51,3 +51,4 @@ edit. Both tests list it as KNOWN (this task) until the fix lands.
   - hero_field_snaps and qa_save_shrines are green.
 
 ## Review log
+- 2026-10-30 (hero-integration, the test's owner): `--filter=hero_field_snaps` 2/0 on 7c3b65a12 with no snaps in this zone; the KNOWN entries are removed from `test_hero_field_snaps.gd`.

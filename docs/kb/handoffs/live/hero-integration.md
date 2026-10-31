@@ -2165,3 +2165,16 @@ MERGE-READY @ (this commit).
   - The biggest levers are what HalunaZone `_ready` still does after `prebuild`, and asha's actor in CutsceneStage (move its build into `prebuild` or defer it until the scene is revealed).
   - I don't edit `haluna_zone.gd`. When their fix lands, I'll re-measure the Drownbell return with `return_probe -- --cases=drownbell --trace`.
 MERGE-READY @ (this commit).
+
+### 2026-10-30: Act III started (ADR 0207); integration merged in
+- I merged `claude/new-session-mj8c3c` (5cacfd6a0); it merged clean.
+- **Snap guard:** the fixed zones' KNOWN entries are gone from `test_hero_field_snaps`: Lowlight (M4-HER-1166) and Haluna Wake's three (M3-HER-1154). `--filter=hero_field_snaps` 2/0.
+- **M5-A3P-1980**, `tests/integration/test_kite_landings.gd`. Every Kite destination or secret, with the world open, is an enterable location with the named spawn. The party lands grounded within 1 s, no more than 1 m below the marker, out of deep water, and doesn't fall walking out. All 8 pass.
+- **M5-A3P-1981**, `tools/act3/kite_revisit_check.py` plus its tools test. Under the most-advanced flag state (225 settable flags), no destination's `arrive` row replays. 0 problems.
+- Both new tasks are in `docs/kb/tasks/M5/` (I checked the shared block first; none existed). Status review; reviewer qa.
+- Next steps:
+  - Re-measure the Drownbell return when slice-polish's Haluna fix lands.
+  - The Haluna split is offered above (`--ready-profile`).
+  - Act III: the Kite hub zone (`ch18/kite`) needs Ch18's chapter data first. I'll take its field side (party staging, camera volumes) when it lands.
+LEAD-ASK: the M5-A3P block now holds 1980 and 1981 (hero-integration). Is there an Act III chapter-select start (`ch18`) planned? Both guards would gain a runtime landing smoke from it.
+MERGE-READY @ (this commit).

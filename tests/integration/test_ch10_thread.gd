@@ -42,6 +42,9 @@ func test_the_fen_opens_act_two_and_leads_to_reedhollow_and_back() -> void:
 	_open(FEN)
 	story.begin()
 	assert_false(_trigger(&"clearing").is_available(), "the clearing is quiet")
+	assert_true(
+		bool(Game.get_flag(&"ch10_what_went_up_seen")), "M4-A2P-1003 D11: the Drowner's release plays on the return"
+	)
 	assert_true(_trigger(&"to_reedhollow").on_touched())
 	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch10/reedhollow", "spawn": "Gate"}])
 	_close()
@@ -49,14 +52,23 @@ func test_the_fen_opens_act_two_and_leads_to_reedhollow_and_back() -> void:
 	_open(REEDHOLLOW)
 	story.begin()
 	assert_true(bool(Game.get_flag(&"ch10_reached_reedhollow")))
+	assert_true(
+		bool(Game.get_flag(&"ch10_pell_kept_out")), "M4-A2P-1003 D1: the causeway plays first (Owa's 'Not you.')"
+	)
 	assert_false(&"pell" in Game.state.party_ids or &"pell" in Game.state.reserve_ids, "Pell isn't let in")
+	assert_true(_trigger(&"to_fen").on_touched())
+	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch10/ossa_fen", "spawn": "FromReedhollow"}])
+	_close()
+	_open(REEDHOLLOW)  # back from the fen
+	story.begin()
 	# M4-A2P-114: the shore plays the farewell-tide (B09), then the dawn gate (B11)
 	assert_true(_trigger(&"shore").on_touched())
 	assert_true(bool(Game.get_flag(&"ch10_farewell_tide_seen")), "the tide is watched")
 	assert_true(bool(Game.get_flag(&"ch10_complete")), "and the chapter closes at the dawn gate")
 	assert_false(_trigger(&"shore").is_available(), "once")
-	assert_true(_trigger(&"to_fen").on_touched())
-	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch10/ossa_fen", "spawn": "FromReedhollow"}])
+	assert_eq(
+		hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch11/sunken_vey", "spawn": "Landing"}], "on to Ch11 (E1)"
+	)
 	_close()
 	Game.state = saved_state
 

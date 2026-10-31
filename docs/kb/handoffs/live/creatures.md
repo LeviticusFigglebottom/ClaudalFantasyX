@@ -1338,3 +1338,32 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - tools test_creatures OK; Godot creature 160/0.
   - `clip_by_skill` waits for Combat's skill ids.
 - **MERGE-READY @ 8cc959b6e.** Next: M5-A3P-1801, the chain lamp (claimed).
+- **M5-A3P-1801, the chain lamp @ a22b86fa5:**
+  - 4.6k triangles, 20 bones;
+  - the light shows in slits between the louvres, which open on the beat;
+  - the cage swings as a pendulum and falls when the shackle parts;
+  - audit clean; byte-identical, PROVENANCE, portrait, shot `creature_chain_lamp` (viewed).
+  - **Also fixed:** the wick crawler's thimble, cup and reservoir were inside out (lathe order). Its portrait is re-rendered; `creature_wick_crawler` has no baseline yet.
+- **MERGE-READY @ a22b86fa5.** Next: M5-A3P-1802, the spire moth (claimed).
+- **M5-A3P-1802, the spire moth @ b89f039ec:**
+  - the flue moth's rig, mesh, clips and brow mark; pale fur, no embers, glassy wings; `creature_flue_moth` still identical;
+  - byte-identical, PROVENANCE, portrait, shot `creature_spire_moth` (viewed).
+  - **Also:** the chain lamp's `lit_ceramic` hex corrected, rebuilt.
+- **MERGE-READY @ b89f039ec.** Ch19's three are done. Next: M5-A3P-1803, the held shoal (claimed).
+- **M5-A3P-1803, the held shoal @ c0611d659:**
+  - 24 fish of held light in three counter-turning rings round a crusted net float (its open seam is the weak point);
+  - the rise rule measured at 0 mm in every clip; `idle_turned` for the targetable state;
+  - 5.8k triangles, 54 bones; byte-identical, PROVENANCE, portrait, shot `creature_held_shoal` (viewed).
+  - Tech/Combat: an idle that follows its untargetable phase.
+- **MERGE-READY @ c0611d659.** Next: M5-A3P-1804, the drowned lantern (claimed).
+- **M5-A3P-1804 the drowned lantern** (Ch20), at review:
+  - a drowned street-lamp globe become a jelly, its held light in the bell; the crazed seam is the weak point;
+  - the rise rule at 0 mm in every clip (the heart rides the root, not the glass); the KO sinks the globe, not the root;
+  - 3.5k triangles, 25 bones; byte-identical, PROVENANCE, portrait, shot `creature_drowned_lantern` (viewed).
+- **MERGE-READY @ 647105978.** Next: M5-A3P-1807, the conduit crawler's Act III row (claimed).
+- **M5-A3P-1807 the conduit crawler's Act III use** (Ch19), at review:
+  - the same model and creatures.json row (a foe's row is found by its model scene); feet pinned in every clip and the
+    brush and wiper no longer drag, so the clip audit is clean; byte-identical, portrait re-rendered, shot viewed;
+  - its shot also differs from the baseline by the earlier leg rework (563eda19e): the shots session recaptures.
+  - Combat: **M5-A3P-1849** requests the enemies.json rows and encounters for all eight Act III regulars.
+- **MERGE-READY @ a1d431c1a.** Next: M5-A3P-1808, the kite gulls (claimed).

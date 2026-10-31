@@ -558,6 +558,212 @@
     "beat": "to_cloudloom"
    },
    "yaw": 0.0
+  },
+  {
+   "id": "bark_toma_kinder",
+   "activation": "touch",
+   "at": [
+    6.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    8.0
+   ],
+   "once": true,
+   "requires_flag": "ch12_reached_quellan",
+   "payload": {
+    "dialogue": "ch12_bark_toma_kinder",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_quellan_boy",
+   "activation": "touch",
+   "at": [
+    38.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    8.0
+   ],
+   "once": true,
+   "requires_flag": "ch12_reached_quellan",
+   "payload": {
+    "dialogue": "ch12_bark_quellan_boy",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_quellan_night",
+   "activation": "touch",
+   "at": [
+    26.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    8.0
+   ],
+   "once": true,
+   "requires_flag": "ch12_hesk_bound",
+   "payload": {
+    "dialogue": "ch12_bark_quellan_night",
+    "overheard": true
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch12_complete"
+  },
+  {
+   "id": "npc_herder",
+   "activation": "interact",
+   "at": [
+    14.0,
+    0.0,
+    3.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch12_reached_quellan",
+   "payload": {
+    "dialogue": "ch12_bark_herder"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "npc_weaver",
+   "activation": "interact",
+   "at": [
+    24.0,
+    0.0,
+    3.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch12_reached_quellan",
+   "payload": {
+    "dialogue": "ch12_bark_weaver"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "npc_innkeeper",
+   "activation": "interact",
+   "at": [
+    36.0,
+    0.0,
+    -3.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch12_reached_quellan",
+   "payload": {
+    "dialogue": "ch12_bark_innkeeper"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "npc_reader",
+   "activation": "interact",
+   "at": [
+    51.0,
+    0.0,
+    8.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch12_reached_quellan",
+   "payload": {
+    "dialogue": "ch12_bark_reader"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "side_dorros_cord",
+   "activation": "interact",
+   "at": [
+    10.0,
+    0.0,
+    -3.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch12_ram_felled",
+   "payload": {
+    "dialogue": "ch12_side_dorros_cord"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch12_returned_herd_cord"
+  },
+  {
+   "id": "side_the_boys_knot",
+   "activation": "interact",
+   "at": [
+    42.0,
+    0.0,
+    3.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch12_reached_quellan",
+   "payload": {
+    "dialogue": "ch12_side_the_boys_knot"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "camp",
+   "activation": "interact",
+   "at": [
+    29.0,
+    0.0,
+    -3.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch12_ysolde_confessed",
+   "payload": {
+    "dialogue": "ch12_camp_the_end_of_the_road"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch12_camp_talk"
   }
  ]
 }

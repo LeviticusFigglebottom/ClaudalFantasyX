@@ -88,6 +88,7 @@ const VARIANTS := {
 	"rim_crawler": "tide_crawler",
 	"deep_scuttler": "scuttler",
 	"hull_rasp": "hullgnaw",
+	"spire_moth": "flue_moth",
 }
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"

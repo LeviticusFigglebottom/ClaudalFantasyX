@@ -10339,6 +10339,38 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_chain_lamp",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_chain_lamp.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_spire_moth",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_spire_moth.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_held_shoal",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_held_shoal.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_drowned_lantern",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_drowned_lantern.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }

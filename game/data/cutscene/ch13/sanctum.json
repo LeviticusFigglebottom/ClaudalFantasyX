@@ -1,0 +1,138 @@
+{
+ "_doc": "M4-A2P-075 (Ch13, cinematics'): the Sanctum's cutscene shots and marks, from act2_ch13_direction.md. S02 replaces the greybox's (it frames Liss at the rim). basin_rim stands Liss outside the east kneeling ledge, looking down at the basin; before_ethren is a pace in front of Ethren's rise (the layout's corran). S06 and S09 look at Ysolde's eye line. basin_light (S01's light under the mirror) and asha_sleeve (S07's binding, at Asha's arm by sa_asha) place the scene's @vfx at=.",
+ "replace": [
+  "S02"
+ ],
+ "shots": {
+  "S02": {
+   "pos": [
+    1.3,
+    1.6,
+    -35.85
+   ],
+   "look_at": [
+    2.6,
+    1.4,
+    -36.6
+   ],
+   "fov": 27
+  },
+  "S03": {
+   "pos": [
+    8.88,
+    1.4,
+    -37.1
+   ],
+   "look_at": [
+    6.95,
+    1.4,
+    -39.4
+   ],
+   "fov": 16
+  },
+  "S04": {
+   "pos": [
+    7.7,
+    1.2,
+    -38.45
+   ],
+   "look_at": [
+    6.4,
+    1.4,
+    -39.2
+   ],
+   "fov": 14
+  },
+  "S05": {
+   "pos": [
+    6.2,
+    0.4,
+    -41.25
+   ],
+   "look_at": [
+    7.5,
+    1.4,
+    -42.0
+   ],
+   "fov": 38
+  },
+  "S06": {
+   "pos": [
+    9.0,
+    1.6,
+    -40.6
+   ],
+   "look_at": [
+    7.5,
+    1.58,
+    -40.6
+   ],
+   "fov": 16
+  },
+  "S07": {
+   "pos": [
+    9.89,
+    1.6,
+    -38.9
+   ],
+   "look_at": [
+    6.95,
+    1.4,
+    -40.6
+   ],
+   "fov": 38
+  },
+  "S08": {
+   "pos": [
+    6.99,
+    2.0,
+    -43.41
+   ],
+   "look_at": [
+    7.5,
+    1.6,
+    -42.0
+   ],
+   "fov": 16
+  },
+  "S09": {
+   "pos": [
+    8.01,
+    1.6,
+    -39.19
+   ],
+   "look_at": [
+    7.5,
+    1.58,
+    -40.6
+   ],
+   "fov": 16
+  }
+ },
+ "marks": {
+  "basin_rim": [
+   5.75,
+   0.0,
+   -37.6,
+   90.0
+  ],
+  "before_ethren": [
+   7.5,
+   0.0,
+   -40.6,
+   0.0
+  ],
+  "basin_light": [
+   0.0,
+   -0.2,
+   -31.0,
+   0.0
+  ],
+  "asha_sleeve": [
+   6.7,
+   1.1,
+   -39.3,
+   0.0
+  ]
+ }
+}

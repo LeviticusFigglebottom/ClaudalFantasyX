@@ -1,0 +1,381 @@
+{
+ "_doc": "M4-A2P-075 (Ch14, cinematics'): the Lacquer Court's cutscene shots and marks for the wedding and the escape, staged from docs/kb/story/beats/act2_ch14_direction.md (the notes name ch14/ansedra_lacquer_court.json; staging files go by the zone's location id, so this is ch13's). W03-W07 replace the greybox's ids of other meaning. Frames checked against the greybox: W03 is from over the water steps (the notes' camera stood on the court looking out to sea); W04 looks up at Sefir on the dais (0.8 m); W07 and W08 frame the Conclave gallery (x -12, 2 m up), level for Venn; the 85 mm singles look at the eye line; W11 is over Toma's shoulder onto the commander; W14/W15 hold Tobin sitting; L01, L03 and L12 keep the bier and the stern in frame. sefir_dais and venn_rail are for the actors (M4-CIN-1305); no script marks them.",
+ "replace": [
+  "W03",
+  "W04",
+  "W05",
+  "W06",
+  "W07"
+ ],
+ "shots": {
+  "W03": {
+   "pos": [
+    -1.2,
+    0.15,
+    3.2
+   ],
+   "look_at": [
+    0.0,
+    1.6,
+    -20.0
+   ],
+   "fov": 60
+  },
+  "W04": {
+   "pos": [
+    0.38,
+    2.2,
+    -17.28
+   ],
+   "look_at": [
+    0.0,
+    2.35,
+    -20.2
+   ],
+   "fov": 27
+  },
+  "W05": {
+   "pos": [
+    -0.63,
+    1.5,
+    -14.95
+   ],
+   "look_at": [
+    0.0,
+    1.45,
+    -18.5
+   ],
+   "fov": 16
+  },
+  "W06": {
+   "pos": [
+    2.7,
+    1.5,
+    -16.85
+   ],
+   "look_at": [
+    1.3,
+    1.4,
+    -13.0
+   ],
+   "fov": 27
+  },
+  "W07": {
+   "pos": [
+    -3.6,
+    1.4,
+    -19.6
+   ],
+   "look_at": [
+    -11.6,
+    3.0,
+    -21.3
+   ],
+   "fov": 38
+  },
+  "W08": {
+   "pos": [
+    -7.4,
+    3.55,
+    -20.6
+   ],
+   "look_at": [
+    -10.2,
+    3.55,
+    -21.2
+   ],
+   "fov": 16
+  },
+  "W09": {
+   "pos": [
+    2.09,
+    1.6,
+    -14.41
+   ],
+   "look_at": [
+    2.6,
+    1.58,
+    -13.0
+   ],
+   "fov": 16
+  },
+  "W10": {
+   "pos": [
+    -4.35,
+    1.6,
+    -11.42
+   ],
+   "look_at": [
+    -1.3,
+    1.4,
+    -16.7
+   ],
+   "fov": 27
+  },
+  "W11": {
+   "pos": [
+    -3.6,
+    1.65,
+    -12.4
+   ],
+   "look_at": [
+    -1.8,
+    1.45,
+    -18.9
+   ],
+   "fov": 27
+  },
+  "W12": {
+   "pos": [
+    1.81,
+    1.6,
+    -14.01
+   ],
+   "look_at": [
+    1.3,
+    1.58,
+    -12.6
+   ],
+   "fov": 16
+  },
+  "W13": {
+   "pos": [
+    6.75,
+    1.5,
+    -16.3
+   ],
+   "look_at": [
+    6.0,
+    1.4,
+    -15.0
+   ],
+   "fov": 38
+  },
+  "W14": {
+   "pos": [
+    3.4,
+    1.15,
+    -19.1
+   ],
+   "look_at": [
+    1.5,
+    1.2,
+    -18.0
+   ],
+   "fov": 27
+  },
+  "W15": {
+   "pos": [
+    3.5,
+    1.25,
+    -19.4
+   ],
+   "look_at": [
+    1.8,
+    0.9,
+    -17.8
+   ],
+   "fov": 27
+  },
+  "L01": {
+   "pos": [
+    3.6,
+    1.0,
+    9.0
+   ],
+   "look_at": [
+    0.0,
+    0.2,
+    9.4
+   ],
+   "fov": 38
+  },
+  "L02": {
+   "pos": [
+    0.0,
+    -0.3,
+    8.5
+   ],
+   "look_at": [
+    0.0,
+    0.8,
+    10.0
+   ],
+   "fov": 60
+  },
+  "L03": {
+   "pos": [
+    0.4,
+    0.8,
+    4.6
+   ],
+   "look_at": [
+    0.4,
+    0.4,
+    12.5
+   ],
+   "fov": 38
+  },
+  "L04": {
+   "pos": [
+    -12.0,
+    6.0,
+    -30.0
+   ],
+   "look_at": [
+    -14.0,
+    14.0,
+    -40.0
+   ],
+   "fov": 16
+  },
+  "L05": {
+   "pos": [
+    0.51,
+    11.4,
+    8.59
+   ],
+   "look_at": [
+    0.0,
+    0.8,
+    10.0
+   ],
+   "fov": 75
+  },
+  "L06": {
+   "pos": [
+    -1.6,
+    1.0,
+    13.5
+   ],
+   "look_at": [
+    2.4,
+    0.8,
+    13.5
+   ],
+   "fov": 38
+  },
+  "L07": {
+   "pos": [
+    -4.27,
+    1.0,
+    10.48
+   ],
+   "look_at": [
+    1.37,
+    0.8,
+    12.53
+   ],
+   "fov": 27
+  },
+  "L08": {
+   "pos": [
+    3.49,
+    1.4,
+    13.19
+   ],
+   "look_at": [
+    4.0,
+    0.8,
+    14.6
+   ],
+   "fov": 60
+  },
+  "L09": {
+   "pos": [
+    3.49,
+    1.0,
+    13.19
+   ],
+   "look_at": [
+    4.0,
+    0.98,
+    14.6
+   ],
+   "fov": 16
+  },
+  "L10": {
+   "pos": [
+    -1.5,
+    0.6,
+    22.0
+   ],
+   "look_at": [
+    -3.0,
+    0.8,
+    22.0
+   ],
+   "fov": 27
+  },
+  "L11": {
+   "pos": [
+    0.0,
+    1.9,
+    8.5
+   ],
+   "look_at": [
+    0.0,
+    0.8,
+    10.0
+   ],
+   "fov": 60
+  },
+  "L12": {
+   "pos": [
+    1.9,
+    0.6,
+    6.0
+   ],
+   "look_at": [
+    0.0,
+    0.1,
+    10.0
+   ],
+   "fov": 27
+  }
+ },
+ "marks": {
+  "before_asha": [
+   -2.4,
+   0.0,
+   -14.2,
+   0.0
+  ],
+  "dais_approach": [
+   -1.2,
+   0.0,
+   -17.0,
+   180.0
+  ],
+  "dais_foot": [
+   -1.6,
+   0.0,
+   -18.9,
+   180.0
+  ],
+  "hull_captains": [
+   5.6,
+   0.0,
+   -14.3,
+   120.0
+  ],
+  "liss_tobin": [
+   2.1,
+   0.0,
+   -17.4,
+   45.0
+  ],
+  "sefir_dais": [
+   0.0,
+   0.8,
+   -20.2,
+   180.0
+  ],
+  "venn_rail": [
+   -10.2,
+   2.0,
+   -21.2,
+   270.0
+  ]
+ }
+}

@@ -2,8 +2,8 @@
 id: M4-A2P-1001
 title: "Request: Act I read-through fixes, Ch4–Ch9 (as played on integration @ 4b1988109)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "act1-chapters (claude/act1-chapters)"
 depends_on: []
 reviewer: narrative
 milestone: M4
@@ -40,6 +40,8 @@ Also filed: **M4-A2P-1002** (was 117) (Progression), the Brine Shoals vendor sho
 
 ## Acceptance criteria
 - [ ] Each row fixed, or answered on this task with a reason.
+
+- **act1-chapters, 2026-10-30:** all 17 rows are fixed, as act2-plan's M4-A2P-116 @ 9be201224 (the same table, since renumbered to 1001). Each row's answer is in docs/kb/handoffs/live/act1-chapters.md, "The Lead's 17:44 FAST-TRACK" (MERGE-READY @ c17b7c953). The vendor is M4-A2P-1002: `brine_shoals_vendor`, "The Ridge-Boat Vendor".
 
 ## Review log
 

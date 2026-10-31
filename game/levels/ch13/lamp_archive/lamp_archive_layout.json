@@ -444,7 +444,7 @@
     0,
     3.0
    ],
-   "requires_flag": "ch13_entered_archive",
+   "requires_flag": "ch13_ethren_bound",
    "blocked_by_flag": "ch13_read_ledgers",
    "payload": {
     "beat": "ledgers"
@@ -452,24 +452,45 @@
    "yaw": 0.0
   },
   {
-   "id": "roll",
-   "activation": "touch",
+   "id": "npc_archivist",
+   "activation": "interact",
    "at": [
-    3.2,
+    3.0,
     0.0,
-    -24.0
+    -4.0
    ],
    "size": [
-    1.5,
+    1.6,
     0,
-    3.0
+    1.6
    ],
-   "requires_flag": "ch13_read_ledgers",
-   "blocked_by_flag": "ch13_read_cantor_roll",
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch13_entered_archive",
    "payload": {
-    "beat": "roll"
+    "dialogue": "ch13_bark_archivist"
    },
    "yaw": 0.0
+  },
+  {
+   "id": "velamir_register",
+   "activation": "interact",
+   "at": [
+    -3.0,
+    0.0,
+    -3.5
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LOOK",
+   "requires_flag": "ch13_entered_archive",
+   "payload": {
+    "dialogue": "ch13_find_velamir_register"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch13_found_velamir_register"
   }
  ]
 }
