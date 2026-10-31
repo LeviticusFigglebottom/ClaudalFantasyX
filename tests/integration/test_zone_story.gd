@@ -75,6 +75,21 @@ func test_a_gated_trigger_opens_a_battle_that_returns_here() -> void:
 	_done()
 
 
+## The 23:05 FAST-TRACK: a touch box entered while a scene plays (Coilspire's door as the beacon scene ends) fires once,
+## on entry; the story keeps it and plays it when the scene is over, and a hand-off drops it.
+func test_a_touch_entered_during_a_scene_plays_after_it() -> void:
+	Game.set_flag(&"test_flag", true)
+	Game.state.party_ids.assign([&"rhen"])
+	story.busy = true  # a run is playing
+	assert_true(_trigger(&"gate").on_touched())
+	assert_eq(hand_offs.size(), 0, "nothing while the scene plays")
+	assert_eq(story.pending_touches.size(), 1, "kept")
+	story.run([])  # the scene ends
+	assert_eq(hand_offs.size(), 1, "the gate's beat plays after it")
+	assert_eq(story.pending_touches.size(), 0)
+	_done()
+
+
 func test_an_event_steps_rhen_back_without_leaving() -> void:
 	zone.place_at(&"AfterFight")
 	assert_true(_trigger(&"leave").on_touched())

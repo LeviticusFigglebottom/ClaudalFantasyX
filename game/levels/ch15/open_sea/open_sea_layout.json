@@ -206,8 +206,55 @@
    0.0,
    -4.4,
    0.0
+  ],
+  "shoal": [
+   6.0,
+   -2.75,
+   -8.0,
+   0.0
+  ],
+  "shoal_floor": [
+   6.0,
+   -2.75,
+   -8.0,
+   0.0
+  ],
+  "shoal_rising": [
+   3.0,
+   -1.2,
+   -1.0,
+   0.0
+  ],
+  "kerrid_orbit": [
+   0.0,
+   0.9,
+   4.2,
+   0.0
+  ],
+  "kerrid_scar": [
+   0.0,
+   0.6,
+   4.0,
+   0.0
   ]
  },
+ "variants": [
+  {
+   "when": {
+    "set": [
+     "ch15_dawn"
+    ]
+   },
+   "sun": {
+    "energy": 0.0
+   },
+   "environment": {
+    "background": "#b8a4a8",
+    "ambient_color": "#9a8e96",
+    "ambient_energy": 0.55
+   }
+  }
+ ],
  "actors": {},
  "shots": {
   "U01": {
@@ -332,6 +379,27 @@
  ],
  "triggers": [
   {
+   "id": "fin",
+   "activation": "interact",
+   "at": [
+    0.0,
+    0.0,
+    -4.2
+   ],
+   "size": [
+    2.0,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_CH15_BOW",
+   "requires_flag": "ch15_started",
+   "blocked_by_flag": "ch15_wakefin_felled",
+   "payload": {
+    "beat": "fin"
+   },
+   "yaw": 0.0
+  },
+  {
    "id": "dawn",
    "activation": "interact",
    "at": [
@@ -345,10 +413,137 @@
     1.2
    ],
    "prompt_key": "FIELD_PROMPT_CH15_BOW",
+   "requires_flag": "ch15_kerrid_revealed",
    "payload": {
     "beat": "to_hollowmere"
    },
    "yaw": 0.0
+  },
+  {
+   "id": "deck_liss",
+   "activation": "interact",
+   "at": [
+    0.8,
+    0.0,
+    1.5
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_started",
+   "payload": {
+    "dialogue": "ch15_deck_liss"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_wakefin_felled"
+  },
+  {
+   "id": "deck_asha",
+   "activation": "interact",
+   "at": [
+    -1.4,
+    0.0,
+    0.4
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_started",
+   "payload": {
+    "dialogue": "ch15_deck_asha"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_wakefin_felled"
+  },
+  {
+   "id": "deck_toma",
+   "activation": "interact",
+   "at": [
+    -1.4,
+    0.0,
+    2.2
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_started",
+   "payload": {
+    "dialogue": "ch15_deck_toma"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_wakefin_felled"
+  },
+  {
+   "id": "deck_ysolde",
+   "activation": "interact",
+   "at": [
+    1.4,
+    0.0,
+    -0.2
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_started",
+   "payload": {
+    "dialogue": "ch15_deck_ysolde"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_wakefin_felled"
+  },
+  {
+   "id": "deck_pell",
+   "activation": "interact",
+   "at": [
+    1.4,
+    0.0,
+    -1.8
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_started",
+   "payload": {
+    "dialogue": "ch15_deck_pell"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_wakefin_felled"
+  },
+  {
+   "id": "deck_kerrid",
+   "activation": "interact",
+   "at": [
+    0.0,
+    0.0,
+    4.6
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_started",
+   "payload": {
+    "dialogue": "ch15_deck_kerrid"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_wakefin_felled"
   }
  ]
 }

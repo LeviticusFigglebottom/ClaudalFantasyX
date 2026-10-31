@@ -232,6 +232,10 @@
     {"id": "haluna_shrine", "location_id": "ch02/haluna", "spawn": "Shrine"},
     {"id": "brine_shoals_camp", "location_id": "ch06/brine_shoals", "spawn": "RidgeCamp"},
     {"id": "tamsule_shrine", "location_id": "ch07/tamsule", "spawn": "Shrine"},
-    {"id": "corrow_shrine", "location_id": "ch08/corrow", "spawn": "Shrine"}
+    {"id": "corrow_shrine", "location_id": "ch08/corrow", "spawn": "Shrine"},
+    {"id": "quellan_shrine", "location_id": "ch12/quellan", "spawn": "Shrine"},
+    {"id": "ansedra_shrine", "location_id": "ch13/ansedra", "spawn": "Moorings"},
+    {"id": "hollowmere_shrine", "location_id": "ch17/hollowmere", "spawn": "Dock"},
+    {"id": "pale_rim_shrine", "location_id": "ch16/pale_rim", "spawn": "Rim"}
   ]
 }

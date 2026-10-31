@@ -423,6 +423,12 @@
    8.0,
    -38.0,
    180.0
+  ],
+  "Shrine": [
+   56.0,
+   0.0,
+   7.5,
+   180.0
   ]
  },
  "marks": {
@@ -741,6 +747,47 @@
    "requires_flag": "ch12_reached_quellan",
    "payload": {
     "dialogue": "ch12_side_the_boys_knot"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "shrine",
+   "activation": "interact",
+   "at": [
+    56.0,
+    0.0,
+    10.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch12_reached_quellan",
+   "payload": {
+    "beat": "shrine",
+    "save_shrine": "quellan_shrine"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "shop",
+   "activation": "interact",
+   "at": [
+    30.0,
+    0.0,
+    3.2
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "SHOP_PROMPT",
+   "requires_flag": "ch12_reached_quellan",
+   "payload": {
+    "shop": "quellan_trader"
    },
    "yaw": 0.0
   },
