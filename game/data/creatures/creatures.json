@@ -394,6 +394,14 @@
                      "show": ["Q1Broken", "Q2Broken", "Q3Broken", "Q4Broken"], "hide_after": ["FounderQ1", "FounderQ2", "FounderQ3", "FounderQ4"]}
       },
       "stand_in": {"yaw_deg": 45.0, "height": 4.3, "radius": 2.0}
+    },
+    "sefir_heart": {
+      "scene": "res://game/creatures/sefir_heart/sefir_heart_battle.tscn",
+      "ko": "let_go",
+      "contact": {"attack": 0.9, "cast": 1.4, "phase_change": 1.5},
+      "loop": ["idle", "ready"],
+      "vfx_anchors": {"core": "vfx_core"},
+      "stand_in": {"height": 4.0, "radius": 1.7}
     }
   }
 }

@@ -696,6 +696,11 @@
       "id": "the_cage",
       "scene": "res://game/creatures/the_cage/the_cage_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "sefir_heart",
+      "scene": "res://game/creatures/sefir_heart/sefir_heart_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
     }
   ],
   "creature_stage": {

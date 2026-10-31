@@ -541,6 +541,16 @@
       ]
     },
     {
+      "id": "creature_sefir_heart",
+      "owner": "character",
+      "sources": ["assets_src/creatures/sefir_heart/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/sefir_heart/*.glb", "assets/creatures/sefir_heart/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/sefir_heart/build_sefir_heart.py", "--", "--out", "assets/creatures/sefir_heart/sefir_heart.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "sefir_heart"]
+      ]
+    },
+    {
       "id": "creature_shoal_skipper",
       "owner": "character",
       "sources": ["assets_src/creatures/shoal_skipper/**", "assets_src/creatures/common/**"],
