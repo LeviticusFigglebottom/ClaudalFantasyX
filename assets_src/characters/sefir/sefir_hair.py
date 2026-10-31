@@ -51,6 +51,9 @@ HEAD_REACH = 0.04  # m: farther than this from the head skin a point is off the 
 BIAS_FADE = 0.18  # m of drop over which a group's back/forward bias fades
 COHESION = {"b": 0.45, "f": 1.0}  # (GPU QA row 54: was 0.35/0.6; strands floated apart)  # how far a group's strands close up below the head, behind and in front
 LATERAL = 0.12  # an outward push off the sides of the head per unit drop (fading with the bias)
+BACKING_IN = 0.002  # m at s = 1: the front falls' backing sheet sits this far inside the group's mean strand
+BACKING_WIDTH = 0.9  # of the group's spread at mid-length
+BACKING_U = (0.3, 0.7)  # the dense middle of the atlas column (its edges feather out)
 FRONT_LATERAL = 0.0  # GPU QA row 54 (pass 5): the front locks fall along the cheek and jaw, not out past them
 BODY_PULL = 0.4  # pull toward the nearest surface under the strand, per unit drop
 
@@ -315,6 +318,18 @@ def fall(lm, params: dict, rng: np.random.Generator, scalp, avoid) -> tuple[Part
             _ribbon(part, pts, nrm, float(widths[c]), int(slots[c]),
                     lambda t, p=float(ph[c]): (0.6 * t * t, 0.4 * t, p, 0.2 * t), taper=0.3)
             cards.append((first, pts, gi, float(leave[c] / length[c])))
+        if kind == "f":  # PC pass 7 (row 54): a backing sheet under each front fall, so its gaps show hair, not neck
+            pts = mean.copy()  # the group's mean strand
+            mid = len(mean) // 2
+            spread = float(np.linalg.norm(paths[:, mid] - mean[mid], axis=1).max()) * 2.0
+            out = np.stack([pts[:, 0], pts[:, 1] - yc, np.zeros(len(pts))], axis=1)
+            nrm = np.where(np.linalg.norm(out, axis=1, keepdims=True) > 1e-6, out, np.array([[0.0, 1.0, 0.0]]))
+            nrm /= np.linalg.norm(nrm, axis=1, keepdims=True)
+            pts = pts - nrm * BACKING_IN * s
+            first = len(part.V)
+            _ribbon(part, pts, nrm, max(spread, FRONT_WIDTH[1] * s) * BACKING_WIDTH, 0,
+                    lambda t: (0.6 * t * t, 0.4 * t, 0.5, 0.2 * t), taper=0.3, u_range=BACKING_U)
+            cards.append((first, pts, gi, lf))
     return part, cards, groups
 
 
