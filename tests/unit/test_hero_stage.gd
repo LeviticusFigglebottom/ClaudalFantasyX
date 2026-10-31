@@ -209,12 +209,12 @@ func test_smile_variant_is_opt_in_data() -> void:
 ## Sampled on 15 fps keys: between keys the baked helpers interpolate while the solve sees the interpolated body.
 ## GPU QA row 56: the walk and run cycles and their starts and stops bake the hem's own motion on top of the solve
 ## (hero_clips.py SKIRT_LOCO_SWING and SKIRT_TRAIL; test_hero_locomotion and rig_probe check them), so this samples a
-## story walk and a battle clip instead, which bake the plain solve.
+## story walk and a story gesture instead, which bake the plain solve.
 func test_helper_bones_match_the_baked_clips() -> void:
 	for spec: Array in [
 		["asha", &"kneel_over_rhen", 1.6],
 		["asha", &"walk_to_chamber", 0.6],
-		["asha", &"attack", 0.4],
+		["asha", &"offer_hand", 0.8],
 		["toma", &"talk", 1.0],
 	]:
 		var model := (load("res://assets/characters/%s/%s.glb" % [spec[0], spec[0]]) as PackedScene).instantiate()
