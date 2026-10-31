@@ -1,4 +1,4 @@
-# big39: 262 shots: 107 PASS, 103 DRIFT (0 size mismatch), 52 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big39: 338 shots: 116 PASS, 144 DRIFT (0 size mismatch), 78 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 NO-BASELINE slice_end_card (pending_baseline)
 DRIFT battle_hud_preview rmse 0.06883 (limit 0.00800)
 DRIFT battle_swap_menu rmse 0.06883 (limit 0.00800)
@@ -227,37 +227,113 @@ DRIFT slice_causeway_head rmse 0.09513 (limit 0.00800)
 DRIFT slice_causeway_harrier_view rmse 0.09766 (limit 0.00800)
 PASS slice_verse_steps rmse 0.00000 (limit 0.00800)
 NO-BASELINE slice_verse_threshold (pending_baseline)
+NO-BASELINE slice_verse_recognition (pending_baseline)
 NO-BASELINE slice_verse_c08 (pending_baseline)
 NO-BASELINE kerrid_front
+NO-BASELINE kerrid_back
 NO-BASELINE kerrid_three_quarter
 NO-BASELINE kerrid_face
+NO-BASELINE kerrid_confession_grief (pending_baseline)
 NO-BASELINE kerrid_confession_guilty (pending_baseline)
 NO-BASELINE kerrid_confession_burns (pending_baseline)
+NO-BASELINE kerrid_face_stylized
 DRIFT kerrid_silhouette_lineup rmse 0.01776 (limit 0.00800)
 NO-BASELINE kerrid_clip_collar_haul
+DRIFT moll_face rmse 0.16079 (limit 0.00800)
 DRIFT moll_face_yield rmse 0.16063 (limit 0.00800)
 NO-BASELINE kerrid_battle_idle
+NO-BASELINE kerrid_battle_attack
 PASS stillguard_a_front rmse 0.00000 (limit 0.00800)
 PASS stillguard_a_three_quarter rmse 0.00000 (limit 0.00800)
+DRIFT stillguard_a_face rmse 0.16301 (limit 0.00800)
 PASS stillguard_b_front rmse 0.00000 (limit 0.00800)
 PASS stillguard_b_clip_level_spear rmse 0.00000 (limit 0.00800)
+PASS stillguard_d_three_quarter rmse 0.00000 (limit 0.00800)
 PASS stillguard_d_clip_shield_up rmse 0.00000 (limit 0.00800)
 NO-BASELINE stillguard_lineup
+DRIFT stillguard_b_face rmse 0.14176 (limit 0.00800)
 PASS stillguard_c_front rmse 0.00000 (limit 0.00800)
 DRIFT stillguard_c_face rmse 0.17567 (limit 0.00800)
+NO-BASELINE venn_front (pending_baseline)
 NO-BASELINE venn_three_quarter (pending_baseline)
 NO-BASELINE venn_face (pending_baseline)
+NO-BASELINE venn_face_cold (pending_baseline)
 NO-BASELINE venn_clip_attack (pending_baseline)
 NO-BASELINE venn_clip_defend (pending_baseline)
+NO-BASELINE venn_clip_yield (pending_baseline)
 NO-BASELINE abiding_halberd_front (pending_baseline)
 NO-BASELINE abiding_halberd_face (pending_baseline)
+NO-BASELINE abiding_halberd_clip_attack (pending_baseline)
 NO-BASELINE abiding_bulwark_front (pending_baseline)
 NO-BASELINE abiding_captain_front (pending_baseline)
+NO-BASELINE abiding_captain_three_quarter (pending_baseline)
 NO-BASELINE ivo_front
 NO-BASELINE ivo_three_quarter
+NO-BASELINE ivo_face
 NO-BASELINE ivo_face_laugh
 NO-BASELINE ivo_clip_hug_lift
+NO-BASELINE ivo_clip_kneel_palms_flat
 NO-BASELINE ivo_clip_talk
 PASS stillguard_a_clip_walk_torch rmse 0.00000 (limit 0.00800)
+PASS stillguard_c_clip_hold_arm rmse 0.00000 (limit 0.00800)
 PASS stillguard_a_clip_kneel_palms_flat rmse 0.00000 (limit 0.00800)
 PASS ch05_pemakar_harbour rmse 0.00677 (limit 0.00800)
+DRIFT ch05_pemakar_crown rmse 0.01003 (limit 0.00800)
+DRIFT battle_heroes_idle rmse 0.06435 (limit 0.00800)
+DRIFT battle_heroes_attack rmse 0.13254 (limit 0.00800)
+DRIFT battle_heroes_hit rmse 0.07180 (limit 0.00800)
+DRIFT battle_heroes_ko rmse 0.06946 (limit 0.00800)
+DRIFT battle_heroes_victory rmse 0.06466 (limit 0.00800)
+DRIFT battle_heroes_cast rmse 0.08493 (limit 0.00800)
+DRIFT battle_heroes_finisher rmse 0.14905 (limit 0.00800)
+DRIFT creature_wakefin_body rmse 0.03119 (limit 0.00800)
+PASS creature_tannin_archer rmse 0.00000 (limit 0.00800)
+DRIFT creature_gallery_ray rmse 0.02329 (limit 0.00800)
+DRIFT creature_rime_urchin rmse 0.01443 (limit 0.00800)
+DRIFT creature_conduit_crawler rmse 0.03198 (limit 0.00800)
+DRIFT creature_ridge_lynx rmse 0.04700 (limit 0.00800)
+DRIFT creature_cord_moth rmse 0.07276 (limit 0.00800)
+DRIFT creature_glass_skate rmse 0.03901 (limit 0.00800)
+PASS creature_root_crab rmse 0.00000 (limit 0.00800)
+DRIFT creature_fen_leech rmse 0.08856 (limit 0.00800)
+DRIFT creature_scree_crawler rmse 0.05364 (limit 0.00800)
+DRIFT creature_rim_crawler rmse 0.00899 (limit 0.00800)
+DRIFT creature_flat_engine rmse 0.01872 (limit 0.00800)
+DRIFT slice_verse_hall rmse 0.19509 (limit 0.00800)
+PASS battle_arena_seawall_stairhead_storm rmse 0.00242 (limit 0.00800)
+DRIFT battle_arena_seawall_stairhead_surge rmse 0.06747 (limit 0.00800)
+DRIFT battle_arena_coilspire_headland_path rmse 0.02272 (limit 0.00800)
+PASS pemakar_p04_harbour_day rmse 0.00702 (limit 0.00800)
+DRIFT pemakar_p11_sea_cut_weir_day rmse 0.03561 (limit 0.00800)
+DRIFT battle_arena_lowlight_engine_hall rmse 0.08532 (limit 0.00800)
+DRIFT battle_arena_ossa_fen_roots rmse 0.08398 (limit 0.00800)
+DRIFT battle_arena_ansedra_lagoon_escape rmse 0.04417 (limit 0.00800)
+DRIFT revenant_tells_reflection rmse 0.01338 (limit 0.00800)
+DRIFT revenant_tells_shadow rmse 0.01161 (limit 0.00800)
+DRIFT revenant_tells_shadow_off rmse 0.01133 (limit 0.00800)
+NO-BASELINE battle_arena_iskarra_spire_crown
+NO-BASELINE battle_arena_undertow_cage
+NO-BASELINE battle_arena_undertow_heart_letting
+NO-BASELINE hollowmere_m01_dace_hull
+NO-BASELINE kite_k01_moored
+DRIFT zone_oruvel_o01 rmse 0.11260 (limit 0.00800)
+DRIFT zone_oruvel_o09 rmse 0.39785 (limit 0.00800)
+DRIFT zone_oruvel_o12 rmse 0.02665 (limit 0.00800)
+NO-BASELINE zone_underway_u01
+NO-BASELINE zone_underway_u03
+NO-BASELINE zone_underway_u07
+NO-BASELINE zone_underway_u08
+NO-BASELINE first_verse_stage_v02
+DRIFT brightwater_landing_f01 rmse 0.02259 (limit 0.00800)
+DRIFT zone_oruvel_storm_o12 rmse 0.02815 (limit 0.00800)
+DRIFT zone_oruvel_storm_o16 rmse 0.02867 (limit 0.00800)
+PASS ch07_tamsule_market rmse 0.00567 (limit 0.00800)
+PASS ch07_tamsule_gantry rmse 0.00614 (limit 0.00800)
+DRIFT ch05_pemakar_harbour_day rmse 0.02034 (limit 0.00800)
+NO-BASELINE ch09_corrow_landing
+NO-BASELINE ch08_corrow_flood
+DRIFT ch08_corrow_lake rmse 0.05273 (limit 0.00800)
+PASS ch08_coilspire_storm rmse 0.00000 (limit 0.00800)
+NO-BASELINE ch08_corrow_storm
+DRIFT ch05_ashcrown_crown rmse 0.03033 (limit 0.00800)
+NO-BASELINE battle_arena_ashcrown_forecourt_day
