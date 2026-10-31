@@ -4,6 +4,18 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+### 2026-10-31 ~01:30: the Lead's 00:44 (PC pass 7 row 61 still open)
+**MERGE-READY @ 34bb40ca.** The Reach's rest frame looks up its arm.
+- **Why ef997f3d wasn't enough:** the rest frame kept the authored look point, so the lens looked down into the
+  wall's blank face and the arm left the top of the frame. The dark mass still filled the left side.
+- **The fix:** rest_by_enemy rows take `look_up_m`. The Reach: 8 m back, 3.2 m up, fov 56, look 2.4 m up.
+- **SELF-RENDERED battle_arena_seawall_stairhead_surge** (lavapipe): the arm takes about a fifth of the frame, its
+  teal glow against the sky, and the party is clear on the wall-walk. boss 123/0, arena 23/0.
+- **PC-QUEUE:** row 61 re-check on the GPU.
+- **For creatures-b (a request, not blocking):** against the night sky the Reach is dark on dark. A rim or edge glow
+  on its model (bound-light seams, as its teal glow) would make it read at the rest frame's distance. Camera-side
+  this is as far as framing can take it.
+
 ### 2026-10-30 ~21:40: the Lead's 20:26 and 21:25 (Act I readability pass, pillar 4, on 46d8a067 merged in at 39486b66)
 **In progress. The first fix is MERGE-READY @ d58eb032.**
 - **The tool:** tools/vfx/readability_sheet (15d1b779, ec07c623). Every Act I fight at 1920x1080 per text scale:
@@ -473,6 +485,7 @@ element (voice_glimmer, level_hand, still_water).
     sky; that is the arena's light.
 
 ### PC-QUEUE
+- Row 61 re-check (34bb40ca: the Reach's rest frame 8 m back, its look raised 2.4 m): battle_arena_seawall_stairhead_surge.
 - Row 64 re-measure (7c3307df, the search behind the fade): the 60 frames after the fade at tideline, causeway, the Drownbell, the Hermit and Moll; and the Drownbell's phase and fall moments.
 - GPU QA row 36 (the Reach): re-check in live play on the RX 9070 XT (M3-BPR-425's rest frame).
 - GPU QA row 34: re-check once M3-BPR-427 lands (and hold the zone's random encounters in the walk).
