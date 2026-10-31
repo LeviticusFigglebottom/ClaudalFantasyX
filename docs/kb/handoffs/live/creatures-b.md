@@ -1044,3 +1044,16 @@ MERGE-READY @ fb31999db: M4-A2P-1980 part 1, a per-clip fist on a free hand (to 
   - Sheet: docs/kb/art/creatures/act3/old_shoal.md (M5-A3P-1853, now doing). My ownership row is updated.
   - Creatures should rename the roster row (act3_roster.md is theirs).
   - The Lead's call: whether "leviathan" goes into tools/banned_terms.txt once nothing uses it.
+
+MERGE-READY @ 0a995f876 (head; includes a0ba72003):
+- **M4-A2P-1980 part 2** (a0ba72003, to review: characters). This touches **game/core/import/asset_import_rules.gd**
+  (the .res fallback).
+  - After merging, reimport asha.glb, asha_lod1.glb, rhen.glb and rhen_lod1.glb, or the old cache points at the
+    deleted .tres. Add any line to their .import files and run `godot --headless --import`; Godot rewrites the
+    files back.
+  - Checks: Godot `--filter=hero` 116/0; tools hero tests 60/0.
+- **M5-A3P-1852 and 1853** (0a995f876, to review: combat). The Tide Matron and the Old Shoal are built, as above, and both
+  rebuild byte-identical.
+  - Blender jobs `creature_tide_matron` and `creature_old_shoal`; the Cinder Matron's GLB is unchanged.
+  - Checks: Godot creature 163/0, portrait 22/0; validate_data 0/0.
+  - Shots: none in the manifest show them. Viewed: the clip sheets and portraits.
