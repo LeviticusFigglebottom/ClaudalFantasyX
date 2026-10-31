@@ -249,8 +249,18 @@ with no tints and the npc.json tuning for its `npc_id`. `"silhouette": "#RRGGBB"
 silhouette in that colour (`NpcSilhouette`, `game/world/npc/npc_silhouette.gdshader`: unshaded, a fresnel rim brighter
 than the core, fading in from the feet, no shadow, no TIME). Each surface gets its own material carrying the maps it
 wore (albedo brightness, occlusion, normal map), so cloth folds and seams show under the glow, plus brine tide lines and
-drip streaks; the materials belong to the meshes alone and FieldNpc clears them on leaving the tree (the PC's pass 3:
-a shared cached material logged "material is null" on free). `"tuning": {...}` is merged over the villager's tuning.
+drip streaks.
+
+**Material lifetime (PC row 85).** FieldNpc holds every override it puts on its actor, tints and silhouette alike
+(`override_materials`), as well as the meshes holding them:
+- On free, the children go first: the meshes and their render instances. The materials go after, when the FieldNpc
+  does, so no instance ever draws with a freed material.
+  - A mesh alone frees its overrides in its own destructor, before its base frees the render instance. Headless,
+    that logged `material is null` once per surface.
+- Nothing swaps materials on leaving the tree. The earlier clear in `_exit_tree` put the body's own materials back
+  mid-teardown while the silhouette's were freed.
+- NpcTints caches its shared tinted copies weakly, so none outlives its people. The PC's pass 3 had a static
+  per-colour cache that outlived the figure. `"tuning": {...}` is merged over the villager's tuning.
 - **Corrow's storm figure** (act1_ch08 W22, "a single cyan silhouette", a man's shape in the storm wall) is
   `corrow_storm_figure` in `zones/ch08_corrow.json`: the Oruvel diver's body `crowd_man_lean_a` in `#5fd6e0`, inside the
   `figure` stage actor (attach child, so the layout's flags show and hide it and the cutscene's `@mark figure

@@ -213,6 +213,8 @@ func advance(delta: float) -> void:
 	muffle.advance(delta)
 	_poll_pending()
 	ui.step()
+	if props != null:
+		props.step()
 	reefball.advance(delta)
 	life.advance(delta)
 	if cutscene != null:

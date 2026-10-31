@@ -2,8 +2,8 @@
 id: M5-A3P-1004
 title: "Request (staging + flow): Ch18: the Kite zone, the K01–K23 shots, the marks, and the flow with its revisits"
 role: cinematics
-status: todo
-owner_session: ""
+status: doing
+owner_session: "act1-chapters"
 depends_on: [M5-A3P-1003, M5-A3P-1001]
 reviewer: narrative
 milestone: M5
@@ -40,5 +40,38 @@ revisits, Haluna's lifting), §5 (the heirlooms). File-to-beat map: drafts READM
 ## Acceptance criteria
 - [ ] The shots, marks and the `ch18/kite` zone exist, and no Ch18 scene warns about an unknown shot or mark.
 - [ ] The flow plays the critical path in order and offers the revisits and heirlooms; Godot `act3` stays green.
+
+## Notes
+- **act1-chapters, 2026-10-31 (the flow half, ADR 0207):**
+  - **The new `ch18/kite` zone:**
+    - its greybox comes from `tools/act3/ch18_greybox.py`: the deck, wheel, mast, chart table and rails;
+    - spawns `Deck` and `ChartTable`; marks `chart_table`, `kite_wheel`, `stern_rail`;
+    - `Ch18Zone` holds the three lift inputs (`ch18_field.json`);
+    - a `locations.json` row and `LOCATION_CH18_KITE`.
+  - **The flow** (`chapters/ch18.json`):
+    - K01 `ch18_maiden_flight` on boarding (Hollowmere's `aboard` now hands on to the Kite);
+    - K02: the chart table's interact plays `ch18_the_chart_table` (`ch18_world_open`);
+    - **the courses:** until Design's Kite world map exists, these are interactables round the table
+      (`course_*`, `FIELD_PROMPT_CH18_COURSE_*`). Reedhollow, Hollowmere, Pemakar, Tamsule, Corrow and Quellan
+      hand off to their zones; Ansedra plays from the air; Iskarra waits on the night;
+    - **Reedhollow** (`ch10.json`): through the gate, then the farewell-tide, taught (K03–K05; Ch10Zone holds
+      `turn_back`), with `a3_to_kite` back aboard;
+    - K07 `ch18_night_aboard` on the first return aboard after the farewell-tide;
+    - K08 `ch18_iskarra` from its course sets `ch18_complete`. Ch19's hand-off waits on `ch19/iskarra_spire`
+      (M5-A3P-1007).
+  - **The revisits** (§4), each once (`ch18_revisit_<town>_seen`):
+    - Pemakar, Tamsule and Corrow play on landing and go back aboard (their layouts are env-art-b's generated
+      ones, so they get no trigger);
+    - Quellan and Hollowmere play on landing and offer `a3_to_kite`;
+    - Ansedra plays from the air.
+  - **Not done:**
+    - Oruvel and Haluna: Ch1–Ch3 zones, M5-A3P-1201 to slice-polish;
+    - K06 `ch18_child_older` (optional; it needs a place for the child at Reedhollow);
+    - the heirloom errands (nodes of one file, M5-A3P-1200; Design's rewards);
+    - the shots K01–K23 and the town marks (staging);
+    - the world map (Design);
+    - objective rows (story).
+  - Tests: `test_ch18_thread` (the critical path, a landing town, a trigger town and Ansedra), `test_ch17_thread`,
+    and the ch05, ch07, ch08 and ch10 threads all pass.
 
 ## Review log

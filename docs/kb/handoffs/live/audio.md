@@ -3,6 +3,33 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 5537dc6e8: the Lead's 01:41 FAST-TRACK (cloud-qa's 32 `used` reconnect ERRORs).**
+  - **Is the first fix on integration?** Yes. 4d4fbd50 merged in big34 (9317c6b6, `Merge lead/gate-big34: UiAudio/unbind ERROR fixes`). I merged integration (big35 included) into claude/audio for this check.
+  - **The repro** (M3-HER-1169's: scene_swap_probe `--encounter=ch03_causeway_shore --return=...saltgrass_causeway.tscn`, a resident return) logs **0** "already connected" on current integration.
+    - The pre-fix ui_audio.gd also logs 0 there now, so since big35's return changes the probe no longer tells the two apart.
+  - **cloud-qa's build:** its log isn't in the repo, so I can't tell whether its 32 came from a build before big34. **LEAD-ASK:** the build sha of that run, if it was big34 or later.
+  - **Hardened either way:** UiAudio.watch now also skips any connection that already exists (`is_connected`, M3-HER-1169's tested guard), on top of the node's mark. So no path that brings a node back (a lost mark, a duplicate, a second watch) can connect `used` or any hooked signal twice.
+  - **Test:** test_audio_reconnect +1. A real `Interactable`, routed as the director routes it (UiAudio and InteractAudio), goes through two resident returns and then once with its mark cleared: no engine error, one connection each, and the soft touch plays once.
+  - **Checks:** gdlint and gdformat clean; Godot `--filter=audio` 189/0, ui_ 58/0; validate_data 0. **M3-HER-1169** is answered by this (hero-integration can close it on merge).
+- **MERGE-READY @ bc41b3147: Act III cutscene sounds (M5-A3P-1953, to review).** Every `@sfx` the Act III drafts name now has a row.
+  - **13 new** under `assets/audio/act3/sfx/`:
+    - velamir_lullaby_hum: the lullaby hummed, one file for both Asha (Ch18) and Imra (E1);
+    - pell_farewell_tide: Pell sings the clutch's rising line for Nhoa;
+    - match_struck: E7's lamp;
+    - the Kite's settle, strain and floor-touch;
+    - Iskarra's engine stopping, Kerrid's hitch spilling, the flat sea, Haluna's murmured names, the clutch's hum, the shell into the lagoon, the wind in the sails.
+  - **4 alias rows** to the Kite's existing foley (kite_engines_stop, sails_fill, rope_creak, hull_meets_water).
+  - **Checks:** determinism; targets rule act3/sfx; validate_data 0; audio_loudness and audio_data OK; Godot audio_runtime 11/0.
+  - **Next:** Ch17–Ch20's music cues: hollowmere_morning, the_choice, kite_first_lamp, kite_theme, kite_night, haluna_lifting, reedhollow_return, kerrid_hitch, engine_down, the_eye, undertow_descent, the six memory_* cues, the_cage, thank_you.
+- **MERGE-READY @ 626528274: the Lead's 01:21 item, the Act II cue placement in slice-polish's newest Ch13–Ch16 staging (m2-slice @ ff50ec33).**
+  - **Staged now:** Ch13's ansedra, ansedra_lacquer_court, lamp_archive (with the `archive_lamp` prop) and sanctum; Ch15's open_sea; Ch16's drowned_choir and pale_rim.
+  - **The check:** act1_playthrough `--act 2 --holds`, run in a scratch worktree of m2-slice with audio's current data and tools copied in. No missing cue and no cue ending inside a held shot, in any of them; only the 13 known notes (deliberate `fade=0.0` cuts and ansedra named twice).
+  - **The scripts the slice changed** (Ch13–Ch16): wording and marks only, plus `@memory on look=white … off` round ch16_kesh_memory. That scene already has its cue (`kesh_memory`), and the zone bed holds under a sequencer's music, so it needs nothing more.
+  - **One addition, Ch13 R10 (ch13_sefir_closes_the_book):** after `@music silence`, Sefir squares the pages, closes the ledger and puts out the Archive's one lamp (`@light archive_lamp off 1.0`). The lamp is staged warm, an oil flame ("the only warm notes are human", act2_ch13.md rule 5), and nothing else sounds in that silence. So:
+    - prop_sfx.json gives `archive_lamp.tscn` the `lamp_flame` loop, close (1.5 m), marked pending until the slice merges;
+    - PropAudio rows may name a `light`: the loop's level follows its energy every frame, so the lamp's breath goes out with the light (a 1 s fade, then stopped).
+  - **Test:** test_prop_audio +1 (lit at its level; half the energy about 6 dB down; out with the light).
+  - **Checks:** validate_data 0; gdlint and gdformat clean; Godot prop_audio 3/0, flame_audio 3/0. Skipped: screenshots, Blender.
 - **MERGE-READY @ 3e7910593: the Lead's 23:05 FAST-TRACK (the two ERRORs). It pre-empts the score (ADR 0207).**
   - **UiAudio "already connected" on every resident battle return (134 in Ch1–Ch6):**
     - Cause: the field leaves the tree for the battle and comes back with its connections intact. `step()` had dropped it from `watched`, so the director's `watch()` connected every hooked signal again.

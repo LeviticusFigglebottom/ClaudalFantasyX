@@ -41,6 +41,7 @@ RULES = [
     ("act3/music/goodbye_dace.ogg", "integrated", -18.0, 0.5, -1.0,
      "E2: a plucked harp goodbye, a little under a scene cue (M5-A3P-1952)"),
     ("act3/music/*.ogg", "integrated", -16.0, 0.5, -1.0, "Act III scene cues, themes and stings in plain git (ADR 0208)"),
+    ("act3/sfx/*.ogg", "momentary", -24.5, 4.0, -1.0, "Act III cutscene sounds (M5-A3P-1953; -21 to -28 each)"),
     ("act3/ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "Act III beds (ADR 0208)"),
     # M3-AUD-859 (assets_src/sfx/act3/kite_foley.py; Git LFS): the Kite's deck beds and foley
     ("sfx/act3/kite_deck*.ogg", "integrated", -26.0, 0.5, -5.0, "the Kite's deck beds (as the ambience beds)"),

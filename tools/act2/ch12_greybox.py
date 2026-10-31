@@ -270,6 +270,10 @@ def quellan() -> dict:
              "pos": [25.0, 5.0, 6.0], "look_at": [45.0, 0.5, 0.0], "fov": 50, "priority": 1}],
         "triggers": [{"id": "to_pass", "activation": "touch", "at": [-4.5, 0.0, 0.0], "size": [1.5, 0, 6.0],
                       "payload": {"beat": "to_pass"}, "yaw": 0.0},
+                     # M5-A3P-1004: back aboard the Kite, moored over the road in (Ch18)
+                     {"id": "a3_to_kite", "activation": "interact", "at": [4.0, 0.0, -2.5], "size": [1.4, 0, 1.4],
+                      "prompt_key": "FIELD_PROMPT_CH18_BACK_TO_KITE", "requires_flag": "ch18_world_open",
+                      "payload": {"beat": "to_kite"}, "yaw": 0.0},
                      {"id": "to_cloudloom", "activation": "touch", "at": [56.0, north_y, -42.5], "size": [4.0, 0, 1.5],
                       "payload": {"beat": "to_cloudloom"}, "yaw": 0.0},
                      # M4-A2P-1003 E5: Quellan's people (B08), the side errands and the inn's camp

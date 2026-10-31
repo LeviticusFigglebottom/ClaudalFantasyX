@@ -1335,6 +1335,39 @@ done and in `status: review` (reviewer: narrative). Each task file's **Done** se
   - Tests: ch17 2/0, ch14_16 5/0 (the dry-dock walk included), the chapter-flow tools test, qa_threads 1/0.
 - MERGE-READY @ 4a6418b52
 
+### Act III Ch18 (M5-A3P-1004, the flow half; 10-31)
+- The new `ch18/kite` zone (`tools/act3/ch18_greybox.py`, Ch18Zone with the lifts' held input, a location row).
+- `chapters/ch18.json`: the maiden flight on boarding (Hollowmere's `aboard` hands on), the chart table opens the
+  world, and its courses stand round the table until Design's Kite world map exists. Reedhollow's gate and
+  farewell-tide (Ch10Zone holds `turn_back`), then the night aboard and Iskarra (`ch18_complete`).
+- **The revisits**, each once, as Act III rows in the towns' own chapter files:
+  - Pemakar, Tamsule and Corrow play on landing and go back aboard (env-art-b's generated layouts get no trigger);
+  - Quellan, Reedhollow and Hollowmere play on landing and offer `a3_to_kite`;
+  - Ansedra plays from the air.
+- **Requests filed:**
+  - M5-A3P-1201 to slice-polish: Oruvel's and Haluna's revisits (Ch1–Ch3 zones).
+  - M5-A3P-1200 to story: split the node files (the heirlooms are nodes too).
+- Tests: ch18 1/0, ch17 2/0, ch05 13/0, ch07 18/0, ch08 25/0, ch10 3/0, ch12 5/0, zone_map 22/0; the tools'
+  zone-map, locations and chapter-flow tests pass; qa_threads 1/0. `ch18_world_open` is listed as known-unraised
+  for the older threads.
+- MERGE-READY @ b9ba89ca7
+
+### Act III Ch19 (M5-A3P-1007 flow, M5-A3P-1009 the Wardens; 10-31)
+- **M5-A3P-1009 (review):** `ch19_abiding_wardens`, Warden Hesper Oan and her scribe Ilsabet Rue. The watch-roll
+  as the engine can play it: Ilsabet is the roll and only Ysolde breaks it; Hesper answers blows while it stands. On
+  a new `ch19_iskarra` loadout (Ch16's plus Kesh), 500 seeds: naive 0.0%, role_answer 69.8%, smart 100% (report
+  only, ease floor 30: 40.7), p90 44. Their bodies are M5-A3P-1202 (character). The fight barks need a battle-bark
+  hook (battle-presentation).
+- **The spire's regulars:** `wick_crawler`, `chain_lamp`, `spire_moth`, `spire_conduit_crawler`, with three
+  encounters, all in band at 500 seeds. The report-only naive_swell p90 is the M4-A2P-1202 call-rule artifact.
+- **M5-A3P-1007 (the flow half, doing):** the new `ch19/iskarra_spire` zone (`tools/act3/ch19_greybox.py`: the
+  plaza, the gate, four tiers by switchback ramps over one ground, the antechamber, the crown), Ch19Zone's held
+  input, and `chapters/ch19.json` I01–I10 in order. The Kite's Iskarra course hands on to it. I01–I04 play at this
+  zone's plaza, because the scripts' `prologue` location is slice-polish's Prologue scene (noted in the task).
+- Tests: ch19 2/0 (the thread and the walk to the crown), ch18 1/0, capsule 3/0, the tools' zone-map, locations
+  and chapter-flow tests, qa_threads 1/0.
+- MERGE-READY @ e4445dc25
+
 ## Exact next step
 **2026-10-30 ~23:50:** the FAST-TRACK and the Act II flows (M4-A2P-1003, 1012, 104, 105) are done and pushed.
 Next, in order:

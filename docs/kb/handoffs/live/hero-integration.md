@@ -2244,3 +2244,19 @@ MERGE-READY @ (this commit).
 - **The `"t" is null` engine error:** 0 in 11 more parked runs (1 in 12 overall). The one hit was the first parked run after unimported script edits, so I can't reproduce it. I'm leaving it as watch-only.
 - **Tests:** return_park 3/0, battle_return 2/0, scene_router 17/0, shader_prewarm 22/0, resident_loads 11/0, field_battle 12/0, qa_encounters 1/0, camera_director 57/0 (plus the warm test), qa_field_camera 2/0, resident_reattach 1/0.
 MERGE-READY @ (this commit).
+
+### 2026-10-31: FAST-TRACK row 85, a shutdown that looped `Parameter "material" is null` (a 59 GB log)
+- **Cause found in my code.** SceneRouter keeps two scenes off the tree: the resident field through a fight (ADR 0205) and the parked cross-zone return (ADR 0209).
+  - The tree's teardown never frees off-tree nodes, so they went only in the engine's last cleanup, after the RenderingServer.
+  - Headless, quitting during a fight logs 50 "Leaked instance dependency: did not call instance_notify_deleted" warnings, plus leaked Canvas RIDs. With a parked Haluna it's 203. A plain zone quit has none of these.
+  - The PC's slice_sweep walk enters fights, so a resident zone is held at its quit.
+- **Fix:** `SceneRouter._exit_tree` frees the parked scene (`return_park.drop()`) and the resident zone (`free()`, not `queue_free`) as the tree quits, while the renderer is still up. Headless, all those late frees are gone: what's left matches a plain zone quit, plus one leaked dummy-shader RID that's headless-only.
+- **Test:** `tests/integration/test_clean_shutdown.gd` runs the new `QuitProbe` (`game/core/debug/quit_probe.tscn`: zone, fight, parked return, quit) in a child bash under `timeout 300`. It asserts:
+  - the exit comes within 20 s of the quit;
+  - no ERROR or WARNING line repeats more than 5 times;
+  - no line mentions a late instance free or `"material" is null`.
+  - Results: passes with the fix, and fails without it (203 repeats). scene_router 17/0, return_park 3/0, battle_return 2/0.
+  - Gotcha: `OS.execute` with output runs one popen command line, so `$(...)` in a `-c` argument gets expanded by the outer shell. The test writes its script to a file.
+- **The storm figure (row 44):** creatures' fix (7dc3ab41) held in pass 5 (0 `material is null`). I can't reproduce the 59 GB loop headless.
+  - **PC, please re-run a slice_sweep `--budget` walk to its quit and check the log size.** If it still loops, the `at:` line names the material owner, and I'll take it to creatures.
+MERGE-READY @ (this commit).

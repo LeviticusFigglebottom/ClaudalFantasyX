@@ -74,7 +74,11 @@ func _run() -> void:
 		if not ResourceLoader.exists(path):
 			print("%s: no scene" % id)
 			continue
-		var image := await _sheet(load(path) as PackedScene, NPC_CELLS if npc else FOE_CELLS, npc)
+		var cells: Array = NPC_CELLS if npc else FOE_CELLS
+		var ko := str((rows.get(id, {}) as Dictionary).get("ko", "ko"))
+		if ko != "ko":  # the row's own KO clip (a held Vowbound's `release`, the Tide Matron's `bank`)
+			cells = cells.map(func(c: Array) -> Array: return [ko, c[1]] if c[0] == "ko" else c)
+		var image := await _sheet(load(path) as PackedScene, cells, npc)
 		image.save_png(out.path_join("%s.png" % id))
 		print("%s: %s" % [id, out.path_join("%s.png" % id)])
 	get_tree().quit()

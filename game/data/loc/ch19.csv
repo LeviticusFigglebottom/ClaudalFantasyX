@@ -7,3 +7,32 @@ FIELD_PROMPT_CH19_PULL,Hold to pull the tail
 FIELD_PROMPT_CH19_LEVER_ONE,Hold to draw the lever
 FIELD_PROMPT_CH19_LEVER_TWO,Hold to draw it further
 FIELD_PROMPT_CH19_LEVER_THREE,Hold to bring it home
+ENC_CH19_ABIDING_WARDENS,The Abiding Wardens
+ENEMY_HESPER_OAN,Warden Hesper Oan
+ENEMY_ILSABET_RUE,Ilsabet Rue
+LORE_HESPER_OAN,"One of the Abiding, the Order's hidden watch. Held alive by bound light at the post the founders gave her, four hundred years and never relieved. She believes the engine is mercy."
+LORE_ILSABET_RUE,"Warden Oan's scribe, who has kept her watch roll for four hundred years. She writes as she fights."
+PHASE_HESPER_WATCH,The Watch
+PHASE_HESPER_RELIEVED,Unrelieved
+PART_ILSABET_YSOLDE,Only Ysolde can read the watch roll back into silence.
+SKILL_WARDENS_NOTED,Noted
+SKILL_WARDENS_READ_THE_ROLL,The Roll Read Back
+SKILL_WARDENS_ANSWER,The Watch Answers
+SKILL_WARDENS_GO_HOME,Go Home
+SKILL_WARDENS_WATCH_STRIKE,Watch Strike
+ENC_CH19_SPIRE,The Lamp Spire
+ENEMY_WICK_CRAWLER,Wick Crawler
+ENEMY_CHAIN_LAMP,Chain Lamp
+ENEMY_SPIRE_MOTH,Spire Moth
+ENEMY_SPIRE_CONDUIT_CRAWLER,Conduit Crawler
+LORE_WICK_CRAWLER,"A Lit Age lamp-tending machine, a brass body on many fine legs. It crawls the spire's lamp-ropes trimming wicks that went out a thousand years ago."
+LORE_CHAIN_LAMP,"A hanging lamp-cage on a chain. Its bound light pulses on a slow, fixed beat, steady between beats."
+LORE_SPIRE_MOTH,"Moths that have lived for centuries on the spire's warm lamp-glass: glass-winged and pale."
+SKILL_WICK_RELIGHT,Relight
+SKILL_WICK_TRIM,Trim
+SKILL_CHAIN_LAMP_GATHER,The Lamp Gathers
+SKILL_CHAIN_LAMP_BEAM,Beam
+SKILL_CHAIN_LAMP_SWING,Swing
+SKILL_SPIRE_GLASS_FLARE,Glass Flare
+SKILL_SPIRE_PALE_RAKE,Pale Rake
+LOCATION_CH19_ISKARRA_SPIRE,"Iskarra, the Lamp Spire"

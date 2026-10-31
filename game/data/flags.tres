@@ -406,5 +406,15 @@ flags = {
 "ch18_revisit_quellan": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Quellan side scene (ch18_revisit_quellan) has played; the Kite's log reads Seen.",
 "ch18_revisit_ansedra": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Ansedra (from the air) side scene (ch18_revisit_ansedra) has played; the Kite's log reads Seen.",
 "ch18_revisit_hollowmere": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Hollowmere side scene (ch18_revisit_hollowmere) has played; the Kite's log reads Seen.",
-"tut_swell_mode_seen": "Tutorial tip (M4-A2P-1007 A20): the new-Swell-mode tip has shown, on the first field after play unlocked a fill mode."
+"tut_swell_mode_seen": "Tutorial tip (M4-A2P-1007 A20): the new-Swell-mode tip has shown, on the first field after play unlocked a fill mode.",
+"ch18_revisit_pemakar_seen": "Ch18 \u00a74 (revisit): the Kite's visit to Pemakar has played ch18_revisit_pemakar (Pemakar's mooring rings and Garo's boats), once (M5-A3P-1004).",
+"ch18_revisit_tamsule_seen": "Ch18 \u00a74 (revisit): the Kite's visit to Tamsule has played ch18_revisit_tamsule (Tamsule's restarted Reefball season), once (M5-A3P-1004).",
+"ch18_revisit_corrow_seen": "Ch18 \u00a74 (revisit): the Kite's visit to Corrow has played ch18_revisit_corrow (Corrow's stair watch again), once (M5-A3P-1004).",
+"ch18_revisit_quellan_seen": "Ch18 \u00a74 (revisit): the Kite's visit to Quellan has played ch18_revisit_quellan (Quellan's new cord, from the air), once (M5-A3P-1004).",
+"ch18_revisit_hollowmere_seen": "Ch18 \u00a74 (revisit): the Kite's visit to Hollowmere has played ch18_revisit_hollowmere (Hollowmere's dock-master at work again), once (M5-A3P-1004).",
+"ch18_revisit_ansedra_seen": "Ch18 \u00a74 (revisit): the Kite's visit to Ansedra has played ch18_revisit_ansedra (Ansedra from the air, closed to heretics), once (M5-A3P-1004).",
+"ch19_spire_tier_1": "Ch19 I06: the party reached the Lamp Spire's tier 1 (its touch box; M5-A3P-1007).",
+"ch19_spire_tier_2": "Ch19 I06: the party reached the Lamp Spire's tier 2 (its touch box; M5-A3P-1007).",
+"ch19_spire_tier_3": "Ch19 I06: the party reached the Lamp Spire's tier 3 (its touch box; M5-A3P-1007).",
+"ch19_spire_tier_4": "Ch19 I06: the party reached the Lamp Spire's tier 4 (its touch box; M5-A3P-1007)."
 }
