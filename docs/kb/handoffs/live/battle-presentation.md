@@ -4,6 +4,22 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+### 2026-10-31 ~05:40: the Lead's 04:43 (row 61 still open in the big38 sign-off): the Reach is lit
+**MERGE-READY @ 519cbf4b** (0afcaf44): full `--filter=battle` 866/0.
+- **Why:** framing alone (34bb40ca) left the Reach a dark mass on the GPU.
+- **The fix:** a boss with an effects.json `boss_rim_lights` row gets OmniLight3Ds at spawn (BattleBossLight). They
+  are children of its stand-in, placed along the lens-to-boss line from its body's centre, in a light_color palette
+  swatch, with no shadows.
+  - The Reach gets a rim behind it (energy 10) and a key on the lens's side (energy 12), both moon_blue, the Act II
+    night key.
+  - The battle stage and the arena previews both call it.
+- **SELF-RENDERED battle_arena_seawall_stairhead_surge (lavapipe):** the hand and arm read in cool moonlight against
+  the wall, and the teal seams are kept. A rim alone barely changed the frame; the key did.
+  - Tests: test_battle_boss_light 2/0, arena 23/0.
+- **PC-QUEUE:** row 61 on the GPU. If the key is too strong there, it's one number:
+  effects.json `boss_rim_lights.undertows_reach.lights[1].energy`.
+- creatures-b's rim-light ask above is now optional. A seam glow on the model would still help.
+
 ### 2026-10-31 ~03:30: the Act I readability pass is DONE (MERGE-READY @ the branch head)
 - **Every Act I fight (33) at 1920x1080, text 1.3** (the sweep covered 1.0): no label overflow, no float over a HUD
   panel, and the target pick and the hit viewed for each.
@@ -520,6 +536,7 @@ element (voice_glimmer, level_hand, still_water).
     sky; that is the arena's light.
 
 ### PC-QUEUE
+- Row 61 (0afcaf44, the Reach lit with a moon_blue rim and key): battle_arena_seawall_stairhead_surge and the undertows_reach fight; for the Act I sign-off.
 - Row 87: a frame trace of the Ram fight's 176 ms frame (pipeline compiles or script). The boss framing measures 3 ms headless.
 - Row 61 re-check (34bb40ca: the Reach's rest frame 8 m back, its look raised 2.4 m): battle_arena_seawall_stairhead_surge.
 - Row 64 re-measure (7c3307df, the search behind the fade): the 60 frames after the fade at tideline, causeway, the Drownbell, the Hermit and Moll; and the Drownbell's phase and fall moments.
