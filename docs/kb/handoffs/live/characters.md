@@ -662,3 +662,4 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
     the staff cross panel 13 in the run, so it is reverted.
   - The fix is a hem that trails: the bake carries a share of each lowest panel's previous swing (secondary motion),
     clamped by the leg clearance. That threads time through local_pose, so it is the next item.
+- MERGE-READY @ fd9b4879 (M3-CHR-1000 story clips; the PC pass 7 jog torso; rows 46, 54 and 55). Row 56 (Asha's hem momentum) is next.
