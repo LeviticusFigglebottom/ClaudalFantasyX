@@ -1,6 +1,6 @@
 # The Wardens of the crown: Hesper Oan and Ilsabet Rue (Ch19's boss)
 
-M5-A3P-1202. Brief: [act3_ch19.md §5](../../story/act3/act3_ch19.md) (I08). These two are of the Abiding, the
+M5-A3P-1982. Brief: [act3_ch19.md §5](../../story/act3/act3_ch19.md) (I08). These two are of the Abiding, the
 Order's hidden watch, held alive by bound light for four hundred years at the post the founders gave them. They are
 sincere, tired and certain, and they believe the engine is mercy. Kin to Sefir's Abiding guard (M4-A2P-051) and to
 Warden Malcor Venn, so they are built on the same kit.

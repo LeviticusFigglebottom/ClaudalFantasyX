@@ -1,4 +1,4 @@
-"""Act III hand props (M5-A3P-1202; act3_ch19.md section 5). Headless Blender 5.0:
+"""Act III hand props (M5-A3P-1982; act3_ch19.md section 5). Headless Blender 5.0:
 
     blender --background --factory-startup --python assets_src/characters/props/act3_hand_props.py [-- --out-dir DIR]
     # -> assets/characters/props/act3/{watch_roll,stylus}.glb and materials/*.tres

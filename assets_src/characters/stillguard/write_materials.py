@@ -41,7 +41,7 @@ IRIS = {"a": "Color(0.20, 0.15, 0.10, 1)", "b": "Color(0.12, 0.08, 0.05, 1)", "c
         "venn": "Color(0.19, 0.20, 0.21, 1)",  # M4-A2P-051: Malcor Venn's slate grey
         "abiding_halberd": "Color(0.16, 0.11, 0.07, 1)", "abiding_bulwark": "Color(0.18, 0.13, 0.08, 1)",
         "abiding_captain": "Color(0.14, 0.10, 0.07, 1)",  # M4-A2P-051: the Abiding guard (under the veil)
-        # M5-A3P-1202: the Wardens of the crown, held by bound light: pale bound gold, their one tell
+        # M5-A3P-1982: the Wardens of the crown, held by bound light: pale bound gold, their one tell
         "hesper_oan": "Color(0.62, 0.52, 0.30, 1)", "ilsabet_rue": "Color(0.58, 0.49, 0.29, 1)"}
 
 

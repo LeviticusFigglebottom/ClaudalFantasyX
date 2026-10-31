@@ -2060,7 +2060,7 @@
       "id": "hesper_oan",
       "threads": 4,
       "owner": "character",
-      "_note": "M5-A3P-1202: Warden Hesper Oan (Ch19's boss), a named Stillguard-kit build: a woman held at about sixty, Venn's halberd on the spear's bone, no shield, the Abiding's gold sash (sg_textures.dyed_cloth), pale bound-gold irises; her clips are hero_clips' (the Wardens block).",
+      "_note": "M5-A3P-1982: Warden Hesper Oan (Ch19's boss), a named Stillguard-kit build: a woman held at about sixty, Venn's halberd on the spear's bone, no shield, the Abiding's gold sash (sg_textures.dyed_cloth), pale bound-gold irises; her clips are hero_clips' (the Wardens block).",
       "sources": [
         "assets_src/characters/stillguard/**",
         "assets_src/characters/moll/**",
@@ -2086,7 +2086,7 @@
       "id": "ilsabet_rue",
       "threads": 4,
       "owner": "character",
-      "_note": "M5-A3P-1202: Ilsabet Rue, Hesper's scribe (Ch19's boss), a named Stillguard-kit build: no weapon or shield, the ink-black sash, pale bound-gold irises; the watch roll and stylus are her battle actor's props; her clips are hero_clips' (the Wardens block).",
+      "_note": "M5-A3P-1982: Ilsabet Rue, Hesper's scribe (Ch19's boss), a named Stillguard-kit build: no weapon or shield, the ink-black sash, pale bound-gold irises; the watch roll and stylus are her battle actor's props; her clips are hero_clips' (the Wardens block).",
       "sources": [
         "assets_src/characters/stillguard/**",
         "assets_src/characters/moll/**",
@@ -2112,7 +2112,7 @@
       "id": "props_act3_hand",
       "threads": 4,
       "owner": "character",
-      "_note": "M5-A3P-1202: the Act III hand props (Ilsabet Rue's watch roll and stylus) on wick.py's mesh helpers, with their StandardMaterial3D slots.",
+      "_note": "M5-A3P-1982: the Act III hand props (Ilsabet Rue's watch roll and stylus) on wick.py's mesh helpers, with their StandardMaterial3D slots.",
       "sources": [
         "assets_src/characters/props/act3_hand_props.py",
         "assets_src/characters/props/wick.py"
