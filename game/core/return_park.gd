@@ -60,7 +60,7 @@ func start(scene_path: String, loads: ResidentLoads, request: BattleRequest, res
 	if loads != null and gen == _generation:
 		loads.prepare_return(request, resident_path)
 	var waited := 0
-	while loads != null and not loads.is_ready() and waited < LOADS_WAIT_MAX_FRAMES:
+	while loads != null and not loads.needed_ready() and waited < LOADS_WAIT_MAX_FRAMES:
 		await _tree.process_frame
 		waited += 1
 	var packed := ResourceLoader.load_threaded_get(scene_path) as PackedScene

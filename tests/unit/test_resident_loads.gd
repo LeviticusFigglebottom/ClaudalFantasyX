@@ -256,3 +256,25 @@ func _done() -> void:
 			n.free()
 	_made.clear()
 	ResidentLoads.run_headless = false
+
+
+## The PC's ~12 s first Haluna entry: the swap's hold waits only for what the change needs (the zone's loads and the
+## party's heroes), not every hero kept for the session.
+func test_the_hold_waits_only_for_the_needed_paths() -> void:
+	var loads := ResidentLoads.new()
+	loads.pending = PackedStringArray(["res://party_hero.tscn", "res://later_hero.tscn"])
+	loads._needed = {"res://party_hero.tscn": true}
+	assert_false(loads.needed_ready(), "the party's hero is still loading")
+	loads.pending = PackedStringArray(["res://later_hero.tscn"])
+	assert_true(loads.needed_ready(), "a hero not in the party yet doesn't hold the swap")
+	assert_false(loads.prewarm_pending(), "nor the prewarm")
+	assert_false(loads.is_ready(), "though it still loads")
+	loads.free()
+
+
+func test_party_data_keeps_every_source_to_the_party() -> void:
+	var data := {"sources": [{"json": "a.json", "party_only": false}, {"json": "b.json", "party_only": true}]}
+	var party := ResidentLoads.party_data(data)
+	for src: Dictionary in party["sources"]:
+		assert_true(bool(src["party_only"]), "%s keeps to the party" % src["json"])
+	assert_false(bool((data["sources"][0] as Dictionary)["party_only"]), "the data itself is left as it was")
