@@ -19,7 +19,7 @@ act_outline.md (Ch15, Ch16; ADR 0016, 0020, 0022) and the colour script's `ch15`
 
 x is east, north is -Z. Shares Ch10's and Ch11's builders.
 
-    python3 tools/act1/ch15_16_greybox.py
+    python3 tools/act2/ch15_16_greybox.py
 """
 from __future__ import annotations
 
@@ -87,7 +87,7 @@ def open_sea() -> dict:
     blocks.append(box("Shoal", 6.0, -3.0, -8.0, 30.0, 0.5, 20.0, color=COL_NIGHT_SEA, emission=GLOW_HELD,
                       emission_energy=0.3, solid=False))
     return {
-        "doc": "M4-C15-02 greybox (tools/act1/ch15_16_greybox.py; do not edit by hand): the open sea at night aboard "
+        "doc": "M4-C15-02 greybox (tools/act2/ch15_16_greybox.py; do not edit by hand): the open sea at night aboard "
         "the bridal barge, unlamped (colour script ch15: the only light the sea and the dead). The deck (Deck), Tobin's "
         "bier under the bridal cloth (tobin_bier), the stern where Kerrid sits (kerrid_sits), the shoal of an old "
         "Rising's held dead under the water (Shoal), the bow (bow: to_hollowmere at dawn). The Wakefin's fight is on "
@@ -167,7 +167,7 @@ def hollowmere() -> dict:
     blocks.append(box("PyreRaft", 66.0, -0.15, 0.0, 3.0, 0.3, 4.0, color=COL_PLANK, solid=False))
     blocks.append(box("Ship", 30.0, 1.0, 7.0, 16.0, 3.0, 5.0, color=COL_HULL))
     return {
-        "doc": "M4-C15-02 greybox (tools/act1/ch15_16_greybox.py; do not edit by hand): Hollowmere at dawn in the fog, "
+        "doc": "M4-C15-02 greybox (tools/act2/ch15_16_greybox.py; do not edit by hand): Hollowmere at dawn in the fog, "
         "its first visit (colour script ch15; Act III's zone). The dock the barge comes in to (Dock), jetties to "
         "hull-houses on their platforms, Liss's father's (fathers_door), the pyre-raft off the dock's end (pyre_raft), "
         "the supper on the dock (supper: the side scene) and the Hollowmere ship moored along the dock (to_rim). The "
@@ -251,7 +251,7 @@ def pale_rim() -> dict:
         x, z = cairn(k)
         blocks.append(box(f"Cairn{k}", x, 0.6, z, 0.8, 1.2, 0.8, color=COL_CAIRN))
     return {
-        "doc": "M4-C16-02 greybox (tools/act1/ch15_16_greybox.py; do not edit by hand): the Pale Rim, the white "
+        "doc": "M4-C16-02 greybox (tools/act2/ch15_16_greybox.py; do not edit by hand): the Pale Rim, the white "
         "shallows at a white overcast noon (colour script ch16: no shadows). The ship waits at the Rim (west, Rim), then "
         "a long wade east over white sand a hand deep in water, the cairns the waders keep to, Kerrid last in the line "
         "(the party's order is the beat sheet's), to the Choir's edge (to_choir). The story waits on the beat sheet "
@@ -380,7 +380,7 @@ def drowned_choir() -> dict:
     ramps = [{"id": "HeadAisle", "from": [0.0, 0.0, -CHANNEL_R], "to": [0.0, TIER_TOP, -TIER_RIM],
               "width": 2 * AISLE_HW, "color": COL_CHOIR}]
     return {
-        "doc": "M4-C16-02 greybox (tools/act1/ch15_16_greybox.py; do not edit by hand): the Drowned Choir at moonrise "
+        "doc": "M4-C16-02 greybox (tools/act2/ch15_16_greybox.py; do not edit by hand): the Drowned Choir at moonrise "
         "(colour script ch16). M4-A2P-106: the kit's amphitheatre: the dais, the flooded channel (bridged north and "
         "south), six tiers to the rim, the singers standing in the sea at r 44; the way in from the south (Approach) "
         "through the tiers' gap, the north aisle a ramp up to Kesh's place. "

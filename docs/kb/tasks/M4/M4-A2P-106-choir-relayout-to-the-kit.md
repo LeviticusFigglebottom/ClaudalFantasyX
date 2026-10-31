@@ -21,7 +21,7 @@ env-art-b can't dress `ch16/drowned_choir` in its greybox frame the way it dress
 This is the spec's own open item (`ch16_drowned_choir.md`, "Relayout").
 
 ## Acceptance criteria
-- [ ] `tools/act1/ch15_16_greybox.py`'s Choir layout drops the flat `Floor` and its walls.
+- [ ] `tools/act2/ch15_16_greybox.py`'s Choir layout drops the flat `Floor` and its walls.
 - [ ] Its `collision_path` points at a collision file env-art-b writes from the kit: ramps between the tiers (the
       controller has no step-up), the channel as a step down or a bridge at the approach, the dais.
 - [ ] The marks move to the tier heights, the `Mouth*` blocks move to r 44 (or drop: the singers are dressing), and
@@ -32,7 +32,7 @@ This is the spec's own open item (`ch16_drowned_choir.md`, "Relayout").
 ## Notes
 - The Pale Rim (the same task, M4-A2P-046) is dressed; only the Choir waits on this.
 
-- **act1-chapters, 2026-10-31:** the relayout is in `tools/act1/ch15_16_greybox.py`.
+- **act1-chapters, 2026-10-31:** the relayout is in `tools/act2/ch15_16_greybox.py`.
   - The flat `Floor` and its walls are gone, replaced by the kit's shape in greybox blocks:
     - the dais (r 7.5, y 0);
     - the channel bed at −0.8, bridged north and south on the aisles, with invisible curbs on the dais edge so no
