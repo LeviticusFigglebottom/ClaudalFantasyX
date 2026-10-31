@@ -51,3 +51,6 @@ and reports; it never edits game or test files.
   release build strips). Result: gate-big33-lanes-b-result.md.
 - big34 @ ec0a766c (HEAD checked): lanes B 5 files, 23:11-23:23 UTC (12 min). **All 5 green.**
   Result: gate-big34-lanes-b-result.md.
+- big35 @ f91030ac (HEAD checked): lanes B 70 files, 00:12-00:38 UTC (26 min). 69 green, 1 red:
+  test_battle_act2_ability_vfx (1 failed: 15 Act II foe skills of abiding_first, abiding_guard, court_stillguard, flat_engine,
+  malcor_venn and storm_crawler have no effect of their own; the list is in the result). Result: gate-big35-lanes-b-result.md.
