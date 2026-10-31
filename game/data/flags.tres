@@ -434,5 +434,7 @@ flags = {
 "ending_imra_gone": "Ending E1 (M5-A3P-1015): Imra's goodbye and its rest have played aboard the Kite.",
 "ending_dace_gone": "Ending E2 (M5-A3P-1015): Dace's goodbye and its rest have played.",
 "ending_kerrid_gone": "Ending E3 (M5-A3P-1015): Kerrid's goodbye and its rest have played.",
-"ending_landed": "Ending E4 (M5-A3P-1015): Liss has brought the Kite down by hand and nothing came; the flow goes to Haluna's dock at night."
+"ending_landed": "Ending E4 (M5-A3P-1015): Liss has brought the Kite down by hand and nothing came; the flow goes to Haluna's dock at night.",
+"ch17_moorings_scuttlers": "Ch17 (M5-A3P-1849, optional): the deep scuttlers on the outer moorings are beaten; the hull rasp's moored keel opens.",
+"ch17_moorings_rasp": "Ch17 (M5-A3P-1849, optional): the hull rasp on the outer moorings is beaten."
 }
