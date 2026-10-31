@@ -589,6 +589,24 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **PC pass 7 rows 24 and 47 (the Lead, 04:43; they block the Act I sign-off): MERGE-READY @ 8f0b0188.**
+  - **24, the DockShore spawn too dark:**
+    - The wake night's lamps stopped at the causeway head, so the dock was unlit. The Ch4 wake story set
+      (`haluna_layout.json` story_sets.ch04_wake) now carries twelve oil lamps along the dock's deck out to the water,
+      plus four warm lights.
+    - Viewed with the Ch4 flags: the dock reads as a lamp-lined walk with warm pools on the planks.
+    - **Note:** the set shows only with `ch03_rhen_sworn_guardian` (as in play). A still or shot rendered with no
+      flags (`walkthrough.py`'s ch04_wake row, which the PC's arrival frames may have used) still shows the dark
+      dock. The camera sitting right behind Rhen's head at DockShore is still the camera track's (logged 19:58).
+  - **47, the Brightwater landing pier dark:**
+    - The islet now has three pilgrims' lanterns from the gangplank's head inland (1.6, 8 m each) and a stronger cold
+      fill. brightwater_landing_f01's mean on lavapipe went 31 → 41; the near rock now has warm pools.
+    - **GPU:** about 45–50 mean expected, the foreground readable and lit by lanterns.
+  - **Checks:**
+    - Tools: test_haluna_dressing and the ch04/ferry tests OK.
+    - Godot `--filter`: ch04 13/0, haluna 65/0 (test_haluna_story_sets now expects 14 wake lights).
+    - validate_data clean.
+  - **Baselines that move (none written):** brightwater_landing_f01/f06, and the Ch4 wake shots that frame the dock.
 - **PC pass 7 row 77 (the Lead, 03:22), done properly: MERGE-READY @ 6c08bd85.**
   - Traced on lavapipe against the PC's GPU sheet (pass7 beauty_05), one cause at a time:
     - **The pale straight bands** were the storm swell itself: a single 34 m swell from one bearing laid long,
