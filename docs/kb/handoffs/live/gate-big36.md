@@ -45,3 +45,14 @@ GATE-BUILT @ 7d5693ac
 ## Fast gate
 - Selected: 114 test files.
 - Lane A (mine): 57; lane B (GATE-HELPER): 57, in `gate-big36-lanes-b.txt` @ df7ed3f9.
+
+## Mid-batch (the Lead, 01:21), merged after lane A finished
+- integration-qa's rows 74/68 (1d2a9476, the prewarm during the fight and one family of loads at a time) were already in.
+  - claude/env-art @ e119e6a8
+  - claude/env-art-b @ b1c10bc4
+  - claude/battle-presentation @ 617d91f0
+  - claude/m2-slice @ ff50ec33
+  These carry env-art 7769d2ad (pass-7 rows 59, 76, 77, 83), env-art-b's rows 62, 82, 84, battle-presentation **34bb40ca** (row 61:
+  the Reach's rest frame looks up its arm) and slice-polish's **row 18** (4edda074 and ff50ec33: C07 frames the harrier; its
+  aim_node comes from the causeway generator), plus row 75's dive rim (dd808caa, not yet viewed). All clean; checks clean.
+- Re-gate: a fresh import plus the 38 files these merges touch, with the `Parameter "t" is null` scan.
