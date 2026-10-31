@@ -53,7 +53,12 @@
       "cord_moth": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
       "scree_crawler": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
       "glass_skate": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
-      "rim_crawler": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts"
+      "rim_crawler": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
+"abiding_first": "characters, M4-A2P-051 (Sefir's Abiding guard's battle actors, in review)",
+"abiding_guard": "characters, M4-A2P-051 (in review)",
+"court_stillguard": "characters, M3-CHR-508 (the Stillguard soldiers)",
+"hesper_oan": "characters, M5-A3P-1202 (the Wardens' bodies)",
+"ilsabet_rue": "characters, M5-A3P-1202"
     }
   },
   "unraised_doc": "test_qa_threads.gd: a flag a thread's chapter or main objectives wait on that its thread never raises -> why it isn't a softlock, and the task that closes the gap.",
