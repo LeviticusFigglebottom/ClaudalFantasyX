@@ -28,6 +28,12 @@
       "task": "M4-A2P-075",
       "owner": "cinematics",
       "note": "M4-A2P-114 plays the Act II scenes from the Ch10-Ch13 greybox flows so their flags are raised; their staging on these stages (the shots, cast, marks, lights and VFX anchors each scene names) is M4-A2P-070..075 (act1-chapters). Remove this row as each scene is staged."
+    },
+    {
+      "pattern": "^CutsceneSequencer\\((ch1[7-9]_[a-z0-9_]+|ch2[01]_[a-z0-9_]+)\\): (no (shot|actor|mark|light|look_at target) '|cannot place @vfx )",
+      "task": "M5-A3P-1001",
+      "owner": "cinematics",
+      "note": "M5-A3P-1001 (and the Ch18-Ch21 staging-and-flow rows) plays the Act III scenes from their flows; their shots (the D- and K-ids), the cast on the greybox stages and the VFX anchors are the staging half of those rows. Remove this row as each scene is staged."
     }
   ],
   "capsules_doc": "test_qa_capsules.gd: zone file name -> the actors (StandIn's parent) still shown as capsules, and 'battle' -> party members with no battle actor scene. All handed to their owners: M3-HER-1125 (characters: the Act I cast's models), M3-HER-1120 (ui-menus: Liss's battle row; her actor is ready). Remove a name when its model lands; the guard then fails if the capsule comes back. Each zone is checked as it loads and again under every layout variant's flags (Ch9's dawn road: Kerrid at the milestone, act1-chapters' staging of characters' M3-CHR-505 model). 'battle_foes' -> every encounter enemy, spawn, summon and Vowbound with no actor scene, with its owner and task.",
