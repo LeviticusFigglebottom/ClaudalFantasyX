@@ -124,6 +124,40 @@ func test_the_first_verse_replays_without_its_battle_and_returns_to_the_title() 
 	_done()
 
 
+## M5-A3P-1710: each memory of the rest of Act I and all of Act II (Ch4 to Ch16) plays to its end on its stage, with lines,
+## no event and no change to the record, and goes back to the title.
+func test_acts_one_and_two_replay_cleanly() -> void:
+	var m := MemoriesModel.new(MemoriesModel.load_data())
+	var checked := 0
+	for row in m.memories:
+		var chapter := str(row["chapter"])
+		if chapter < "ch04" or chapter > "ch16":
+			continue
+		var id := StringName(str(row["id"]))
+		var live := _live([StringName(str(row["unlock_flag"]))])
+		var before := live.to_dict()
+		changes.clear()
+		lines.clear()
+		emitted.clear()
+		at_first_line = {}
+		_replay(id)
+		replay.run()
+		assert_true(replay.played, "%s played to its end" % id)
+		var compiled := FileAccess.get_file_as_string("res://game/data/dialogue/compiled/%s.json" % row["scene"])
+		if compiled.contains('"op": "line"'):  # some have none (Ch15's current-song is sung and staged only)
+			assert_true(lines.size() > 0, "%s: its lines were spoken" % id)
+		assert_eq(emitted, [] as Array[StringName], "%s: no event left the replay" % id)
+		assert_eq(Game.state.to_dict(), before, "%s: the record is as it was" % id)
+		assert_eq(changes, [[MemoryReplay.TITLE_SCENE]] as Array[Array], "%s: back to the title" % id)
+		if replay.get_parent() != null:
+			replay.get_parent().remove_child(replay)
+		replay.free()
+		MemoryReplay.take_gallery_request()
+		checked += 1
+	assert_eq(checked, 22, "the ten Ch4-Ch9 memories and the twelve of Act II")
+	_done()
+
+
 func test_the_dock_at_night_replays_at_night_on_the_dock() -> void:
 	var live := _live([&"ch03_rhen_sworn_guardian", &"ch03_drownbell_defeated"])
 	var before := live.to_dict()
