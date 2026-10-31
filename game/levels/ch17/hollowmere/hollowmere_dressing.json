@@ -382,6 +382,36 @@
    "scale": 1.1
   },
   {
+   "piece": "hm_dock_4m",
+   "at": [
+    56.0,
+    -4.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 90.0,
+   "scale": 1.1
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    56.0,
+    -8.4
+   ],
+   "y": 0.0,
+   "yaw_deg": 90.0,
+   "scale": 1.1
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    56.0,
+    -12.8
+   ],
+   "y": 0.0,
+   "yaw_deg": 90.0,
+   "scale": 1.1
+  },
+  {
    "piece": "hm_lashed_hulls",
    "at": [
     12.0,
