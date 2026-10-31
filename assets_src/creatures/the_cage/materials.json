@@ -1,0 +1,60 @@
+{
+  "_doc": "The Cage (act3/the_cage.md, seats per act3/the_cage_seats.md; M5-A3P-1851): frame (brass gone to patina, lacquer-black joints, the seats, the shackle rings, the gimbals and the gold-leaf rims), lampbar (the salt-glass chimney tubes: glimmer_bound, steady; dark on the broken quarters by vertex emission), crown (the crown lamps' globes, likewise), chain (wet black iron with a patina bloom), clasp (the keystone clasps; the weak point's hairline seam in spawn_wound, one per quarter, ADR 0151). No glimmer_lift on the frame, ever. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "frame": {
+      "metallic": 0.5,
+      "roughness_dry": 0.5,
+      "roughness_wet": 0.3,
+      "specular": 0.55,
+      "detail_scale": 20.0,
+      "detail_albedo": 0.14,
+      "detail_bump": 0.45,
+      "cavity_albedo": 0.55,
+      "emission_energy": 0.0
+    },
+    "lampbar": {
+      "metallic": 0.0,
+      "roughness_dry": 0.15,
+      "roughness_wet": 0.1,
+      "specular": 0.7,
+      "detail_albedo": 0.04,
+      "detail_bump": 0.1,
+      "emission_color": "#4FB3B0",
+      "emission_energy": 1.2
+    },
+    "crown": {
+      "metallic": 0.0,
+      "roughness_dry": 0.12,
+      "roughness_wet": 0.08,
+      "specular": 0.7,
+      "detail_albedo": 0.0,
+      "detail_bump": 0.0,
+      "emission_color": "#4FB3B0",
+      "emission_energy": 1.2
+    },
+    "chain": {
+      "metallic": 0.6,
+      "roughness_dry": 0.55,
+      "roughness_wet": 0.25,
+      "specular": 0.5,
+      "clearcoat_wet": 0.6,
+      "detail_scale": 30.0,
+      "detail_albedo": 0.12,
+      "detail_bump": 0.4,
+      "cavity_albedo": 0.4,
+      "emission_energy": 0.0
+    },
+    "clasp": {
+      "metallic": 0.5,
+      "roughness_dry": 0.45,
+      "roughness_wet": 0.3,
+      "specular": 0.55,
+      "detail_scale": 24.0,
+      "detail_albedo": 0.12,
+      "detail_bump": 0.3,
+      "cavity_albedo": 0.5,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 2.2
+    }
+  }
+}

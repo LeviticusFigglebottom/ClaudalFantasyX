@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/creatures/creature_actor.gd" id="1_actor"]
+[ext_resource type="PackedScene" path="res://assets/creatures/sefir_heart/sefir_heart.glb" id="2_model"]
+
+[node name="SefirHeart" type="Node3D"]
+script = ExtResource("1_actor")
+creature_id = &"sefir_heart"
+metadata/hymn_battle_actor = true
+
+[node name="Model" parent="." instance=ExtResource("2_model")]
+
+[node name="Sefir" type="Node3D" parent="."]
+metadata/figure = &"sefir"
