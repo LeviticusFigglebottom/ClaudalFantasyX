@@ -270,11 +270,12 @@ def reedhollow_act3(layout: dict, shore: tuple[float, float], child: tuple[float
         "lagoon": [LAGOON[0], 0.0, LAGOON[1], 0.0],
         "platform_edge_child": [r3(child[0] + 0.6), 0.0, r3(child[1] + 0.6), r3(child[2])],
     })
+    layout["actors"]["kirru_child"]["cast"] = "kirru_child"  # shown from Ch18 on (the variant below): her body, not a capsule
     layout["actors"].update({
         "owa": {"at": [r3(sx + 2.7), 0.0, r3(sz - 1.2), 270.0], "color": "#7a6a4a", "radius": 0.34, "height": 1.8,
-                "hidden": True},
+                "hidden": True, "cast": "kirru_elder"},
         "kirru": {"at": [r3(sx + 2.7), 0.0, r3(sz + 1.2), 270.0], "color": "#8a7a5a", "radius": 0.34, "height": 1.75,
-                  "hidden": True},
+                  "hidden": True, "cast": "kirru_adult"},
     })
     layout["shots"].update({
         "K05": {"pos": [8.0, 1.8, 2.5], "look_at": [0.5, 1.3, 0.0], "fov": 40},  # Pell through the gate, first

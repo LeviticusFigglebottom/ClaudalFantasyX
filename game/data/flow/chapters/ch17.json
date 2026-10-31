@@ -188,7 +188,10 @@
        "play": "ch17_the_choice"
       },
       {
-       "zone": "rest"
+       "zone": "rest",
+       "args": [
+        "ch17_night"
+       ]
       },
       {
        "zone": "apply_variant"

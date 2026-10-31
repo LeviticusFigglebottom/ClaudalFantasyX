@@ -213,10 +213,14 @@ def hollowmere_act3(layout: dict) -> dict:
         "mooring_post": [60.0, 0.8, -19.4, 0.0], "fathers_table": [25.5, 0.0, -16.2, 0.0],
     })
     layout["actors"].update({
-        "aldous_varrow": {"at": [28.0, 0.0, -16.6, 180.0], "color": "#6a5a48", "radius": 0.38, "height": 1.85},
-        "hull_captain": {"at": [30.0, 2.5, 6.0, 180.0], "color": "#5a6a70", "radius": 0.36, "height": 1.8, "hidden": True},
-        "clerk": {"at": [20.0, 0.0, 1.2, 180.0], "color": "#7a7060", "radius": 0.34, "height": 1.7, "hidden": True},
-        "vendor": {"at": [8.0, 0.0, -1.2, 0.0], "color": "#7a5a40", "radius": 0.36, "height": 1.75, "hidden": True},
+        "aldous_varrow": {"at": [28.0, 0.0, -16.6, 180.0], "color": "#6a5a48", "radius": 0.38, "height": 1.85,
+                          "cast": "aldous"},
+        "hull_captain": {"at": [30.0, 2.5, 6.0, 180.0], "color": "#5a6a70", "radius": 0.36, "height": 1.8, "hidden": True,
+                         "cast": "fisher"},
+        "clerk": {"at": [20.0, 0.0, 1.2, 180.0], "color": "#7a7060", "radius": 0.34, "height": 1.7, "hidden": True,
+                  "cast": "clerk"},
+        "vendor": {"at": [8.0, 0.0, -1.2, 0.0], "color": "#7a5a40", "radius": 0.36, "height": 1.75, "hidden": True,
+                   "cast": "vendor"},
     })
     layout["shots"].update({
         "D01": {"pos": [30.0, 4.5, 4.0], "look_at": [30.0, 0.0, 30.0], "fov": 55},  # the flat sea gone wrong

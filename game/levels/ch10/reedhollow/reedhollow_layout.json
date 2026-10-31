@@ -1449,7 +1449,8 @@
    "color": "#8a7a5a",
    "radius": 0.24,
    "height": 1.1,
-   "hidden": true
+   "hidden": true,
+   "cast": "kirru_child"
   },
   "pell": {
    "at": [
@@ -1473,7 +1474,8 @@
    "color": "#7a6a4a",
    "radius": 0.34,
    "height": 1.8,
-   "hidden": true
+   "hidden": true,
+   "cast": "kirru_elder"
   },
   "kirru": {
    "at": [
@@ -1485,7 +1487,8 @@
    "color": "#8a7a5a",
    "radius": 0.34,
    "height": 1.75,
-   "hidden": true
+   "hidden": true,
+   "cast": "kirru_adult"
   }
  },
  "shots": {

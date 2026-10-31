@@ -68,7 +68,10 @@
        "play": "ch18_night_aboard"
       },
       {
-       "zone": "rest"
+       "zone": "rest",
+       "args": [
+        "ch18_night_aboard"
+       ]
       },
       {
        "zone": "apply_variant"

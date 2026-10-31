@@ -120,7 +120,13 @@
       {"id": "hm_lamp", "line_key": "OBJ_CH17_LAMP", "requires": ["ch17_chose_the_unbinding"], "until": "ch17_first_lamp_lit", "zone": "ch17/hollowmere", "target": {"zone": "ch17/hollowmere", "poi": "dace_hull"}},
       {"id": "hm_table", "line_key": "OBJ_CH17_TABLE", "requires": ["ch17_first_lamp_lit"], "until": "ch17_verse_begun", "zone": "ch17/hollowmere", "target": {"zone": "ch17/hollowmere", "poi": "house"}},
       {"id": "hm_board", "line_key": "OBJ_CH17_BOARD", "requires": ["ch17_verse_begun"], "until": "ch17_complete", "zone": "ch17/hollowmere", "target": {"zone": "ch17/hollowmere", "poi": "dace_hull"}},
-      {"id": "hm_side_berth", "line_key": "OBJ_CH17_SIDE_BERTH", "requires": ["ch17_read_the_ledger"], "until": "ch17_first_berth", "zone": "ch17/hollowmere", "side": true, "target": {"zone": "ch17/hollowmere", "poi": "first_berth"}}
+      {"id": "hm_side_berth", "line_key": "OBJ_CH17_SIDE_BERTH", "requires": ["ch17_read_the_ledger"], "until": "ch17_first_berth", "zone": "ch17/hollowmere", "side": true, "target": {"zone": "ch17/hollowmere", "poi": "first_berth"}},
+      {"id": "k_chart", "line_key": "OBJ_CH18_CHART", "requires": ["ch18_started"], "until": "ch18_world_open", "zone": "ch18/kite", "target": {"zone": "ch18/kite", "poi": "chart"}},
+      {"id": "k_reedhollow", "line_key": "OBJ_CH18_REEDHOLLOW", "requires": ["ch18_world_open"], "until": "ch18_pell_named"},
+      {"id": "r_teach", "line_key": "OBJ_CH18_TEACH", "requires": ["ch18_pell_named"], "until": "ch18_learned_farewell_tide", "zone": "ch10/reedhollow", "target": {"zone": "ch10/reedhollow", "poi": "shore"}},
+      {"id": "k_iskarra", "line_key": "OBJ_CH18_ISKARRA", "requires": ["ch18_night_aboard"], "until": "ch18_complete", "zone": "ch18/kite", "target": {"zone": "ch18/kite", "poi": "chart"}},
+      {"id": "r_side_heirloom", "line_key": "OBJ_CH18_SIDE_REED_SPEAR", "requires": ["ch18_pell_named"], "until": "ch18_heirloom_pell", "zone": "ch10/reedhollow", "side": true, "target": {"zone": "ch10/reedhollow", "poi": "clutch"}},
+      {"id": "k_side_parcel", "line_key": "OBJ_CH18_SIDE_PARCEL", "requires": ["ch18_world_open"], "until": "ch18_heirloom_ysolde", "zone": "ch18/kite", "side": true}
     ]
   }
 }

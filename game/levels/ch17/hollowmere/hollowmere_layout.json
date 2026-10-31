@@ -1680,7 +1680,8 @@
    ],
    "color": "#6a5a48",
    "radius": 0.38,
-   "height": 1.85
+   "height": 1.85,
+   "cast": "aldous"
   },
   "hull_captain": {
    "at": [
@@ -1692,7 +1693,8 @@
    "color": "#5a6a70",
    "radius": 0.36,
    "height": 1.8,
-   "hidden": true
+   "hidden": true,
+   "cast": "fisher"
   },
   "clerk": {
    "at": [
@@ -1704,7 +1706,8 @@
    "color": "#7a7060",
    "radius": 0.34,
    "height": 1.7,
-   "hidden": true
+   "hidden": true,
+   "cast": "clerk"
   },
   "vendor": {
    "at": [
@@ -1716,7 +1719,8 @@
    "color": "#7a5a40",
    "radius": 0.36,
    "height": 1.75,
-   "hidden": true
+   "hidden": true,
+   "cast": "vendor"
   }
  },
  "shots": {

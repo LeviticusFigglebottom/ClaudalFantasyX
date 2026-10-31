@@ -496,6 +496,20 @@
         ]
       },
       {
+        "id": "ch18/kite",
+        "scene": "res://game/levels/ch18/kite/kite.tscn",
+        "name_key": "LOCATION_CH18_KITE",
+        "shapes": "res://game/levels/ch18/kite/kite_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"skip": ["Hull", "Sail0", "Sail1"]},
+        "bounds": [-3.0, -7.0, 30.0, 14.0],
+        "pois": [
+          {"id": "wheel", "name_key": "MAP_POI_KITE_WHEEL", "kind": "path", "at": [2.8, 0.0], "source": "mark:kite_wheel"},
+          {"id": "chart", "name_key": "MAP_POI_KITE_CHART", "kind": "talk", "at": [10.0, 2.6], "source": "trigger:ch18_chart"},
+          {"id": "bow", "name_key": "MAP_POI_KITE_BOW", "kind": "path", "at": [23.0, 0.0], "source": "mark:bow_rail"}
+        ]
+      },
+      {
         "id": "ch16/pale_rim",
         "scene": "res://game/levels/ch16/pale_rim/pale_rim.tscn",
         "name_key": "LOCATION_CH16_PALE_RIM",
