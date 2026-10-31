@@ -4288,7 +4288,8 @@
   "clerk": [
    "heat_iron",
    "iron_into_water",
-   "hand_over"
+   "hand_over",
+   "nod"
   ],
   "reed_a": [
    "pole_barge",

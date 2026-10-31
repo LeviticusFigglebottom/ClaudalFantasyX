@@ -336,7 +336,7 @@ class TestClips(unittest.TestCase):
                 "kell": ["press_wick", "trim_wick", "haggle_laugh", "trim_wicks", "take_scissors", "light_beacon"],
                 # M3-CHR-509..517: the trades' gestures and the Ch6 scripts' calls (villager_story_clips.json)
                 "shopkeeper": ["offer_goods"], "smith": ["hammer_strike"], "innkeeper": ["welcome_bow"],
-                "clerk": ["heat_iron", "iron_into_water", "hand_over"],
+                "clerk": ["heat_iron", "iron_into_water", "hand_over", "nod"],
                 **{n: ["pole_barge", "bow_from_barge"] for n in REEDS},
                 "wright_girl": ["arm_held_out", "kneel_wait", "dig_sand", "flatten_sand", "set_in_hole"],
                 "wright_child_a": ["crawl_out", "kneel_wait"], "wright_child_b": ["crawl_out", "kneel_wait"],
