@@ -67,3 +67,5 @@ and reports; it never edits game or test files.
   cage_cael stage as a melee run at one hero, which this reach test does not expect). Result: gate-big40-lanes-b-result.md.
 - big41 @ 4eb49fff (HEAD checked): lanes B 5 files, 05:50-06:00 UTC (10 min). **All 5 green.**
   Result: gate-big41-lanes-b-result.md.
+- big42 @ 64e308db (HEAD checked): lanes B 6 files, 06:51-06:53 UTC (2 min). **All 6 green.**
+  Result: gate-big42-lanes-b-result.md.
