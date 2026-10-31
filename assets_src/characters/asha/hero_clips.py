@@ -2825,8 +2825,8 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
 # PC pass 7, row 56 (Asha's run read as a rigid bell that slides): the skirt is solved frame by frame against the
 # legs, so the hem snapped to wherever the legs put it. In the walk and run cycles (SKIRT_TRAIL_CLIPS) the knee and
 # hem bones of each panel keep SKIRT_TRAIL of their last frame's swing while the solve lets them fall back in (they
-# still kick out at once, as far as the leg needs): the hem flicks out with the stride and drifts back. The cycle is
-# baked twice and the second pass kept, so the first frame carries the last frame's swing and the loop closes.
+# still kick out at once, as far as the leg needs): the hem flicks out with the stride and drifts back. The cycle starts
+# on the plain solve (the transitions join it there) and its last frame is set to its first, so the loop closes.
 SKIRT_TRAIL = 0.6  # the share of the previous frame's extra swing kept, per 15 fps frame
 SKIRT_TRAIL_CLIPS = {"walk", "run"}
 SKIRT_TRAIL_FRONT = 0.3  # panels facing further forward than this (about 72 deg either side) keep the plain solve
@@ -5203,11 +5203,9 @@ def build(hero: str, names: list | None = None) -> str:
         keys_g: dict = {}  # and the grip
         sk.skirt_trail = None
         if loop and clip in SKIRT_TRAIL_CLIPS and sk.skirt and hero in LOCO_GAIT:
-            sk.skirt_trail = {}  # row 56: a first pass round the cycle, discarded, so the loop starts in motion
-            for t in times[:-1]:
-                p0 = staff_hold(pose_at(clip, t % length, length, sk, persona), persona)
-                sk.local_pose({b: qeuler(v) for b, v in p0.items() if b != "hips"}, p0.get("hips"),
-                              hook_hold(hero, clip, (t % length) / length))
+            # row 56: the trail starts at rest on the first frame (the plain solve, which the start and stop
+            # transitions join exactly); by the cycle's end what it carries back to that frame is negligible
+            sk.skirt_trail = {}
         for t in times:
             tt = (t % length) if loop else t
             pose = staff_hold(pose_at(clip, tt, length, sk, persona), persona)
