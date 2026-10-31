@@ -1380,6 +1380,28 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     ~0.35 s). That's router/director code (Systems), already asked as a LEAD-ASK above. Taking it out safely means
     building the triangle cache on the instantiate thread, not deferring work into the next frames.
   - Tests after the revert: haluna 66/0; gdlint clean.
+- **Lead FAST-TRACK: Haluna's root `_ready` (388 ms) under the Drownbell return's fade. MERGE-READY @ this commit,
+  together with hero-integration's one-line ReturnPark call (request M4-A2P-078):**
+  - Nearly all of it was the camera director's first snap building its occluders' triangle meshes.
+  - `HalunaZone.park_prebuild()` builds those triangles off the tree, using the director's own filter
+    (`occlusion.min_size_m`, no transparent surface). A Mesh keeps the triangle mesh it builds, so the first snap
+    finds them made. This is the same worker-thread mesh-face work the zone's Collision.build() already does in
+    prebuild.
+  - Nothing is deferred into later frames, so the reverted beach-pose crash isn't reintroduced. Only ReturnPark's
+    parked build calls the hook; ordinary travels are unchanged.
+  - **Measured** with integration-qa's scene_swap_probe on hero-integration's head (causeway fight → Haluna,
+    `--cross-return --resident-loads --warm-resident --ready-profile`, headless), with the patch applied in a
+    scratch worktree:
+    - root `_ready` 217–361 ms → out of the profile (< 22 ms);
+    - readies total 355–495 → 140–211 ms;
+    - hidden frame 0 520–595 → 231–560 ms;
+    - entry 2.24–2.30 → 1.90–2.27 s;
+    - 0 crashes in 5 runs.
+  - Tests:
+    - test_haluna_zone gains a parked-build test; the haluna filter is 67/0;
+    - in the scratch worktree: return_park 3/0, battle_return 2/0, scene_router 17/0.
+  - **Seen, not mine:** VillagerLayer logs "Parent node is busy setting up children" and "!is_inside_tree" on a
+    prebuilt add (the existing prebuild test logs the same). Creatures' code, flagged before.
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan

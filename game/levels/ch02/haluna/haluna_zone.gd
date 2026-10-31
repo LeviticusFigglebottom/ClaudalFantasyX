@@ -78,6 +78,49 @@ func prebuild() -> void:
 	prebuilt = true
 
 
+## ReturnPark's hook (ADR 0209; the Lead's black-screen follow-up, the Drownbell return): on the parked build's worker
+## thread, off the tree, builds the triangles the camera director's occlusion test reads on its first snap
+## (FieldCameraDirector.collect_occluders and _triangles: most of the ~0.39 s of this zone's _ready under the fade). A
+## Mesh keeps the triangle mesh it builds, as Collision.build() here already relies on, so the first snap finds them
+## made. The meshes are the director's own: at least occlusion.min_size_m across, with no transparent surface. Only a
+## parked build calls it: on an ordinary travel the instantiate is under the fade as well, and there it costs more
+## than it saves. Returns how many meshes it built (0 in the tree).
+func park_prebuild() -> int:
+	if is_inside_tree():
+		return 0
+	var built := 0
+	var occlusion: Dictionary = FieldInput.load_json(FieldCameraDirector.DATA_PATH).get("occlusion", {})
+	var min_size := float(occlusion.get("min_size_m", 0.0))
+	for n in find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		if mi.mesh == null or _see_through(mi):
+			continue
+		var size := mi.get_aabb().size * _scale_from_root(mi)
+		if maxf(size.x, maxf(size.y, size.z)) >= min_size:
+			mi.mesh.generate_triangle_mesh()
+			built += 1
+	return built
+
+
+## The node's scale relative to this zone, off the tree (global_basis needs the tree).
+func _scale_from_root(node: Node) -> Vector3:
+	var s := Vector3.ONE
+	var n := node
+	while n != null and n != self:
+		if n is Node3D:
+			s *= (n as Node3D).basis.get_scale().abs()
+		n = n.get_parent()
+	return s
+
+
+static func _see_through(mi: MeshInstance3D) -> bool:
+	for k in mi.mesh.get_surface_count():
+		var mat := mi.get_active_material(k) as BaseMaterial3D
+		if mat != null and mat.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED:
+			return true
+	return false
+
+
 ## The village alive: creatures' VillagerLayer owns the villagers (M3-CRE-613, ch02_haluna.json: routes, chats,
 ## work, storms), HalunaVillagers dresses the three shop bodies it doesn't cover yet (M2-FP-113), and the
 ## WildlifeLayer brings the gulls, crabs and fish (M3-CRE-611).

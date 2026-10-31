@@ -304,6 +304,21 @@ func test_the_prebuild_matches_the_in_tree_build() -> void:
 	_done()
 
 
+func test_the_parked_build_makes_the_camera_occluders_triangles() -> void:
+	# ReturnPark's hook (ADR 0209; the Lead's follow-up to the human's black-screen report): the director's first snap
+	# found its occluders' triangles to build under the fade (most of the root's ~0.39 s _ready on the Drownbell return).
+	zone = (load(ZONE) as PackedScene).instantiate() as HalunaZone
+	zone.prebuild()
+	var built := zone.park_prebuild()
+	assert_true(built > 0, "built the occluders' triangles off the tree (%d meshes)" % built)
+	_host().add_child(zone)
+	zone.director.auto_update = false
+	zone.player.set_physics_process(false)
+	assert_eq(zone.park_prebuild(), 0, "in the tree it does nothing")
+	assert_true(zone.place_at(&"Beach", zone.spawn_yaw_deg(&"Beach")), "the director snaps on them")
+	_done()
+
+
 static func _build_snapshot(z: HalunaZone) -> Dictionary:
 	var xforms: Array[Transform3D] = []
 	for cs in z.collision.find_children("*", "CollisionShape3D", true, false):
