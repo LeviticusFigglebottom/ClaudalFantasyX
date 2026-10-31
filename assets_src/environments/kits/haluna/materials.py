@@ -576,6 +576,11 @@ STANDARD["kit_fen_reed"]["albedo_color"] = hexc("#8E8466")
 # near black in the overcast too, so it lifts a step.
 MATERIALS["kit_keth_crag"]["params"]["col_tint"] = "Color(1.55, 1.55, 1.5, 1)"
 MATERIALS["kit_keth_road"]["params"]["col_tint"] = "Color(1.3, 1.29, 1.24, 1)"
+# PC row 86 (10-31): Ossa Fen's floor read as one flat dark mud plane. The mud keeps its tannin brown but shows its
+# surface (the texture's ripples and cracks: normal 0.4 -> 0.9), and dries in patches (value variation 0.08 -> 0.2,
+# a lighter tint), so the ground has light and dark across it.
+MATERIALS["kit_fen_mud"]["params"].update({"col_tint": hexc("#9C8A70"), "normal_strength": 0.9, "variation_value": 0.2})
+MATERIALS["kit_fen_bank"]["params"].update({"normal_strength": 0.9, "variation_value": 0.2})
 
 
 if __name__ == "__main__":

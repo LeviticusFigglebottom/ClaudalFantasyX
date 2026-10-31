@@ -183,6 +183,42 @@
        "ch18_world_open"
       ]
      }
+    },
+    "moorings_scuttlers": {
+     "when": {
+      "set": [
+       "ch17_started"
+      ],
+      "unset": [
+       "ch17_moorings_scuttlers"
+      ]
+     },
+     "steps": [
+      {
+       "battle": "ch17_moorings_scuttlers",
+       "return_spawn": "Dock",
+       "escape_spawn": "Dock",
+       "victory_flag": "ch17_moorings_scuttlers"
+      }
+     ]
+    },
+    "moorings_rasp": {
+     "when": {
+      "set": [
+       "ch17_moorings_scuttlers"
+      ],
+      "unset": [
+       "ch17_moorings_rasp"
+      ]
+     },
+     "steps": [
+      {
+       "battle": "ch17_moorings_rasp",
+       "return_spawn": "Dock",
+       "escape_spawn": "Dock",
+       "victory_flag": "ch17_moorings_rasp"
+      }
+     ]
     }
    }
   }

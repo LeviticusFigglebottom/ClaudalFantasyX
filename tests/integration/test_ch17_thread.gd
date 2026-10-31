@@ -43,3 +43,21 @@ func test_ch17_plays_hollowmere_in_order() -> void:
 	assert_true(bool(Game.get_flag(&"ch17_complete")), "B12: aboard the hull")
 	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch18/kite", "spawn": "Deck"}], "on to Ch18")
 	after_visits()
+
+
+func test_the_outer_moorings_are_optional_fights() -> void:
+	for f in ACT_TWO_END:
+		Game.set_flag(f)
+	for f: StringName in [&"ch17_started", &"ch17_saw_the_hull"]:
+		Game.set_flag(f)
+	visit(HOLLOWMERE)
+	assert_false(trigger_named(&"a3_moorings_two").is_available(), "the rasp waits on the scuttlers")
+	assert_true(trigger_named(&"a3_moorings_one").try_interact())
+	var r := hand_offs.back()[1] as BattleRequest
+	assert_eq(r.encounter, &"ch17_moorings_scuttlers")
+	assert_eq(r.escape_spawn, &"Dock", "optional: it can be fled")
+	Game.set_flag(r.victory_flag)
+	visit(HOLLOWMERE)
+	assert_true(trigger_named(&"a3_moorings_two").try_interact())
+	assert_eq((hand_offs.back()[1] as BattleRequest).encounter, &"ch17_moorings_rasp")
+	after_visits()

@@ -1,0 +1,117 @@
+{
+ "doc": "M5-A3P-1015 (act3_ending.md §2, E1-E7; docs/kb/tech/chapter_flow.md): the Ending aboard the Kite (ch18/kite, read by Ch18Zone once ch21_unbound is set). Imra's goodbye on arrival (E1) and its rest; Dace's where he stood (E2) and Kerrid's at the rail (E3), each with its rest; Liss takes the strain at the wheel and brings the Kite down by hand, and nothing comes (E4, ending_landed); then Haluna's dock at night (ch02/haluna DockNight: E5 the dark sea, the credits with E6's beach rite as their vignette, E7 the first lamp after them: slice-polish's and UI's rows, requested in M5-A3P-1203).",
+ "chapter": "ending",
+ "zones": {
+  "ch18/kite": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "set": [
+       "ch21_unbound"
+      ],
+      "unset": [
+       "ending_imra_gone"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Deck"
+      },
+      {
+       "play": "ending_imra"
+      },
+      {
+       "play": "ending_rest_hands"
+      },
+      {
+       "set": "ending_imra_gone"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "ending_dace": {
+     "when": {
+      "set": [
+       "ending_imra_gone"
+      ],
+      "unset": [
+       "ending_dace_gone"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ending_dace"
+      },
+      {
+       "play": "ending_rest_where_he_stood"
+      },
+      {
+       "set": "ending_dace_gone"
+      }
+     ]
+    },
+    "ending_kerrid": {
+     "when": {
+      "set": [
+       "ending_dace_gone"
+      ],
+      "unset": [
+       "ending_kerrid_gone"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ending_kerrid"
+      },
+      {
+       "play": "ending_rest_empty_place"
+      },
+      {
+       "set": "ending_kerrid_gone"
+      }
+     ]
+    },
+    "ending_the_kite_comes_down": {
+     "when": {
+      "set": [
+       "ending_kerrid_gone"
+      ],
+      "unset": [
+       "ending_landed"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ending_the_kite_comes_down"
+      },
+      {
+       "play": "ending_nothing_comes"
+      },
+      {
+       "set": "ending_landed"
+      },
+      {
+       "go": {
+        "location": "ch02/haluna",
+        "spawn": "DockNight"
+       }
+      }
+     ]
+    }
+   }
+  }
+ }
+}

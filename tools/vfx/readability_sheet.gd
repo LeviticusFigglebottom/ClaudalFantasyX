@@ -36,9 +36,12 @@ func _run() -> void:
 		scales.append(float(s))
 	var only := str(_opts.get("only", "")).split(",", false)
 	var summary := {}
-	for enc: StringName in SWEEP.act_one_encounters():
-		if not only.is_empty() and not only.has(String(enc)):
-			continue
+	var fights: Array[StringName] = SWEEP.act_one_encounters()
+	if not only.is_empty():  # any encounters, Act II's too (the Lead's 21:25: the same pass for Act II)
+		fights.clear()
+		for id in only:
+			fights.append(StringName(id))
+	for enc: StringName in fights:
 		var checks := {"overflow": [], "floats": []}
 		for sc in scales:
 			await _one(enc, sc, out, checks)

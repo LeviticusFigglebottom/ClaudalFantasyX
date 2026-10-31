@@ -13,6 +13,22 @@
   "hide_all": true,
   "keep": []
  },
+ "fill_lights": [
+  {
+   "pitch_deg": -25.0,
+   "yaw_deg": 90.0,
+   "color": "#8E9CC8",
+   "energy": 0.4,
+   "specular": 0.2
+  },
+  {
+   "pitch_deg": -65.0,
+   "yaw_deg": 180.0,
+   "color": "#C8A890",
+   "energy": 0.15,
+   "specular": 0.1
+  }
+ ],
  "fire_light_color": "#FFB16E",
  "fire_lights": [
   {

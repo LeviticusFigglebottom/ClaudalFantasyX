@@ -503,6 +503,27 @@
     "spire_conduit_crawler": {"family": "crawler", "_note": "M5-A3P-1007: the spire's conduit crawler is the Act II crawler; it shares its set", "events": {"idle": "cre_conduit_crawler_idle", "attack": "cre_conduit_crawler_attack", "hurt": "cre_conduit_crawler_hurt", "death": "cre_conduit_crawler_death", "move": "cre_conduit_crawler_tick"}},
     "spire_moth": {"family": "moth", "events": {"idle": "cre_flue_moth_idle", "attack": "cre_flue_moth_attack", "hurt": "cre_flue_moth_hurt", "death": "cre_flue_moth_death", "move": "cre_flue_moth_flutter"}, "_note": "M5-A3P-1007: the flue moth's glass-winged variant shares its set until audio gives it a glassier one"},
     "wick_crawler": {"family": "crawler", "_note": "M5-A3P-1007: a Lit Age construct like the conduit crawler; it shares that set until audio gives it its own (brass legs, shears)", "events": {"idle": "cre_conduit_crawler_idle", "attack": "cre_conduit_crawler_attack", "hurt": "cre_conduit_crawler_hurt", "death": "cre_conduit_crawler_death", "move": "cre_conduit_crawler_tick"}},
-    "chain_lamp": "silent"
+    "chain_lamp": "silent",
+    "ilun_held": {"family": "vowbound", "_note": "M5-A3P-1013: ilun held (Ch20's release fight) shares ilun's set", "events": {"idle": "cre_ilun_idle", "attack": "cre_ilun_attack", "hurt": "cre_ilun_hurt", "death": "cre_ilun_death", "move": "cre_ilun_glide"}},
+    "kahre_held": {"family": "vowbound", "_note": "M5-A3P-1013: kahre held (Ch20's release fight) shares kahre's set", "events": {"idle": "cre_kahre_idle", "attack": "cre_kahre_attack", "hurt": "cre_kahre_hurt", "death": "cre_kahre_death", "move": "cre_kahre_step"}},
+    "virel_held": {"family": "vowbound", "_note": "M5-A3P-1013: virel held (Ch20's release fight) shares virel's set", "events": {"idle": "cre_virel_idle", "attack": "cre_virel_attack", "hurt": "cre_virel_hurt", "death": "cre_virel_death", "move": "cre_virel_drift"}},
+    "hesk_held": {"family": "vowbound", "_note": "M5-A3P-1013: hesk held (Ch20's release fight) shares hesk's set", "events": {"idle": "cre_hesk_idle", "attack": "cre_hesk_attack", "hurt": "cre_hesk_hurt", "death": "cre_hesk_death", "move": "cre_hesk_wingbeat"}},
+    "nhoa_held": {"family": "vowbound", "_note": "M5-A3P-1013: nhoa held (Ch20's release fight) shares nhoa's set", "events": {"idle": "cre_nhoa_idle", "attack": "cre_nhoa_attack", "hurt": "cre_nhoa_hurt", "death": "cre_nhoa_death", "move": "cre_nhoa_drift"}},
+    "ethren_held": {"family": "vowbound", "_note": "M5-A3P-1013: ethren held (Ch20's release fight) shares ethren's set", "events": {"idle": "cre_ethren_idle", "attack": "cre_ethren_attack", "hurt": "cre_ethren_hurt", "death": "cre_ethren_death", "move": "cre_ethren_drift"}},
+    "cage_orin": "silent",
+    "cage_halde": "silent",
+    "cage_isse": "silent",
+    "cage_cael": "silent",
+    "kesh_held": {"family": "vowbound", "_note": "M5-A3P-1017: Kesh held (Ch21 H03, her release fight) shares kesh's set", "events": {"idle": "cre_kesh_idle", "attack": "cre_kesh_attack", "hurt": "cre_kesh_hurt", "death": "cre_kesh_death", "move": "cre_kesh_surge"}},
+    "sefir_warden": "silent",
+    "sefir_heart": "silent",
+    "sefir_letting": "silent",
+    "letting_stilled": "silent",
+    "drowned_lantern": "silent",
+    "held_shoal": "silent",
+    "deep_scuttler": {"family": "crab", "events": {"idle": "cre_scuttler_idle", "attack": "cre_scuttler_attack", "hurt": "cre_scuttler_hurt", "death": "cre_scuttler_death", "move": "cre_scuttler_skitter"}, "_note": "M5-A3P-1849: deep_scuttler (Ch17's outer moorings) shares scuttler's set"},
+    "hull_rasp": {"family": "eel", "events": {"idle": "cre_hullgnaw_idle", "attack": "cre_hullgnaw_attack", "hurt": "cre_hullgnaw_hurt", "death": "cre_hullgnaw_death", "move": "cre_hullgnaw_slither"}, "_note": "M5-A3P-1849: hull_rasp (Ch17's outer moorings) shares hullgnaw's set"},
+    "tide_matron": {"family": "matron", "events": {"idle": "cre_cinder_matron_idle", "attack": "cre_cinder_matron_attack", "hurt": "cre_cinder_matron_hurt", "death": "cre_cinder_matron_death", "move": "cre_cinder_matron_grind"}, "_note": "M5-A3P-1852: the Tide Matron shares the Cinder Matron's set until audio gives the coral kiln its own"},
+    "old_leviathan": "silent"
   }
 }

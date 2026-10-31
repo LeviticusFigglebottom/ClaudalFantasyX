@@ -194,7 +194,8 @@ def audit_enemies() -> list[str]:
 
 def _skill_users() -> tuple[set, set, dict[str, set]]:
     """(the foes only later-act encounters field, the act's own foes, skill id -> the foes that use it). A charged skill
-    is used by whoever gathers it, and a Vowbound bound in a later act counts as a later-act user (M4-A2P-024/025)."""
+    is used by whoever gathers it, and a Vowbound bound in a later act counts as a later-act user (M4-A2P-024/025), as
+    does a later-act encounter's scripted entry (a ward's or a tide's turn)."""
     later = {e for enc in _json(DATA / "battle" / "encounters.json")["encounters"]
              if _later(enc["id"]) for e in enc.get("enemies", [])}
     act1_foes = set(_act1_enemies())
@@ -207,6 +208,13 @@ def _skill_users() -> tuple[set, set, dict[str, set]]:
             later.add("vowbound:" + v["id"])
             for sid in v.get("skills", []) + [v.get("swell", {}).get("technique", "")]:
                 users.setdefault(sid, set()).add("vowbound:" + v["id"])
+    for enc in _json(DATA / "battle" / "encounters.json")["encounters"]:
+        if not _later(enc["id"]):
+            continue  # a later act's set-piece entries (wards, tides) use their skills there only (act1-chapters)
+        for e in enc.get("entries", []):
+            later.add(f"entry:{enc['id']}:{e['id']}")
+            for sid in e.get("skills", []):
+                users.setdefault(sid, set()).add(f"entry:{enc['id']}:{e['id']}")
     skills = _json(DATA / "battle" / "skills.json")["skills"]
     for r in (skills if isinstance(skills, list) else []):
         charged = str((r.get("charge") or {}).get("skill", ""))
