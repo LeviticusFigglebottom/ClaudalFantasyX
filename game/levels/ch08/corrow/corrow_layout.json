@@ -1,11 +1,12 @@
 {
-  "doc": "M3-C08-02 story, in the Corrow kit's frame since M3-C08-1202 (ADR 0200; tools/act1/corrow_frame.py, migrated once by tools/act1/ch08_corrow_relayout.py). The seawall's walk is an arc (R 300 m about (0, 0, +300); the sea is +z, south) at y 12, the Watchers on its parapet; the trader comes in from the south to the mole (Mole, y 1.2), whose ramp climbs the sea face over the parapet onto the walk at s 15. The Fisher Stair climbs the wall's inner face eastward from its foot at s -40 (the low town, y 1) to its head landing at s -18..-14.5 (WallHead is beside it); Liss's hoist is at s -16.5. The low town lies north of the wall round the stair-foot lane; the Bastion (barracks, chapel, the save shrine, the chandler) is a platform at walk height west of s -58; the watch-red wall-gate to the headland and Coilspire is on the walk at s 35. Collision is corrow_collision.json (generated: the wall, kerb and parapet per 12 m segment, the town floor, the Bastion, the stair's flights as ramps, the mole), the look is corrow_dressing.json (the kit). The Breach takes the stair's middle (s -36..-24): WallSection and its parapet and kerb, the Watchers there and the stair's upper flights go; the Breach block brings the kit's breach, broken stair and fallen heads. states (Ch04Zone): the day's cast; the storm from ch08_beacon_opened; the hoist from ch08_hoist_rigged; Pell on the parapet from ch08_wave2_held; the flood and Kerrid at the stair foot from ch08_wave3_held; the figure in the storm from ch08_reach_survived; the breach, the black lake and the aftermath cast from ch08_wall_fell; the cut rope from ch08_hoist_cut_down. lights (Ch06Zone): the day is the kit's storm front (30 deg, azimuth 250), the storm (ch08_beacon_opened) the surge, the aftermath (ch08_wall_fell) the fallen grade (environment_res). start_hidden (Ch08Zone): the flood, the lake, the breach and the hoist. The set piece's four fights return to WallHead.",
+  "doc": "M3-C08-02 story, in the Corrow kit's frame since M3-C08-1202 (ADR 0200; tools/act1/corrow_frame.py, migrated once by tools/act1/ch08_corrow_relayout.py). The seawall's walk is an arc (R 300 m about (0, 0, +300); the sea is +z, south) at y 12, the Watchers on its parapet; the trader comes in from the south to the mole (Mole, y 1.2), whose ramp climbs the sea face over the parapet onto the walk at s 15. The Fisher Stair climbs the wall's inner face eastward from its foot at s -40 (the low town, y 1) to its head landing at s -18..-14.5 (WallHead is beside it); Liss's hoist is at s -16.5. The low town lies north of the wall round the stair-foot lane; the Bastion (barracks, chapel, the save shrine, the chandler) is a platform at walk height west of s -58; the watch-red wall-gate to the headland and Coilspire is on the walk at s 35. Collision is corrow_collision.json (generated: the wall, kerb and parapet per 12 m segment, the town floor, the Bastion, the stair's flights as ramps, the mole), the look is corrow_dressing.json (the kit). The Breach takes the stair's middle (s -36..-24): WallSection and its parapet and kerb, the Watchers there and the stair's upper flights go; the Breach block brings the kit's breach, broken stair and fallen heads. states (Ch04Zone): the day's cast; the storm from ch08_beacon_opened; the hoist from ch08_hoist_rigged; Pell on the parapet from ch08_wave2_held; the flood and Kerrid at the stair foot from ch08_wave3_held; the figure in the storm from ch08_reach_survived; the breach, the black lake and the aftermath cast from ch08_wall_fell; the cut rope from ch08_hoist_cut_down. lights (Ch06Zone): the day is the kit's storm front (30 deg, azimuth 250), the storm (ch08_beacon_opened) the surge, the aftermath (ch08_wall_fell) the fallen grade (environment_res). start_hidden (Ch08Zone): the flood, the lake, the breach and the hoist. The set piece's four fights return to WallHead. Act III (M5-A3P-1004, act2-plan supplementing): from ch18_started the Kite's return in daylight: the low town drained (Lake hidden), Marra and her child at the stair head (ch18_marra, ch18_child), the revisit and Toma's and Kerrid's heirlooms (triggers ch18_*), Ivo's stone (ivo_stone), K21.",
   "block_color": "#8a8072",
   "sun": {"pitch_deg": -30.0, "yaw_deg": -70.0, "energy": 2.0, "color": "#ffe4ce"},
   "environment": {"background": "#9cc4dc", "ambient_color": "#d8cfbe", "ambient_energy": 0.55},
   "lights": [
     {"flag": "ch08_beacon_opened", "sun": {"pitch_deg": -22.0, "yaw_deg": -75.0, "energy": 0.35, "color": "#ffe4ce"}, "environment": {"background": "#2c3640", "ambient_color": "#4a6070", "ambient_energy": 0.3}},
-    {"flag": "ch08_wall_fell", "sun": {"pitch_deg": -11.0, "yaw_deg": 68.0, "energy": 0.6, "color": "#e2e6ec"}, "environment": {"background": "#141c2a", "ambient_color": "#33415a", "ambient_energy": 0.3}, "environment_res": "res://game/levels/ch08/corrow/corrow_fallen_environment.tres"}
+    {"flag": "ch08_wall_fell", "sun": {"pitch_deg": -11.0, "yaw_deg": 68.0, "energy": 0.6, "color": "#e2e6ec"}, "environment": {"background": "#141c2a", "ambient_color": "#33415a", "ambient_energy": 0.3}, "environment_res": "res://game/levels/ch08/corrow/corrow_fallen_environment.tres"},
+    {"flag": "ch18_started", "sun": {"pitch_deg": -30.0, "yaw_deg": -70.0, "energy": 2.0, "color": "#ffe4ce"}, "environment": {"background": "#9cc4dc", "ambient_color": "#d8cfbe", "ambient_energy": 0.55}}
   ],
   "start_hidden": ["Flood", "Lake", "Breach", "HoistPins", "HoistRope", "Basket", "RopeCoil", "Storm"],
   "blocks": [
@@ -128,7 +129,11 @@
     "way_approach_foot": [-16.25, 12.0, 1.3, 180.0],
     "way_mole_ramp_foot": [13.69, 1.2, 26.8, 180.0],
     "way_mole_parapet": [14.81, 12.9, 4.0, 0.0],
-    "way_approach_east": [-13.9, 12.0, 1.5, 180.0]
+    "way_approach_east": [-13.9, 12.0, 1.5, 180.0],
+    "ivo_stone": [-12.6, 12.0, -2.4, 90.0],
+    "stair_foot": [-41.134, 1.0, -6.946, 180.0],
+    "ch18_marra": [-14.0, 12.0, 0.8, 270.0],
+    "ch18_child": [-14.8, 12.0, 1.6, 270.0]
   },
   "actors": {
     "asha": {"at": [12.473, 1.2, 38.533, -2.73], "color": "#d9c3a0"},
@@ -186,7 +191,8 @@
     "W25": {"pos": [-9.014, 14.0, -0.365], "look_at": [-15.104, 12.8, -1.822], "fov": 45},
     "W25_empty": {"pos": [-9.014, 14.0, -0.365], "look_at": [-15.104, 12.8, -1.822], "fov": 45},
     "W26": {"pos": [-34.862, 22.0, 2.536], "look_at": [-40.634, 1.0, -22.446], "fov": 55},
-    "W27": {"pos": [-5.036, 13.7, -2.158], "look_at": [-10.015, 13.3, -0.333], "fov": 45}
+    "W27": {"pos": [-5.036, 13.7, -2.158], "look_at": [-10.015, 13.3, -0.333], "fov": 45},
+    "K21": {"pos": [-6.0, 14.2, 4.0], "look_at": [-14.4, 12.9, 0.8], "fov": 45}
   },
   "camera_volumes": [
     {"id": "WallGate", "mode": "pan_follow", "at": [31.5, 13.5, 1.2], "size": [7.0, 4.0, 5.0], "pos": [24.5, 14.6, -2.5], "look_at": [32.0, 12.8, 1.5], "fov": 46.4, "priority": 1}
@@ -200,7 +206,10 @@
     {"id": "bark_netmender", "activation": "interact", "at": [-34.634, 1.0, -20.946], "size": [1.6, 0, 1.6], "prompt_key": "FIELD_PROMPT_LISTEN", "requires_flag": "ch08_arrived_corrow", "blocked_by_flag": "ch08_beacon_opened", "payload": {"dialogue": "ch08_bark_netmender"}, "yaw": 0.0},
     {"id": "shrine", "activation": "interact", "at": [-66.479, 12.0, -2.01], "size": [1.6, 0, 1.2], "prompt_key": "FIELD_PROMPT_REST", "requires_flag": "ch08_arrived_corrow", "blocked_by_flag": "ch08_beacon_opened", "payload": {"beat": "shrine", "save_shrine": "corrow_shrine"}, "yaw": 12.41},
     {"id": "chandler", "activation": "interact", "at": [-78.3, 12.0, 1.664], "size": [3, 0, 1.4], "prompt_key": "SHOP_PROMPT", "requires_flag": "ch08_arrived_corrow", "blocked_by_flag": "ch08_beacon_opened", "payload": {"shop": "brightwater_purser"}, "yaw": 14.71},
-    {"id": "gate", "activation": "interact", "at": [32.933, 12.0, 1.813], "size": [2, 0, 6], "prompt_key": "FIELD_PROMPT_CH08_GATE", "requires_flag": "ch08_met_ivo", "blocked_by_flag": "ch08_beacon_opened", "payload": {"beat": "to_headland"}, "yaw": -6.3}
+    {"id": "gate", "activation": "interact", "at": [32.933, 12.0, 1.813], "size": [2, 0, 6], "prompt_key": "FIELD_PROMPT_CH08_GATE", "requires_flag": "ch08_met_ivo", "blocked_by_flag": "ch08_beacon_opened", "payload": {"beat": "to_headland"}, "yaw": -6.3},
+    {"id": "ch18_revisit", "activation": "interact", "at": [-13.4, 12.0, 0.8], "size": [1.6, 0, 1.2], "once": true, "prompt_key": "FIELD_PROMPT_LISTEN", "requires_flag": "ch18_world_open", "payload": {"dialogue": "ch18_revisit_corrow"}},
+    {"id": "ch18_heirloom_toma", "activation": "interact", "at": [-62.0, 12.0, -1.0], "size": [1.6, 0, 1.2], "prompt_key": "FIELD_PROMPT_LOOK", "requires_flag": "ch18_world_open", "blocked_by_flag": "ch18_heirloom_toma", "payload": {"dialogue": "ch18_heirloom_toma"}},
+    {"id": "ch18_heirloom_kerrid", "activation": "interact", "at": [-17.4, 12.5, -3.85], "size": [1.6, 0, 1.2], "prompt_key": "FIELD_PROMPT_LOOK", "requires_flag": "ch18_world_open", "blocked_by_flag": "ch18_heirloom_kerrid", "payload": {"dialogue": "ch18_heirloom_kerrid"}}
   ],
   "states": [
     {"flag": "ch08_arrived_corrow", "hide": ["kerrid"], "place": {"asha": "day_asha", "toma": "day_toma", "ysolde": "day_ysolde", "liss": "day_liss", "townsfolk_a": "mole_greet_a", "townsfolk_b": "mole_greet_b"}},
@@ -213,7 +222,8 @@
     {"flag": "ch08_fishwife_called", "place": {"marra": "marra_up", "kerrid": "foot_kerrid_deeper"}},
     {"flag": "ch08_reach_survived", "show": ["figure"], "hide": ["climber_a", "climber_b", "climber_c"], "place": {"kerrid": "stair_up_kerrid", "figure": "figure_storm"}},
     {"flag": "ch08_wall_fell", "hide": ["WallSection", "WatchersSection", "PaleBlocks", "Flood", "figure", "pell", "ivo", "marra", "boy", "child_a", "child_b", "child_c", "WallSectionParapet", "WallSectionKerb", "StairFlight1Upper", "StairLanding", "StairFlight2"], "show": ["Lake", "Breach", "officer", "hobb"], "place": {"hobb": "hobb_after", "officer": "officer_post", "kerrid": "kerrid_drowned_stair", "toma": "aft_toma", "liss": "aft_liss", "asha": "aft_asha", "ysolde": "aft_ysolde"}},
-    {"flag": "ch08_hoist_cut_down", "hide": ["HoistRope", "Basket", "kerrid", "Storm"], "show": ["RopeCoil"], "place": {"liss": "liss_coil"}}
+    {"flag": "ch08_hoist_cut_down", "hide": ["HoistRope", "Basket", "kerrid", "Storm"], "show": ["RopeCoil"], "place": {"liss": "liss_coil"}},
+    {"flag": "ch18_started", "show": ["marra", "child_a"], "hide": ["Lake", "officer", "hobb", "RopeCoil"], "place": {"marra": "ch18_marra", "child_a": "ch18_child", "asha": "day_asha", "toma": "day_toma", "ysolde": "day_ysolde", "liss": "day_liss"}}
   ],
   "collision_path": "res://game/levels/ch08/corrow/corrow_collision.json"
 }

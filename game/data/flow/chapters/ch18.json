@@ -242,6 +242,38 @@
     }
    ],
    "beats": {}
+  },
+  "ch08/corrow": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "set": [
+       "ch18_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Mole"
+      },
+      {
+       "zone": "refresh_states"
+      }
+     ]
+    }
+   ],
+   "beats": {}
   }
  }
 }

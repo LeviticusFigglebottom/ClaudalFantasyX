@@ -2,14 +2,15 @@ extends TestCase
 ## M5-A3P-1004: Ch18 "The Kite", the critical path, headless, on the real chapter data
 ## (game/data/flow/chapters/ch18.json): the maiden flight, the chart table (the world opens), Reedhollow's Act III block
 ## (Pell through the gate, the farewell-tide taught), back aboard at night and Iskarra at the chart table in the
-## morning; and the Hollowmere revisit with its two heirlooms.
+## morning; and the revisits with their heirlooms (Hollowmere, Corrow).
 
 const KITE := "res://game/levels/ch18/kite/kite.tscn"
 const REEDHOLLOW := "res://game/levels/ch10/reedhollow/reedhollow.tscn"
 const HOLLOWMERE := "res://game/levels/ch17/hollowmere/hollowmere.tscn"
+const CORROW := "res://game/levels/ch08/corrow/corrow.tscn"
 
 var saved_state: GameStateData
-var zone: Ch05Zone
+var zone: GreyboxZone
 var story: ZoneStory
 var hand_offs: Array[Array] = []
 
@@ -86,9 +87,27 @@ func test_hollowmere_in_ch18_is_the_kites_berth() -> void:
 	Game.state = saved_state
 
 
+func test_corrow_in_ch18_keeps_a_watch() -> void:
+	Game.state.chapter = 18
+	for f: StringName in [
+		&"ch08_arrived_corrow", &"ch08_met_ivo", &"ch08_wall_fell", &"ch08_done", &"ch18_started", &"ch18_world_open"
+	]:
+		Game.set_flag(f)
+	_open(CORROW)
+	story.begin()
+	assert_false(_trigger(&"ivo").is_available(), "Ch8's day is over")
+	assert_true(_trigger(&"ch18_revisit").try_interact(), "Marra's watch")
+	assert_true(_trigger(&"ch18_heirloom_toma").try_interact())
+	assert_true(bool(Game.get_flag(&"ch18_heirloom_toma")), "Ivo's spear")
+	assert_true(_trigger(&"ch18_heirloom_kerrid").try_interact())
+	assert_true(bool(Game.get_flag(&"ch18_heirloom_kerrid")), "the watch's anchor")
+	_close()
+	Game.state = saved_state
+
+
 func _open(path: String) -> void:
 	hand_offs.clear()
-	zone = (load(path) as PackedScene).instantiate() as Ch05Zone
+	zone = (load(path) as PackedScene).instantiate() as GreyboxZone
 	story = zone.story
 	story.autostart = false
 	_host().add_child(zone)
