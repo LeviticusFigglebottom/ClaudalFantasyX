@@ -1402,7 +1402,7 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     - in the scratch worktree: return_park 3/0, battle_return 2/0, scene_router 17/0.
   - **Seen, not mine:** VillagerLayer logs "Parent node is busy setting up children" and "!is_inside_tree" on a
     prebuilt add (the existing prebuild test logs the same). Creatures' code, flagged before.
-- **PC pass 7 row 18 (slice_causeway_harrier_view: no harrier), MERGE-READY @ this commit:**
+- **PC pass 7 row 18 (slice_causeway_harrier_view: no harrier), MERGE-READY @ ff50ec338** (the causeway layout is generated, so C07's aim_node is written by tools/causeway/build_causeway_gameplay.py; test_causeway_gameplay OK):
   - Cause: the camera director's FIXED safety net turned C07 to the party, which stands behind it, so the camera
     faced away from the flier (in-engine: forward (−0.90, 0, 0.43) against the authored (+0.91, 0, −0.42)).
   - Fix: a layout camera volume takes `aim_node`/`aim_offset` (greybox_zone.gd, two lines). C07's subject is the
@@ -1413,7 +1413,25 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - Tests: test_causeway_harrier gains a live-camera test; causeway 17/0, camera 73/0.
   - Tools suite: `test_cutscene_sfx_files` is red on Act III music cues (credits_suite, ending_*, dace_ledger) that
     another track wired in. Not this change.
+- **PC pass 7 row 75 (Ch1 dive U10/U11 near-black), MERGE-READY @ this commit:**
+  - Change: `dive_hull_lights.tscn`, a stage practical beside dive_lamp (layout actor `dive_hull_lights`):
+    - HullKey: a cool key under the hull's belly;
+    - HullRim: a rim on the hull's near underside edge;
+    - both go on and off with the lantern in ch01_going_under.
+  - Viewed on lavapipe, U10:
+    - before: 82% of pixels under 20/255, mean 15.2 (matches the PC);
+    - after: 69%, mean 18.7 (the letterbox bars are about 21% of the frame);
+    - the hull's belly and the boats under it now read as shapes, with cool rims.
+  - U11: 48%, mean 22.2. The pen and boats are silhouettes against the seabed.
+  - What I tried first: a light under the surface past the hull did nothing. The underwater rig absorbs it, and
+    Oruvel's sea glow is 0 (a day storm, colour script rule 3), so the background water can't be lifted from my lane.
+  - **PC-QUEUE:** re-check u10/u11 on the GPU. If still too dark, raise HullKey's energy (7.0).
+- Tools suite (900 s cap, partial). Reds that are not this lane's:
+  - test_cutscene_sfx_files (Act III ending music cues);
+  - test_act1_audio_audit and test_battle_vfx_coverage (new skills cut_the_line and court_reinforce);
+  - test_audio_loudness and rig_integrity (known).
 ### PC-QUEUE
+- Row 75: ch01_going_under_u10/_u11 with the new hull key and rim (dive_hull_lights): does the hull read on the GPU?
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
   emissive reading. Check that its glow and silhouette read on the GPU; if not, it needs a rim light or a grade.

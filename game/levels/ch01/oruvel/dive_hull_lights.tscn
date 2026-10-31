@@ -10,11 +10,11 @@ light_specular = 0.6
 omni_range = 5.5
 omni_attenuation = 1.2
 
-[node name="DiveSurface" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.0, 1.1, 4.5)
+[node name="HullKey" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0, -0.9, 2.5)
 visible = false
-light_color = Color(0.42, 0.68, 0.76, 1)
+light_color = Color(0.5, 0.78, 0.85, 1)
 light_energy = 7.0
-light_specular = 0.2
-omni_range = 10.0
+light_specular = 0.3
+omni_range = 7.5
 omni_attenuation = 0.9
