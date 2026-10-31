@@ -1,0 +1,453 @@
+{
+ "doc": "M5-A3P-1007 greybox (tools/act3/ch19_iskarra_greybox.py; do not edit by hand): the Prologue's plaza on env-art's Iskarra kit; collision only (the kit is the look). The Kite on the water (kite_lamps), the seven Prologue places (vigil_*), P01 and P02 (the Prologue's own shots), the plaza's edge (the hitch), the steps (the words), the spire's door (to_spire). Dusk; the night of the hitch and the morning after are variants.",
+ "sun": {
+  "pitch_deg": -12.0,
+  "yaw_deg": 160.0,
+  "energy": 2.2,
+  "color": "#ff9f46"
+ },
+ "environment": {
+  "background": "#e0a060",
+  "ambient_color": "#a08070",
+  "ambient_energy": 0.7
+ },
+ "block_color": "#c8bca4",
+ "blocks": [
+  {
+   "id": "Plaza",
+   "pos": [
+    0.0,
+    -0.25,
+    4.0
+   ],
+   "size": [
+    32.0,
+    0.5,
+    24.0
+   ],
+   "color": "#8a9a98",
+   "visible": false
+  },
+  {
+   "id": "Steps",
+   "pos": [
+    -3.0,
+    0.25,
+    -10.0
+   ],
+   "size": [
+    12.0,
+    0.5,
+    4.0
+   ],
+   "color": "#8a9a98",
+   "visible": false
+  },
+  {
+   "id": "Landing",
+   "pos": [
+    0.0,
+    0.75,
+    -14.0
+   ],
+   "size": [
+    8.0,
+    0.5,
+    4.0
+   ],
+   "color": "#8a9a98",
+   "visible": false
+  },
+  {
+   "id": "PlazaWallN0",
+   "pos": [
+    -13.0,
+    0.6,
+    -8.0
+   ],
+   "size": [
+    6.0,
+    1.2,
+    0.5
+   ],
+   "color": "#5e6a6a",
+   "visible": false
+  },
+  {
+   "id": "PlazaWallN1",
+   "pos": [
+    10.0,
+    0.6,
+    -8.0
+   ],
+   "size": [
+    12.0,
+    1.2,
+    0.5
+   ],
+   "color": "#5e6a6a",
+   "visible": false
+  },
+  {
+   "id": "PlazaWallS0",
+   "pos": [
+    0.0,
+    0.6,
+    16.0
+   ],
+   "size": [
+    32.0,
+    1.2,
+    0.5
+   ],
+   "color": "#5e6a6a",
+   "visible": false
+  },
+  {
+   "id": "PlazaWallW0",
+   "pos": [
+    -16.0,
+    0.6,
+    4.0
+   ],
+   "size": [
+    0.5,
+    1.2,
+    24.0
+   ],
+   "color": "#5e6a6a",
+   "visible": false
+  },
+  {
+   "id": "PlazaWallE0",
+   "pos": [
+    16.0,
+    0.6,
+    4.0
+   ],
+   "size": [
+    0.5,
+    1.2,
+    24.0
+   ],
+   "color": "#5e6a6a",
+   "visible": false
+  }
+ ],
+ "spawns": {
+  "Landing": [
+   6.0,
+   0.0,
+   12.0,
+   0.0
+  ],
+  "SpireDoor": [
+   0.0,
+   1.0,
+   -13.0,
+   180.0
+  ]
+ },
+ "marks": {
+  "kite_lamps": [
+   8.0,
+   1.0,
+   24.0,
+   0.0
+  ],
+  "plaza_steps": [
+   -3.0,
+   0.5,
+   -9.5,
+   0.0
+  ],
+  "vigil_kerrid": [
+   9.5,
+   0.0,
+   -5.5,
+   0.0
+  ],
+  "vigil_pell": [
+   -12.0,
+   0.0,
+   1.5,
+   270.0
+  ],
+  "vigil_liss": [
+   4.5,
+   0.0,
+   -6.5,
+   0.0
+  ],
+  "vigil_ysolde": [
+   -12.0,
+   0.0,
+   3.5,
+   90.0
+  ],
+  "vigil_toma": [
+   7.5,
+   0.0,
+   1.0,
+   90.0
+  ],
+  "vigil_asha": [
+   -3.2,
+   0.0,
+   -3.0,
+   165.0
+  ],
+  "by_asha": [
+   -2.0,
+   0.0,
+   -2.2,
+   315.0
+  ],
+  "plaza_edge": [
+   12.0,
+   0.0,
+   6.0,
+   270.0
+  ],
+  "plaza_edge_b": [
+   10.6,
+   0.0,
+   6.6,
+   270.0
+  ],
+  "plaza_steps_b": [
+   -4.4,
+   0.5,
+   -9.0,
+   0.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "I01": {
+   "pos": [
+    6.0,
+    6.0,
+    30.0
+   ],
+   "look_at": [
+    -2.0,
+    2.0,
+    8.0
+   ],
+   "fov": 50
+  },
+  "I02": {
+   "pos": [
+    3.0,
+    2.0,
+    14.0
+   ],
+   "look_at": [
+    -3.0,
+    1.0,
+    -9.5
+   ],
+   "fov": 45
+  },
+  "P01": {
+   "pos": [
+    1.5,
+    3.4,
+    21.0
+   ],
+   "look_at": [
+    -4.0,
+    7.5,
+    -40.0
+   ]
+  },
+  "P02": {
+   "pos": [
+    -0.3,
+    2.4,
+    1.6
+   ],
+   "look_at": [
+    -2.8,
+    2.0,
+    -2.8
+   ]
+  },
+  "I03": {
+   "pos": [
+    8.5,
+    1.4,
+    9.5
+   ],
+   "look_at": [
+    11.3,
+    0.8,
+    6.3
+   ],
+   "fov": 38
+  },
+  "I04": {
+   "pos": [
+    -1.0,
+    1.8,
+    -5.5
+   ],
+   "look_at": [
+    -3.8,
+    1.2,
+    -9.2
+   ],
+   "fov": 40
+  }
+ },
+ "camera_volumes": [
+  {
+   "id": "Plaza",
+   "mode": "pan_follow",
+   "at": [
+    0.0,
+    1.5,
+    4.0
+   ],
+   "size": [
+    32.0,
+    4.0,
+    24.0
+   ],
+   "pos": [
+    0.0,
+    7.0,
+    20.0
+   ],
+   "look_at": [
+    0.0,
+    0.8,
+    0.0
+   ],
+   "fov": 55,
+   "priority": 1
+  }
+ ],
+ "triggers": [
+  {
+   "id": "ch19_vigil",
+   "activation": "touch",
+   "at": [
+    -2.0,
+    0.0,
+    -2.2
+   ],
+   "size": [
+    3.0,
+    0,
+    2.0
+   ],
+   "requires_flag": "ch19_started",
+   "blocked_by_flag": "ch19_vigil",
+   "payload": {
+    "beat": "ch19_vigil"
+   }
+  },
+  {
+   "id": "ch19_hitch",
+   "activation": "interact",
+   "at": [
+    11.3,
+    0.0,
+    6.3
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_CH19_SIT",
+   "requires_flag": "ch19_vigil",
+   "blocked_by_flag": "ch19_learned_the_hitch",
+   "payload": {
+    "beat": "ch19_hitch"
+   }
+  },
+  {
+   "id": "ch19_words",
+   "activation": "interact",
+   "at": [
+    -4.4,
+    0.5,
+    -8.4
+   ],
+   "size": [
+    1.6,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch19_learned_the_hitch",
+   "blocked_by_flag": "ch19_words_whole",
+   "payload": {
+    "beat": "ch19_words"
+   }
+  },
+  {
+   "id": "ch19_to_spire",
+   "activation": "touch",
+   "at": [
+    0.0,
+    1.0,
+    -15.0
+   ],
+   "size": [
+    4.0,
+    0,
+    1.0
+   ],
+   "requires_flag": "ch19_learned_the_hitch",
+   "blocked_by_flag": "ch19_complete",
+   "payload": {
+    "beat": "ch19_to_spire"
+   }
+  }
+ ],
+ "variants": [
+  {
+   "when": {
+    "set": [
+     "ch19_vigil"
+    ],
+    "unset": [
+     "ch19_learned_the_hitch"
+    ]
+   },
+   "sun": {
+    "pitch_deg": -30.0,
+    "yaw_deg": 200.0,
+    "energy": 0.15,
+    "color": "#8090b0"
+   },
+   "environment": {
+    "background": "#101828",
+    "ambient_color": "#2a3444",
+    "ambient_energy": 0.35
+   }
+  },
+  {
+   "when": {
+    "set": [
+     "ch19_learned_the_hitch"
+    ]
+   },
+   "sun": {
+    "pitch_deg": -25.0,
+    "yaw_deg": 100.0,
+    "energy": 1.4,
+    "color": "#f6ead2"
+   },
+   "environment": {
+    "background": "#c8d0d4",
+    "ambient_color": "#a8b0b4",
+    "ambient_energy": 0.8
+   }
+  }
+ ]
+}

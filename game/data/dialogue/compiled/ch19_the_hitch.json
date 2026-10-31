@@ -5,7 +5,7 @@
  "start": "ch19_the_hitch",
  "nodes": {
   "ch19_the_hitch": {
-   "headers": {"location": "prologue"},
+   "headers": {"location": "ch19/iskarra"},
    "ops": [
     {"op": "cue", "cue": "camera", "args": ["I03"], "kwargs": {}, "src": 10},
     {"op": "cue", "cue": "music", "args": ["kerrid_hitch"], "kwargs": {"fade": 2.0}, "src": 11},

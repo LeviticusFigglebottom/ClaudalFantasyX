@@ -34,6 +34,12 @@
       "task": "M5-A3P-1001",
       "owner": "act2-plan (supplementing cinematics; ADR 0207)",
       "note": "Act III staging, as Act II's M4-A2P-075 row: headless, the party's heroes have no stage actor (their field bodies come with the field party), and the staging lands chapter by chapter (M5-A3P-1001, 1004, 1007, 1011, 1015). Remove this row as each chapter is staged."
+    },
+    {
+      "pattern": "^Ch05Zone ch(1[7-9]|2[0-9])/[a-z_]+: cannot place actor '",
+      "task": "M5-A3P-1007",
+      "owner": "act2-plan (supplementing cinematics; ADR 0207)",
+      "note": "Act III flows stand the party on their marks with place_actor (Ch19's vigil: everyone to their Prologue place). Headless, the heroes have no stage actor (their field bodies come with the field party), so the place has nothing to move; in the game it does. Remove when the thread tests seat the field party."
     }
   ],
   "capsules_doc": "test_qa_capsules.gd: zone file name -> the actors (StandIn's parent) still shown as capsules, and 'battle' -> party members with no battle actor scene. All handed to their owners: M3-HER-1125 (characters: the Act I cast's models), M3-HER-1120 (ui-menus: Liss's battle row; her actor is ready). Remove a name when its model lands; the guard then fails if the capsule comes back. Each zone is checked as it loads and again under every layout variant's flags (Ch9's dawn road: Kerrid at the milestone, act1-chapters' staging of characters' M3-CHR-505 model). 'battle_foes' -> every encounter enemy, spawn, summon and Vowbound with no actor scene, with its owner and task.",

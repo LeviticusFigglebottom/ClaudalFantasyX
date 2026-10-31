@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch19/ch19_zone.gd" id="1_zone"]
+[ext_resource type="PackedScene" path="res://assets/environments/zones/iskarra/iskarra_city.tscn" id="2_city"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="3_water"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="4_waves"]
+[ext_resource type="Material" path="res://assets/environments/zones/iskarra/iskarra_water_material.tres" id="5_water_mat"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]
+
+[node name="Iskarra" type="Node3D"]
+script = ExtResource("1_zone")
+location_id = &"ch19/iskarra"
+layout_path = "res://game/levels/ch19/iskarra/iskarra_layout.json"
+hold_field_path = "res://game/data/flow/act3_field.json"
+
+[node name="City" type="Node3D" parent="."]
+
+[node name="Water" type="Node3D" parent="City"]
+script = ExtResource("3_water")
+wave_set = ExtResource("4_waves")
+material = ExtResource("5_water_mat")
+
+[node name="Iskarra" parent="City" instance=ExtResource("2_city")]
+
+[node name="Cast" type="Node" parent="."]
+script = ExtResource("90_cast")

@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch19/ch19_zone.gd" id="1_zone"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/spire_crown_floor.glb" id="2_crown"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/anchor_engine.glb" id="3_engine"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]
+
+[node name="IskarraSpire" type="Node3D"]
+script = ExtResource("1_zone")
+location_id = &"ch19/iskarra_spire"
+layout_path = "res://game/levels/ch19/iskarra_spire/iskarra_spire_layout.json"
+hold_field_path = "res://game/data/flow/act3_field.json"
+
+[node name="Crown" parent="." instance=ExtResource("2_crown")]
+
+[node name="AnchorEngine" parent="." instance=ExtResource("3_engine")]
+
+[node name="Cast" type="Node" parent="."]
+script = ExtResource("90_cast")

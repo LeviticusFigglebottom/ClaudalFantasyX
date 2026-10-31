@@ -51,7 +51,7 @@ func test_the_kite_flies_to_reedhollow_and_on_to_iskarra() -> void:
 	story.begin()
 	assert_true(bool(Game.get_flag(&"ch18_night_aboard")), "K07 on arrival")
 	assert_true(bool(Game.get_flag(&"ch18_complete")), "K08 in the morning, on the same arrival")
-	assert_eq(hand_offs.back()[0], ZoneStory.KIND_SCENE, "the end card until Ch19's Iskarra exists")
+	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch19/iskarra", "spawn": "Landing"}], "on to Iskarra")
 	_close()
 	Game.state = saved_state
 

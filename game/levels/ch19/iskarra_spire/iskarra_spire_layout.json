@@ -1,0 +1,363 @@
+{
+ "doc": "M5-A3P-1007 greybox (tools/act3/ch19_iskarra_greybox.py; do not edit by hand): the Lamp Spire's crown on env-art's spire_crown_floor (r 12) with the anchor_engine at its centre (collision only), and the antechamber south of it, a greybox room with the duty lectern (the signatures). The Wardens' fight is the encounter ch19_abiding_wardens (combat, M5-A3P-1009); the engine lever, where they lie, the crown's edge facing the sea.",
+ "sun": {
+  "pitch_deg": -25.0,
+  "yaw_deg": 100.0,
+  "energy": 1.4,
+  "color": "#f6ead2"
+ },
+ "environment": {
+  "background": "#c8d0d4",
+  "ambient_color": "#a8b0b4",
+  "ambient_energy": 0.8
+ },
+ "block_color": "#c8bca4",
+ "blocks": [
+  {
+   "id": "Crown",
+   "pos": [
+    0.0,
+    -0.25,
+    0.0
+   ],
+   "size": [
+    24.0,
+    0.5,
+    24.0
+   ],
+   "color": "#8a9a98",
+   "visible": false
+  },
+  {
+   "id": "Antechamber",
+   "pos": [
+    0.0,
+    -0.25,
+    17.0
+   ],
+   "size": [
+    8.0,
+    0.5,
+    8.0
+   ],
+   "color": "#c8bca4"
+  },
+  {
+   "id": "CrownWallN0",
+   "pos": [
+    0.0,
+    0.6,
+    -12.0
+   ],
+   "size": [
+    24.0,
+    1.2,
+    0.5
+   ],
+   "color": "#5e6a6a",
+   "visible": false
+  },
+  {
+   "id": "CrownWallS0",
+   "pos": [
+    -7.0,
+    0.6,
+    12.0
+   ],
+   "size": [
+    10.0,
+    1.2,
+    0.5
+   ],
+   "color": "#5e6a6a",
+   "visible": false
+  },
+  {
+   "id": "CrownWallS1",
+   "pos": [
+    7.0,
+    0.6,
+    12.0
+   ],
+   "size": [
+    10.0,
+    1.2,
+    0.5
+   ],
+   "color": "#5e6a6a",
+   "visible": false
+  },
+  {
+   "id": "CrownWallW0",
+   "pos": [
+    -12.0,
+    0.6,
+    0.0
+   ],
+   "size": [
+    0.5,
+    1.2,
+    24.0
+   ],
+   "color": "#5e6a6a",
+   "visible": false
+  },
+  {
+   "id": "CrownWallE0",
+   "pos": [
+    12.0,
+    0.6,
+    0.0
+   ],
+   "size": [
+    0.5,
+    1.2,
+    24.0
+   ],
+   "color": "#5e6a6a",
+   "visible": false
+  },
+  {
+   "id": "AntechamberWallN0",
+   "pos": [
+    -2.6,
+    1.5,
+    13.0
+   ],
+   "size": [
+    2.8,
+    3.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "AntechamberWallN1",
+   "pos": [
+    2.6,
+    1.5,
+    13.0
+   ],
+   "size": [
+    2.8,
+    3.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "AntechamberWallS0",
+   "pos": [
+    0.0,
+    1.5,
+    21.0
+   ],
+   "size": [
+    8.0,
+    3.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "AntechamberWallW0",
+   "pos": [
+    -4.0,
+    1.5,
+    17.0
+   ],
+   "size": [
+    0.5,
+    3.0,
+    8.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "AntechamberWallE0",
+   "pos": [
+    4.0,
+    1.5,
+    17.0
+   ],
+   "size": [
+    0.5,
+    3.0,
+    8.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "DutyLectern",
+   "pos": [
+    0.0,
+    0.55,
+    16.0
+   ],
+   "size": [
+    1.0,
+    1.1,
+    0.6
+   ],
+   "color": "#7a6a50"
+  }
+ ],
+ "spawns": {
+  "Antechamber": [
+   0.0,
+   0.0,
+   20.0,
+   0.0
+  ]
+ },
+ "marks": {
+  "duty_lectern": [
+   0.0,
+   0.0,
+   16.8,
+   0.0
+  ],
+  "engine_lever": [
+   0.0,
+   0.0,
+   3.5,
+   0.0
+  ],
+  "hesper_oan": [
+   -3.0,
+   0.0,
+   -4.0,
+   90.0
+  ],
+  "wardens": [
+   -2.6,
+   0.3,
+   -4.2,
+   0.0
+  ],
+  "sea": [
+   0.0,
+   0.0,
+   -80.0,
+   0.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "I05": {
+   "pos": [
+    3.0,
+    2.0,
+    20.5
+   ],
+   "look_at": [
+    0.0,
+    1.0,
+    16.2
+   ],
+   "fov": 45
+  },
+  "I06": {
+   "pos": [
+    1.2,
+    1.6,
+    15.2
+   ],
+   "look_at": [
+    0.0,
+    1.0,
+    16.0
+   ],
+   "fov": 30
+  },
+  "I07": {
+   "pos": [
+    3.5,
+    2.0,
+    6.0
+   ],
+   "look_at": [
+    0.0,
+    1.2,
+    2.0
+   ],
+   "fov": 42
+  },
+  "I08": {
+   "pos": [
+    -0.6,
+    1.8,
+    -1.2
+   ],
+   "look_at": [
+    -3.0,
+    0.3,
+    -4.0
+   ],
+   "fov": 40
+  },
+  "I09": {
+   "pos": [
+    0.0,
+    2.0,
+    -10.0
+   ],
+   "look_at": [
+    0.0,
+    1.0,
+    -60.0
+   ],
+   "fov": 50
+  }
+ },
+ "camera_volumes": [
+  {
+   "id": "Crown",
+   "mode": "pan_follow",
+   "at": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "size": [
+    24.0,
+    4.0,
+    24.0
+   ],
+   "pos": [
+    0.0,
+    9.0,
+    16.0
+   ],
+   "look_at": [
+    0.0,
+    0.8,
+    0.0
+   ],
+   "fov": 55,
+   "priority": 1
+  }
+ ],
+ "triggers": [
+  {
+   "id": "ch19_engine",
+   "activation": "interact",
+   "at": [
+    0.0,
+    0.0,
+    3.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_CH19_ENGINE",
+   "requires_flag": "ch19_abiding_beaten",
+   "blocked_by_flag": "ch19_engine_stopped",
+   "payload": {
+    "beat": "ch19_engine"
+   }
+  }
+ ]
+}

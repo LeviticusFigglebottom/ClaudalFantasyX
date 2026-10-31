@@ -1,0 +1,224 @@
+{
+ "doc": "M5-A3P-1007 (docs/kb/tech/chapter_flow.md; act3_ch19.md \u00a72): Ch19 'Iskarra'. I01 the Kite comes down beside the Prologue's plaza (arrive, from Ch18's Iskarra beat), I02 the vigil (walking to Asha on the steps: everyone to their Prologue place, P01 and P02), I03 the hitch at the plaza's edge (night; the rest; morning), I04 the words (optional), then up to the spire: I07 the signatures on arrival, which ends on <<event start_battle ch19_abiding_wardens>>: the fight is combat's (M5-A3P-1009) and its battle step (victory_flag ch19_abiding_beaten) goes after the play when the encounter exists; then I09-I10 at the engine lever, and the end card until Ch20's Undertow (M5-A3P-1011).",
+ "chapter": "ch19",
+ "zones": {
+  "ch19/iskarra": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch19_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Landing"
+      },
+      {
+       "chapter": 19
+      },
+      {
+       "party": {
+        "party": [
+         "rhen",
+         "asha",
+         "toma"
+        ],
+        "reserve": [
+         "ysolde",
+         "kerrid",
+         "liss"
+        ]
+       }
+      },
+      {
+       "play": "ch19_the_kite_comes_down"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "ch19_vigil": {
+     "when": {
+      "set": [
+       "ch19_started"
+      ],
+      "unset": [
+       "ch19_vigil"
+      ]
+     },
+     "steps": [
+      {
+       "zone": "place_actor",
+       "args": [
+        "kerrid",
+        "vigil_kerrid"
+       ]
+      },
+      {
+       "zone": "place_actor",
+       "args": [
+        "pell",
+        "vigil_pell"
+       ]
+      },
+      {
+       "zone": "place_actor",
+       "args": [
+        "liss",
+        "vigil_liss"
+       ]
+      },
+      {
+       "zone": "place_actor",
+       "args": [
+        "ysolde",
+        "vigil_ysolde"
+       ]
+      },
+      {
+       "zone": "place_actor",
+       "args": [
+        "toma",
+        "vigil_toma"
+       ]
+      },
+      {
+       "zone": "place_actor",
+       "args": [
+        "asha",
+        "vigil_asha"
+       ]
+      },
+      {
+       "play": "ch19_the_vigil"
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    },
+    "ch19_hitch": {
+     "when": {
+      "set": [
+       "ch19_vigil"
+      ],
+      "unset": [
+       "ch19_learned_the_hitch"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch19_the_hitch"
+      },
+      {
+       "zone": "rest",
+       "args": [
+        "ch19_vigil"
+       ]
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    },
+    "ch19_words": {
+     "when": {
+      "set": [
+       "ch19_learned_the_hitch"
+      ],
+      "unset": [
+       "ch19_words_whole"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch19_the_words"
+      }
+     ]
+    },
+    "ch19_to_spire": {
+     "when": {
+      "set": [
+       "ch19_learned_the_hitch"
+      ]
+     },
+     "steps": [
+      {
+       "go": {
+        "location": "ch19/iskarra_spire",
+        "spawn": "Antechamber"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "ch19/iskarra_spire": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "set": [
+       "ch19_learned_the_hitch"
+      ],
+      "unset": [
+       "ch19_abiding_beaten"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Antechamber"
+      },
+      {
+       "play": "ch19_the_signatures"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "ch19_engine": {
+     "when": {
+      "set": [
+       "ch19_abiding_beaten"
+      ],
+      "unset": [
+       "ch19_engine_stopped"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch19_the_engine_stops"
+      },
+      {
+       "scene": "res://game/flow/end_card.tscn"
+      }
+     ]
+    }
+   }
+  }
+ }
+}

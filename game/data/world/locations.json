@@ -213,6 +213,20 @@
       "_note": "M5-A3P-1004: the Kite in flight (act3_ch18.md), a greybox zone (Ch18Zone): Dace's hull, its deck the whole walkable world."
     },
     {
+      "id": "ch19/iskarra",
+      "scene": "res://game/levels/ch19/iskarra/iskarra.tscn",
+      "spawn": "Landing",
+      "name_key": "LOCATION_CH19_ISKARRA",
+      "_note": "M5-A3P-1007: Iskarra's plaza at dusk (act3_ch19.md), Ch19Zone on env-art's Iskarra kit (the Prologue's own city): the vigil, the hitch, the words."
+    },
+    {
+      "id": "ch19/iskarra_spire",
+      "scene": "res://game/levels/ch19/iskarra_spire/iskarra_spire.tscn",
+      "spawn": "Antechamber",
+      "name_key": "LOCATION_CH19_ISKARRA_SPIRE",
+      "_note": "M5-A3P-1007: the Lamp Spire's antechamber and crown (act3_ch19.md), Ch19Zone on env-art's crown floor and anchor-engine: the signatures, the Wardens, the engine."
+    },
+    {
       "id": "ch06/brine_shoals",
       "scene": "res://game/levels/ch06/brine_shoals/brine_shoals.tscn",
       "spawn": "Entry",
