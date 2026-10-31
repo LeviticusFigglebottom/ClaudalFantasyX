@@ -49,3 +49,29 @@ Merged after both lanes were green (lane A 22/22, lane B 22/22 @ b76e6c32, arriv
 All clean; checks clean (validate_data 0/0 · taskboard · dlgc · gdlint · gdformat 1096). Re-gate on a fresh import: the 19 files these
 merges touch plus every resident, return_park, scene_router and storm test. Each log's size and the boot run's quit (ERROR and leak lines)
 are recorded.
+
+## Fast-gate results
+- Lane A (mine, 22 files) and lane B (GATE-HELPER, 22 files @ b76e6c32): all green. Import and boot clean; log check 0;
+  **`Parameter "t" is null`: not seen.**
+- Row-85 re-gate (19 files, fresh import): 18 green. The boot run's quit has 0 ERROR lines and a 2.4 KB log; the largest test log is
+  271 KB (no runaway log). It carries one "ObjectDB instances leaked at exit" warning, which was already in this batch's first boot log.
+  - **test_clean_shutdown** 1/1 (integration-qa's new row-85 test): the probe's child Godot never starts. The test launches
+    `OS.get_executable_path()`, which on the cloud's fetched Godot (tools/dev/fetch_godot.py's sysroot) is the loader,
+    `ld-linux-x86-64.so.2: unrecognized option '--headless'`, so the exit time reads as garbage (1.79e9 s). The same holds on
+    claude/hero-integration alone: an environment assumption in the test, not the fix. Routed: **integration-qa** (launch
+    through the godot wrapper, or skip when the executable is a loader). The real check is the PC's shutdown.
+- Tools suite (221 units; the new ones re-run on the final tree). Each new red traces to one branch's own merge:
+  - test_status_names: memories.csv `MEMORY_CH04_SHELL_IS_SET` uses the old "Shell" status name (ADR 0202: Tide Ward), from **ui**.
+  - test_freed_cast_lint: a new hit at `game/audio/prop_audio.gd:77`, from **audio**.
+  - test_ch08_flow and test_act1_flow_audit: ch08's arrive row names an undeclared objective flag, and the ch05/ch07/ch08 arrive rows
+    can't run, from **act1-chapters**.
+  - test_creatures: the new Act III bosses old_shoal and the_cage have clips under the floor (up to 0.37 m), from **creatures-b**.
+  - test_rig_integrity Asha: **characters** (as before). Still routed: test_act1_audio_audit and test_battle_vfx_coverage
+    (act1-chapters); test_cutscene_sfx_files, test_villagers and test_hero_clips (act2-plan, Act III). Known: test_palette_check,
+    test_screenshots.
+
+GATE-FAST-DONE @ 6ffaf223 (merge-approved: no batch-caused red). In: **row 85** (integration-qa 8cb73872, creatures
+f6c23ed1), characters' jog counter-turn and skirt, audio's UiAudio hardening, creatures-b rebased, act1-chapters' Ch19. Held out:
+act2-plan (not yet rebased on act1-chapters' Ch17). Routed: integration-qa (test_clean_shutdown), ui (test_status_names), audio
+(test_freed_cast_lint), act1-chapters (test_ch08_flow, test_act1_flow_audit, plus earlier), creatures-b (test_creatures), characters
+(rig Asha, test_hero_clips), act2-plan (Act III cues and clips).
