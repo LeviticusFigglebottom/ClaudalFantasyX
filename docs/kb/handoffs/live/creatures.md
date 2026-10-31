@@ -1444,3 +1444,19 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - 1809's per-layer rows and 1811 need the Ch20 zones and the Act III flags;
   - 1849 needs Combat;
   - the bosses are creatures-b's.
+- **FAST-TRACK, PC row 85 (M3-CRE-707), `Parameter "material" is null` looping at shutdown (59 GB log):**
+  - Creatures' side had two hazards:
+    1. FieldNpc's `_exit_tree` swapped the storm figure's surfaces back to the body's own materials mid-teardown.
+       That was my row-44 pass-3 fix, and it freed the silhouette's materials in the same frame.
+    2. NpcTints held every crowd person's tinted copies in a static cache until script unload. That's row 44's
+       original pattern.
+  - Removing the clear alone made each mesh free its materials before its render instance: `material is null`
+    once per surface (6 in the crowd suite).
+  - Now FieldNpc holds every override it applies (tints and silhouette), so the meshes go first and the materials
+    after. Nothing swaps at teardown, `tick` returns when the node is out of the tree, NpcTints caches weakly, and
+    CrowdFar holds its material.
+  - crowd 26/0 with 0 `material is null`; villager 50/0, npc 10/0, zone_cast 5/0, all with 0.
+  - **For integration-qa (shutdown order):** a hardware run through Corrow and a crowd zone, then quit, with no
+    `material is null` in the log. If the loop persists, the other instance-uniform writers are
+    vegetation_plant.gd and shell_shrine_level.gd (not creatures').
+- **MERGE-READY @ f6c23ed14.**

@@ -89,6 +89,10 @@ const LOOK_NAME := &"NpcLook"
 var tuning: Dictionary = {}
 var loco: HeroLocomotion
 var actor: Node3D
+## Every override material put on the actor (its tints, its silhouette), held here as well as on the meshes (PC row
+## 85), so they free after the meshes and their render instances (the children go first), never while an instance
+## still draws with them.
+var override_materials: Array[Material] = []
 var anim: AnimationPlayer
 var player: Node3D
 var mode := Mode.REST
@@ -227,11 +231,6 @@ func _sub(section: String, key: String) -> float:
 
 
 ## A deterministic value in [section.key[0], section.key[1]] (or the number itself) for the `index`th draw.
-func _exit_tree() -> void:
-	if silhouette.a > 0.0:
-		NpcSilhouette.clear(actor)  # no silhouette override outlives the meshes it was set on (the PC's pass 3)
-
-
 ## A top-level tuning value: a number, or [lo, hi] drawn from the villager's id (1.0 when unset).
 func _share_value(key: String) -> float:
 	var v: Variant = tuning.get(key, 1.0)
@@ -265,7 +264,10 @@ func _attach_actor() -> void:
 		return
 	NpcTints.apply(actor, tints)
 	if silhouette.a > 0.0:
+		# Nothing swaps these back on leaving the tree (PC row 85: the pass-3 clear in _exit_tree put the body's own
+		# materials back on its surfaces mid-teardown while the silhouette's were freed).
 		NpcSilhouette.apply(actor, silhouette)
+	override_materials = NpcSilhouette.overrides_of(actor)
 	anim = HeroMotion.player_of(actor)
 	HeroMotion.add_micro_motion(actor, npc_id)
 	var skel := HeroMotion.skeleton_of(actor)
@@ -381,7 +383,7 @@ func _on_used(_interactable: Interactable) -> void:
 ## One frame of behaviour: what it wants (heading, speed), then the eased turn, the filtered gait, the
 ## move along the route and the clip.
 func tick(delta: float) -> void:
-	if loco == null or delta <= 0.0:
+	if loco == null or delta <= 0.0 or not is_inside_tree():
 		return
 	clock += delta
 	_step_storm(delta)
