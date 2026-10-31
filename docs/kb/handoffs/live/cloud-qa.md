@@ -122,6 +122,12 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## STATUS (01:05): big35 (6df68f059) chapter-start pieces started
+- **big34 fresh run (9317c6b6c), stopped for big35:** New Game → Ch4's Brightwater ferry in 1175 s with **0 ERROR
+  lines**. The only stop was the Shell Shrine basin puzzle, which the probe skips (PLAY_SKIP), as on earlier runs.
+- **Now, in order, on big35:** F8 Ch6 → end card (the Coilspire door after the beacon scene, and the binding), then a
+  fresh New Game → Ch6. Both count ERROR lines against a target of 0.
+
 ## STATUS (01:10): big33 Ch6 → end card, the binding hang; big34 fresh run started
 - **big33 (5695a69ce), F8 Ch6 → end card, second try.**
   - Ch6 and Ch7 play by objective. Ch8 plays Corrow, Ivo, the path fight, the door (576.6 s), both flue-moth fights
