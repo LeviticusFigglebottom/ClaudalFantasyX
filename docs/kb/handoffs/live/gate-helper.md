@@ -54,3 +54,6 @@ and reports; it never edits game or test files.
 - big35 @ f91030ac (HEAD checked): lanes B 70 files, 00:12-00:38 UTC (26 min). 69 green, 1 red:
   test_battle_act2_ability_vfx (1 failed: 15 Act II foe skills of abiding_first, abiding_guard, court_stillguard, flat_engine,
   malcor_venn and storm_crawler have no effect of their own; the list is in the result). Result: gate-big35-lanes-b-result.md.
+- big36 @ df7ed3f9 (HEAD checked): lanes B 57 files, 01:06-01:35 UTC (29 min). 56 green, 1 red:
+  test_qa_dock_edges (1 failed, 14 lines: in hollowmere.tscn the hero walks off the dock from HullDeck, Cabin, EngineBay and
+  Berths and stands 0.7-1.0 m deep in the water, x 76-90, y -2). Result: gate-big36-lanes-b-result.md.
