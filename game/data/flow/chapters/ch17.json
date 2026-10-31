@@ -36,6 +36,27 @@
        "zone": "apply_variant"
       }
      ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch18_world_open"
+      ],
+      "unset": [
+       "ch18_revisit_hollowmere_seen"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Dock"
+      },
+      {
+       "play": "ch18_revisit_hollowmere"
+      },
+      {
+       "set": "ch18_revisit_hollowmere_seen"
+      }
+     ]
     }
    ],
    "beats": {
@@ -132,6 +153,12 @@
      "steps": [
       {
        "set": "ch17_complete"
+      },
+      {
+       "go": {
+        "location": "ch18/kite",
+        "spawn": "Deck"
+       }
       }
      ]
     },
@@ -141,6 +168,21 @@
        "play": "ch15_shrine_hollowmere"
       }
      ]
+    },
+    "to_kite": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch18/kite",
+        "spawn": "Deck"
+       }
+      }
+     ],
+     "when": {
+      "set": [
+       "ch18_world_open"
+      ]
+     }
     }
    }
   }

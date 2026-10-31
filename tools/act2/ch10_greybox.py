@@ -251,6 +251,10 @@ def reedhollow() -> dict:
              "pos": [56.17, 3.94, -4.9], "look_at": [r3(shore[0] + 0.5), 0.8, 0.0], "fov": 50, "priority": 2}],
         "triggers": [{"id": "to_fen", "activation": "touch", "at": [-1.0, 0.0, 0.0], "size": [1.5, 0, WALK_W],
                       "payload": {"beat": "to_fen"}, "yaw": 0.0},
+                     # M5-A3P-1004: back aboard the Kite, moored off the gate (Ch18)
+                     {"id": "a3_to_kite", "activation": "interact", "at": [4.0, 0.0, -1.2], "size": [1.4, 0, 1.4],
+                      "prompt_key": "FIELD_PROMPT_CH18_BACK_TO_KITE", "requires_flag": "ch18_world_open",
+                      "payload": {"beat": "to_kite"}, "yaw": 0.0},
                      # M4-A2P-1003 D2: a Kirru on the causeway names Ressa, overheard as the party walks in (the
                      # sheet's first naming, before the shore)
                      {"id": "kirru_ressa", "activation": "touch", "at": [24.0, 0.0, 0.0], "size": [1.5, 0, 3.6],

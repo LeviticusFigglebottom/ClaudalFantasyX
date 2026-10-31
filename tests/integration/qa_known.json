@@ -57,5 +57,7 @@
     }
   },
   "unraised_doc": "test_qa_threads.gd: a flag a thread's chapter or main objectives wait on that its thread never raises -> why it isn't a softlock, and the task that closes the gap.",
-  "unraised": {}
+  "unraised": {
+    "ch18_world_open": "M5-A3P-1004: the Act III revisit rows in the earlier towns' chapter files (ch05, ch07, ch08, ch10, ch12, ch17) wait on the Kite's world; test_ch18_thread raises it and plays them (Pemakar, Quellan, Reedhollow)."
+  }
 }

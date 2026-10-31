@@ -1596,6 +1596,26 @@
    "yaw": 0.0
   },
   {
+   "id": "a3_to_kite",
+   "activation": "interact",
+   "at": [
+    4.0,
+    0.0,
+    -1.2
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_CH18_BACK_TO_KITE",
+   "requires_flag": "ch18_world_open",
+   "payload": {
+    "beat": "to_kite"
+   },
+   "yaw": 0.0
+  },
+  {
    "id": "kirru_ressa",
    "activation": "touch",
    "at": [

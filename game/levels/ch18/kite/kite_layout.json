@@ -1,0 +1,390 @@
+{
+ "doc": "M5-A3P-1004 greybox (tools/act3/ch18_greybox.py; do not edit by hand): Ch18's Kite, Dace's hull flying (act3_ch18.md). The deck (Deck) from the bow rail to the stern rail (stern_rail), the wheel aft (kite_wheel), the chart table amidships (chart_table: K02, where the world opens). Until the Kite world map exists, the courses stand round the table as interactables (course_*).",
+ "sun": {
+  "pitch_deg": -35.0,
+  "yaw_deg": 120.0,
+  "energy": 1.4,
+  "color": "#fff4e6"
+ },
+ "environment": {
+  "background": "#9cb8d4",
+  "ambient_color": "#a8b8c8",
+  "ambient_energy": 0.7
+ },
+ "block_color": "#8a7458",
+ "blocks": [
+  {
+   "id": "Deck",
+   "pos": [
+    0.0,
+    -0.25,
+    0.0
+   ],
+   "size": [
+    5.2,
+    0.5,
+    18.0
+   ],
+   "color": "#8a7458"
+  },
+  {
+   "id": "RailW",
+   "pos": [
+    -2.7,
+    0.5,
+    0.0
+   ],
+   "size": [
+    0.2,
+    1.0,
+    18.0
+   ],
+   "color": "#5a4a3a"
+  },
+  {
+   "id": "RailE",
+   "pos": [
+    2.7,
+    0.5,
+    0.0
+   ],
+   "size": [
+    0.2,
+    1.0,
+    18.0
+   ],
+   "color": "#5a4a3a"
+  },
+  {
+   "id": "RailBow",
+   "pos": [
+    0.0,
+    0.5,
+    -9.1
+   ],
+   "size": [
+    5.6,
+    1.0,
+    0.2
+   ],
+   "color": "#5a4a3a"
+  },
+  {
+   "id": "RailStern",
+   "pos": [
+    0.0,
+    0.5,
+    9.1
+   ],
+   "size": [
+    5.6,
+    1.0,
+    0.2
+   ],
+   "color": "#5a4a3a"
+  },
+  {
+   "id": "ChartTable",
+   "pos": [
+    0.0,
+    0.45,
+    -1.6
+   ],
+   "size": [
+    1.6,
+    0.9,
+    2.4
+   ],
+   "color": "#6a5640"
+  },
+  {
+   "id": "Wheel",
+   "pos": [
+    0.0,
+    0.7,
+    6.4
+   ],
+   "size": [
+    0.3,
+    1.4,
+    0.3
+   ],
+   "color": "#4a3a2c"
+  },
+  {
+   "id": "Mast",
+   "pos": [
+    0.0,
+    4.0,
+    2.0
+   ],
+   "size": [
+    0.3,
+    8.0,
+    0.3
+   ],
+   "color": "#4a3a2c"
+  }
+ ],
+ "spawns": {
+  "Deck": [
+   0.0,
+   0.0,
+   3.0,
+   0.0
+  ],
+  "ChartTable": [
+   0.0,
+   0.0,
+   0.2,
+   0.0
+  ]
+ },
+ "marks": {
+  "chart_table": [
+   0.0,
+   0.0,
+   -0.3,
+   0.0
+  ],
+  "kite_wheel": [
+   0.0,
+   0.0,
+   7.0,
+   0.0
+  ],
+  "stern_rail": [
+   0.0,
+   0.0,
+   8.4,
+   180.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "K01": {
+   "pos": [
+    3.8,
+    2.4,
+    9.5
+   ],
+   "look_at": [
+    0.0,
+    1.2,
+    -4.0
+   ],
+   "fov": 50
+  }
+ },
+ "camera_volumes": [
+  {
+   "id": "Deck",
+   "mode": "pan_follow",
+   "at": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "size": [
+    7.2,
+    4.0,
+    20.0
+   ],
+   "pos": [
+    0.0,
+    6.0,
+    12.0
+   ],
+   "look_at": [
+    0.0,
+    0.5,
+    -1.0
+   ],
+   "fov": 55,
+   "priority": 1
+  }
+ ],
+ "triggers": [
+  {
+   "id": "chart",
+   "activation": "interact",
+   "at": [
+    0.0,
+    0.0,
+    -0.1
+   ],
+   "size": [
+    1.4,
+    0,
+    0.8
+   ],
+   "prompt_key": "FIELD_PROMPT_LOOK",
+   "requires_flag": "ch18_started",
+   "blocked_by_flag": "ch18_world_open",
+   "payload": {
+    "beat": "chart"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "course_reedhollow",
+   "activation": "interact",
+   "at": [
+    -1.6,
+    0.0,
+    -3.2
+   ],
+   "size": [
+    1.2,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_CH18_COURSE_REEDHOLLOW",
+   "requires_flag": "ch18_world_open",
+   "payload": {
+    "beat": "course_reedhollow"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "course_hollowmere",
+   "activation": "interact",
+   "at": [
+    -1.6,
+    0.0,
+    -1.6
+   ],
+   "size": [
+    1.2,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_CH18_COURSE_HOLLOWMERE",
+   "requires_flag": "ch18_world_open",
+   "payload": {
+    "beat": "course_hollowmere"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "course_pemakar",
+   "activation": "interact",
+   "at": [
+    -1.6,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.2,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_CH18_COURSE_PEMAKAR",
+   "requires_flag": "ch18_world_open",
+   "payload": {
+    "beat": "course_pemakar"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "course_tamsule",
+   "activation": "interact",
+   "at": [
+    1.6,
+    0.0,
+    -3.2
+   ],
+   "size": [
+    1.2,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_CH18_COURSE_TAMSULE",
+   "requires_flag": "ch18_world_open",
+   "payload": {
+    "beat": "course_tamsule"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "course_corrow",
+   "activation": "interact",
+   "at": [
+    1.6,
+    0.0,
+    -1.6
+   ],
+   "size": [
+    1.2,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_CH18_COURSE_CORROW",
+   "requires_flag": "ch18_world_open",
+   "payload": {
+    "beat": "course_corrow"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "course_quellan",
+   "activation": "interact",
+   "at": [
+    1.6,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.2,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_CH18_COURSE_QUELLAN",
+   "requires_flag": "ch18_world_open",
+   "payload": {
+    "beat": "course_quellan"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "course_ansedra",
+   "activation": "interact",
+   "at": [
+    0.0,
+    0.0,
+    -4.4
+   ],
+   "size": [
+    1.2,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_CH18_COURSE_ANSEDRA",
+   "requires_flag": "ch18_world_open",
+   "payload": {
+    "beat": "course_ansedra"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "course_iskarra",
+   "activation": "interact",
+   "at": [
+    0.0,
+    0.0,
+    -7.6
+   ],
+   "size": [
+    1.2,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_CH18_COURSE_ISKARRA",
+   "requires_flag": "ch18_night_aboard",
+   "payload": {
+    "beat": "course_iskarra"
+   },
+   "yaw": 0.0
+  }
+ ]
+}
