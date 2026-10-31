@@ -3,6 +3,14 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 5537dc6e8: the Lead's 01:41 FAST-TRACK (cloud-qa's 32 `used` reconnect ERRORs).**
+  - **Is the first fix on integration?** Yes. 4d4fbd50 merged in big34 (9317c6b6, `Merge lead/gate-big34: UiAudio/unbind ERROR fixes`). I merged integration (big35 included) into claude/audio for this check.
+  - **The repro** (M3-HER-1169's: scene_swap_probe `--encounter=ch03_causeway_shore --return=...saltgrass_causeway.tscn`, a resident return) logs **0** "already connected" on current integration.
+    - The pre-fix ui_audio.gd also logs 0 there now, so since big35's return changes the probe no longer tells the two apart.
+  - **cloud-qa's build:** its log isn't in the repo, so I can't tell whether its 32 came from a build before big34. **LEAD-ASK:** the build sha of that run, if it was big34 or later.
+  - **Hardened either way:** UiAudio.watch now also skips any connection that already exists (`is_connected`, M3-HER-1169's tested guard), on top of the node's mark. So no path that brings a node back (a lost mark, a duplicate, a second watch) can connect `used` or any hooked signal twice.
+  - **Test:** test_audio_reconnect +1. A real `Interactable`, routed as the director routes it (UiAudio and InteractAudio), goes through two resident returns and then once with its mark cleared: no engine error, one connection each, and the soft touch plays once.
+  - **Checks:** gdlint and gdformat clean; Godot `--filter=audio` 189/0, ui_ 58/0; validate_data 0. **M3-HER-1169** is answered by this (hero-integration can close it on merge).
 - **MERGE-READY @ bc41b3147: Act III cutscene sounds (M5-A3P-1953, to review).** Every `@sfx` the Act III drafts name now has a row.
   - **13 new** under `assets/audio/act3/sfx/`:
     - velamir_lullaby_hum: the lullaby hummed, one file for both Asha (Ch18) and Imra (E1);
