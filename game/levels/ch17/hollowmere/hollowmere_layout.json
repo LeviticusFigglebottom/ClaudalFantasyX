@@ -1,5 +1,5 @@
 {
- "doc": "M4-C15-02 greybox (tools/act1/ch15_16_greybox.py; do not edit by hand): Hollowmere at dawn in the fog, its first visit (colour script ch15; Act III's zone). The dock the barge comes in to (Dock), jetties to hull-houses on their platforms, Liss's father's (fathers_door), the pyre-raft off the dock's end (pyre_raft), the supper on the dock (supper: the side scene) and the Hollowmere ship moored along the dock (to_rim). The story waits on the beat sheet (M4-C15-01).",
+ "doc": "M4-C15-02 greybox (tools/act2/ch15_16_greybox.py; do not edit by hand): Hollowmere at dawn in the fog, its first visit (colour script ch15; Act III's zone). The dock the barge comes in to (Dock), jetties to hull-houses on their platforms, Liss's father's (fathers_door), the pyre-raft off the dock's end (pyre_raft), the supper on the dock (supper: the side scene) and the Hollowmere ship moored along the dock (to_rim). The story waits on the beat sheet (M4-C15-01).",
  "sun": {
   "pitch_deg": -6.0,
   "yaw_deg": 90.0,
@@ -1075,6 +1075,336 @@
     5.0
    ],
    "color": "#5a4636"
+  },
+  {
+   "id": "Gangway",
+   "pos": [
+    74.076,
+    -0.25,
+    -0.21
+   ],
+   "size": [
+    31.755,
+    0.5,
+    3.6
+   ],
+   "yaw": 0.855,
+   "color": "#6a5640"
+  },
+  {
+   "id": "GangwayRailL",
+   "pos": [
+    74.106,
+    0.25,
+    1.79
+   ],
+   "size": [
+    24.555,
+    0.5,
+    0.4
+   ],
+   "yaw": 0.855,
+   "color": "#5a4636"
+  },
+  {
+   "id": "GangwayGangPileL0",
+   "pos": [
+    63.562,
+    0.7,
+    4.147
+   ],
+   "size": [
+    0.3,
+    2.0,
+    0.3
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "GangwayGangPileL1",
+   "pos": [
+    70.573,
+    0.7,
+    4.843
+   ],
+   "size": [
+    0.3,
+    2.0,
+    0.3
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "GangwayGangPileL2",
+   "pos": [
+    77.561,
+    0.7,
+    3.938
+   ],
+   "size": [
+    0.3,
+    2.0,
+    0.3
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "GangwayGangPileL3",
+   "pos": [
+    84.572,
+    0.7,
+    4.634
+   ],
+   "size": [
+    0.3,
+    2.0,
+    0.3
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "GangwayRailR",
+   "pos": [
+    74.046,
+    0.25,
+    -2.21
+   ],
+   "size": [
+    24.555,
+    0.5,
+    0.4
+   ],
+   "yaw": 0.855,
+   "color": "#5a4636"
+  },
+  {
+   "id": "GangwayGangPileR0",
+   "pos": [
+    63.437,
+    0.7,
+    -4.252
+   ],
+   "size": [
+    0.3,
+    2.0,
+    0.3
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "GangwayGangPileR1",
+   "pos": [
+    70.424,
+    0.7,
+    -5.156
+   ],
+   "size": [
+    0.3,
+    2.0,
+    0.3
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "GangwayGangPileR2",
+   "pos": [
+    77.435,
+    0.7,
+    -4.461
+   ],
+   "size": [
+    0.3,
+    2.0,
+    0.3
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "GangwayGangPileR3",
+   "pos": [
+    84.423,
+    0.7,
+    -5.365
+   ],
+   "size": [
+    0.3,
+    2.0,
+    0.3
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "BerthWalk",
+   "pos": [
+    83.902,
+    -0.25,
+    -7.78
+   ],
+   "size": [
+    20.598,
+    0.5,
+    3.6
+   ],
+   "yaw": 120.004,
+   "color": "#6a5640"
+  },
+  {
+   "id": "BerthWalkRailL",
+   "pos": [
+    85.634,
+    0.25,
+    -8.78
+   ],
+   "size": [
+    13.398,
+    0.5,
+    0.4
+   ],
+   "yaw": 120.004,
+   "color": "#5a4636"
+  },
+  {
+   "id": "BerthWalkBerthPileL0",
+   "pos": [
+    90.039,
+    0.7,
+    -5.551
+   ],
+   "size": [
+    0.3,
+    2.0,
+    0.3
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "BerthWalkBerthPileL1",
+   "pos": [
+    87.231,
+    0.7,
+    -12.013
+   ],
+   "size": [
+    0.3,
+    2.0,
+    0.3
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "BerthWalkRailR",
+   "pos": [
+    82.17,
+    0.25,
+    -6.78
+   ],
+   "size": [
+    13.398,
+    0.5,
+    0.4
+   ],
+   "yaw": 120.004,
+   "color": "#5a4636"
+  },
+  {
+   "id": "BerthWalkBerthPileR0",
+   "pos": [
+    82.765,
+    0.7,
+    -1.351
+   ],
+   "size": [
+    0.3,
+    2.0,
+    0.3
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "BerthWalkBerthPileR1",
+   "pos": [
+    78.571,
+    0.7,
+    -7.013
+   ],
+   "size": [
+    0.3,
+    2.0,
+    0.3
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "FirstBerthDeck",
+   "pos": [
+    94.725,
+    -0.25,
+    -2.41
+   ],
+   "size": [
+    11.01,
+    0.5,
+    3.0
+   ],
+   "yaw": 7.027,
+   "color": "#6a5640"
+  },
+  {
+   "id": "HullDeck",
+   "pos": [
+    74.536,
+    2.65,
+    -22.0
+   ],
+   "size": [
+    4.4,
+    0.5,
+    3.0
+   ],
+   "yaw": 30.0,
+   "color": "#6a5640"
+  },
+  {
+   "id": "HullCabinFloor",
+   "pos": [
+    74.926,
+    0.8,
+    -22.225
+   ],
+   "size": [
+    3.1,
+    0.3,
+    2.4
+   ],
+   "yaw": 30.0,
+   "color": "#6a5640"
+  },
+  {
+   "id": "HullEngineFloor",
+   "pos": [
+    77.48,
+    0.8,
+    -23.7
+   ],
+   "size": [
+    2.0,
+    0.3,
+    2.4
+   ],
+   "yaw": 30.0,
+   "color": "#6a5640"
   }
  ],
  "spawns": {
@@ -1083,6 +1413,36 @@
    0.0,
    0.0,
    270.0
+  ],
+  "HullDeck": [
+   74.536,
+   2.9,
+   -22.0,
+   -60.0
+  ],
+  "Cabin": [
+   75.46,
+   0.95,
+   -22.799,
+   -60.0
+  ],
+  "EngineBay": [
+   77.48,
+   0.95,
+   -23.7,
+   -60.0
+  ],
+  "Berths": [
+   88.152,
+   0.0,
+   -0.42,
+   30.0
+  ],
+  "Fathers": [
+   28.0,
+   0.0,
+   -17.5,
+   0.0
   ]
  },
  "marks": {
@@ -1121,6 +1481,72 @@
    0.0,
    1.0,
    0.0
+  ],
+  "cabin_seat": [
+   75.46,
+   0.95,
+   -22.799,
+   -60.0
+  ],
+  "cabin_seat_b": [
+   75.875,
+   0.95,
+   -22.08,
+   -60.0
+  ],
+  "deck_centre": [
+   74.536,
+   2.9,
+   -22.0,
+   -60.0
+  ],
+  "deck_rail": [
+   73.886,
+   2.9,
+   -23.126,
+   -60.0
+  ],
+  "deck_rail_b": [
+   75.186,
+   2.9,
+   -20.874,
+   -60.0
+  ],
+  "engine_bench": [
+   77.48,
+   0.95,
+   -23.7,
+   -60.0
+  ],
+  "engine_bench_b": [
+   77.88,
+   0.95,
+   -23.007,
+   -60.0
+  ],
+  "fathers_table": [
+   28.0,
+   0.0,
+   -19.5,
+   0.0
+  ],
+  "first_berth": [
+   97.661,
+   0.0,
+   -2.3,
+   120.0
+  ],
+  "first_berth_b": [
+   96.622,
+   0.0,
+   -1.7,
+   120.0
+  ],
+  "berth_walk": [
+   83.902,
+   0.0,
+   -7.78,
+   30.0
   ]
  },
  "actors": {},
@@ -1273,10 +1699,605 @@
     1.2
    ],
    "prompt_key": "FIELD_PROMPT_CH15_SHIP",
+   "requires_flag": "ch15_pyre_raft",
+   "blocked_by_flag": "ch15_complete",
    "payload": {
     "beat": "to_rim"
    },
    "yaw": 0.0
+  },
+  {
+   "id": "jetty",
+   "activation": "touch",
+   "at": [
+    56.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    3.6
+   ],
+   "once": true,
+   "requires_flag": "ch15_liss_told_father",
+   "blocked_by_flag": "ch15_toma_confessed",
+   "payload": {
+    "beat": "jetty"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "shrine",
+   "activation": "interact",
+   "at": [
+    3.0,
+    0.0,
+    1.4
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "beat": "shrine",
+    "save_shrine": "hollowmere_shrine"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "shop",
+   "activation": "interact",
+   "at": [
+    12.0,
+    0.0,
+    1.4
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "SHOP_PROMPT",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "shop": "hollowmere_chandler"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "supper",
+   "activation": "interact",
+   "at": [
+    40.0,
+    0.0,
+    -1.2
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch15_pyre_raft",
+   "payload": {
+    "dialogue": "ch15_two_daces"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_supper_with_father"
+  },
+  {
+   "id": "side_current_phrase",
+   "activation": "interact",
+   "at": [
+    8.0,
+    0.0,
+    -1.4
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "dialogue": "ch15_side_the_current_phrase"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_learned_current_phrase"
+  },
+  {
+   "id": "side_tally_hull",
+   "activation": "interact",
+   "at": [
+    12.0,
+    0.0,
+    -17.0
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LOOK",
+   "requires_flag": "ch15_toma_confessed",
+   "payload": {
+    "dialogue": "ch15_side_the_tally_hull"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_toma_on_the_tally"
+  },
+  {
+   "id": "camp",
+   "activation": "interact",
+   "at": [
+    44.0,
+    0.0,
+    -17.0
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch15_kerrid_revealed",
+   "payload": {
+    "dialogue": "ch15_camp_the_bottom_step"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_camp_talk"
+  },
+  {
+   "id": "npc_wright",
+   "activation": "interact",
+   "at": [
+    20.0,
+    0.0,
+    -1.4
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "dialogue": "ch15_bark_wright_pump"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_complete"
+  },
+  {
+   "id": "npc_outside",
+   "activation": "interact",
+   "at": [
+    20.0,
+    0.0,
+    1.4
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "dialogue": "ch15_bark_outside_the_level"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_complete"
+  },
+  {
+   "id": "npc_widow",
+   "activation": "interact",
+   "at": [
+    34.0,
+    0.0,
+    -1.4
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "dialogue": "ch15_bark_widow"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_complete"
+  },
+  {
+   "id": "npc_lookout",
+   "activation": "interact",
+   "at": [
+    48.0,
+    0.0,
+    -1.4
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "dialogue": "ch15_bark_lookout"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_complete"
+  },
+  {
+   "id": "npc_cook",
+   "activation": "interact",
+   "at": [
+    52.0,
+    0.0,
+    1.4
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "dialogue": "ch15_bark_raft_cook"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_complete"
+  },
+  {
+   "id": "npc_kerrid",
+   "activation": "interact",
+   "at": [
+    28.0,
+    0.0,
+    -8.0
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_pyre_raft",
+   "payload": {
+    "dialogue": "ch15_bark_kerrid_night"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_complete"
+  },
+  {
+   "id": "bark_current_singer",
+   "activation": "touch",
+   "at": [
+    5.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    3.6
+   ],
+   "once": true,
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "dialogue": "ch15_bark_current_singer",
+    "overheard": true
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_complete"
+  },
+  {
+   "id": "bark_child_pell",
+   "activation": "touch",
+   "at": [
+    16.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    3.6
+   ],
+   "once": true,
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "dialogue": "ch15_bark_child_pell",
+    "overheard": true
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_complete"
+  },
+  {
+   "id": "bark_kerrid_floors",
+   "activation": "touch",
+   "at": [
+    38.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    3.6
+   ],
+   "once": true,
+   "requires_flag": "ch15_kerrid_revealed",
+   "payload": {
+    "dialogue": "ch15_bark_kerrid_floors",
+    "overheard": true
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_complete"
+  },
+  {
+   "id": "bark_raft_child",
+   "activation": "touch",
+   "at": [
+    46.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    3.6
+   ],
+   "once": true,
+   "requires_flag": "ch15_pyre_raft",
+   "payload": {
+    "dialogue": "ch15_bark_raft_child",
+    "overheard": true
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_complete"
+  },
+  {
+   "id": "a3_berths",
+   "activation": "touch",
+   "at": [
+    64.0,
+    0.0,
+    -0.1
+   ],
+   "size": [
+    2.0,
+    0,
+    3.6
+   ],
+   "once": true,
+   "requires_flag": "ch17_started",
+   "blocked_by_flag": "ch17_saw_the_hull",
+   "payload": {
+    "beat": "berths"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "a3_hull_sails",
+   "activation": "interact",
+   "at": [
+    79.652,
+    0.0,
+    -15.14
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LOOK",
+   "requires_flag": "ch17_saw_the_hull",
+   "payload": {
+    "dialogue": "ch17_hull_sails"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "a3_board",
+   "activation": "interact",
+   "at": [
+    80.452,
+    0.0,
+    -13.754
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_CLIMB",
+   "requires_flag": "ch17_saw_the_hull",
+   "payload": {
+    "beat": "board"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "a3_hatch",
+   "activation": "interact",
+   "at": [
+    75.402,
+    2.9,
+    -22.5
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_CLIMB",
+   "requires_flag": "ch17_saw_the_hull",
+   "blocked_by_flag": "ch17_read_the_ledger",
+   "payload": {
+    "beat": "ledger"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "a3_night",
+   "activation": "interact",
+   "at": [
+    75.922,
+    2.9,
+    -22.8
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch17_read_the_ledger",
+   "blocked_by_flag": "ch17_chose_the_unbinding",
+   "payload": {
+    "beat": "night"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "a3_first_berth",
+   "activation": "interact",
+   "at": [
+    97.141,
+    0.0,
+    -2.0
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch17_read_the_ledger",
+   "payload": {
+    "dialogue": "ch17_first_berth"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch17_first_berth"
+  },
+  {
+   "id": "a3_aboard",
+   "activation": "interact",
+   "at": [
+    73.323,
+    2.9,
+    -21.3
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_CH15_SHIP",
+   "requires_flag": "ch17_verse_begun",
+   "blocked_by_flag": "ch17_complete",
+   "payload": {
+    "beat": "aboard"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_lookout",
+   "activation": "touch",
+   "at": [
+    30.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    3.6
+   ],
+   "once": true,
+   "requires_flag": "ch17_started",
+   "payload": {
+    "dialogue": "ch17_bark_lookout",
+    "overheard": true
+   },
+   "yaw": 0.0
+  }
+ ],
+ "variants": [
+  {
+   "when": {
+    "unset": [
+     "ch17_started"
+    ]
+   },
+   "hide": [
+    "Gangway",
+    "GangwayRailL",
+    "GangwayGangPileL0",
+    "GangwayGangPileL1",
+    "GangwayGangPileL2",
+    "GangwayGangPileL3",
+    "GangwayRailR",
+    "GangwayGangPileR0",
+    "GangwayGangPileR1",
+    "GangwayGangPileR2",
+    "GangwayGangPileR3",
+    "BerthWalk",
+    "BerthWalkRailL",
+    "BerthWalkBerthPileL0",
+    "BerthWalkBerthPileL1",
+    "BerthWalkRailR",
+    "BerthWalkBerthPileR0",
+    "BerthWalkBerthPileR1",
+    "FirstBerthDeck",
+    "HullDeck",
+    "HullCabinFloor",
+    "HullEngineFloor"
+   ]
+  },
+  {
+   "when": {
+    "set": [
+     "ch17_started"
+    ]
+   },
+   "hide": [
+    "DockBoundE"
+   ],
+   "show": [
+    "Gangway",
+    "GangwayRailL",
+    "GangwayGangPileL0",
+    "GangwayGangPileL1",
+    "GangwayGangPileL2",
+    "GangwayGangPileL3",
+    "GangwayRailR",
+    "GangwayGangPileR0",
+    "GangwayGangPileR1",
+    "GangwayGangPileR2",
+    "GangwayGangPileR3",
+    "BerthWalk",
+    "BerthWalkRailL",
+    "BerthWalkBerthPileL0",
+    "BerthWalkBerthPileL1",
+    "BerthWalkRailR",
+    "BerthWalkBerthPileR0",
+    "BerthWalkBerthPileR1",
+    "FirstBerthDeck",
+    "HullDeck",
+    "HullCabinFloor",
+    "HullEngineFloor"
+   ]
   }
  ]
 }

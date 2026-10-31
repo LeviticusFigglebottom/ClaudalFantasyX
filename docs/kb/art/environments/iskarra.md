@@ -57,8 +57,19 @@ windows are geometry.
   - **Below:** the drowned city (`iskarra_far_towers`) 112 m down.
   - **LUT:** `lut_ch19_spire`.
   - **Hints:** `the_engine`, `the_city_below`.
-- **Still to build:** the spire's climb (its interior stair drums and the exterior for the field). They follow when
-  Ch19's beat sheet stages the climb.
+- **The climb's tiers** (M5-A3P-1401; act3_ch19 I05–I06: four tiers up the founders' lamp-tower):
+  - `spire_tier` (r 10, 4.2 m), one tier inside the tower. Four stack every 4.2 m.
+    - The floor is rings of flags on a stone bed. The bed's underside is the ceiling of the tier below.
+    - The stairwell stays open where the flight from below arrives (118–152°).
+    - Two flush bronze conduit rings run in the floor (r 3 and 6.2) for the lamp-engines.
+    - The clad wall has six window bays onto the dusk, with sills and glazed lintels, none over the stair.
+    - The flight curves up the wall from 20° to 150°: 21 ceramic treads with a bronze rail, up to the next tier.
+  - `spire_lamp_engine`: a Lit Age lamp-engine still burning, bound and steady. A ceramic housing on a plinth, bronze
+    conduits into the floor, and a salt-glass lamp round its bound core in a bronze cradle.
+  - `spire_quarters`: the founders' room as they left it, set against a tier's wall. Two cots with folded blankets,
+    a table laid for two, stools, shelves of jars, a bronze-bound chest, and a door frame with a child's height
+    marks cut into its post, year by year.
+- **Still to build:** the spire's exterior for the field. It follows when Ch19's greybox stages the approach.
 
 ## Revisions
 - 2026-10-27 (env-art): first issue, after the M3-ENV-724 fast-track pass, with the Lamp Spire's crown (M3-ENV-726).

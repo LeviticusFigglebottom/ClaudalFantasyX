@@ -414,8 +414,8 @@
    "run": {
     "length_s": 0.7333,
     "loop": true,
-    "stride_m": 2.65,
-    "speed_mps": 3.614,
+    "stride_m": 2.649,
+    "speed_mps": 3.613,
     "markers": {
      "foot_l_down": 0.0,
      "foot_r_down": 0.3667

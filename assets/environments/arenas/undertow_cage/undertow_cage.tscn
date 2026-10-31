@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_night.gdshader" id="2_r"]
@@ -11,6 +11,10 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_kitchen.glb" id="9_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_market.glb" id="10_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_stands.glb" id="11_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_gallery.glb" id="12_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_terrace.glb" id="13_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_square.glb" id="14_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_landing.glb" id="15_r"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -108,8 +112,17 @@ transform = Transform3D(0.766044, 0, 0.642788, 0, 1, 0, -0.642788, 0, 0.766044, 
 [node name="memory_island_1" parent="Dressing" instance=ExtResource("7_r")]
 transform = Transform3D(0.689365, 0, 0.121554, 0, 0.7, 0, -0.121554, 0, 0.689365, 34, -12, -55)
 
-[node name="memory_kitchen_2" parent="Dressing" instance=ExtResource("9_r")]
+[node name="memory_gallery_1" parent="Dressing" instance=ExtResource("12_r")]
 transform = Transform3D(-0.845723, 0, 0.307818, 0, 0.9, 0, -0.307818, 0, -0.845723, 8, 12, -60)
+
+[node name="memory_terrace_1" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(0.34202, 0, 0.939693, 0, 1, 0, -0.939693, 0, 0.34202, -40, -9, -18)
+
+[node name="memory_square_1" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(0.573576, 0, -0.819152, 0, 1, 0, 0.819152, 0, 0.573576, 36, 9, -28)
+
+[node name="memory_landing_1" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, -14, 16, -46)
 
 [node name="Lamps" type="Node3D" parent="."]
 

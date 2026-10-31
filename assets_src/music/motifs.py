@@ -99,3 +99,27 @@ def letting() -> list[tuple[str, float]]:
     cell = [(n, float(b)) for n, b, *_ in hush.MEL_A[:LETTING_FROM]]
     axis = _degree(cell[0][0])
     return [(_note(2 * axis - _degree(n)), b) for n, b in cell] + [LETTING_TASH]
+
+
+def letting_verse() -> list[list[tuple[str, float]]]:
+    """The Eighth Verse as sung (docs/kb/audio/lamptongue.md §2, verse 8): four lines in the first verse's own rhythm.
+
+    Lines 1-3 are the first verse's sung lines (hush_first_verse.py VERSE, Ilun's verse as Asha learnt it) each turned
+    upward around its first note's axis, E5, the way `letting()` turns the first cell: every step the Hush falls, the
+    Letting rises. Line 1 is `letting()`'s cell. Line 4, *tash*, is the first verse's close (two steps to a held note)
+    taken up instead of down: it climbs to LETTING_TASH, the held E6, where the first verse came home to E5 on *mir*.
+    Derived at call time, never retyped.
+    """
+    import importlib.util
+    import os
+    here = os.path.dirname(os.path.abspath(__file__))
+    spec = importlib.util.spec_from_file_location("hush_first_verse", os.path.join(here, "hush_first_verse.py"))
+    verse = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(verse)
+    axis = _degree(LETTING_TASH[0]) - 7          # E5: the first verse's first note
+    lines = [[(_note(2 * axis - _degree(p)), float(b)) for p, b in line] for line in verse.VERSE[:3]]
+    close = verse.VERSE[3]                         # B4 D5 | E5 held, on *mir*
+    tash, held = LETTING_TASH
+    climb = [_note(_degree(tash) - (_degree(close[-1][0]) - _degree(p))) for p, _ in close[:-1]]
+    lines.append([(c, float(b)) for c, (_, b) in zip(climb, close[:-1])] + [(tash, float(close[-1][1]))])
+    return lines

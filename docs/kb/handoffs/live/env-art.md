@@ -589,6 +589,94 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **PC pass 7 (the Lead, 00:44) rows 59, 76, 77 and 83: MERGE-READY @ 7769d2ad.** Each was checked on lavapipe
+  before and after; below is what I expect on the GPU.
+  - **59, ch01_o10_gull:**
+    - The "bird" is the carving by design: C1-11's open-throat lintel-gull, a carved ridge finial. "That's the gulls"
+      means the carvings crying in the wind. So it now reads as one: limewashed chalk-white over the grain, an ochre
+      bill, soot-grey wingtips and tail, the perch bare wood. Every ridge gull shares it.
+    - On lavapipe it reads as a white painted gull carving against the sky.
+    - **GPU:** the same read; the limewash's worn edges show the grain at 85 mm. If the cinematics track wants it
+      unmistakable, O10 could also frame the bored throat (its wind-hole), which this framing doesn't show.
+  - **76, zone_oruvel_storm_o16:**
+    - The storm frame's ambient came from the near-black storm sky. It is now a fixed storm-grey fill (#80949F,
+      0.9), with exposure 0.65 → 0.85.
+    - On lavapipe, o16's mean went 32 → 46: the deck, nets and figures read, and the pen water stays darkest.
+    - **GPU:** around 50–60 with the real GPU's SSAO and glow. If it's still too dark there, the next lever is a
+      cold fill light on the pen, not more exposure (the sky would wash out).
+  - **77, oruvel_o17_pen_split:**
+    - The horizon's "grey boxes" were reef_edge_far's seven drowned tower crowns, flat-topped. Each top is now a
+      broken parapet in stretches of different heights with gaps (coarser at LOD1, which is what 300 m sees), with
+      bigger windows. On lavapipe the skyline reads as broken towers.
+    - **The straight pale streaks across the water are not this kit's.** No kit geometry is shaped or placed like
+      that. They look like sun shadow edges cast by the Undertow storm's far geometry: hard parallel bands toward the
+      camera. **LEAD-ASK:** please route to rendering (storm stream) for the GPU check; they're visible on lavapipe too.
+  - **83, ch01_bell_room:**
+    - U03 faces the room's south wall, which was a blank bay behind Rhen. It now carries the tower's service pipe and
+      a coral curtain.
+    - **The yellow-green haze is the diver lantern's light scattering in the underwater fog** (the UnderwaterRig's;
+      the rendering-underwater stream's), not the kit. **LEAD-ASK:** route the haze strength to them.
+    - **GPU:** the wall reads busier; the haze is unchanged by this commit.
+  - **Checks:**
+    - Tools: test_oruvel_kit (its storm-soaked check caught the new parapets until they got the storm weathering),
+      test_oruvel_moorings, test_zone_dressing_ch01 and the Underway tests OK.
+    - Godot `--filter`: ch01 20/0, underway 9/0, edge_walls 2/0.
+    - validate_data clean.
+- **M5-A3P-1402 (Act III, Ch20): the rest landing `memory_landing`. MERGE-READY @ f3466e20** (review: art).
+  - A small flagged fragment with a curved bench and one steady held lamp: 1754 / 274 triangles.
+  - It hangs in the undertow_cage arena. Viewed at a walker's eye and from away.
+  - test_undertow_layers and test_arenas OK; validate_data and taskboard --check clean.
+  - Baselines that move (none written): battle_arena_undertow_cage.
+- **ANSWER to env-art-b (the Lead relayed it 00:27):**
+  - **M5-A3P-1501 (supplement): ACCEPTED.** env-art-b takes the Ch18 Kite hub dressing (`ch18/kite`), placing
+    `kite.py`'s pieces unchanged; the layout stays the chapters'. `kite.py` and its outputs stay env-art's. If a
+    piece needs changing, open a request task to env-art and I'll turn it round.
+  - **The split this settles:** env-art-b has Ch17 Hollowmere and the Ch18 Kite dressing. env-art has Ch18's
+    Reedhollow revisit, Ch19 (Iskarra and the Spire), Ch20 (the Undertow) and the ending.
+  - **M4-A2P-1501 (env-art-b's request: flicker on Ch11's open flames): ANSWERED, nothing to change.**
+    - Every fire light in both Ch11 dressings is the bound teal (#4FB3B0): Lowlight's 19 (the Engine's twelve
+      trimmed lamps, the conduits, the upwelling) and the Vey's one. Neither zone has an open flame, so the request's
+      own rule keeps them steady.
+    - The optional `drift` rows on the Vey's lanes wait until env-art-b's ZoneKitDressing `drift` reaches
+      integration and this branch, since `zone_kit_dressing.gd` here has no drift yet. I'll add three tide_debris
+      rows then.
+- **CLAIM M5-A3P-1402 (Act III, Ch20): `memory_landing`, the rest landing between the layers** (R1, R2; the chapters'
+  M5-A3P-1011 lists "the two rests"). For the well (U00), `heart_eyewall` can be used scaled down; no new piece.
+- **M5-A3P-1401 (Act III, Ch19): the Lamp Spire's tier kit. MERGE-READY @ d6f51ad3** (review: art).
+  - **New pieces:**
+    - `spire_tier` (stacks every 4.2 m): flags on a bed whose underside is the ceiling below, the stairwell open where
+      the flight arrives, conduit rings, six window bays, and the flight curving up the wall.
+    - `spire_lamp_engine`: bound and steady.
+    - `spire_quarters`: the founders' room, the child's height marks on the door post.
+  - Viewed in a staged stack at a walker's eye. Two fixes after viewing: wedge gaps between the flags (now on a bed),
+    and the deck's underside normals.
+  - **Checks:**
+    - Tools: test_iskarra_spire (+2 checks), test_iskarra and test_haluna_kit OK.
+    - validate_data and taskboard --check clean.
+  - The ch19 greybox and the stacking of the tiers are the Act III chapters' track's; iskarra.md §3 describes the kit
+    for them.
+- **CONFIRMED 23:27 (the Lead's check-in): all pushed to origin/claude/env-art** (the head is 55188ef9 and later).
+  - The last Oruvel outrigger, M3-ENV-1391: MERGE-READY @ 0de280e2.
+  - The Ch4 derelict hatch lip, M4-A2P-1403: MERGE-READY @ bcb96e0a (its log commit; the fix is just before it).
+  - M5-A3P-1400, Ch20's three memory rooms: MERGE-READY @ 23805774.
+- **CLAIM M5-A3P-1401 (Act III, Ch19): the Lamp Spire's four tiers' interior kit** (`spire_tier`,
+  `spire_lamp_engine`, `spire_quarters` in iskarra_spire.py; task file in docs/kb/tasks/M5/). Lead, please record
+  the claim. The zone split proposal to env-art-b (below) has no answer yet; Ch19 is in my lane under it either way.
+- **M5-A3P-1400 (Act III): Ch20's three missing memory rooms. MERGE-READY @ 83fbf95e** (review: art).
+  - **New pieces:** `memory_terrace` (U02), `memory_gallery` (U05) and `memory_square` (U06), each within 7k / 500
+    triangles, with glbs, imports, PROVENANCE rows and manifest rows.
+  - **The undertow_cage arena now hangs all six rooms.** The gallery replaces its stand-in second kitchen.
+  - **Viewed in the arena:**
+    - the square's pool and flags were raised onto the island's top (they first sat under it);
+    - the terrace's boats became pointed hulls;
+    - the gallery's columns read dark under the top-down key, which Ch20's staging will light.
+  - **Checks:**
+    - Tools: test_undertow_layers (+2 checks), undertow_heart, haluna_kit and arenas, 51 OK.
+    - Godot `--filter=arena`: 18/0.
+    - validate_data clean; no banned terms.
+  - **Baselines that move (none written):** battle_arena_undertow_cage.
+  - **Next (still waiting for env-art-b to confirm the split):** Ch19's Iskarra (the full dusk version, and the Lamp
+    Spire's floors beyond its crown, M3-ENV-726).
 - **ACT III (ADR 0207): CLAIM M5-A3P-1400, Ch20's three missing memory rooms** (`memory_terrace`, `memory_gallery`,
   `memory_square` in undertow_layers.py; task file in docs/kb/tasks/M5/). Lead, please record the claim on integration.
   - **Ownership row appended:** Act III env-art covers the Undertow and Heart kits, Ch19 Iskarra and the Spire, the
@@ -1282,6 +1370,7 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- PC pass 7 fixes (7769d2ad): re-check rows 59, 76, 77 and 83 on the GPU (expectations in Now).
 - Ch1 Underway pass (922cd122): Underway caustics on a real GPU (strength 1.2, and whether caustics inside the sun's shadows read wrong), and the dive well's floats from the deck.
 - Prologue dressing pass (b39caa29): look at P01 and P02 on a real GPU for the Iskarra towers' grime streaks and tide band, the plaza puddles' gloss and the amber lamp globes.
 - **M3-ENV-1323 (2026-10-30):** A/B `battle_arena_underway_tower` with its Sun node hidden. Rectangles that

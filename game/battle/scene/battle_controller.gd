@@ -929,6 +929,7 @@ func head_pos(cid: StringName, section: StringName = &"actor_marker") -> Vector2
 		var size := get_viewport().get_visible_rect().size
 		p.x = clampf(p.x, float(safe[0]), size.x - float(safe[2]))
 		p.y = clampf(p.y, float(safe[1]), size.y - float(safe[3]))
+		p = HudLayout.clear_of_panels(p, hud, m, size)  # the readability pass: never under a shown panel
 	return p
 
 

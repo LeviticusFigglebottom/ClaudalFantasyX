@@ -996,3 +996,21 @@ MERGE-READY @ 1efbbe0cd: M5-A3P-1850 (Kesh held form and release).
   mastered). The ending is always the bank, never a break. Next: Combat's answer, then the build (a `tide` flag in her
   sister's build script, a second GLB).
 - **Waiting:** M5-A3P-1854 (creatures: the Cage's sheet), the two LEAD-ASKs above.
+
+## 2026-10-30 ~23:20: supplementing characters, M4-A2P-1980 (the Lead's 22:05; before the Act III bosses)
+MERGE-READY @ fb31999db: M4-A2P-1980 part 1, a per-clip fist on a free hand (to review: characters).
+- requested_clips.json takes an optional `fist` per story clip (documented in its `_doc`). Rhen's `knock` closes his
+  right hand as the arm comes up and keeps it closed through the held last frame. hero_clips.py reuses the fist that
+  HAND_SHAPE already solves (FIST_CURL, flat_init's solve, now shared as `_hand_rots`), and keys it in that clip only.
+- Regenerated: only Rhen's `knock` sub-resource changed (the other 96 are byte-identical). Pell's and the officer's
+  libraries (the flat-hand heroes whose solve was refactored) regenerate identical. rhen_clip_knock rendered and
+  viewed: a closed fist. tools test_hero_clips and test_hero_battle_clips 34/0; Godot hero_stage 11/0.
+- The clip list agreed: one clip, Rhen's `knock` (the task's only named case). Any other story clip can take
+  `fist` the same way, in characters' specs.
+- **LEAD-ASK, for characters (part 2, headroom):** measured, Godot's binary save of today's libraries is 1.85 MB plain
+  or 0.65 MB compressed, against 4.02 and 3.99 MB of text. Two options are written in the task file: (a) commit
+  `<hero>_clips.res`, built by a headless Godot step from hero_clips.py's text, with the import rule, about 30 stage
+  scenes and scene_loads.json pointing at it; or (b) split the story clips into `<hero>_story_clips.tres`, merged by
+  the import rule. **Default (a)**, as the test's own note says. I start it when characters agrees in their log or in
+  the task.
+- Meanwhile: Act III (M5-A3P-1852, the Tide Matron's build).

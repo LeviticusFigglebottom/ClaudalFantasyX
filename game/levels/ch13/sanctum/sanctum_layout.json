@@ -1,5 +1,5 @@
 {
- "doc": "M4-C13-02 greybox (tools/act1/ch13_greybox.py; do not edit by hand): the Sanctum of the Level, the Glimmer temple. The vestibule (Gate), then the nave round the basin, a perfect mirror that has not stirred in four hundred years, lit from beneath by a light that never moves (Basin; a kneeling ledge rings it: nobody walks on it), Ethren's place at its head (ethren) and Corran's (corran). Kerrid never comes in. Back to the city at to_city. The story waits on the beat sheet (M4-C13-01).",
+ "doc": "M4-C13-02 greybox (tools/act2/ch13_greybox.py; do not edit by hand): the Sanctum of the Level, the Glimmer temple. The vestibule (Gate), then the nave round the basin, a perfect mirror that has not stirred in four hundred years, lit from beneath by a light that never moves (Basin; a kneeling ledge rings it: nobody walks on it), Ethren's place at its head (ethren) and Corran's (corran). Kerrid never comes in. Back to the city at to_city. The story waits on the beat sheet (M4-C13-01).",
  "sun": {
   "pitch_deg": -25.0,
   "yaw_deg": 130.0,
@@ -480,6 +480,67 @@
     "beat": "ledge"
    },
    "yaw": 0.0
+  },
+  {
+   "id": "npc_kneeler",
+   "activation": "interact",
+   "at": [
+    -4.0,
+    0.0,
+    -17.5
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch13_entered_sanctum",
+   "payload": {
+    "dialogue": "ch13_bark_kneeler"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "npc_pilgrim_child",
+   "activation": "interact",
+   "at": [
+    4.0,
+    0.0,
+    -17.5
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch13_entered_sanctum",
+   "payload": {
+    "dialogue": "ch13_bark_pilgrim_child"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "wenna_mark",
+   "activation": "interact",
+   "at": [
+    -4.0,
+    0.0,
+    -8.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LOOK",
+   "requires_flag": "ch13_entered_sanctum",
+   "payload": {
+    "dialogue": "ch13_wenna_mark"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch13_found_wenna_mark"
   }
  ]
 }

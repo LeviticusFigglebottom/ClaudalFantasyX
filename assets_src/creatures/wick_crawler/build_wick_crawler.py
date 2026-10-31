@@ -198,12 +198,12 @@ def pole(mesh: ck.Mesh, rig: ck.Rig) -> None:
     tip = pts[3]
     # the cup that holds the thimble, the thimble round the light, and the light itself
     cup = [(0.0, 0.0), (0.02, 0.0), (0.024, 0.014), (THIMBLE[0] + 0.004, 0.02)]
-    Pc, Tc = ck.lathe([(r, y) for r, y in cup], 12)
+    Pc, Tc = ck.lathe(cup[::-1], 12)  # top first: ck.lathe's outward faces run top to bottom
     Pc = Pc + tip
     ck.finish(mesh, Pc, Tc, "body", aged_brass(Pc, SEED + 64), rig.rigid("taper"), wet=0.1, cavity=0.3)
     prof = [(THIMBLE[0], 0.0), (THIMBLE[0] * 1.05, THIMBLE[1] * 0.5), (THIMBLE[0] * 0.8, THIMBLE[1] * 0.85),
             (THIMBLE[0] * 0.25, THIMBLE[1]), (0.0, THIMBLE[1] * 1.02)]
-    Pg, Tg = ck.lathe(prof, 14)
+    Pg, Tg = ck.lathe(prof[::-1], 14)
     Pg = Pg + tip + np.array([0.0, 0.018, 0.0])
     light = tip + np.array([0.0, 0.018 + THIMBLE[1] * 0.42, 0.0])
     glow = ck.smoothstep(0.06, 0.0, np.linalg.norm(Pg - light, axis=1))
@@ -214,7 +214,7 @@ def pole(mesh: ck.Mesh, rig: ck.Rig) -> None:
     base = tail_top() + np.array([0.0, -0.01, 0.0])
     can = [(0.0, 0.0), (RESERVOIR[0], 0.0), (RESERVOIR[0] * 1.05, RESERVOIR[1] * 0.5), (RESERVOIR[0], RESERVOIR[1]),
            (RESERVOIR[0] * 0.55, RESERVOIR[1] * 1.08), (0.0, RESERVOIR[1] * 1.1)]
-    Pr, Tr = ck.lathe(can, 14)
+    Pr, Tr = ck.lathe(can[::-1], 14)
     Pr = Pr + base
     ck.finish(mesh, Pr, Tr, "body", aged_brass(Pr, SEED + 70), rig.rigid(f"seg{NSEG - 1}"), wet=0.15, cavity=0.4)
     # the filler cap on the reservoir's flank, toward the head, and the hairline seam round it (the weak point)

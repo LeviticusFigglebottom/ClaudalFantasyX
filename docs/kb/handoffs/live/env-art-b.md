@@ -1234,3 +1234,33 @@ SELF-RENDERED @ 4cd6ed12: ch05_pemakar_harbour, _crown and _weir with the lamp f
 - **M5-A3P-1500 step 2 (07fb3f7f):** `hm_drydock_berth` and `hm_drydock_berth_first` are built, with PROVENANCE, manifest rows and the kit's import settings including post_import. Three berths stand in a row beside Dace's along his beam, the first nearest the dock's east end. Tobin's post has its pale top and an old rope coil, and the first hull's keel ribs show just under the water. The Ch15 windmill at (76, -10) stood against the row and moves to (66, -14). Viewed along the row, at the post and at the keel. test_hollowmere, test_haluna_kit, test_ch15_hollowmere_dressing, Godot hollowmere and ambient_life, and validate_data are OK.
   - **Waiting on the Act III chapters** for the walk path (a gangway from the dock to the berths). The walk collision and the cabin lamp follow it. The marks are in the task file.
   - **MERGE-READY @ 07fb3f7f** for the kit pieces and the row. Ch15's Hollowmere shots that see the dry-dock (ch15_hollowmere_dock and _arrival look the other way) may change.
+- **M5-A3P-1500 step 3 (8f052ec7, Lead 23:26):** the dock-master's house for B07 and B11.
+  - **The piece:** `hm_dockmaster_house`, hm_lashed_hulls with the deckhouse furnished: table, benches, lamp hook, shelf of jars and a chart, sleeping mat, net. Built with its manifest row, PROVENANCE row and import settings.
+  - **Placement:** HousePlatform1, where the greybox's `fathers_door` stands. The `fathers_table` mark should go by the table at world (27.55, 0, -21.05), lit by a flickering lamp over it.
+  - **Viewed** inside from the door.
+  - **Tests:** test_ch15_hollowmere_dressing gains Ch17-room tests (the oil-lamp count +1). Godot test_hollowmere_dressing's light count is +1. Both green, as are test_hollowmere, test_haluna_kit, Godot ambient_life and validate_data.
+  - **MERGE-READY @ 8f052ec7.**
+  - **Next in the claim:** the hull's walk collision and its cabin lamp, which wait on M5-A3P-1001 (chapters: marks, and the path to the berths). The Ch17 dusk and night grades for B06 and B08 (the zone is at dawn) need the chapters' states rows first. Otherwise my Act III claim is done; next I offer env-art help by request task.
+- **Supplement offer (ADR 0207 §1): M5-A3P-1501.** I've offered env-art the Ch18 Kite hub dressing (`ch18/kite`, which nobody has claimed), placing env-art's kite.py pieces unchanged, with the layout staying the chapters'. Alternatives are listed in the task. I claim nothing until env-art answers.
+  - **LEAD-ASK:** relay to env-art, or assign me directly if you'd rather.
+- **M5-A3P-1500 step 4 (06fb966c, Lead 00:27):** Ch17's night.
+  - **The night grade:** `hollowmere_night_environment.tres`, the open sea's night with Hollowmere's fog.
+  - **The cabin's light:** an oil-lamp light over Dace's desk, and its glow up through the hatch onto the deck.
+  - **Viewed by night:** the cabin (lamp-lit ledger, chart wall, tool rack, ladder) and the deck (moonlit water, the hatch's glow).
+  - **Tests:** test_ch15_hollowmere_dressing (lamp count, night grade) and Godot test_hollowmere_dressing (light count) OK, as are validate_data and gdformat.
+  - **Request to the Act III chapters** (in the task file): the `environment_res` for each beat. B06 is env-art's ch17 dusk grade, B08 and B09 my night grade with a moon sun at about 0.3, and the rest the dawn grade.
+  - **MERGE-READY @ 06fb966c.**
+  - **Still waiting on M5-A3P-1001:** the walk collision (the path to the berths) and the engine bed's B10 light, which needs a block to follow. My claim has nothing else that isn't waiting on another track.
+
+### PC pass 7 (Lead 00:44): Act I rows 78–84 and 62
+- **82 Corrow storm, flood and lake crushed to black: fixed (ca8ad639).** ZoneKitDressing's new `fill_lights` (shadowless directional lights that can follow a block; tested) gives Corrow a cool fill from landward and a glimmer rim from the storm's bearing, on the Storm block. On lavapipe, pixels under 20/255: storm 51% → 3%, flood 26% → 12%, lake 30% → 10%. The figures now read in colour, not as silhouettes. The water shader adds a glint under the rim that it draws regardless of the light's specular; the rim is lowered to 0.55 to keep it soft. act1-chapters' corrow_lake camera is unchanged.
+- **62 Pemakar weir flat grey: tuned again.** A finer 0.45 m grain, more relief, a softer specular and less soak-darkening. The night weir shot barely moves on lavapipe. env-art's M3-ENV-1328 rebuild of the courses is at review with me; the PC's next pass is the judge.
+- **84 Coilspire gate blocky laterite: partly fixed (my zone copy).** Calmer pores and a finer detail grain over the base map. The square blots are the 512 px texture over 6 m, so I filed **M3-ENV-1331** for env-art to bake it at 2048 px.
+- **Still open, investigated next:**
+  - 78: the Ashcrown court doorway's grey void, and the brazier figure lost against black pillars.
+  - 79: the plume reading as clay, the A10 mound, and A01's hands. The plume material (d364a561) is newer than some PC passes; check that pass 7's build has it.
+  - 80: the Pemakar hillside.
+  - 81: Brine's camp seam. An id-pick finds no dressing mesh at the seam, so it's likely the zone's own ground or tide surface; tracing it.
+- **Checks:** Godot corrow 18, coilspire 11, pemakar 10, ambient_life 3 and zone_kit_dressing 10 pass; tools corrow, coilspire and pemakar kits OK; validate_data and taskboard OK.
+- **MERGE-READY @ db1ce910** (rows 82, 62 and 84).
+SELF-RENDERED @ db1ce910: ch08_corrow_storm, _flood and _lake before and after; ch05_pemakar_weir and ch08_coilspire_gate before and after; plus ch05_ashcrown_court, ch05_pemakar_harbour_day, ch06_brine_camp and Ashcrown's A01 and A10 before (scratch). All viewed.

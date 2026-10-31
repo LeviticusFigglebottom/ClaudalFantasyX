@@ -1,5 +1,5 @@
 {
- "doc": "M4-C10-02 greybox (tools/act1/ch10_greybox.py; do not edit by hand): Reedhollow, the Kirru village, at the overcast dusk (colour script ch10). A reed causeway from Ossa Fen (west, Gate) to a ring of platforms round the lagoon, reed houses off the ring, and the shore on its east side (Shore, ClutchStone) where the clutch stands for the farewell-tide and the motes lift. Pell is not let in (act_outline Ch10). The story waits on the beat sheet (M4-C10-01).",
+ "doc": "M4-C10-02 greybox (tools/act2/ch10_greybox.py; do not edit by hand): Reedhollow, the Kirru village, at the overcast dusk (colour script ch10). A reed causeway from Ossa Fen (west, Gate) to a ring of platforms round the lagoon, reed houses off the ring, and the shore on its east side (Shore, ClutchStone) where the clutch stands for the farewell-tide and the motes lift. Pell is not let in (act_outline Ch10). The story waits on the beat sheet (M4-C10-01).",
  "sun": {
   "pitch_deg": -8.0,
   "yaw_deg": -85.0,
@@ -1592,6 +1592,28 @@
    ],
    "payload": {
     "beat": "to_fen"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "kirru_ressa",
+   "activation": "touch",
+   "at": [
+    24.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.5,
+    0,
+    3.6
+   ],
+   "once": true,
+   "requires_flag": "ch10_reached_reedhollow",
+   "blocked_by_flag": "ch10_heard_ressa",
+   "payload": {
+    "dialogue": "ch10_bark_kirru_ressa",
+    "overheard": true
    },
    "yaw": 0.0
   },

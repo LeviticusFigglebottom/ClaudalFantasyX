@@ -1190,6 +1190,46 @@
       ]
     },
     {
+      "id": "creature_chain_lamp",
+      "owner": "character",
+      "sources": ["assets_src/creatures/chain_lamp/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/chain_lamp/*.glb", "assets/creatures/chain_lamp/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/chain_lamp/build_chain_lamp.py", "--", "--out", "assets/creatures/chain_lamp/chain_lamp.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "chain_lamp"]
+      ]
+    },
+    {
+      "id": "creature_spire_moth",
+      "owner": "character",
+      "sources": ["assets_src/creatures/spire_moth/**", "assets_src/creatures/flue_moth/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/spire_moth/*.glb", "assets/creatures/spire_moth/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/spire_moth/build_spire_moth.py", "--", "--out", "assets/creatures/spire_moth/spire_moth.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "spire_moth"]
+      ]
+    },
+    {
+      "id": "creature_held_shoal",
+      "owner": "character",
+      "sources": ["assets_src/creatures/held_shoal/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/held_shoal/*.glb", "assets/creatures/held_shoal/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/held_shoal/build_held_shoal.py", "--", "--out", "assets/creatures/held_shoal/held_shoal.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "held_shoal"]
+      ]
+    },
+    {
+      "id": "creature_drowned_lantern",
+      "owner": "character",
+      "sources": ["assets_src/creatures/drowned_lantern/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/drowned_lantern/*.glb", "assets/creatures/drowned_lantern/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/drowned_lantern/build_drowned_lantern.py", "--", "--out", "assets/creatures/drowned_lantern/drowned_lantern.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "drowned_lantern"]
+      ]
+    },
+    {
       "id": "creature_flat_engine",
       "owner": "character",
       "sources": ["assets_src/creatures/flat_engine/**", "assets_src/creatures/common/**"],

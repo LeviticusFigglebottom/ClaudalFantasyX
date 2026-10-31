@@ -1,5 +1,5 @@
 {
- "doc": "M4-C12-02 greybox (tools/act1/ch12_greybox.py; do not edit by hand): Keth Pass on a 09:00 morning (colour script ch12). From the pass foot (PassFoot) up switchback flights (ramps) along the cliff, the pass-cords on the drop side, the first landing's knotted cord post (knot_post), the terrace shelf under the Lit Age wall seeping drowned glimmer (RamArena: the Avalanche Ram), and the saddle (cold_ledge: Kerrid's breath against the cliff), on to Quellan (to_quellan). The story waits on the beat sheet (M4-C12-01).",
+ "doc": "M4-C12-02 greybox (tools/act2/ch12_greybox.py; do not edit by hand): Keth Pass on a 09:00 morning (colour script ch12). From the pass foot (PassFoot) up switchback flights (ramps) along the cliff, the pass-cords on the drop side, the first landing's knotted cord post (knot_post), the terrace shelf under the Lit Age wall seeping drowned glimmer (RamArena: the Avalanche Ram), and the saddle (cold_ledge: Kerrid's breath against the cliff), on to Quellan (to_quellan). The story waits on the beat sheet (M4-C12-01).",
  "sun": {
   "pitch_deg": -30.0,
   "yaw_deg": 40.0,
@@ -1136,6 +1136,174 @@
    "blocked_by_flag": "ch12_ram_felled",
    "payload": {
     "beat": "terrace"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "cold_ledge",
+   "activation": "touch",
+   "at": [
+    90.0,
+    18.0,
+    -40.0
+   ],
+   "size": [
+    2.0,
+    0,
+    18.0
+   ],
+   "once": true,
+   "requires_flag": "ch12_ram_felled",
+   "blocked_by_flag": "ch12_toma_saw_breath",
+   "payload": {
+    "beat": "cold_ledge"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "knot_post",
+   "activation": "interact",
+   "at": [
+    -1.6,
+    6.0,
+    -43.0
+   ],
+   "size": [
+    2.0,
+    0,
+    2.0
+   ],
+   "prompt_key": "FIELD_PROMPT_LOOK",
+   "requires_flag": "ch12_started",
+   "blocked_by_flag": "ch12_heard_the_knot",
+   "payload": {
+    "dialogue": "ch12_the_knot"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_traveller",
+   "activation": "touch",
+   "at": [
+    0.0,
+    1.29,
+    -12.0
+   ],
+   "size": [
+    4.0,
+    0,
+    3.0
+   ],
+   "once": true,
+   "requires_flag": "ch12_started",
+   "payload": {
+    "dialogue": "ch12_bark_traveller",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_asha_even_here",
+   "activation": "touch",
+   "at": [
+    0.0,
+    3.0,
+    -20.0
+   ],
+   "size": [
+    4.0,
+    0,
+    3.0
+   ],
+   "once": true,
+   "requires_flag": "ch12_started",
+   "payload": {
+    "dialogue": "ch12_bark_asha_even_here",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_toma_cairn",
+   "activation": "touch",
+   "at": [
+    12.0,
+    7.29,
+    -40.0
+   ],
+   "size": [
+    3.0,
+    0,
+    4.0
+   ],
+   "once": true,
+   "requires_flag": "ch12_started",
+   "payload": {
+    "dialogue": "ch12_bark_toma_cairn",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_ysolde_knot",
+   "activation": "touch",
+   "at": [
+    26.0,
+    10.29,
+    -40.0
+   ],
+   "size": [
+    3.0,
+    0,
+    4.0
+   ],
+   "once": true,
+   "requires_flag": "ch12_started",
+   "payload": {
+    "dialogue": "ch12_bark_ysolde_knot",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_liss_launcher",
+   "activation": "touch",
+   "at": [
+    62.0,
+    13.29,
+    -40.0
+   ],
+   "size": [
+    3.0,
+    0,
+    4.0
+   ],
+   "once": true,
+   "requires_flag": "ch12_started",
+   "payload": {
+    "dialogue": "ch12_bark_liss_launcher",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_liss_counting",
+   "activation": "touch",
+   "at": [
+    76.0,
+    16.29,
+    -40.0
+   ],
+   "size": [
+    3.0,
+    0,
+    4.0
+   ],
+   "once": true,
+   "requires_flag": "ch12_started",
+   "payload": {
+    "dialogue": "ch12_bark_liss_counting",
+    "overheard": true
    },
    "yaw": 0.0
   }

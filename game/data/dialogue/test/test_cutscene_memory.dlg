@@ -1,0 +1,13 @@
+// Fixture for tests/unit/test_cutscene_sequencer.gd (M5-A3P-1600): `@memory on|off [sec] [look=<id>]` eases the memory
+// layer in and out, and the scene's end takes it off. Never played by game content.
+title: test_cutscene_memory
+---
+@memory on 1.0 look=held
+@wait 1.5
+Asha [neutral]: Memory fixture line. #line:test_cutscene_memory_001
+@memory off 0.5
+@wait 1.0
+Asha [neutral]: After the memory. #line:test_cutscene_memory_002
+@memory on 0.5
+@wait 0.6
+===

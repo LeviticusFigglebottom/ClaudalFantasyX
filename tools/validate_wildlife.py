@@ -23,6 +23,7 @@ from pathlib import Path
 WILDLIFE_DIR = "game/data/world/wildlife"
 KINDS_FILE = f"{WILDLIFE_DIR}/wildlife.json"
 STAGE_FILE = "game/levels/_tests/wildlife/wildlife_stage.json"
+KITE_STAGE_FILE = "game/levels/_tests/wildlife/kite_gulls.json"  # M5-A3P-1808: the Kite's gulls, until the Kite has a zone
 LOCATIONS_FILE = "game/data/world/locations.json"
 TEST_ZONE_PREFIX = "_tests/"
 
@@ -74,7 +75,7 @@ KIND_COMMON = {"scene", "meshes", "material", "cast_shadow"}
 BUDGET_KEYS = {"gulls", "kingfishers", "woolbacks", "crabs", "fish", "rays", "insects", "draw_calls", "ms_per_frame"}
 # zone row tables -> (budget key, required keys, optional keys)
 ROWS = {
-    "flocks": ("gulls", {"id", "center", "radius_m", "altitude_m", "count", "perches"}, {"perched_at_start"}),
+    "flocks": ("gulls", {"id", "center", "radius_m", "altitude_m", "count", "perches"}, {"perched_at_start", "follow"}),
     "kingfishers": ("kingfishers", {"id", "center", "radius_m", "altitude_m", "count", "perches"},
                     {"perched_at_start", "water_y"}),
     "beaches": ("crabs", {"id", "center", "half_extents", "count"}, {"yaw_deg", "y"}),
@@ -268,6 +269,8 @@ def _row_errors(table: str, row: dict, w: str) -> list[str]:
                 errs.append(f"{w}.perches[{k}]: must be [x, y, z, yaw_deg]")
             elif ((p[0] - cx) ** 2 + (p[2] - cz) ** 2) ** 0.5 > r:
                 errs.append(f"{w}.perches[{k}]: outside the flock's radius_m")
+        if "follow" in row and not (isinstance(row["follow"], str) and row["follow"]):
+            errs.append(f"{w}.follow: a node path from the layer (the moving node the flock rides with)")
         start = row.get("perched_at_start", 0)
         if not isinstance(start, int) or start < 0 or start > len(perches):
             errs.append(f"{w}.perched_at_start: an integer, at most the number of perches")
@@ -346,13 +349,14 @@ def wildlife_errors(root: Path) -> list[str]:
             continue
         doc = load(rel)
         errs += [f"{rel}: {doc}"] if isinstance(doc, Exception) else zone_errors(doc, rel, budgets, location_ids)
-    stage = load(STAGE_FILE)
-    if isinstance(stage, Exception):
-        errs.append(f"{STAGE_FILE}: {stage}")
-    else:
-        errs += zone_errors(stage, STAGE_FILE, budgets, None)
+    for stage_file in (STAGE_FILE, KITE_STAGE_FILE):
+        stage = load(stage_file)
+        if isinstance(stage, Exception):
+            errs.append(f"{stage_file}: {stage}")
+            continue
+        errs += zone_errors(stage, stage_file, budgets, None)
         if isinstance(stage, dict) and not str(stage.get("zone", "")).startswith(TEST_ZONE_PREFIX):
-            errs.append(f"{STAGE_FILE}.zone: a review stage's id starts with {TEST_ZONE_PREFIX}")
+            errs.append(f"{stage_file}.zone: a review stage's id starts with {TEST_ZONE_PREFIX}")
     return errs
 
 

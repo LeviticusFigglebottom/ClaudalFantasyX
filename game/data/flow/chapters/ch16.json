@@ -1,5 +1,5 @@
 {
- "doc": "M4-C16-02 (docs/kb/tech/chapter_flow.md): Ch16 'The Edge of the World' as a greybox before the beat sheet (M4-C16-01): the Hollowmere ship leaves the party at the Rim (the chapter becomes 16); the wade over the white shallows to the Drowned Choir. Kesh's binding and the Hush's truth, Sefir's temptation, the Abiding guard, the storm waking early and the act break come with the beat sheet.",
+ "doc": "M4-C16-02 (docs/kb/tech/chapter_flow.md): Ch16 'The Edge of the World' as a greybox before the beat sheet (M4-C16-01): the Hollowmere ship leaves the party at the Rim (the chapter becomes 16); the wade over the white shallows to the Drowned Choir. Kesh's binding and the Hush's truth, Sefir's temptation, the Abiding guard, the storm waking early and the act break come with the beat sheet. M4-A2P-1012: the ship waits on arrival (B01); in the Choir the ring, Kesh, the memory and the High Warden in one scene (B03-B07), his Abiding guard (B08), the storm wakes on the return (B09, ch16_storm_wakes) and swept away (B10-B11).",
  "chapter": "ch16",
  "zones": {
   "ch16/pale_rim": {
@@ -30,6 +30,9 @@
        "chapter": 16
       },
       {
+       "play": "ch16_ship_waits"
+      },
+      {
        "set": "ch16_started"
       }
      ]
@@ -43,6 +46,13 @@
         "location": "ch16/drowned_choir",
         "spawn": "Approach"
        }
+      }
+     ]
+    },
+    "shrine": {
+     "steps": [
+      {
+       "play": "ch16_shrine_pale_rim"
       }
      ]
     }
@@ -74,6 +84,58 @@
       },
       {
        "set": "ch16_reached_choir"
+      },
+      {
+       "play": "ch16_the_choir"
+      },
+      {
+       "battle": "ch16_abiding_guard",
+       "return_spawn": "Approach",
+       "victory_flag": "ch16_guard_beaten"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch16_guard_beaten"
+      ],
+      "unset": [
+       "ch16_line_held"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Approach"
+      },
+      {
+       "battle": "ch16_storm_wakes",
+       "return_spawn": "Approach",
+       "victory_flag": "ch16_line_held"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch16_line_held"
+      ],
+      "unset": [
+       "ch16_act_two_complete"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Approach"
+      },
+      {
+       "play": "ch16_swept_away"
+      },
+      {
+       "go": {
+        "location": "ch17/hollowmere",
+        "spawn": "Dock"
+       }
       }
      ]
     }

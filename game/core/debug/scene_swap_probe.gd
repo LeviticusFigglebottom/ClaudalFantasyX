@@ -22,6 +22,10 @@ extends Node
 ## of black after every battle): it enters the zone, routes to the field battle, then routes back to the zone's
 ## "Encounter" spawn, and prints that return's stats ("resident": the field kept through the fight, SceneRouter).
 ## --no-resident turns the resident field off, to measure the full reload for comparison.
+## --cross-return=<scene> (with --return): the fight returns to <scene> instead of the zone it was entered from (the
+## Drownbell to Haluna, PC pass 7 row 74). The fight waits for SceneRouter's ReturnPark to build it, and the change
+## measured is to <scene>: its stats say "parked" and an instantiate_ms of 0.
+## --no-park turns ReturnPark off (park_return), to measure the cross-zone return without it.
 ## --ready-profile prints the measured change's add-to-tree frame by node: each node's `ready` is stamped as the new
 ## scene enters the tree (SceneRouter.scene_instantiated), and the slowest gaps print as READY_PROFILE lines (a
 ## node's own _ready, its children's already counted): what a zone's hidden add frame spends (Haluna's ~1.5 s).
@@ -45,6 +49,10 @@ const ARG_ROUND_TRIP := "--round-trip="
 const ARG_RETURN := "--return="
 const ARG_NO_RESIDENT := "--no-resident"
 const ARG_READY_PROFILE := "--ready-profile"
+const ARG_CROSS_RETURN := "--cross-return="
+const ARG_NO_PARK := "--no-park"
+## --cross-return: frames the fight may take for SceneRouter's ReturnPark to build the return scene.
+const PARK_WAIT_MAX_FRAMES := 3600
 ## --ready-profile: how many of the slowest nodes' _ready to print (READY_PROFILE <ms> <node path>).
 const READY_PROFILE_TOP := 15
 const EXIT_OK := 0
@@ -80,6 +88,7 @@ func _run() -> void:
 	var round_trip := &""
 	var back_to := ""
 	var profile := false
+	var cross := ""
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with(ARG_TO):
 			to = arg.trim_prefix(ARG_TO)
@@ -105,6 +114,10 @@ func _run() -> void:
 			SceneRouter.keep_field_resident = false
 		elif arg == ARG_READY_PROFILE:
 			profile = true
+		elif arg == ARG_NO_PARK:
+			SceneRouter.park_return = false
+		elif arg.begins_with(ARG_CROSS_RETURN):
+			cross = arg.trim_prefix(ARG_CROSS_RETURN)
 	if frame_usec > 0:
 		SceneRouter.set_measure_clock(frame_clock(frame_usec))
 	if launch and not cfg.is_empty():
@@ -143,9 +156,15 @@ func _run() -> void:
 		SceneRouter.change_scene(back_to)
 		await _until_idle(int(cfg.get("timeout_frames", 0)))
 		BattleRequest._pending = pending  # the zone's arrival may clear it; the fight is still the one queued
+		if cross != "" and pending != null:
+			pending.return_scene = cross
 		SceneRouter.change_scene(to)
 		await _until_idle(int(cfg.get("timeout_frames", 0)))
-		to = back_to
+		to = back_to if cross == "" else cross
+		var park_frames := PARK_WAIT_MAX_FRAMES
+		while SceneRouter.return_park.building != "" and park_frames > 0:
+			park_frames -= 1
+			await get_tree().process_frame
 	SceneRouter.last_swap_stats = {}
 	var stamps: Array = []
 	if profile:

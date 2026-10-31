@@ -43,3 +43,16 @@ SKILL_HOOK_DRAW,Hook Draw
 SKILL_HOOK_THRUST,Hook Thrust
 SKILL_CLOSE_RANKS,Close Ranks
 SKILL_STORM_BEARING,Storm Bearing
+ENC_CH16_STORM_WAKES,The Storm Wakes
+ENTRY_CH16_THE_LINE,The Line
+ENTRY_CH16_STORM_WALL,The Storm Wall
+SKILL_HOLD_THE_LINE,Hold the Line
+SKILL_HOLD_THE_LINE_COVER,Hold the Line
+SKILL_STORM_SPAWN,The Storm Rises
+SKILL_STORM_EBB,The Storm Draws Breath
+SKILL_WALL_GATHER,The Wall Gathers
+SKILL_THE_WALL_COMES,The Wall Comes
+HUD_SWAP_CH16_KERRID_LINE,Kerrid holds the line: he stays in until the sea comes.
+HUD_CH16_SWEPT_AWAY,The sea comes.
+SKILL_STORM_DRAG,The Undertow Drags
+ENEMY_STORM_CRAWLER,Storm Crawler

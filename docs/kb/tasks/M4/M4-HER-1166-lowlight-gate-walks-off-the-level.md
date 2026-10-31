@@ -35,3 +35,4 @@ The Vey stays visible either way.
   test's owner:** remove the KNOWN entry `lowlight.tscn:rhen` from `test_hero_field_snaps.gd`. Reviewer: qa.
 
 ## Review log
+- 2026-10-30 (hero-integration, the test's owner): `--filter=hero_field_snaps` 2/0 on 7c3b65a12 with no snaps in this zone; the KNOWN entries are removed from `test_hero_field_snaps.gd`.

@@ -47,17 +47,29 @@ func test_the_city_leads_to_the_sanctum_and_the_archive_and_back() -> void:
 ## ledgers B07, the Cantor roll B08, the hands B09 on the third visit) and the pact at night back in the city (B10-B11).
 func test_the_still_city_plays_its_scenes_in_order() -> void:
 	_visit(CITY)
+	assert_true(bool(Game.get_flag(&"ch13_wedding_announced")), "M4-A2P-1003 E3: the still city plays on arrival")
+	assert_true(bool(Game.get_flag(&"ch13_met_tobin")), "and Tobin after it")
+	assert_true(bool(Game.get_flag(&"ch13_guest_of_sefir")), "the party are Sefir's guests")
+	assert_true(_trigger(&"shrine").try_interact(), "the still basin on the moorings (a save shrine)")
+	assert_true(_trigger(&"shop").is_available(), "the purveyor")
+	_go(&"to_archive", "ch13/lamp_archive", "Door")
+	_visit(ARCHIVE)
+	assert_false(_trigger(&"ledgers").is_available(), "E2: the Archive waits on Ethren")
+	_go(&"to_city", "ch13/ansedra", "FromArchive")
+	_visit(CITY)
 	_go(&"to_sanctum", "ch13/sanctum", "Gate")
 	_visit(SANCTUM)
 	assert_true(_trigger(&"ledge").on_touched())
 	assert_true(bool(Game.get_flag(&"ch13_ethren_bound")), "Ethren is bound")
 	_go(&"to_city", "ch13/ansedra", "FromSanctum")
 	_visit(ARCHIVE)
-	assert_false(_trigger(&"roll").is_available(), "the roll waits on the ledgers")
 	assert_true(_trigger(&"ledgers").on_touched())
 	assert_true(bool(Game.get_flag(&"ch13_read_ledgers")), "the first day")
-	assert_true(_trigger(&"roll").on_touched())
-	assert_true(bool(Game.get_flag(&"ch13_read_cantor_roll")), "the second")
+	assert_false(bool(Game.get_flag(&"ch13_read_cantor_roll")), "E9: the roll waits on the next visit")
+	_go(&"to_city", "ch13/ansedra", "FromArchive")
+	_visit(ARCHIVE)
+	assert_true(bool(Game.get_flag(&"ch13_read_cantor_roll")), "the second day")
+	assert_false(bool(Game.get_flag(&"ch13_archive_read")), "one day a visit")
 	_go(&"to_city", "ch13/ansedra", "FromArchive")
 	_visit(CITY)
 	assert_false(bool(Game.get_flag(&"ch13_pact_of_silence")), "no pact before the third day")
@@ -65,8 +77,17 @@ func test_the_still_city_plays_its_scenes_in_order() -> void:
 	assert_true(bool(Game.get_flag(&"ch13_archive_read")), "the third day: the hands")
 	_go(&"to_city", "ch13/ansedra", "FromArchive")
 	_visit(CITY)
+	assert_false(bool(Game.get_flag(&"ch13_pact_of_silence")), "E8: the pact waits at the moorings")
+	assert_true(_trigger(&"pact").on_touched())
 	assert_true(bool(Game.get_flag(&"ch13_pact_of_silence")), "the pact at night")
 	assert_true(bool(Game.get_flag(&"ch13_complete")), "closes the chapter")
+	_visit(CITY)
+	assert_true(_trigger(&"rest").try_interact())
+	assert_eq(
+		hand_offs.back(),
+		[ZoneStory.KIND_GO, {"location": "ch13/ansedra_lacquer_court", "spawn": "CourtEntry"}],
+		"E1: Sefir's door, then the Lacquer Court"
+	)
 	_close()
 	Game.state = saved_state
 
@@ -101,6 +122,22 @@ func _battle(encounter: StringName, victory_flag: StringName) -> void:
 
 
 ## Opens `path` (closing the zone before) and runs its arrival: a `go` ends the story's run, so each way is a visit.
+## M4-A2P-104: each pole stroke of the escape (`@sfx pole_stroke`) sends a ring out from the barge's stern.
+func test_a_pole_stroke_ripples_the_lagoon() -> void:
+	_visit(COURT)
+	var field := RippleField.find(zone.get_tree())
+	assert_true(field != null, "the court has its ripple field")
+	if field == null:
+		return
+	var before := field.sources.size()
+	story.sequencer.cue_played.emit(&"sfx", [&"pole_stroke"], {})
+	assert_eq(field.sources.size(), before + 1, "one ring per stroke")
+	story.sequencer.cue_played.emit(&"sfx", [&"bell_toll"], {})
+	assert_eq(field.sources.size(), before + 1, "other sounds leave the water still")
+	_close()
+	Game.state = saved_state
+
+
 func _visit(path: String) -> void:
 	_close()
 	hand_offs.clear()

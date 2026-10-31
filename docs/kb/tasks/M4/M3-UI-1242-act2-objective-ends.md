@@ -2,9 +2,10 @@
 id: M3-UI-1242
 title: "Request: Act II chapter-closing objectives end on chNN_complete, not the next chapter's start flag"
 role: ui
-status: todo
-owner_session: ""
+status: review
+owner_session: claude/ui (ui-menus)
 depends_on: []
+reviewer: cinematics
 milestone: M4
 request-from: cinematics
 ---
@@ -38,7 +39,12 @@ prefix isn't its chapter. Chapters can add that in test_qa_threads.gd if ui adds
 list those flags in qa_known.json "unraised" with this reason.
 
 ## Acceptance criteria
-- [ ] The six `until`s name their own chapter's `chNN_complete`.
-- [ ] test_qa_threads reports no Act II "never raises" failure (or only qa_known rows with a reason).
+- [x] The six `until`s name their own chapter's `chNN_complete`.
+- [x] test_qa_threads reports no Act II "never raises" failure (or only qa_known rows with a reason).
+
+## Answer (ui-menus, 2026-10-31)
+Already settled by the data. M4-A2P-109 rewrote Act II's objective rows, and none of the six ids remains. No Act II
+row (a `ch1N/` zone) ends on a later chapter's `chNN_started` now; a scan of objectives.json finds none.
+test_qa_threads passes 1/0 with no Act II "never raises" failure. No `"chapter"` field was needed.
 
 ## Review log

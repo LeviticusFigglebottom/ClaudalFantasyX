@@ -31,6 +31,8 @@ func test_the_cold_road_runs_from_the_pass_to_the_summit_and_back() -> void:
 	_open(QUELLAN)
 	story.begin()
 	assert_true(bool(Game.get_flag(&"ch12_reached_quellan")))
+	assert_true(_trigger(&"shrine").try_interact(), "the Level-stone by the well (a save shrine)")
+	assert_true(_trigger(&"shop").is_available(), "the trader")
 	_go(&"to_cloudloom", "ch12/cloudloom", "Approach")
 	_close()
 	_open(QUELLAN)  # a `go` ends the story's run: the way back is another visit
@@ -61,6 +63,12 @@ func test_the_cold_road_plays_its_scenes_in_order() -> void:
 	_open(PASS)
 	story.begin()
 	assert_false(_trigger(&"terrace").is_available(), "the terrace is quiet")
+	assert_true(bool(Game.get_flag(&"ch12_herd_cord_seen")), "M4-A2P-1003 E6: the herd-cord plays once")
+	assert_true(_trigger(&"knot_post").try_interact())
+	assert_true(bool(Game.get_flag(&"ch12_heard_the_knot")), "E12: the Ullari woman's knot")
+	assert_true(_trigger(&"cold_ledge").on_touched())
+	assert_true(bool(Game.get_flag(&"ch12_toma_saw_breath")), "E4: Kerrid's breath at the saddle")
+	assert_false(_trigger(&"cold_ledge").is_available(), "once")
 	_go(&"to_quellan", "ch12/quellan", "FromPass")
 	_close()
 	_open(QUELLAN)
@@ -81,6 +89,7 @@ func test_the_cold_road_plays_its_scenes_in_order() -> void:
 	_open(PASS)
 	story.begin()
 	assert_true(bool(Game.get_flag(&"ch12_complete")), "down the other side closes the chapter")
+	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch13/ansedra", "spawn": "Moorings"}], "on to Ch13")
 	_close()
 	Game.state = saved_state
 

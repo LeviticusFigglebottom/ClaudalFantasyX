@@ -9,6 +9,8 @@ const PROBE := "res://game/core/debug/scene_swap_probe.tscn"
 const PROBE_TAG := "SCENE_SWAP_PROBE "
 const ZONE := "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn"
 const ENCOUNTER := "ch03_causeway_shore"
+## PC pass 7 row 74: a fight that returns to another zone (the Drownbell to Haluna) finds it built while it ran.
+const CROSS := "res://game/levels/ch02/haluna/haluna.tscn"
 const FRAME_USEC := 16667
 const GODOT_ENV := "GODOT"
 const GODOT_NAME_HINT := "godot"
@@ -28,6 +30,19 @@ func test_the_way_back_from_a_random_fight_is_the_resident_field() -> void:
 			% [SceneRouter.HIDDEN_FRAME_BUDGET_MS, stats.get("entry_ms")]
 		)
 	)
+	assert_false(bool(stats.get("over_budget", true)), "no hidden frame over 1 s")
+	assert_true(bool(stats.get("covered", false)), "the swap is under the fade")
+
+
+func test_a_cross_zone_return_is_built_while_the_fight_runs() -> void:
+	var stats := _probe(
+		["--encounter=" + ENCOUNTER, "--return=" + ZONE, "--cross-return=" + CROSS, "--frame-usec=%d" % FRAME_USEC]
+	)
+	if stats.is_empty():
+		return
+	assert_eq(str(stats.get("scene_path", "")), CROSS, "the change measured is to the other zone")
+	assert_true(bool(stats.get("parked", false)), "the return scene was built while the fight ran: %s" % stats)
+	assert_eq(float(stats.get("instantiate_ms", -1.0)), 0.0, "nothing is instantiated on the way back")
 	assert_false(bool(stats.get("over_budget", true)), "no hidden frame over 1 s")
 	assert_true(bool(stats.get("covered", false)), "the swap is under the fade")
 

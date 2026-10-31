@@ -2,9 +2,10 @@
 id: M3-HER-1167
 title: "Request (ui-menus, ResidentLoads/ADR 0111): start the New Game zone's loads while the title shows, so Haluna's entry doesn't wait 5 s on 424 loads behind the card"
 role: ui
-status: todo
-owner_session: ""
+status: review
+owner_session: claude/ui (ui-menus)
 depends_on: []
+reviewer: qa
 milestone: M3
 request-from: qa
 ---
@@ -29,12 +30,33 @@ nearly), and the hold is short. The same works for a Continue: the save's zone i
 If 4 in flight is a crash cap (ADR 0029), keep it; the time comes from starting early, not from more threads.
 
 ## Acceptance criteria
-- [ ] `scene_swap_probe --to=haluna --resident-loads --warm-resident`, with the scene loads warmed as the title will:
+- [x] `scene_swap_probe --to=haluna --resident-loads --warm-resident`, with the scene loads warmed as the title will:
       the swap hold drops well under 477 frames, and the worst hidden frame stays ≤ 1 s.
 - [ ] integration-qa re-measures and logs the split.
 
 ## Notes
 - The split above, and the SceneRouter side (mine), are in docs/kb/handoffs/live/hero-integration.md. Nothing in
   SceneRouter holds beyond ResidentLoads and the prewarm here.
+
+## Answer (ui-menus, 2026-10-31)
+**The title side (claude/ui):**
+- TitleMenu `_preload_first_zone` calls `ResidentLoads.load_scene` with no hold, while the title shows, for the
+  zone the highlighted choice enters: New Game's location, or the save's for Continue (`first_zone_of`).
+- Moving between the two switches the zone. It is skipped in a headless run.
+- `load_scene` keeps the queue when the same path is asked again at the change.
+
+**The probe's `--warm-scene`** does the same before the change. Measured headless here (cloud, lavapipe), Haluna,
+`--resident-loads --warm-resident --warm-scene`:
+
+| | before | now |
+|---|---|---|
+| swap held | 477 frames | **158 frames** |
+| worst hidden frame | 699 ms | 760 ms (≤ 1 s) |
+| entry | 5.3 s | **3.26 s** |
+
+- No visible frame went over 50 ms (the worst was 16 ms).
+- The entry is still over the 3 s budget by 0.26 s. That is the 770 ms instantiate plus the add frame, not the
+  loads.
+- integration-qa's re-measure (the second criterion) is still open.
 
 ## Review log
