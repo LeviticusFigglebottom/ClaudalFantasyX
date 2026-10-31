@@ -603,6 +603,132 @@
     "halberd_length_m": 2.25
    },
    "chest_depth_heads": 1.04
+  },
+  "hesper_oan": {
+   "_doc": "Warden Hesper Oan of the Abiding (act3_ch19.md I08, section 5; M5-A3P-1202): the Order's hidden watch at the Lamp Spire's crown, held alive by bound light for four hundred years at the post the founders gave her. Sincere, tired, certain; she believes the engine is mercy. A tall, spare woman held at about sixty: upright as a standard, the grey crop of a soldier, no helm. The Abiding's kit as a Warden wears it, Venn's (the lames in black lacquer piped in gold, the tunic order_marble) but the sash and trousers in the Abiding's old gold; Venn's halberd two-handed, no shield. The one tell of what holds her: irises of pale bound gold. When she falls she lies still (rule 4).",
+   "height_m": 1.76,
+   "heads_tall": 7.6,
+   "shoulder_width_heads": 1.66,
+   "chest_width_heads": 1.26,
+   "chest_depth_heads": 0.94,
+   "waist_width_heads": 1.08,
+   "muscle": 0.5,
+   "mass": 0.08,
+   "skin_hex": "#A98A74",
+   "cheekbone_width": 1.08,
+   "cheekbone_height": 0.004,
+   "mouth_corner_lift": -0.001,
+   "eye_tilt_deg": 0.0,
+   "donor_mix_african": 0.2,
+   "donor_mix_asian": 0.3,
+   "donor_mix_caucasian": 0.5,
+   "femininity": 0.9,
+   "breast": 0.2,
+   "hip_width_heads": 1.36,
+   "jaw_width": 0.92,
+   "chin_size": 0.9,
+   "brow_ridge": 0.9,
+   "nose_bridge_width": 0.92,
+   "nose_tip_projection": 0.94,
+   "lip_fullness": 0.85,
+   "lip_lower_fullness": 0.85,
+   "neck_width_ratio": 0.5,
+   "head_width_ratio": 0.66,
+   "_seed": 571,
+   "_variant": {
+    "hair": "crop",
+    "helm": false,
+    "weathered": false,
+    "spear": false,
+    "halberd": true,
+    "shield": false,
+    "palette": {
+     "lacquer": "#2A2420",
+     "lacquer_deep": "#141110",
+     "bone": "#E4DED3",
+     "linen": "#A67C2A",
+     "indigo": "#5E4416"
+    }
+   },
+   "_hair": {
+    "colour": "#B9B4AC",
+    "underpaint": "#9E998F",
+    "length_m": [
+     0.02,
+     0.03
+    ]
+   },
+   "_skin": {
+    "age": 0.9,
+    "stubble": 0.0
+   },
+   "_costume": {
+    "sash": true,
+    "halberd_length_m": 2.2
+   }
+  },
+  "ilsabet_rue": {
+   "_doc": "Ilsabet Rue, the Abiding scribe who keeps Warden Hesper Oan's watch roll (act3_ch19.md I08, section 5; M5-A3P-1202): held at about forty for four hundred years, small and exact, writing in the roll as she fights ('Noted.' / 'Mark the time.'). The kit without weapon or shield: the lames in black lacquer piped in gold, the tunic order_marble, the sash and trousers ink-black; a dark crop, no helm. The watch roll (left hand) and her stylus (right) are the battle actor's props (assets/characters/props/act3/). Irises of pale bound gold, as Hesper's. When she falls she lies still (rule 4).",
+   "height_m": 1.58,
+   "heads_tall": 7.2,
+   "shoulder_width_heads": 1.56,
+   "chest_width_heads": 1.18,
+   "chest_depth_heads": 0.9,
+   "waist_width_heads": 1.02,
+   "muscle": 0.4,
+   "mass": 0.06,
+   "skin_hex": "#C29A7E",
+   "cheekbone_width": 1.04,
+   "cheekbone_height": 0.003,
+   "mouth_corner_lift": -0.0004,
+   "eye_tilt_deg": 1.5,
+   "donor_mix_african": 0.1,
+   "donor_mix_asian": 0.45,
+   "donor_mix_caucasian": 0.45,
+   "femininity": 0.9,
+   "breast": 0.25,
+   "hip_width_heads": 1.36,
+   "jaw_width": 0.92,
+   "chin_size": 0.9,
+   "brow_ridge": 0.9,
+   "nose_bridge_width": 0.92,
+   "nose_tip_projection": 0.94,
+   "lip_fullness": 0.85,
+   "lip_lower_fullness": 0.85,
+   "neck_width_ratio": 0.5,
+   "head_width_ratio": 0.66,
+   "eye_scale": 1.1,
+   "_seed": 572,
+   "_variant": {
+    "hair": "crop",
+    "helm": false,
+    "weathered": false,
+    "spear": false,
+    "halberd": false,
+    "shield": false,
+    "palette": {
+     "lacquer": "#2A2420",
+     "lacquer_deep": "#141110",
+     "bone": "#E4DED3",
+     "linen": "#1E1B1A",
+     "indigo": "#2A2622"
+    }
+   },
+   "_hair": {
+    "colour": "#2A2420",
+    "underpaint": "#221C18",
+    "length_m": [
+     0.02,
+     0.03
+    ]
+   },
+   "_skin": {
+    "age": 0.4,
+    "stubble": 0.0
+   },
+   "_costume": {
+    "sash": true
+   }
   }
  }
 }

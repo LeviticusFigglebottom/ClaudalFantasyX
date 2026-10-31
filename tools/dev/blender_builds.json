@@ -2055,6 +2055,75 @@
         ["{blender}", "--python", "assets_src/crowd/kirru/build_kirru.py", "--", "--body", "kirru_youngster", "--bake-dir", "{scratch}/kirru_youngster_bake"],
         ["{python}", "assets_src/crowd/kirru/kirru_textures.py", "--body", "kirru_youngster", "--bake-dir", "{scratch}/kirru_youngster_bake"]
       ]
+    },
+    {
+      "id": "hesper_oan",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M5-A3P-1202: Warden Hesper Oan (Ch19's boss), a named Stillguard-kit build: a woman held at about sixty, Venn's halberd on the spear's bone, no shield, the Abiding's gold sash (sg_textures.dyed_cloth), pale bound-gold irises; her clips are hero_clips' (the Wardens block).",
+      "sources": [
+        "assets_src/characters/stillguard/**",
+        "assets_src/characters/moll/**",
+        "assets_src/characters/villagers/**",
+        "assets_src/characters/toma/**",
+        "assets_src/characters/rhen/**",
+        "assets_src/characters/asha/**",
+        "assets_src/characters/base_body/**",
+        "assets_src/third_party/mpfb2/**"
+      ],
+      "outputs": [
+        "assets/characters/hesper_oan/*.glb",
+        "assets/characters/hesper_oan/textures/*.png",
+        "assets/characters/hesper_oan/materials/*.tres"
+      ],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "hesper_oan", "--bake-dir", "{scratch}/hesper_oan_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "hesper_oan", "--bake-dir", "{scratch}/hesper_oan_bake"],
+        ["{python}", "assets_src/characters/stillguard/write_materials.py", "--variant", "hesper_oan"]
+      ]
+    },
+    {
+      "id": "ilsabet_rue",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M5-A3P-1202: Ilsabet Rue, Hesper's scribe (Ch19's boss), a named Stillguard-kit build: no weapon or shield, the ink-black sash, pale bound-gold irises; the watch roll and stylus are her battle actor's props; her clips are hero_clips' (the Wardens block).",
+      "sources": [
+        "assets_src/characters/stillguard/**",
+        "assets_src/characters/moll/**",
+        "assets_src/characters/villagers/**",
+        "assets_src/characters/toma/**",
+        "assets_src/characters/rhen/**",
+        "assets_src/characters/asha/**",
+        "assets_src/characters/base_body/**",
+        "assets_src/third_party/mpfb2/**"
+      ],
+      "outputs": [
+        "assets/characters/ilsabet_rue/*.glb",
+        "assets/characters/ilsabet_rue/textures/*.png",
+        "assets/characters/ilsabet_rue/materials/*.tres"
+      ],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "ilsabet_rue", "--bake-dir", "{scratch}/ilsabet_rue_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "ilsabet_rue", "--bake-dir", "{scratch}/ilsabet_rue_bake"],
+        ["{python}", "assets_src/characters/stillguard/write_materials.py", "--variant", "ilsabet_rue"]
+      ]
+    },
+    {
+      "id": "props_act3_hand",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M5-A3P-1202: the Act III hand props (Ilsabet Rue's watch roll and stylus) on wick.py's mesh helpers, with their StandardMaterial3D slots.",
+      "sources": [
+        "assets_src/characters/props/act3_hand_props.py",
+        "assets_src/characters/props/wick.py"
+      ],
+      "outputs": [
+        "assets/characters/props/act3/*.glb",
+        "assets/characters/props/act3/materials/*.tres"
+      ],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/props/act3_hand_props.py"]
+      ]
     }
   ]
 }
