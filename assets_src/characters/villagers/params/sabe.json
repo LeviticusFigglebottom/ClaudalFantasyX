@@ -54,7 +54,7 @@
   },
   "_hair": {
     "brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.15"},
-    "hairline_feather": 1.0,
+    "hairline_feather": 0.45,
     "kind": "short",
     "tufts": true,
     "hairline": "female",
@@ -73,7 +73,7 @@
     "colour": "#BDB7AC",
     "grey": "#E4E0D8",
     "grey_share": 0.5,
-    "underpaint": "#6A5A4E",
+    "underpaint": "#BCB6AC",
     "brow": "#9A948A",
     "spec": "#D8D2C8",
     "grey_strands": "all",

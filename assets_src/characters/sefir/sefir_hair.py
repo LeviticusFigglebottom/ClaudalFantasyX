@@ -43,7 +43,7 @@ FALL_CLEAR = 0.010  # m: off the cloth (avoid() already includes the garments' o
 FALL_STEP = 0.022  # m per drape step
 FALL_POINTS = 18  # points per fall card after resampling
 FALL_WIDTH = (0.012, 0.020)  # m, one fall card
-FRONT_WIDTH = (0.012, 0.018)  # GPU QA row 54 (pass 5): was 8-13 mm, thin floating ribbons
+FRONT_WIDTH = (0.016, 0.024)  # GPU QA row 54: was 8-13 mm (pass 5), then 12-18 mm (PC pass 7: still see-through)
 LEAVE_SDF = 0.004  # m past its lift: the strand has left the scalp
 DRAPE_GRID = 1e-5  # m: the drape's state is rounded to this every step (the iteration amplified the last bits that
 # numpy's SIMD paths leave in the field and the projections, so hosts disagreed by a micron by the tips)
@@ -298,7 +298,9 @@ def fall(lm, params: dict, rng: np.random.Generator, scalp, avoid) -> tuple[Part
         wr = FALL_WIDTH if kind == "b" else FRONT_WIDTH
         widths = rng.uniform(*wr, n) * s
         slots = rng.integers(SLOTS_FULL, size=n)
-        slots = np.where((layer == 1) & (rng.random(n) < 0.4), rng.choice(SLOTS_SPARSE, n), slots)
+        # PC pass 7 (row 54): the front falls take full slots only; their sparse wisps let the neck show through
+        sparse = (layer == 1) & (rng.random(n) < 0.4) & (kind == "b")
+        slots = np.where(sparse, rng.choice(SLOTS_SPARSE, n), slots)
         ph = rng.random(n)
         yc = float(lm.P("head_c")[1])
         for c in range(n):

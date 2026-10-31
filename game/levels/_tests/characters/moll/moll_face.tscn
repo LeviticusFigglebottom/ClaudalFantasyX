@@ -4,3 +4,7 @@
 
 [node name="MollStage" instance=ExtResource("stage")]
 hide_nodes = Array[StringName]([&"Shield", &"Iron"])
+
+[node name="KeyLight" parent="."]
+light_angular_distance = 2.5
+shadow_opacity = 0.8

@@ -90,9 +90,12 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
                                    "spec_primary_intensity": "0.4", "spec_primary_exponent": "300.0",
                                    "spec_shift_jitter": "0.25", "col_spec_secondary": HAIR_SPEC2,
                                    "spec_secondary_intensity": "0.3", "col_transmission": HAIR_TT,
-                                   "transmission_strength": "0.6", "indirect_specular": "0.1",
+                                   "transmission_strength": "0.3", "indirect_specular": "0.1",
                                    "root_occlusion": "0.45", "depth_occlusion": "0.5", "strand_value_jitter": "0.1",
-                                   "alpha_boost": "1.5",  # GPU QA row 54: the cap read translucent at 1.15
+                                   # GPU QA row 54: the cap read translucent at 1.15; PC pass 7: the long front and
+                                   # back falls still read as see-through strands at 1.5 (the dither leaves a
+                                   # mid-alpha card part-covered), and lit through at 0.6 transmission
+                                   "alpha_boost": "2.5",
                                    **WIND},
              {"tex_hair": A + "asha_hair.png", "tex_hairflow": A + "asha_hairflow.png"}),
     # ivory and still-blue silk, the mantle's gold leaf (G) on black lacquer (B); the gold is a little rougher than
