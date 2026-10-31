@@ -225,6 +225,13 @@
       "spawn": "PathFoot",
       "name_key": "LOCATION_CH08_COILSPIRE",
       "_note": "M3-C08-02: the headland path, the keeper's hut and Coilspire, the fire temple (Ch8 B03-B07): the flue trial, the crown chamber and the beacon gallery; a greybox zone (Ch08CoilspireZone). Corrow's wall-gate hands off here at PathFoot; the beacon's opening hands back to ch08/corrow at WallGate."
+    },
+    {
+      "id": "ch18/kite",
+      "scene": "res://game/levels/ch18/kite/kite.tscn",
+      "spawn": "Deck",
+      "name_key": "LOCATION_CH18_KITE",
+      "_note": "M5-A3P-1004: Dace's hull flying, the Kite (act3_ch18.md), a greybox zone (Ch18Zone) from tools/act3/ch18_greybox.py: the deck, the wheel, the chart table and its courses."
     }
   ],
   "shrines": [
