@@ -2269,3 +2269,8 @@ These edits are in env-art's kits, each in its own commit on claude/env-art-b, f
   - **Generator fix:** it skipped no kit piece missing from `FAR_LOD1_M`, and `ash_drift` (M3-ENV-1310) broke it. It now skips such pieces; the layout is unchanged apart from the new light.
 - **d250de79, `pemakar_materials.py` `kit_volcanic_far`:** the macro layer (0.85 at 36 m), for row 80's hillside. In progress: the upper hillside in p04 may be another mesh, which I'm tracing.
 - **Viewed** (lavapipe, scratch): a10 (smoke, a grained mound), a01 (the hands modelled from below), a02 (no change).
+- (env-art-b, continued)
+  - **5a6e4596, `kit_volcanic_far`:** specular 0.12, roughness 1.0. At the hill's grazing angle the sky's sheen washed the far slopes to one pale tone and hid the macro layer.
+  - **4a82f498, the preview's hand-authored `pemakar_day_environment.tres`:** fog density 0.0018 → 0.0009, aerial perspective 0.5 → 0.3. The Ch5 zone copies the same grade.
+  - **982d4842, `kit_weir_stone`** (mine, written by ch05_pemakar_dressing.py and taken by your preview's weir row): the macro layer at 0.9 m (0.75), so each block of the courses takes its own tone.
+  - **Viewed:** p04 (the hillside now shows darker patches and gullies, and the haze is lighter) and p11 (the weir: a small change on lavapipe, which the PC's GPU will judge).
