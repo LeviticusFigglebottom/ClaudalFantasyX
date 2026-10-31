@@ -2205,3 +2205,26 @@ MERGE-READY @ (this commit).
   - The other ~500 ms of that frame is tree entry (render and physics instance registration for about 4,400 nodes), not `_ready`.
   - The 4.2 s seen in return_probe came from the chain under load (Haluna, the card, then Wake), not from Wake itself. If a split is wanted there, it means fewer nodes, not lighter readies.
 MERGE-READY @ (this commit).
+
+### 2026-10-31: FAST-TRACK row 74. The Drownbell → Haluna cross-zone return is built while the fight runs (ADR 0209)
+- **What changed:** SceneRouter's new `ReturnPark` (`game/core/return_park.gd`).
+  - Once a fight is in and its return isn't the resident field, it threaded-loads the return scene and calls `ResidentLoads.prepare_return` (ui-menus' victory-panel call, now at fight start).
+  - It waits for those loads, instantiates on a worker (prebuild included, ShaderGlobals held), and parks the root off-tree.
+  - Return swaps the parked root in. A build still in flight is waited on.
+  - Any scripted fight with a cross-zone return gets this automatically.
+- **Numbers (headless, this box):**
+  - Injected clock (causeway fight → Haluna, `scene_swap_probe --cross-return`): entry **3.23 s → 1.18 s**, instantiate **2.05 s → 0**, parked true.
+  - `return_probe --cases=drownbell`, real flow and wall clock: field in **3.39 s → 1.05–1.09 s**, input **3.73 s → 2.0 s**, covered **4.1 s → 2.5 s**. Of that 2.5 s, 0.4 s is the fade-out and 0.7 s the fade-in; about 1.5 s is fully black (Haluna's add frame plus VillagerLayer's hold).
+- **Tests:**
+  - `tests/unit/test_return_park.gd` 3/0.
+  - `test_battle_return` adds a cross-zone case, 2/0.
+  - scene_router 17/0, resident_reattach 1/0, field_battle 12/0, qa_encounters 1/0, battle_request 3/0.
+- **For the PC (re-measure with `battle_return_probe`):**
+  - Your probe forces the win about 2.5 s into the fight (120 + 30 frames). On the PC the build may still be in flight then. It's waited on, but that's shorter than a real fight's head start.
+  - A `--fight-sec=10` style wait before the forced win would measure what a player gets.
+  - Watch for an engine `Parameter "t" is null`: one in five headless parked runs logged it, with no backtrace.
+- **For ui-menus:** the victory-panel `prepare_return` stays. It now finds the loads already in and costs nothing.
+- **For creatures:** VillagerLayer's reveal hold on Haluna is now one of the two things left under the fade (0.26 s headless).
+- **For slice-polish:** Haluna's add frame (root `_ready` 388 ms) is the other.
+- ADR **0209**. If another track took 0209 meanwhile, renumber mine.
+MERGE-READY @ (this commit).
