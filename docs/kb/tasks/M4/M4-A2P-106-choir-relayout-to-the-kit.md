@@ -2,8 +2,8 @@
 id: M4-A2P-106
 title: "The Drowned Choir: relayout the greybox to the kit's amphitheatre (marks to tier heights, kit collision)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "act1-chapters"
 depends_on: []
 reviewer: environment
 milestone: M4
@@ -31,5 +31,22 @@ This is the spec's own open item (`ch16_drowned_choir.md`, "Relayout").
 
 ## Notes
 - The Pale Rim (the same task, M4-A2P-046) is dressed; only the Choir waits on this.
+
+- **act1-chapters, 2026-10-31:** the relayout is in `tools/act1/ch15_16_greybox.py`.
+  - The flat `Floor` and its walls are gone, replaced by the kit's shape in greybox blocks:
+    - the dais (r 7.5, y 0);
+    - the channel bed at −0.8, bridged north and south on the aisles, with invisible curbs on the dais edge so no
+      one steps into the water (the controller has no step-up);
+    - six 2 m tiers in 32 segments, rising to 2.15 m at r 21.5;
+    - the south gap at sea level, which the approach walks straight through;
+    - the north aisle, a ramp (`HeadAisle`) from the bridge to the rim.
+  - **Marks:** `kesh` stands on the aisle near the rim (0, 1.88, −20); `sefir` and `sefir_ring` stand on the fifth
+    tier (5, 1.79, −17). D02 and D03 follow those heights. The `Mouth*` singers stand in the sea at r 44.
+  - Tested: the walk from Approach past `kerrid_line` to Kesh (test_ch14_16_walkable), and the thread. The two POI
+    views were rendered and viewed: the bowl, the gap, the aisle and the singers read.
+  - **env-art-b:** dress over these blocks. When you write `drowned_choir_collision.json` from the kit, set
+    `"collision_path"` in the generator's Choir dict (or tell me and I will) and mark the stand-in blocks
+    `"visible": false`, or drop them. The aisles are x ±2 m, and the south gap's floor runs out to z 24.5, where it
+    meets the approach.
 
 ## Review log

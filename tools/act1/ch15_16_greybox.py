@@ -48,7 +48,6 @@ COL_CAIRN = "#c8c4b8"
 COL_CHOIR = "#6a6e70"
 
 
-
 def overheard(dialogue: str, at: tuple[float, float, float], size: tuple[float, float, float], requires: str,
               blocked_by: str = "") -> dict:
     """M4-A2P-1012: a bark heard once in passing (a touch box; the dialogue plays overheard, the walk goes on)."""
@@ -67,6 +66,7 @@ def listen(tid: str, dialogue: str, at: tuple[float, float, float], requires: st
     if blocked_by:
         row["blocked_by_flag"] = blocked_by
     return row
+
 
 def write(zone: str, name: str, layout: dict) -> None:
     out = LEVELS / zone / name / f"{name}_layout.json"
@@ -308,24 +308,82 @@ def pale_rim() -> dict:
 
 CHOIR_R = 26.0
 MOUTHS = 16
+# M4-A2P-106: the kit's amphitheatre (ch16_drowned_choir.md): the dais to r 7.5 at y 0, the flooded channel to r 9.5
+# at -0.8, six 2 m tiers rising to 2.15 m at r 21.5; the singers stand in the sea at r 44
+DAIS_R = 7.5
+CHANNEL_R = 9.5
+CHANNEL_Y = -0.8
+TIERS = 6
+TIER_W = 2.0
+TIER_TOP = 2.15
+TIER_RIM = CHANNEL_R + TIERS * TIER_W
+AISLE_HW = 2.0
+RING_SEGMENTS = 32
+SINGERS_R = 44.0
+
+
+def head_y(r: float) -> float:
+    """The north aisle's height at radius r (its ramp from the bridge to the tiers' rim)."""
+    return r3(TIER_TOP * min(max((r - CHANNEL_R) / (TIER_RIM - CHANNEL_R), 0.0), 1.0))
 
 
 def drowned_choir() -> dict:
+    """M4-A2P-106: the kit's amphitheatre (choir_amphitheatre): a dais, the flooded channel round it, six tiers. The
+    tiers are ring segments; the south gap is the way in at sea level (over the south bridge), the north aisle a ramp
+    up the tiers to Kesh's place (over the north bridge). Invisible curbs keep the player off the channel's water
+    (the controller has no step-up). env-art-b's collision file can replace these blocks (collision_path)."""
     blocks = water(-60.0, 60.0, -60.0, 60.0, color=COL_RIM_WATER)
-    blocks.append(floor("Floor", 0.0, 0.0, CHOIR_R - 2.0, CHOIR_R - 2.0, 0.0, COL_CHOIR))
-    blocks += walls("Floor", 0.0, 0.0, CHOIR_R - 2.0, CHOIR_R - 2.0, 0.0, 1.0, {"s": (-3.0, 3.0)})
-    for k in range(MOUTHS):  # the ring of colossal mouths, open to the sky
+    blocks.append(box("ChannelBed", 0.0, CHANNEL_Y - 0.5, 0.0, 2 * CHANNEL_R, 1.0, 2 * CHANNEL_R, color=COL_RIM_WATER))
+    for k in range(6):  # the dais: a 12-gon of rotated squares
+        blocks.append(box(f"Dais{k}", 0.0, -0.5, 0.0, 2 * DAIS_R * math.cos(math.pi / 12), 1.0,
+                          2 * DAIS_R * math.cos(math.pi / 12), 15.0 * k, color=COL_CHOIR))
+    for side, z in (("S", 1.0), ("N", -1.0)):  # the bridges over the channel, on the aisles
+        blocks.append(box(f"Bridge{side}", 0.0, -0.25, r3(z * (DAIS_R + CHANNEL_R) * 0.5), 2 * AISLE_HW, 0.5,
+                          CHANNEL_R - DAIS_R + 1.0, color=COL_CHOIR))
+    for k in range(RING_SEGMENTS):
+        a = 2 * math.pi * (k + 0.5) / RING_SEGMENTS
+        sa, ca = math.sin(a), -math.cos(a)  # 0 is north (-z)
+        for t in range(TIERS):  # the tiers, open on the two aisles
+            r0 = CHANNEL_R + t * TIER_W
+            rm = r0 + TIER_W * 0.5
+            if abs(rm * sa) < AISLE_HW + TIER_W * 0.5:
+                continue
+            h = TIER_TOP * (t + 1) / TIERS
+            arc = 2 * math.pi * (r0 + TIER_W) / RING_SEGMENTS + 0.05
+            blocks.append(box(f"Tier{t}_{k}", r3(rm * sa), r3((h + CHANNEL_Y) * 0.5), r3(rm * ca), arc,
+                              r3(h - CHANNEL_Y), TIER_W, math.degrees(-a), color=COL_CHOIR))
+        rc = DAIS_R + 0.15  # the curb on the dais's edge, but on the bridges
+        if abs(rc * sa) > AISLE_HW:
+            blocks.append(box(f"Curb{k}", r3(rc * sa), 0.5, r3(rc * ca), 2 * math.pi * rc / RING_SEGMENTS + 0.1, 1.0,
+                              0.3, math.degrees(-a), color=COL_CHOIR, visible=False))
+    gap_end = CHOIR_R - 1.5  # under the approach's near end
+    blocks.append(floor("SouthGap", 0.0, r3((CHANNEL_R + gap_end) * 0.5), AISLE_HW, r3((gap_end - CHANNEL_R) * 0.5),
+                        0.0, COL_CHOIR))
+    for side in (-1.0, 1.0):  # the aisle's walls where the tiers stand above it
+        blocks.append(box(f"AisleWallS{'WE'[side > 0]}", side * (AISLE_HW + 0.25), 1.0,
+                          r3((CHANNEL_R + TIER_RIM) * 0.5), 0.5, 2.0, TIER_RIM - CHANNEL_R, color=COL_CHOIR,
+                          visible=False))
+        blocks.append(box(f"AisleWallN{'WE'[side > 0]}", side * (AISLE_HW + 0.25), TIER_TOP * 0.5 + 0.5,
+                          r3(-(CHANNEL_R + TIER_RIM) * 0.5), 0.5, TIER_TOP + 1.0, TIER_RIM - CHANNEL_R,
+                          color=COL_CHOIR, visible=False))
+    blocks.append(box("HeadBound", 0.0, TIER_TOP + 0.5, -TIER_RIM - 0.25, 2 * AISLE_HW + 1.0, 1.0, 0.5,
+                      color=COL_CHOIR, visible=False))
+    for k in range(MOUTHS):  # the singers in the sea (dressing), the way in from the south clear
         a = 2 * math.pi * k / MOUTHS
-        x, z = CHOIR_R * math.sin(a), -CHOIR_R * math.cos(a)
-        if abs(x) < 4.0 and z > 0.0:
-            continue  # the way in, from the south
+        x, z = SINGERS_R * math.sin(a), -SINGERS_R * math.cos(a)
+        if abs(x) < 6.0 and z > 0.0:
+            continue
         blocks.append(box(f"Mouth{k}", r3(x), 7.0, r3(z), 7.0, 14.0, 4.0, math.degrees(-a), color=COL_CHOIR,
                           solid=False))
     blocks.append(floor("Approach", 0.0, CHOIR_R + 2.0, 3.0, 4.0, 0.0, COL_SAND))
     blocks.append(box("ApproachBound", 0.0, 1.0, CHOIR_R + 6.25, 6.0, 2.0, 0.5, color=COL_CHOIR))
+    ramps = [{"id": "HeadAisle", "from": [0.0, 0.0, -CHANNEL_R], "to": [0.0, TIER_TOP, -TIER_RIM],
+              "width": 2 * AISLE_HW, "color": COL_CHOIR}]
     return {
         "doc": "M4-C16-02 greybox (tools/act1/ch15_16_greybox.py; do not edit by hand): the Drowned Choir at moonrise "
-        "(colour script ch16): a ring of colossal mouths round a stone floor, the way in from the south (Approach). "
+        "(colour script ch16). M4-A2P-106: the kit's amphitheatre: the dais, the flooded channel (bridged north and "
+        "south), six tiers to the rim, the singers standing in the sea at r 44; the way in from the south (Approach) "
+        "through the tiers' gap, the north aisle a ramp up to Kesh's place. "
         "Kesh's place at the ring's head (kesh), where Sefir comes (sefir), Kerrid's line behind Asha (kerrid_line). "
         "Sefir's Abiding guard and the storm waking early are fought here; the act ends on a Rhen voice-over. The story "
         "waits on the beat sheet (M4-C16-01).",
@@ -333,22 +391,24 @@ def drowned_choir() -> dict:
         "environment": {"background": "#1c2430", "ambient_color": "#5e8c90", "ambient_energy": 0.4},
         "block_color": COL_CHOIR,
         "blocks": blocks,
+        "ramps": ramps,
         "spawns": {"Approach": [0.0, 0.0, CHOIR_R + 1.0, 0.0]},
-        "marks": {"kesh": [0.0, 0.0, -CHOIR_R + 6.0, 180.0], "sefir": [5.0, 0.0, -CHOIR_R + 9.0, 210.0],
+        # M4-A2P-106: Kesh's place on the north aisle near the rim, Sefir on the fifth tier beside it
+        "marks": {"kesh": [0.0, head_y(20.0), -20.0, 180.0], "sefir": [5.0, r3(TIER_TOP * 5 / TIERS), -17.0, 210.0],
                   "kerrid_line": [0.0, 0.0, 6.0, 0.0],
                   # M4-A2P-016: the party at the ring's heart facing Kesh's place (C4-C6); Kerrid a step behind Asha
                   "ring_rhen": [0.0, 0.0, -6.0, 0.0], "ring_asha": [-1.5, 0.0, -5.6, 0.0],
                   "ring_toma": [-3.0, 0.0, -5.0, 0.0], "ring_ysolde": [1.5, 0.0, -5.6, 0.0],
                   "ring_liss": [3.0, 0.0, -5.0, 0.0], "ring_kerrid": [-1.8, 0.0, -3.6, 0.0],
-                  "sefir_ring": [5.0, 0.0, -CHOIR_R + 9.0, 210.0]},
+                  "sefir_ring": [5.0, r3(TIER_TOP * 5 / TIERS), -17.0, 210.0]},
         "actors": {},
         "shots": {"D01": {"pos": [0.0, 2.0, CHOIR_R - 4.0], "look_at": [0.0, 5.0, -CHOIR_R], "fov": 55},
                   # M4-A2P-016: C4 Kesh's point of view a thousand years ago (the memory grade), from her place down
                   # the ring; C5 Sefir across the ring, the stones behind him; C6 the three refusals in singles
                   # (D04 Asha, D06 Ysolde, D07 Kerrid), each from Sefir's side; C8 the storm waking over the ring,
                   # low behind Kerrid holding the line
-                  "D02": {"pos": [0.0, 1.7, -20.5], "look_at": [0.0, 1.4, 0.0], "fov": 50},
-                  "D03": {"pos": [1.0, 1.7, -9.0], "look_at": [5.0, 1.6, -17.0], "fov": 40},
+                  "D02": {"pos": [0.0, r3(head_y(20.5) + 1.7), -20.5], "look_at": [0.0, 1.4, 0.0], "fov": 50},
+                  "D03": {"pos": [1.0, 1.7, -9.0], "look_at": [5.0, r3(TIER_TOP * 5 / TIERS + 1.6), -17.0], "fov": 40},
                   "D04": {"pos": [0.2, 1.7, -8.4], "look_at": [-1.5, 1.6, -5.6], "fov": 40},
                   "D06": {"pos": [3.0, 1.7, -8.6], "look_at": [1.5, 1.6, -5.6], "fov": 40},
                   "D07": {"pos": [0.0, 1.9, -7.0], "look_at": [-1.8, 1.8, -3.6], "fov": 40},
