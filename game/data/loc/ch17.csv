@@ -3,3 +3,12 @@ FIELD_PROMPT_CH17_TURN_PAGE,Hold to turn the page
 FIELD_PROMPT_CH17_HOLD_STEADY,Hold to keep it steady
 FIELD_PROMPT_CH17_TURN_COLLAR,Hold to turn the collar
 FIELD_PROMPT_CH17_SEAT_IT,Hold to seat the lamp
+ENEMY_DEEP_SCUTTLER,Deep Scuttler
+LORE_DEEP_SCUTTLER,"The scuttlers of the Calm's first years, crawled up the hull-lines as the Calm fails: darker, with more wounds open."
+ENEMY_HULL_RASP,Hull Rasp
+LORE_HULL_RASP,"A rasping hull-borer in the flotilla's keels. Its ribs armour it until they break."
+PHASE_HULL_RASP_RIBS,The Ribs
+PHASE_HULL_RASP_BREAKING,The Ribs Break
+ENC_CH17_MOORINGS_SCUTTLERS,The Outer Moorings
+ENC_CH17_MOORINGS_RASP,A Moored Keel
+FIELD_PROMPT_CH17_MOORINGS,Look over the outer moorings

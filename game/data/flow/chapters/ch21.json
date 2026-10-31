@@ -1,0 +1,235 @@
+{
+ "doc": "M5-A3P-1015 (act3_ending.md §2, H01-H09, R1; docs/kb/tech/chapter_flow.md): Ch21 'The heart' on ch21/heart. The last layer on arrival (H01, ch21_started); at the heart's mouth the two lamps (H02), Kesh called and fought (H03, ch21_kesh; victory ch21_kesh_beaten); on the return her release and the rest (H03, R1: the Choir-stone saves); stepping onto the battle floor starts the Warden (H04, ch21_sefir_warden, drafts README decision 13); on each return the next phase: he takes the heart (H05) and phase 2 (H06, ch21_sefir_heart), then the Letting (H07, ch21_sefir_letting), then he lets go (H08) and the Great Unbinding (H09, ch21_unbound), and the Kite climbs out: the Ending's flow (chapters/ending.json, on ch18/kite).",
+ "chapter": "ch21",
+ "zones": {
+  "ch21/heart": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch21_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "LastLayer"
+      },
+      {
+       "chapter": 21
+      },
+      {
+       "party": {
+        "party": [
+         "rhen",
+         "asha",
+         "toma"
+        ],
+        "reserve": [
+         "ysolde",
+         "kerrid",
+         "liss"
+        ]
+       }
+      },
+      {
+       "play": "ch21_the_last_layer"
+      },
+      {
+       "set": "ch21_started"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch21_kesh_beaten"
+      ],
+      "unset": [
+       "ch21_kesh_released"
+      ]
+     },
+     "steps": [
+      {
+       "place": "HeartFloor"
+      },
+      {
+       "play": "ch21_kesh_release"
+      },
+      {
+       "set": "ch21_kesh_released"
+      },
+      {
+       "play": "ch21_seven_bands"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch21_warden_beaten"
+      ],
+      "unset": [
+       "ch21_heart_beaten"
+      ]
+     },
+     "steps": [
+      {
+       "place": "HeartFloor"
+      },
+      {
+       "play": "ch21_he_takes_the_heart"
+      },
+      {
+       "battle": "ch21_sefir_heart",
+       "return_spawn": "HeartFloor",
+       "victory_flag": "ch21_heart_beaten",
+       "party": [
+        "kerrid",
+        "rhen",
+        "toma"
+       ],
+       "reserve": [
+        "ysolde",
+        "asha",
+        "liss"
+       ]
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch21_heart_beaten"
+      ],
+      "unset": [
+       "ch21_letting_sung"
+      ]
+     },
+     "steps": [
+      {
+       "place": "HeartFloor"
+      },
+      {
+       "play": "ch21_the_letting"
+      },
+      {
+       "battle": "ch21_sefir_letting",
+       "return_spawn": "HeartFloor",
+       "victory_flag": "ch21_letting_sung",
+       "party": [
+        "toma",
+        "kerrid",
+        "ysolde"
+       ],
+       "reserve": [
+        "rhen",
+        "liss"
+       ]
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch21_letting_sung"
+      ],
+      "unset": [
+       "ch21_unbound"
+      ]
+     },
+     "steps": [
+      {
+       "place": "HeartFloor"
+      },
+      {
+       "play": "ch21_sefir_lets_go"
+      },
+      {
+       "play": "ch21_great_unbinding"
+      },
+      {
+       "go": {
+        "location": "ch18/kite",
+        "spawn": "Deck"
+       }
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "two_lamps": {
+     "when": {
+      "set": [
+       "ch21_started"
+      ],
+      "unset": [
+       "ch21_kesh_beaten"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch21_two_lamps"
+      },
+      {
+       "play": "ch21_kesh"
+      },
+      {
+       "battle": "ch21_kesh",
+       "return_spawn": "HeartFloor",
+       "victory_flag": "ch21_kesh_beaten",
+       "party": [
+        "ysolde",
+        "rhen",
+        "toma"
+       ],
+       "reserve": [
+        "kerrid",
+        "asha",
+        "liss"
+       ]
+      }
+     ]
+    },
+    "the_warden": {
+     "when": {
+      "set": [
+       "ch21_kesh_released"
+      ],
+      "unset": [
+       "ch21_warden_beaten"
+      ]
+     },
+     "steps": [
+      {
+       "battle": "ch21_sefir_warden",
+       "return_spawn": "HeartFloor",
+       "victory_flag": "ch21_warden_beaten",
+       "party": [
+        "kerrid",
+        "rhen",
+        "toma"
+       ],
+       "reserve": [
+        "ysolde",
+        "asha",
+        "liss"
+       ]
+      }
+     ]
+    }
+   }
+  }
+ }
+}

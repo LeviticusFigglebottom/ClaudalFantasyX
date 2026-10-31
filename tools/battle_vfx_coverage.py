@@ -93,6 +93,24 @@ INTENDED = {
     "crawler_tend": "the conduit crawler idles while it tends; no effect of its own (M4-A2P-022)",
     "cord_lift": "Hesk's cleanse (M4-A2P-024): Nhoa's, Hesk's and Ethren's effects are M3-BPR-443's",
     "nhoa_echo": "Nhoa's echo plays the copied action's effect; her own double (M4-A2P-024) is M3-BPR-443's",
+    # the chapters combat seat's Act II and III rows (act1-chapters): set-piece entries' turns, summons, charges and
+    # stances whose look is the stage's or the creature's (no library effect of their own yet; battle-presentation's)
+    "court_reinforce": "Ch14's court sends a Stillguard down the steps: the summon's entrance (M4-A2P-1200)",
+    "cut_the_line": "Merel's knife (a ward entry's turn) plays on the stage's knife, not a library effect (M4-A2P-1200)",
+    "seize_the_line": "the Stillguard's grip on Merel's line lands on the ward or its coverer (M4-A2P-1200)",
+    "engine_churn": "Venn's flat engine churns between pulses through its own rig (M4-A2P-1200)",
+    "hold_the_line": "Ch16's storm hold: a ward entry's turn on the stage (M4-A2P-1012)",
+    "storm_drag": "the undertow drags the ward: the stage's line, not a library effect (M4-A2P-1012)",
+    "storm_ebb": "the storm's tide entry ebbs between spawns: no effect (M4-A2P-1012)",
+    "storm_spawn_crawler": "the storm's tide raises a crawler: the summon's entrance (M4-A2P-1012)",
+    "storm_spawn_skate": "the storm's tide raises a glass skate: the summon's entrance (M4-A2P-1012)",
+    "wall_gather": "the wall's gather plays through BattleBossVfx on charge_started (M4-A2P-1012)",
+    "wardens_answer": "Hesper's stance: the counter's riposte carries the effect (M5-A3P-1009)",
+    "letting_verse": "Asha's verse (the Letting's ward entry) is the diegetic song and her sleeve, not a library effect "
+    "(M5-A3P-1017)",
+    "letting_stilled_rise": "the Long Stillness raises a Stilled: the summon's entrance (M5-A3P-1017)",
+    "tide_recrust_gather": "the Tide Matron's gather plays through BattleBossVfx on charge_started, as the Cinder "
+    "Matron's (M5-A3P-1852)",
 }
 
 

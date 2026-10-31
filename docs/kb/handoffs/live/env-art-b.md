@@ -1264,3 +1264,14 @@ SELF-RENDERED @ 4cd6ed12: ch05_pemakar_harbour, _crown and _weir with the lamp f
 - **Checks:** Godot corrow 18, coilspire 11, pemakar 10, ambient_life 3 and zone_kit_dressing 10 pass; tools corrow, coilspire and pemakar kits OK; validate_data and taskboard OK.
 - **MERGE-READY @ db1ce910** (rows 82, 62 and 84).
 SELF-RENDERED @ db1ce910: ch08_corrow_storm, _flood and _lake before and after; ch05_pemakar_weir and ch08_coilspire_gate before and after; plus ch05_ashcrown_court, ch05_pemakar_harbour_day, ch06_brine_camp and Ashcrown's A01 and A10 before (scratch). All viewed.
+
+### PC row 86 (Act II first look, real GPU; Lead 02:22)
+- **Lacquer Court, party near-black against the sunset: fixed.** `ch14_lacquer_court_dressing.py` adds two `fill_lights` rows: a cool sky fill from the east (0.4) on the faces the entry and dais views see, and a soft top fill (0.15). The sunset from the west keeps the shadows and the rim. A first try at 0.65 / 0.35 washed the court floor white, so they were halved.
+  - **Viewed:** the Steps and CourtEntry spawn views. The dusk stays deep orange and the figure reads.
+  - **The Barge spawn:** its canopy and deck now read in red instead of a dark box.
+- **Lamp Archive, Door spawn on a plain grey slab: finished.** That slab is the reading room's floor seen from the field camera, not greybox: Ansedra's white-painted marble (paint 0.9) read as one flat slab there. The archive now has its own copy, `lamp_archive_marble_material.tres`: paint 0.55 so the stone shows, warmer, with darker joints, a little relief and a lower specular.
+  - **Viewed** from behind the hero at the Door spawn: the flagstones and their joints read.
+- **Checks:** tools lacquer-court and archive tests OK; Godot lacquer 2, lamp_archive 2 and ch14 5 pass; validate_data OK.
+- **MERGE-READY @ baf421df.**
+SELF-RENDERED @ baf421df: the Lacquer Court from the Barge, Steps and CourtEntry spawns (before, first try, after) and the Lamp Archive from the Door spawn (before, after), all viewed.
+- **Pass 7 rows still open:** 78, 79, 80, 81 (see above). They come next.

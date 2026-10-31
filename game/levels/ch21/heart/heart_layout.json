@@ -1,0 +1,686 @@
+{
+ "doc": "M5-A3P-1015 greybox (tools/act3/ch21_greybox.py; do not edit by hand): the Undertow's heart. The last layer's walk (LastLayer, H01), the heart's floor (HeartFloor) round the two close lamps (ImraLamp, DaceLamp: light, no figures, inside LampRing; arms_length where Rhen stops), the Kite at rest (KiteHull, kite_lamps), the dark Choir-stone (ChoirStone: R1, the save) and the battle floor before the lamps (H03-H09).",
+ "sun": {
+  "pitch_deg": -85.0,
+  "yaw_deg": 0.0,
+  "energy": 0.2,
+  "color": "#9fe8f0"
+ },
+ "environment": {
+  "background": "#020a12",
+  "ambient_color": "#1a3a4a",
+  "ambient_energy": 0.5
+ },
+ "block_color": "#2c3a46",
+ "blocks": [
+  {
+   "id": "LastLayer",
+   "pos": [
+    0.0,
+    -0.25,
+    -1.0
+   ],
+   "size": [
+    5.0,
+    0.5,
+    18.0
+   ],
+   "color": "#2c3a46"
+  },
+  {
+   "id": "HeartFloor",
+   "pos": [
+    0.0,
+    -0.25,
+    -22.0
+   ],
+   "size": [
+    24.0,
+    0.5,
+    24.0
+   ],
+   "color": "#2c3a46"
+  },
+  {
+   "id": "LastLayerWallS0",
+   "pos": [
+    0.0,
+    0.6,
+    8.0
+   ],
+   "size": [
+    5.0,
+    1.2,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "LastLayerWallW0",
+   "pos": [
+    -2.5,
+    0.6,
+    -1.0
+   ],
+   "size": [
+    0.5,
+    1.2,
+    18.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "LastLayerWallE0",
+   "pos": [
+    2.5,
+    0.6,
+    -1.0
+   ],
+   "size": [
+    0.5,
+    1.2,
+    18.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HeartFloorWallN0",
+   "pos": [
+    0.0,
+    0.6,
+    -34.0
+   ],
+   "size": [
+    24.0,
+    1.2,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HeartFloorWallS0",
+   "pos": [
+    -7.25,
+    0.6,
+    -10.0
+   ],
+   "size": [
+    9.5,
+    1.2,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HeartFloorWallS1",
+   "pos": [
+    7.25,
+    0.6,
+    -10.0
+   ],
+   "size": [
+    9.5,
+    1.2,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HeartFloorWallW0",
+   "pos": [
+    -12.0,
+    0.6,
+    -22.0
+   ],
+   "size": [
+    0.5,
+    1.2,
+    24.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HeartFloorWallE0",
+   "pos": [
+    12.0,
+    0.6,
+    -22.0
+   ],
+   "size": [
+    0.5,
+    1.2,
+    24.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ImraLamp",
+   "pos": [
+    -0.8,
+    3.0,
+    -22.0
+   ],
+   "size": [
+    0.5,
+    6.0,
+    0.5
+   ],
+   "color": "#7fdcff",
+   "emission": "#7fdcff",
+   "emission_energy": 1.2,
+   "solid": false
+  },
+  {
+   "id": "DaceLamp",
+   "pos": [
+    0.8,
+    3.0,
+    -22.0
+   ],
+   "size": [
+    0.5,
+    6.0,
+    0.5
+   ],
+   "color": "#ffd9a0",
+   "emission": "#ffd9a0",
+   "emission_energy": 1.2,
+   "solid": false
+  },
+  {
+   "id": "LampRing",
+   "pos": [
+    0.0,
+    0.2,
+    -22.0
+   ],
+   "size": [
+    4.8,
+    0.4,
+    4.8
+   ],
+   "color": "#3a3a44"
+  },
+  {
+   "id": "ChoirStone",
+   "pos": [
+    -8.0,
+    0.6,
+    -14.0
+   ],
+   "size": [
+    1.6,
+    1.2,
+    1.0
+   ],
+   "color": "#3a3a44"
+  },
+  {
+   "id": "KiteHull",
+   "pos": [
+    8.5,
+    0.9,
+    -15.0
+   ],
+   "size": [
+    3.0,
+    1.8,
+    7.0
+   ],
+   "color": "#7a5a3a"
+  }
+ ],
+ "spawns": {
+  "LastLayer": [
+   0.0,
+   0.0,
+   6.5,
+   180.0
+  ],
+  "HeartFloor": [
+   0.0,
+   0.0,
+   -16.0,
+   180.0
+  ],
+  "ChoirStone": [
+   -8.0,
+   0.0,
+   -11.5,
+   180.0
+  ]
+ },
+ "marks": {
+  "arms_length": [
+   0.0,
+   0.0,
+   -19.0,
+   180.0
+  ],
+  "two_lamps": [
+   0.0,
+   0.0,
+   -22.0,
+   0.0
+  ],
+  "imra": [
+   -0.8,
+   0.0,
+   -22.0,
+   0.0
+  ],
+  "dace": [
+   0.8,
+   0.0,
+   -22.0,
+   0.0
+  ],
+  "heart_floor": [
+   0.0,
+   0.0,
+   -17.0,
+   0.0
+  ],
+  "sefir": [
+   0.0,
+   0.0,
+   -25.9,
+   0.0
+  ],
+  "kesh": [
+   -4.0,
+   0.0,
+   -26.0,
+   0.0
+  ],
+  "kesh_far": [
+   -7.0,
+   0.0,
+   -31.0,
+   0.0
+  ],
+  "lamp_key": [
+   -4.0,
+   1.2,
+   -26.0,
+   0.0
+  ],
+  "asha_sleeve": [
+   -1.0,
+   0.0,
+   -17.0,
+   0.0
+  ],
+  "kite_lamps": [
+   8.5,
+   1.8,
+   -15.0,
+   0.0
+  ],
+  "choir_stone": [
+   -8.0,
+   0.0,
+   -12.8,
+   0.0
+  ],
+  "storm_wall": [
+   0.0,
+   6.0,
+   -34.0,
+   0.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "HT01": {
+   "pos": [
+    1.8,
+    2.2,
+    7.0
+   ],
+   "look_at": [
+    0.0,
+    1.2,
+    -22.0
+   ],
+   "fov": 50
+  },
+  "HT02": {
+   "pos": [
+    -1.8,
+    2.2,
+    7.0
+   ],
+   "look_at": [
+    0.0,
+    1.2,
+    -22.0
+   ],
+   "fov": 50
+  },
+  "HT03": {
+   "pos": [
+    0.0,
+    1.6,
+    -16.0
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 55
+  },
+  "HT04": {
+   "pos": [
+    2.318,
+    2.8,
+    -14.867
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 45
+  },
+  "HT05": {
+   "pos": [
+    5.29,
+    1.6,
+    -14.719
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 55
+  },
+  "HT06": {
+   "pos": [
+    4.854,
+    2.8,
+    -18.473
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 45
+  },
+  "HT07": {
+   "pos": [
+    7.133,
+    1.6,
+    -19.682
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 55
+  },
+  "HT08": {
+   "pos": [
+    9.0,
+    2.8,
+    -22.0
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 45
+  },
+  "HT09": {
+   "pos": [
+    5.706,
+    1.6,
+    -23.854
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 55
+  },
+  "HT10": {
+   "pos": [
+    6.068,
+    2.8,
+    -26.408
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 45
+  },
+  "HT11": {
+   "pos": [
+    5.29,
+    1.6,
+    -29.281
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 55
+  },
+  "HT12": {
+   "pos": [
+    1.854,
+    2.8,
+    -27.706
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 45
+  },
+  "HT13": {
+   "pos": [
+    0.0,
+    1.6,
+    -29.5
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 55
+  },
+  "HT14": {
+   "pos": [
+    -2.781,
+    2.8,
+    -30.56
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 45
+  },
+  "HT15": {
+   "pos": [
+    -3.527,
+    1.6,
+    -26.854
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 55
+  },
+  "HT16": {
+   "pos": [
+    -6.068,
+    2.8,
+    -26.408
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 45
+  },
+  "HT17": {
+   "pos": [
+    -8.56,
+    1.6,
+    -24.781
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 55
+  },
+  "HT18": {
+   "pos": [
+    -6.0,
+    2.8,
+    -22.0
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 45
+  },
+  "HT19": {
+   "pos": [
+    -7.133,
+    1.6,
+    -19.682
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 55
+  },
+  "HT20": {
+   "pos": [
+    -7.281,
+    2.8,
+    -16.71
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 45
+  },
+  "HT21": {
+   "pos": [
+    -3.527,
+    1.6,
+    -17.146
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 55
+  },
+  "HT22": {
+   "pos": [
+    -2.318,
+    2.8,
+    -14.867
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -22.0
+   ],
+   "fov": 45
+  }
+ },
+ "camera_volumes": [],
+ "triggers": [
+  {
+   "id": "two_lamps",
+   "activation": "touch",
+   "at": [
+    0.0,
+    0.0,
+    -12.0
+   ],
+   "size": [
+    5.0,
+    0,
+    3.0
+   ],
+   "requires_flag": "ch21_started",
+   "blocked_by_flag": "ch21_kesh_beaten",
+   "payload": {
+    "beat": "two_lamps"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "choir_stone",
+   "activation": "interact",
+   "at": [
+    -8.0,
+    0.0,
+    -12.8
+   ],
+   "size": [
+    1.6,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch21_kesh_released",
+   "blocked_by_flag": "ch21_unbound",
+   "payload": {
+    "save_shrine": "heart_choir_stone"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "the_warden",
+   "activation": "touch",
+   "at": [
+    0.0,
+    0.0,
+    -17.6
+   ],
+   "size": [
+    8.0,
+    0,
+    2.0
+   ],
+   "requires_flag": "ch21_kesh_released",
+   "blocked_by_flag": "ch21_warden_beaten",
+   "payload": {
+    "beat": "the_warden"
+   },
+   "yaw": 0.0
+  }
+ ]
+}

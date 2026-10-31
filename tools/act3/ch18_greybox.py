@@ -29,6 +29,20 @@ COURSES = (("reedhollow", (-1.6, -3.2), "ch18_world_open"), ("hollowmere", (-1.6
            ("corrow", (1.6, -1.6), "ch18_world_open"), ("quellan", (1.6, 0.0), "ch18_world_open"),
            ("ansedra", (0.0, -4.4), "ch18_world_open"), ("iskarra", (0.0, -7.6), "ch18_night_aboard"))
 
+# M5-A3P-1015: the Ending's shots aboard (E01-E10), each on the goodbye it frames
+ENDING_SHOTS = {
+    "E01": {"pos": [1.8, 1.6, 0.0], "look_at": [0.0, 1.3, 2.0], "fov": 40},
+    "E02": {"pos": [-1.6, 1.7, -0.4], "look_at": [0.6, 1.5, 1.6], "fov": 35},
+    "E03": {"pos": [1.6, 1.6, 7.0], "look_at": [-1.4, 1.4, 4.6], "fov": 40},
+    "E04": {"pos": [-2.0, 1.7, 2.8], "look_at": [-1.4, 1.6, 4.6], "fov": 35},
+    "E05": {"pos": [1.4, 1.5, 5.6], "look_at": [2.2, 1.4, -5.0], "fov": 35},
+    "E06": {"pos": [-0.4, 3.0, 9.0], "look_at": [-1.4, 1.0, 4.6], "fov": 50},
+    "E07": {"pos": [0.2, 1.6, -2.0], "look_at": [2.2, 1.4, -5.0], "fov": 40},
+    "E08": {"pos": [1.2, 1.5, -7.4], "look_at": [2.2, 1.5, -5.0], "fov": 35},
+    "E09": {"pos": [-1.8, 2.0, 9.6], "look_at": [0.0, 1.2, 6.8], "fov": 45},
+    "E10": {"pos": [0.0, 4.0, 10.5], "look_at": [0.0, 0.5, -6.0], "fov": 55},
+}
+
 
 def kite() -> dict:
     length = DECK_STERN - DECK_BOW
@@ -47,7 +61,20 @@ def kite() -> dict:
     for cid, (x, z), flag in COURSES:
         triggers.append({"id": f"course_{cid}", "activation": "interact", "at": [x, 0.0, z], "size": [1.2, 0, 1.2],
                          "prompt_key": f"FIELD_PROMPT_CH18_COURSE_{cid.upper()}", "requires_flag": flag,
-                         "payload": {"beat": f"course_{cid}"}, "yaw": 0.0})
+                         "blocked_by_flag": "ch21_unbound", "payload": {"beat": f"course_{cid}"}, "yaw": 0.0})
+    # M5-A3P-1015, the Ending aboard (act3_ending E1-E4): after the Unbinding the Kite climbs out of the well. Each
+    # goodbye waits on the one before: Imra's on arrival, Dace's where he stood, Kerrid's at the rail, then Liss takes
+    # the strain at the wheel and brings the Kite down by hand.
+    triggers += [
+        {"id": "where_dace_stood", "activation": "touch", "at": [-1.4, 0.0, 4.6], "size": [1.6, 0, 1.6],
+         "requires_flag": "ending_imra_gone", "blocked_by_flag": "ending_dace_gone",
+         "payload": {"beat": "ending_dace"}, "yaw": 0.0},
+        {"id": "kite_rail", "activation": "touch", "at": [2.0, 0.0, -5.0], "size": [1.0, 0, 3.0],
+         "requires_flag": "ending_dace_gone", "blocked_by_flag": "ending_kerrid_gone",
+         "payload": {"beat": "ending_kerrid"}, "yaw": 0.0},
+        {"id": "the_wheel", "activation": "interact", "at": [0.0, 0.0, 7.0], "size": [1.2, 0, 1.0],
+         "prompt_key": "FIELD_PROMPT_LOOK", "requires_flag": "ending_kerrid_gone", "blocked_by_flag": "ending_landed",
+         "payload": {"beat": "ending_the_kite_comes_down"}, "yaw": 0.0}]
     return {
         "doc": "M5-A3P-1004 greybox (tools/act3/ch18_greybox.py; do not edit by hand): Ch18's Kite, Dace's hull flying "
         "(act3_ch18.md). The deck (Deck) from the bow rail to the stern rail (stern_rail), the wheel aft (kite_wheel), "
@@ -59,9 +86,16 @@ def kite() -> dict:
         "blocks": blocks,
         "spawns": {"Deck": [0.0, 0.0, 3.0, 0.0], "ChartTable": [0.0, 0.0, 0.2, 0.0]},
         "marks": {"chart_table": [0.0, 0.0, -0.3, 0.0], "kite_wheel": [0.0, 0.0, 7.0, 0.0],
-                  "stern_rail": [0.0, 0.0, 8.4, 180.0]},
+                  "stern_rail": [0.0, 0.0, 8.4, 180.0],
+                  # the Ending's (M5-A3P-1015): the goodbyes' places, at the rails and aft
+                  "by_asha": [-0.6, 0.0, 2.4, 0.0], "imra": [0.6, 0.0, 1.6, 180.0], "dace": [-1.4, 0.0, 4.6, 90.0],
+                  "where_dace_stood": [-1.4, 0.0, 4.6, 90.0], "rhen_shoulder": [-1.0, 0.0, 4.2, 90.0],
+                  "kerrid": [2.2, 0.0, -5.0, 90.0], "kerrid_hands": [2.2, 1.0, -5.0, 90.0],
+                  "kite_rail": [2.0, 0.0, -4.4, 90.0], "kite_rail_b": [2.0, 0.0, -6.0, 90.0],
+                  "sea_far": [0.0, 0.0, -40.0, 0.0], "sea_last": [0.0, 0.0, -14.0, 0.0],
+                  "kite_lamps": [0.0, 3.0, 2.0, 0.0]},
         "actors": {},
-        "shots": {"K01": {"pos": [3.8, 2.4, 9.5], "look_at": [0.0, 1.2, -4.0], "fov": 50}},
+        "shots": dict({"K01": {"pos": [3.8, 2.4, 9.5], "look_at": [0.0, 1.2, -4.0], "fov": 50}}, **ENDING_SHOTS),
         "camera_volumes": [{"id": "Deck", "mode": "pan_follow", "at": [0.0, 1.5, 0.0],
                             "size": [2 * DECK_HW + 2.0, 4.0, r3(length + 2.0)], "pos": [0.0, 6.0, 12.0],
                             "look_at": [0.0, 0.5, -1.0], "fov": 55, "priority": 1}],

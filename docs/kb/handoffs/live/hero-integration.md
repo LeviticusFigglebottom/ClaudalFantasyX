@@ -2260,3 +2260,15 @@ MERGE-READY @ (this commit).
 - **The storm figure (row 44):** creatures' fix (7dc3ab41) held in pass 5 (0 `material is null`). I can't reproduce the 59 GB loop headless.
   - **PC, please re-run a slice_sweep `--budget` walk to its quit and check the log size.** If it still loops, the `at:` line names the material owner, and I'll take it to creatures.
 MERGE-READY @ (this commit).
+
+### 2026-10-31: big37's red `test_clean_shutdown` fixed (the 59 GB-log guard)
+- **Cause:** with `$GODOT` unset (`tools/ci_local.sh` sets it but doesn't export it), the test launched `OS.get_executable_path()`. On the cloud's fetched Godot that's the sysroot's `ld-linux` loader, which the `<root>/godot` wrapper execs, so the child never started.
+- **Fix:** a new shared `tests/godot_binary.gd` (`GodotBinary.path()`). It tries, in order:
+  - `$GODOT`;
+  - this executable, if it's Godot itself;
+  - for a loader under `<root>/sysroot/`, that build's `<root>/godot` wrapper;
+  - `godot` on PATH.
+  - `test_clean_shutdown`, `test_battle_return` and `test_scene_router_swap` all use it now. The last two had the same assumption.
+  - `test_clean_shutdown` also stops after the "reached its quit" assert when the probe never ran, rather than reporting a garbage exit time.
+- **Checked on the big37 merge (f5305b150), with `GODOT` unset:** clean_shutdown 1/0 (the probe ran to its quit), battle_return 2/0, scene_router_swap 17/0.
+MERGE-READY @ (this commit).

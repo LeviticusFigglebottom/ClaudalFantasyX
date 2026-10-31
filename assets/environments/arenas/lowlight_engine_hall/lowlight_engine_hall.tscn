@@ -109,8 +109,11 @@ shader_parameter/col_sss = Color(0.2471, 0.8157, 0.7882, 1)
 shader_parameter/foam_crest_threshold = 0.9
 shader_parameter/roughness_far = 0.04
 shader_parameter/use_caustics = false
-shader_parameter/use_ssr = true
 shader_parameter/use_sss = false
+shader_parameter/use_foam = false
+shader_parameter/glint_strength = 0.12
+shader_parameter/glint_min_roughness = 0.2
+shader_parameter/use_ssr = false
 
 [sub_resource type="StandardMaterial3D" id="FlameMat"]
 shading_mode = 0

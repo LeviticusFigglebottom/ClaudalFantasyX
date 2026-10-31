@@ -1,0 +1,461 @@
+{
+ "doc": "M5-A3P-1011 (act3_ch20.md §2, U00-U08, R1, R2; docs/kb/tech/chapter_flow.md): Ch20 'The Undertow' on ch20/undertow_layers. Down the eye on arrival (U00, ch20_started); each memory layer's floor plays its Vowbound's scene and fight (ch20_<v>, the answering hero active; victory ch20_<v>_beaten), and the return plays the release (ch20_<v>_release sets ch20_<v>_released) and lifts the veil to the next floor; the two wordless rests set ch20_rest_one and ch20_rest_two; the Cage (U07, ch20_the_cage, victory ch20_cage_broken) and on the return 'Thank you' (U08, ch20_complete). Then the flow goes down to ch21/heart (Ch21).",
+ "chapter": "ch20",
+ "zones": {
+  "ch20/undertow_layers": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch20_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "FirstFloor"
+      },
+      {
+       "chapter": 20
+      },
+      {
+       "party": {
+        "party": [
+         "rhen",
+         "asha",
+         "toma"
+        ],
+        "reserve": [
+         "ysolde",
+         "kerrid",
+         "liss"
+        ]
+       }
+      },
+      {
+       "play": "ch20_down_the_eye"
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch20_cage_broken"
+      ],
+      "unset": [
+       "ch20_complete"
+      ]
+     },
+     "steps": [
+      {
+       "place": "CageFloor"
+      },
+      {
+       "play": "ch20_thank_you"
+      },
+      {
+       "go": {
+        "location": "ch21/heart",
+        "spawn": "LastLayer"
+       }
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch20_ilun_beaten"
+      ],
+      "unset": [
+       "ch20_ilun_released"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Oruvel"
+      },
+      {
+       "play": "ch20_ilun_release"
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch20_kahre_beaten"
+      ],
+      "unset": [
+       "ch20_kahre_released"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Lanternfall"
+      },
+      {
+       "play": "ch20_kahre_release"
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch20_virel_beaten"
+      ],
+      "unset": [
+       "ch20_virel_released"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Kitchen"
+      },
+      {
+       "play": "ch20_virel_release"
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch20_hesk_beaten"
+      ],
+      "unset": [
+       "ch20_hesk_released"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Tidecup"
+      },
+      {
+       "play": "ch20_hesk_release"
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch20_nhoa_beaten"
+      ],
+      "unset": [
+       "ch20_nhoa_released"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Lowlight"
+      },
+      {
+       "play": "ch20_nhoa_release"
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch20_ethren_beaten"
+      ],
+      "unset": [
+       "ch20_ethren_released"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Ansedra"
+      },
+      {
+       "play": "ch20_ethren_release"
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "ilun": {
+     "when": {
+      "set": [
+       "ch20_started"
+      ],
+      "unset": [
+       "ch20_ilun_beaten"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch20_ilun"
+      },
+      {
+       "battle": "ch20_ilun",
+       "return_spawn": "Oruvel",
+       "victory_flag": "ch20_ilun_beaten",
+       "party": [
+        "ysolde",
+        "rhen",
+        "asha"
+       ],
+       "reserve": [
+        "toma",
+        "kerrid",
+        "liss"
+       ]
+      }
+     ]
+    },
+    "kahre": {
+     "when": {
+      "set": [
+       "ch20_ilun_released"
+      ],
+      "unset": [
+       "ch20_kahre_beaten"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch20_kahre"
+      },
+      {
+       "battle": "ch20_kahre",
+       "return_spawn": "Lanternfall",
+       "victory_flag": "ch20_kahre_beaten",
+       "party": [
+        "kerrid",
+        "rhen",
+        "asha"
+       ],
+       "reserve": [
+        "toma",
+        "ysolde",
+        "liss"
+       ]
+      }
+     ]
+    },
+    "virel": {
+     "when": {
+      "set": [
+       "ch20_kahre_released"
+      ],
+      "unset": [
+       "ch20_virel_beaten"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch20_virel"
+      },
+      {
+       "battle": "ch20_virel",
+       "return_spawn": "Kitchen",
+       "victory_flag": "ch20_virel_beaten",
+       "party": [
+        "toma",
+        "rhen",
+        "asha"
+       ],
+       "reserve": [
+        "ysolde",
+        "kerrid",
+        "liss"
+       ]
+      }
+     ]
+    },
+    "hesk": {
+     "when": {
+      "set": [
+       "ch20_rest_one"
+      ],
+      "unset": [
+       "ch20_hesk_beaten"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch20_hesk"
+      },
+      {
+       "battle": "ch20_hesk",
+       "return_spawn": "Tidecup",
+       "victory_flag": "ch20_hesk_beaten",
+       "party": [
+        "toma",
+        "rhen",
+        "asha"
+       ],
+       "reserve": [
+        "ysolde",
+        "kerrid",
+        "liss"
+       ]
+      }
+     ]
+    },
+    "nhoa": {
+     "when": {
+      "set": [
+       "ch20_hesk_released"
+      ],
+      "unset": [
+       "ch20_nhoa_beaten"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch20_nhoa"
+      },
+      {
+       "battle": "ch20_nhoa",
+       "return_spawn": "Lowlight",
+       "victory_flag": "ch20_nhoa_beaten",
+       "party": [
+        "ysolde",
+        "rhen",
+        "asha"
+       ],
+       "reserve": [
+        "toma",
+        "kerrid",
+        "liss"
+       ]
+      }
+     ]
+    },
+    "ethren": {
+     "when": {
+      "set": [
+       "ch20_nhoa_released"
+      ],
+      "unset": [
+       "ch20_ethren_beaten"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch20_ethren"
+      },
+      {
+       "battle": "ch20_ethren",
+       "return_spawn": "Ansedra",
+       "victory_flag": "ch20_ethren_beaten",
+       "party": [
+        "ysolde",
+        "rhen",
+        "asha"
+       ],
+       "reserve": [
+        "toma",
+        "kerrid",
+        "liss"
+       ]
+      }
+     ]
+    },
+    "rest_one": {
+     "when": {
+      "set": [
+       "ch20_virel_released"
+      ],
+      "unset": [
+       "ch20_rest_one"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch20_rest_one"
+      },
+      {
+       "set": "ch20_rest_one"
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    },
+    "rest_two": {
+     "when": {
+      "set": [
+       "ch20_ethren_released"
+      ],
+      "unset": [
+       "ch20_rest_two"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch20_rest_two"
+      },
+      {
+       "set": "ch20_rest_two"
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    },
+    "the_cage": {
+     "when": {
+      "set": [
+       "ch20_rest_two"
+      ],
+      "unset": [
+       "ch20_cage_broken"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch20_the_cage"
+      },
+      {
+       "battle": "ch20_the_cage",
+       "return_spawn": "CageFloor",
+       "victory_flag": "ch20_cage_broken",
+       "party": [
+        "toma",
+        "kerrid",
+        "ysolde"
+       ],
+       "reserve": [
+        "rhen",
+        "asha",
+        "liss"
+       ]
+      }
+     ]
+    }
+   }
+  }
+ }
+}

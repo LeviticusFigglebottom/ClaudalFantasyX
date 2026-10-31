@@ -1358,7 +1358,10 @@ OVERCAST_LAGOON = {  # the colour script's `overcast_lagoon` look (ch11): the Ac
     "params": [("col_deep", "#0E4A55"), ("col_scatter_shallow", "#1FA3A6"), ("absorption_per_m", "Vector3(2, 0.5, 0.42)"),
                ("absorption_scale", 1.5), ("scatter_energy", 0.1), ("caustic_strength", 0.0), ("col_foam", "#EEF6F4"),
                ("col_sss", "#3FD0C9"), ("foam_crest_threshold", 0.9), ("roughness_far", 0.04), ("use_caustics", "false"),
-               ("use_ssr", "true"), ("use_sss", "false")]}
+               ("use_sss", "false"),
+               # PC row 86 (10-31): still, sheltered water has no shore foam and no hard sun glints. The sun's GGX glint
+               # on the wave facets printed jagged white flakes across the hall's floor water.
+               ("use_foam", "false"), ("glint_strength", 0.12), ("glint_min_roughness", 0.2), ("use_ssr", "false")]}
 
 
 def _lowlight_arena() -> dict:
@@ -1477,7 +1480,10 @@ TANNIN_FEN = {  # the colour script's `tannin_fen` look (ch10): brown-black tea 
     "params": [("col_deep", "#3A2A18"), ("col_scatter_shallow", "#4A3A22"), ("absorption_per_m", "Vector3(0.6, 1.4, 4)"),
                ("absorption_scale", 1.0), ("scatter_energy", 0.08), ("caustic_strength", 0.0), ("col_foam", "#C8C4B4"),
                ("col_sss", "#6A4A26"), ("foam_crest_threshold", 0.9), ("roughness_far", 0.06), ("use_caustics", "false"),
-               ("use_ssr", "true"), ("use_sss", "false")]}
+               ("use_sss", "false"),
+               # PC row 86: a tannin backwater has no surf and no hard glints. The sun's glint off the shallow sheets in
+               # the mud's dips read as stark white cut-outs.
+               ("use_foam", "false"), ("glint_strength", 0.12), ("glint_min_roughness", 0.2), ("use_ssr", "false")]}
 
 
 def _fen_arena() -> dict:
