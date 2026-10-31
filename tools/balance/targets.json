@@ -1875,6 +1875,244 @@
       "p90_turns_max": 45,
       "loadout": "ch19_iskarra",
       "swell": "good"
+    },
+    {
+      "id": "ch20_ilun",
+      "chapter": "Ch20 release, layer 1 (Ilun held, ysolde answers; act3_ch20.md §5: each won at a moderate level, so the Act III regular band, p90 as a boss's; tuned by the chapters combat seat; the ch20_layer1 loadout)",
+      "kind": "regular",
+      "encounter": "ch20_ilun",
+      "active": [
+        "ysolde",
+        "rhen",
+        "asha"
+      ],
+      "reserve": [
+        "toma",
+        "kerrid"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          25
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          88,
+          100
+        ],
+        "smart": [
+          95,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 90,
+      "loadout": "ch20_layer1",
+      "swell": "good"
+    },
+    {
+      "id": "ch20_kahre",
+      "chapter": "Ch20 release, layer 2 (Kahre held, kerrid answers; act3_ch20.md §5: each won at a moderate level, so the Act III regular band, p90 as a boss's; tuned by the chapters combat seat; the ch20_layer2 loadout)",
+      "kind": "regular",
+      "encounter": "ch20_kahre",
+      "active": [
+        "kerrid",
+        "rhen",
+        "asha"
+      ],
+      "reserve": [
+        "toma",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          25
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          88,
+          100
+        ],
+        "smart": [
+          95,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 90,
+      "loadout": "ch20_layer2",
+      "swell": "good"
+    },
+    {
+      "id": "ch20_virel",
+      "chapter": "Ch20 release, layer 3 (Virel held, toma answers; act3_ch20.md §5: each won at a moderate level, so the Act III regular band, p90 as a boss's; tuned by the chapters combat seat; the ch20_layer3 loadout)",
+      "kind": "regular",
+      "encounter": "ch20_virel",
+      "active": [
+        "toma",
+        "rhen",
+        "asha"
+      ],
+      "reserve": [
+        "ysolde",
+        "kerrid"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          25
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          88,
+          100
+        ],
+        "smart": [
+          95,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 90,
+      "loadout": "ch20_layer3",
+      "swell": "good"
+    },
+    {
+      "id": "ch20_hesk",
+      "chapter": "Ch20 release, layer 4 (Hesk held, toma answers; act3_ch20.md §5: each won at a moderate level, so the Act III regular band, p90 as a boss's; tuned by the chapters combat seat; the ch20_layer4 loadout)",
+      "kind": "regular",
+      "encounter": "ch20_hesk",
+      "active": [
+        "toma",
+        "rhen",
+        "asha"
+      ],
+      "reserve": [
+        "ysolde",
+        "kerrid"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          25
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          88,
+          100
+        ],
+        "smart": [
+          95,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 90,
+      "loadout": "ch20_layer4",
+      "swell": "good"
+    },
+    {
+      "id": "ch20_nhoa",
+      "chapter": "Ch20 release, layer 5 (Nhoa held, ysolde answers; act3_ch20.md §5: each won at a moderate level, so the Act III regular band, p90 as a boss's; tuned by the chapters combat seat; the ch20_layer5 loadout)",
+      "kind": "regular",
+      "encounter": "ch20_nhoa",
+      "active": [
+        "ysolde",
+        "rhen",
+        "asha"
+      ],
+      "reserve": [
+        "toma",
+        "kerrid"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          25
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          88,
+          100
+        ],
+        "smart": [
+          95,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 90,
+      "loadout": "ch20_layer5",
+      "swell": "good"
+    },
+    {
+      "id": "ch20_ethren",
+      "chapter": "Ch20 release, layer 6 (Ethren held, ysolde answers; act3_ch20.md §5: each won at a moderate level, so the Act III regular band, p90 as a boss's; tuned by the chapters combat seat; the ch20_layer6 loadout)",
+      "kind": "regular",
+      "encounter": "ch20_ethren",
+      "active": [
+        "ysolde",
+        "rhen",
+        "asha"
+      ],
+      "reserve": [
+        "toma",
+        "kerrid"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          25
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          88,
+          100
+        ],
+        "smart": [
+          95,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 90,
+      "loadout": "ch20_layer6",
+      "swell": "good"
+    },
+    {
+      "id": "ch20_the_cage",
+      "chapter": "Ch20 boss (the Cage: four founders' seats round the well, each answered by a different hero, the rest growing stronger as each breaks; Toma locked in holding the line; act3_ch20.md §5, the Act III boss band, smart report only with an ease floor as the Act II bosses; tuned by the chapters combat seat; the ch20_cage loadout, Kesh alone)",
+      "kind": "boss",
+      "encounter": "ch20_the_cage",
+      "active": [
+        "toma",
+        "kerrid",
+        "ysolde"
+      ],
+      "reserve": [
+        "rhen",
+        "asha"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          2
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          50,
+          75
+        ],
+        "smart": null,
+        "ward_guard": null
+      },
+      "p90_turns_max": 90,
+      "loadout": "ch20_cage",
+      "swell": "good",
+      "mean_turns_min": {
+        "smart": 30
+      }
     }
   ]
 }

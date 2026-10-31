@@ -688,6 +688,371 @@
         "ethren",
         "kesh"
       ]
+    },
+    "ch20_layer1": {
+      "_note": "M4-A2P-019 (the chapters combat seat): the Act II party's kit at this chapter: Act I's best gear (no Act II gear exists yet), Kerrid's and Liss's own, the Vowbound bound by then and the chapter's shop stock. No Lattice (the sim has no hook for it yet) and no Pell (no battle kit, M3-C09-07). Ch20, layer 1 (Ilun held): the Vowbound not yet released and not the one fought (kahre, virel, nhoa, hesk, ethren, kesh).",
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ],
+        "liss": [
+          "liss_crank_launcher",
+          "liss_copper_sleeve"
+        ]
+      },
+      "items": {
+        "salt_tonic": 5,
+        "reef_draught": 3,
+        "tidewash_salve": 1,
+        "quickwater": 1,
+        "ember_pot": 1,
+        "relighting_wick": 1
+      },
+      "flags": [
+        "ch03_ilun_bound",
+        "ch05_kahre_bound",
+        "ch08_virel_bound",
+        "ch08_hoist_rigged",
+        "ch11_nhoa_bound",
+        "ch12_hesk_bound",
+        "ch13_ethren_bound",
+        "ch16_kesh_bound"
+      ],
+      "vowbound": [
+        "kahre",
+        "virel",
+        "nhoa",
+        "hesk",
+        "ethren",
+        "kesh"
+      ]
+    },
+    "ch20_layer2": {
+      "_note": "M4-A2P-019 (the chapters combat seat): the Act II party's kit at this chapter: Act I's best gear (no Act II gear exists yet), Kerrid's and Liss's own, the Vowbound bound by then and the chapter's shop stock. No Lattice (the sim has no hook for it yet) and no Pell (no battle kit, M3-C09-07). Ch20, layer 2 (Kahre held): the Vowbound not yet released and not the one fought (virel, nhoa, hesk, ethren, kesh).",
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ],
+        "liss": [
+          "liss_crank_launcher",
+          "liss_copper_sleeve"
+        ]
+      },
+      "items": {
+        "salt_tonic": 5,
+        "reef_draught": 3,
+        "tidewash_salve": 1,
+        "quickwater": 1,
+        "ember_pot": 1,
+        "relighting_wick": 1
+      },
+      "flags": [
+        "ch03_ilun_bound",
+        "ch05_kahre_bound",
+        "ch08_virel_bound",
+        "ch08_hoist_rigged",
+        "ch11_nhoa_bound",
+        "ch12_hesk_bound",
+        "ch13_ethren_bound",
+        "ch16_kesh_bound"
+      ],
+      "vowbound": [
+        "virel",
+        "nhoa",
+        "hesk",
+        "ethren",
+        "kesh"
+      ]
+    },
+    "ch20_layer3": {
+      "_note": "M4-A2P-019 (the chapters combat seat): the Act II party's kit at this chapter: Act I's best gear (no Act II gear exists yet), Kerrid's and Liss's own, the Vowbound bound by then and the chapter's shop stock. No Lattice (the sim has no hook for it yet) and no Pell (no battle kit, M3-C09-07). Ch20, layer 3 (Virel held): the Vowbound not yet released and not the one fought (nhoa, hesk, ethren, kesh).",
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ],
+        "liss": [
+          "liss_crank_launcher",
+          "liss_copper_sleeve"
+        ]
+      },
+      "items": {
+        "salt_tonic": 5,
+        "reef_draught": 3,
+        "tidewash_salve": 1,
+        "quickwater": 1,
+        "ember_pot": 1,
+        "relighting_wick": 1
+      },
+      "flags": [
+        "ch03_ilun_bound",
+        "ch05_kahre_bound",
+        "ch08_virel_bound",
+        "ch08_hoist_rigged",
+        "ch11_nhoa_bound",
+        "ch12_hesk_bound",
+        "ch13_ethren_bound",
+        "ch16_kesh_bound"
+      ],
+      "vowbound": [
+        "nhoa",
+        "hesk",
+        "ethren",
+        "kesh"
+      ]
+    },
+    "ch20_layer4": {
+      "_note": "M4-A2P-019 (the chapters combat seat): the Act II party's kit at this chapter: Act I's best gear (no Act II gear exists yet), Kerrid's and Liss's own, the Vowbound bound by then and the chapter's shop stock. No Lattice (the sim has no hook for it yet) and no Pell (no battle kit, M3-C09-07). Ch20, layer 4 (Hesk held): the Vowbound not yet released and not the one fought (nhoa, ethren, kesh).",
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ],
+        "liss": [
+          "liss_crank_launcher",
+          "liss_copper_sleeve"
+        ]
+      },
+      "items": {
+        "salt_tonic": 5,
+        "reef_draught": 3,
+        "tidewash_salve": 1,
+        "quickwater": 1,
+        "ember_pot": 1,
+        "relighting_wick": 1
+      },
+      "flags": [
+        "ch03_ilun_bound",
+        "ch05_kahre_bound",
+        "ch08_virel_bound",
+        "ch08_hoist_rigged",
+        "ch11_nhoa_bound",
+        "ch12_hesk_bound",
+        "ch13_ethren_bound",
+        "ch16_kesh_bound"
+      ],
+      "vowbound": [
+        "nhoa",
+        "ethren",
+        "kesh"
+      ]
+    },
+    "ch20_layer5": {
+      "_note": "M4-A2P-019 (the chapters combat seat): the Act II party's kit at this chapter: Act I's best gear (no Act II gear exists yet), Kerrid's and Liss's own, the Vowbound bound by then and the chapter's shop stock. No Lattice (the sim has no hook for it yet) and no Pell (no battle kit, M3-C09-07). Ch20, layer 5 (Nhoa held): the Vowbound not yet released and not the one fought (ethren, kesh).",
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ],
+        "liss": [
+          "liss_crank_launcher",
+          "liss_copper_sleeve"
+        ]
+      },
+      "items": {
+        "salt_tonic": 5,
+        "reef_draught": 3,
+        "tidewash_salve": 1,
+        "quickwater": 1,
+        "ember_pot": 1,
+        "relighting_wick": 1
+      },
+      "flags": [
+        "ch03_ilun_bound",
+        "ch05_kahre_bound",
+        "ch08_virel_bound",
+        "ch08_hoist_rigged",
+        "ch11_nhoa_bound",
+        "ch12_hesk_bound",
+        "ch13_ethren_bound",
+        "ch16_kesh_bound"
+      ],
+      "vowbound": [
+        "ethren",
+        "kesh"
+      ]
+    },
+    "ch20_layer6": {
+      "_note": "M4-A2P-019 (the chapters combat seat): the Act II party's kit at this chapter: Act I's best gear (no Act II gear exists yet), Kerrid's and Liss's own, the Vowbound bound by then and the chapter's shop stock. No Lattice (the sim has no hook for it yet) and no Pell (no battle kit, M3-C09-07). Ch20, layer 6 (Ethren held): the Vowbound not yet released and not the one fought (kesh).",
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ],
+        "liss": [
+          "liss_crank_launcher",
+          "liss_copper_sleeve"
+        ]
+      },
+      "items": {
+        "salt_tonic": 5,
+        "reef_draught": 3,
+        "tidewash_salve": 1,
+        "quickwater": 1,
+        "ember_pot": 1,
+        "relighting_wick": 1
+      },
+      "flags": [
+        "ch03_ilun_bound",
+        "ch05_kahre_bound",
+        "ch08_virel_bound",
+        "ch08_hoist_rigged",
+        "ch11_nhoa_bound",
+        "ch12_hesk_bound",
+        "ch13_ethren_bound",
+        "ch16_kesh_bound"
+      ],
+      "vowbound": [
+        "kesh"
+      ]
+    },
+    "ch20_cage": {
+      "_note": "M4-A2P-019 (the chapters combat seat): the Act II party's kit at this chapter: Act I's best gear (no Act II gear exists yet), Kerrid's and Liss's own, the Vowbound bound by then and the chapter's shop stock. No Lattice (the sim has no hook for it yet) and no Pell (no battle kit, M3-C09-07). Ch20, the Cage (R2: one name left): Kesh alone.",
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ],
+        "liss": [
+          "liss_crank_launcher",
+          "liss_copper_sleeve"
+        ]
+      },
+      "items": {
+        "salt_tonic": 5,
+        "reef_draught": 3,
+        "tidewash_salve": 1,
+        "quickwater": 1,
+        "ember_pot": 1,
+        "relighting_wick": 1
+      },
+      "flags": [
+        "ch03_ilun_bound",
+        "ch05_kahre_bound",
+        "ch08_virel_bound",
+        "ch08_hoist_rigged",
+        "ch11_nhoa_bound",
+        "ch12_hesk_bound",
+        "ch13_ethren_bound",
+        "ch16_kesh_bound"
+      ],
+      "vowbound": [
+        "kesh"
+      ]
     }
   }
 }
