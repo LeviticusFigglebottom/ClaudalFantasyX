@@ -246,6 +246,13 @@
       "spawn": "FirstFloor",
       "name_key": "LOCATION_CH20_UNDERTOW_LAYERS",
       "_note": "M5-A3P-1011: inside the Undertow (act3_ch20.md), a greybox zone (Ch05Zone) from tools/act3/ch20_greybox.py: the first floor with the Kite, the six memory layers, the two rests and the Cage's floor round the well."
+    },
+    {
+      "id": "ch21/heart",
+      "scene": "res://game/levels/ch21/heart/heart.tscn",
+      "spawn": "LastLayer",
+      "name_key": "LOCATION_CH21_HEART",
+      "_note": "M5-A3P-1015: the Undertow's heart (act3_ending.md H01-H09), a greybox zone (Ch05Zone) from tools/act3/ch21_greybox.py: the last layer's walk, the heart's floor round the two lamps, the Kite at rest, the dark Choir-stone (R1, a save) and the battle floor."
     }
   ],
   "shrines": [
@@ -257,6 +264,7 @@
     {"id": "quellan_shrine", "location_id": "ch12/quellan", "spawn": "Shrine"},
     {"id": "ansedra_shrine", "location_id": "ch13/ansedra", "spawn": "Moorings"},
     {"id": "hollowmere_shrine", "location_id": "ch17/hollowmere", "spawn": "Dock"},
-    {"id": "pale_rim_shrine", "location_id": "ch16/pale_rim", "spawn": "Rim"}
+    {"id": "pale_rim_shrine", "location_id": "ch16/pale_rim", "spawn": "Rim"},
+    {"id": "heart_choir_stone", "location_id": "ch21/heart", "spawn": "ChoirStone"}
   ]
 }
