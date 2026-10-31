@@ -589,6 +589,26 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **M5-A3P-1401 (Act III, Ch19): the Lamp Spire's tier kit. MERGE-READY @ d6f51ad3** (review: art).
+  - **New pieces:**
+    - `spire_tier` (stacks every 4.2 m): flags on a bed whose underside is the ceiling below, the stairwell open where
+      the flight arrives, conduit rings, six window bays, and the flight curving up the wall.
+    - `spire_lamp_engine`: bound and steady.
+    - `spire_quarters`: the founders' room, the child's height marks on the door post.
+  - Viewed in a staged stack at a walker's eye. Two fixes after viewing: wedge gaps between the flags (now on a bed),
+    and the deck's underside normals.
+  - **Checks:**
+    - Tools: test_iskarra_spire (+2 checks), test_iskarra and test_haluna_kit OK.
+    - validate_data and taskboard --check clean.
+  - The ch19 greybox and the stacking of the tiers are the Act III chapters' track's; iskarra.md §3 describes the kit
+    for them.
+- **CONFIRMED 23:27 (the Lead's check-in): all pushed to origin/claude/env-art** (the head is 55188ef9 and later).
+  - The last Oruvel outrigger, M3-ENV-1391: MERGE-READY @ 0de280e2.
+  - The Ch4 derelict hatch lip, M4-A2P-1403: MERGE-READY @ bcb96e0a (its log commit; the fix is just before it).
+  - M5-A3P-1400, Ch20's three memory rooms: MERGE-READY @ 23805774.
+- **CLAIM M5-A3P-1401 (Act III, Ch19): the Lamp Spire's four tiers' interior kit** (`spire_tier`,
+  `spire_lamp_engine`, `spire_quarters` in iskarra_spire.py; task file in docs/kb/tasks/M5/). Lead, please record
+  the claim. The zone split proposal to env-art-b (below) has no answer yet; Ch19 is in my lane under it either way.
 - **M5-A3P-1400 (Act III): Ch20's three missing memory rooms. MERGE-READY @ 83fbf95e** (review: art).
   - **New pieces:** `memory_terrace` (U02), `memory_gallery` (U05) and `memory_square` (U06), each within 7k / 500
     triangles, with glbs, imports, PROVENANCE rows and manifest rows.

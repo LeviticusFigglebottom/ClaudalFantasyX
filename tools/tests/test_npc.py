@@ -206,6 +206,14 @@ class Crowd(unittest.TestCase):
                                      "ch17/hollowmere": 4, "ch13/ansedra": 7})
         self.assertEqual(len(by_zone["ch17/hollowmere"]), 10, "Hollowmere's Saltwright townsfolk (Ch15 B11)")
 
+    def test_flag_rows_name_declared_flags(self) -> None:
+        """M5-A3P-1810: a row's flag and not_flag are declared flags (VillagerLayer swaps rows on them)."""
+        data = copy.deepcopy(_load(CROWD_ZONE))
+        data["villagers"][0]["not_flag"] = "ch02_heard_pila"
+        self.assertEqual(self._zone_errors(data), [])
+        data["villagers"][0]["flag"] = "no_such_flag"
+        self.assertTrue(any("flag 'no_such_flag' is not declared" in e for e in self._zone_errors(data)))
+
     def test_crowd_rows_must_match_their_person(self) -> None:
         data = copy.deepcopy(_load(CROWD_ZONE))
         self.assertEqual(self._zone_errors(data), [])

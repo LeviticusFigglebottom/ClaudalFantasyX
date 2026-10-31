@@ -38,13 +38,15 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	return view
 
 
-## The ids of `rows` (vowbound.json rows) whose bound_flag is set. `is_set`: (flag) -> bool.
+## The ids of `rows` (vowbound.json rows) whose bound_flag is set and whose released_flag (M5-A3P-1705; act3_ch20
+## U01-U06: released for good, it leaves the menu) is not. `is_set`: (flag) -> bool.
 static func bound_ids(rows: Array, is_set: Callable) -> Array[StringName]:
 	var out: Array[StringName] = []
 	for row: Variant in rows:
 		var d: Dictionary = row
 		var flag := StringName(str(d.get("bound_flag", "")))
-		if flag != &"" and bool(is_set.call(flag)):
+		var gone := StringName(str(d.get("released_flag", "")))
+		if flag != &"" and bool(is_set.call(flag)) and (gone == &"" or not bool(is_set.call(gone))):
 			out.append(StringName(str(d.get("id", ""))))
 	return out
 

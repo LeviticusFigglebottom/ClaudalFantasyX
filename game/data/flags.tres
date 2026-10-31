@@ -395,5 +395,15 @@ flags = {
 "credits_seen": "Credits (M5-A3P-1700): the closing credits have run to their end in this save; holding Cancel may skip them after that.",
 "ch10_what_went_up_seen": "Ch10 B05: ch10_what_went_up (the Drowner's release) has played after its fight, once (M4-A2P-1003 D11).",
 "ch12_herd_cord_seen": "Ch12 B07: ch12_herd_cord (Pell ties the Ram's cord on the pass) has played after the fight, once (M4-A2P-1003 E6).",
-"ch13_guest_of_sefir": "Ch13 B02: after the still city and Tobin, the party are Sefir's guests; Kerrid sits out the nights at the moorings (ADR 0022 (c); the Ansedra layout's state row; M4-A2P-1003 E3)."
+"ch13_guest_of_sefir": "Ch13 B02: after the still city and Tobin, the party are Sefir's guests; Kerrid sits out the nights at the moorings (ADR 0022 (c); the Ansedra layout's state row; M4-A2P-1003 E3).",
+"ch15_wakefin_felled": "Ch15 B04: the party felled the Wakefin off the barge at night (ch15_wakefin's victory_flag; the shoal plays on the return; M4-A2P-1012).",
+"ch15_dawn": "Ch15 B09: dawn at the bow (the to_hollowmere beat sets it before the current-song); the open sea's dawn variant reads it (M4-A2P-105).",
+"ch18_revisit_haluna": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Haluna side scene (ch18_revisit_haluna) has played; the Kite's log reads Seen.",
+"ch18_revisit_oruvel": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Oruvel side scene (ch18_revisit_oruvel) has played; the Kite's log reads Seen.",
+"ch18_revisit_pemakar": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Pemakar side scene (ch18_revisit_pemakar) has played; the Kite's log reads Seen.",
+"ch18_revisit_tamsule": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Tamsule side scene (ch18_revisit_tamsule) has played; the Kite's log reads Seen.",
+"ch18_revisit_corrow": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Corrow side scene (ch18_revisit_corrow) has played; the Kite's log reads Seen.",
+"ch18_revisit_quellan": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Quellan side scene (ch18_revisit_quellan) has played; the Kite's log reads Seen.",
+"ch18_revisit_ansedra": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Ansedra (from the air) side scene (ch18_revisit_ansedra) has played; the Kite's log reads Seen.",
+"ch18_revisit_hollowmere": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Hollowmere side scene (ch18_revisit_hollowmere) has played; the Kite's log reads Seen."
 }

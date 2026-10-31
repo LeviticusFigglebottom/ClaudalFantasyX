@@ -293,7 +293,7 @@
           {"id": "strand", "name_key": "MAP_POI_C_STRAND", "kind": "path", "at": [-53.7, 25.7], "source": "spawn:Strand"},
           {"id": "wall_head", "name_key": "MAP_POI_C_WALL_HEAD", "kind": "talk", "at": [-16.9, -0.0], "source": "trigger:npc_liss"},
           {"id": "stillguard_row", "name_key": "MAP_POI_C_STILLGUARD_ROW", "kind": "talk", "at": [-7.8, 23.9], "source": "trigger:toma"},
-          {"id": "landing", "name_key": "MAP_POI_C_LANDING", "kind": "dock", "at": [-27.1, 29.9], "source": "trigger:landing"},
+          {"id": "landing", "name_key": "MAP_POI_C_LANDING", "kind": "dock", "at": [-27.4, 27.2], "source": "trigger:landing"},
           {"id": "gate", "name_key": "MAP_POI_C_GATE", "kind": "door", "at": [36.9, 2.3], "source": "spawn:RoadGate"},
           {"id": "milestone", "name_key": "MAP_POI_C_MILESTONE", "kind": "path", "at": [60.6, 6.2], "source": "trigger:milestone"}
         ]
