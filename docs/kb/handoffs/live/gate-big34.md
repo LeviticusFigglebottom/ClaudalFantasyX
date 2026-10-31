@@ -39,3 +39,14 @@ GATE-BUILT @ adab5e73
   0029's 1 s at a median of about 600 ms), with the Ch15/Ch16 staging (M4-A2P-075) and the Act III memory fixture. Clean.
   Re-gate of 52 files on a fresh import is running.
 - act1-chapters' touch-beat queue fix didn't post during this batch; it goes to big35.
+  m2-slice re-gate: 52 files on a fresh import: **all green**, import and boot clean, log check 0.
+
+## Fast-gate results
+- Lane A (mine, 5 files) and lane B (GATE-HELPER, 5 files @ ec0a766c, arrived 23:25): all green.
+- Both mid-batch re-gates are green (15 audio files and 52 m2-slice files).
+- Tools suite (-j 2, 217 units; the fast ones re-run on the final tree): only routed reds remain. test_rig_integrity is now down to
+  Asha, Pell, Rhen and Ysolde (characters); test_act1_audio_audit and test_battle_vfx_coverage (act1-chapters);
+  test_cutscene_sfx_files, test_villagers and test_hero_clips (act2-plan's Act III scripts). Known: test_palette_check, test_screenshots.
+
+GATE-FAST-DONE @ c29bb573 (merge-approved: no batch-caused red). In: audio's UiAudio/unbind ERROR fixes and
+slice-polish's Haluna crash revert. Routed (unchanged): act2-plan, act1-chapters, characters. Known: test_palette_check, test_screenshots.
