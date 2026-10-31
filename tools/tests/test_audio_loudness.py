@@ -45,6 +45,15 @@ def rel(p: Path) -> str:
 
 def in_lfs(p: Path) -> bool:
     return p.is_relative_to(LFS_AUDIO) or bool(LFS_MUSIC.match(rel(p)))
+
+
+LFS_POINTER = b"version https://git-lfs"
+
+
+def is_lfs_pointer(p: Path) -> bool:
+    """A checkout without `git lfs pull` (GIT_LFS_SKIP_SMUDGE, a cloud worktree) holds a small text pointer, not audio."""
+    with open(p, "rb") as f:
+        return f.read(len(LFS_POINTER)) == LFS_POINTER
 MAX_DEFAULT_JOBS = 4  # each worker can hold ~1 GB while it oversamples a long music bed
 
 
@@ -55,10 +64,31 @@ def _decode(p: Path) -> np.ndarray:
     return read_audio(str(p), channels=1) if np.array_equal(y[:, 0], y[:, 1]) else y
 
 
+TP_CHUNK = 1 << 20      # samples a true-peak block (about 24 s at 44.1 kHz)
+TP_MARGIN = 4096        # each block's overlap on both sides, so the oversampling's edges never count
+
+
+def chunked_true_peak(y: np.ndarray) -> float:
+    """true_peak_dbtp, a block at a time: the whole-file 4x FFT of a 5-minute cue (credits_suite) held over 7 GB and
+    was killed by the memory limit. Overlapping blocks give the same peak; only each block's interior is counted."""
+    if len(y) <= TP_CHUNK + 2 * TP_MARGIN:
+        return true_peak_dbtp(y)
+    best = -240.0
+    for s in range(0, len(y), TP_CHUNK):
+        a, b = max(0, s - TP_MARGIN), min(len(y), s + TP_CHUNK + TP_MARGIN)
+        block = y[a:b]
+        x = block if block.ndim == 2 else block[:, None]
+        X = np.fft.rfft(x, axis=0)
+        over = np.fft.irfft(X, len(x) * 4, axis=0) * 4
+        lo, hi = (s - a) * 4, (min(len(y), s + TP_CHUNK) - a) * 4
+        best = max(best, float(20 * np.log10(max(np.abs(over[lo:hi]).max(), 1e-12))))
+    return best
+
+
 def measure_file(path: str, metric: str) -> dict:
     """True peak, and the rule's loudness metric unless the file is a stem (measured with its stack)."""
     y = _decode(Path(path))
-    out = {"tp": true_peak_dbtp(y)}
+    out = {"tp": chunked_true_peak(y)}
     if metric != "stem":
         out["lv"] = integrated_lufs(y) if metric == "integrated" else momentary_max_lufs(y)
     return out
@@ -69,7 +99,7 @@ def measure_stack(paths: list[str]) -> dict:
     group = [_decode(Path(p)) for p in paths]
     n = min(len(s) for s in group)
     stack = sum(s[:n] for s in group)
-    return {"full": integrated_lufs(stack), "tp": true_peak_dbtp(stack), "first": integrated_lufs(group[0])}
+    return {"full": integrated_lufs(stack), "tp": chunked_true_peak(stack), "first": integrated_lufs(group[0])}
 
 
 def _jobs() -> int:
@@ -135,10 +165,22 @@ def measure_all(jobs: list[tuple]) -> list[dict]:
 class AudioLoudnessTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.files = sorted(AUDIO.rglob("*.ogg")) + sorted(LFS_AUDIO.rglob("*.ogg"))
+        everything = sorted(AUDIO.rglob("*.ogg")) + sorted(LFS_AUDIO.rglob("*.ogg"))
+        # An LFS file that was never fetched can't be measured here: it is measured where LFS is pulled (the PC, CI).
+        # A pointer on a plain-git path is a broken file, and test_no_pointer_outside_lfs fails on it.
+        cls.everything = everything
+        cls.pointers = [p for p in everything if is_lfs_pointer(p)]
+        cls.unfetched = [p for p in cls.pointers if in_lfs(p)]
+        cls.files = [p for p in everything if p not in cls.unfetched]
+        if cls.unfetched:
+            print(f"\ntest_audio_loudness: {len(cls.unfetched)} Git LFS files not fetched here (git lfs pull to measure them)")
+
+    def test_no_pointer_outside_lfs(self) -> None:
+        stray = [rel(p) for p in self.pointers if not in_lfs(p)]
+        self.assertEqual(stray, [], "an LFS pointer on a plain-git path: the file's audio is missing")
 
     def test_every_file_has_a_target(self) -> None:
-        missing = [rel(p) for p in self.files if targets.rule_for(rel(p)) is None]
+        missing = [rel(p) for p in self.everything if targets.rule_for(rel(p)) is None]  # needs no audio: every file
         self.assertEqual(missing, [], "add a rule to tools/audio/targets.py")
 
     def test_sizes(self) -> None:
