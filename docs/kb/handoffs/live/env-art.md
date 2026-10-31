@@ -589,6 +589,39 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **PC pass 7 (the Lead, 00:44) rows 59, 76, 77 and 83: MERGE-READY @ 7769d2ad.** Each was checked on lavapipe
+  before and after; below is what I expect on the GPU.
+  - **59, ch01_o10_gull:**
+    - The "bird" is the carving by design: C1-11's open-throat lintel-gull, a carved ridge finial. "That's the gulls"
+      means the carvings crying in the wind. So it now reads as one: limewashed chalk-white over the grain, an ochre
+      bill, soot-grey wingtips and tail, the perch bare wood. Every ridge gull shares it.
+    - On lavapipe it reads as a white painted gull carving against the sky.
+    - **GPU:** the same read; the limewash's worn edges show the grain at 85 mm. If the cinematics track wants it
+      unmistakable, O10 could also frame the bored throat (its wind-hole), which this framing doesn't show.
+  - **76, zone_oruvel_storm_o16:**
+    - The storm frame's ambient came from the near-black storm sky. It is now a fixed storm-grey fill (#80949F,
+      0.9), with exposure 0.65 → 0.85.
+    - On lavapipe, o16's mean went 32 → 46: the deck, nets and figures read, and the pen water stays darkest.
+    - **GPU:** around 50–60 with the real GPU's SSAO and glow. If it's still too dark there, the next lever is a
+      cold fill light on the pen, not more exposure (the sky would wash out).
+  - **77, oruvel_o17_pen_split:**
+    - The horizon's "grey boxes" were reef_edge_far's seven drowned tower crowns, flat-topped. Each top is now a
+      broken parapet in stretches of different heights with gaps (coarser at LOD1, which is what 300 m sees), with
+      bigger windows. On lavapipe the skyline reads as broken towers.
+    - **The straight pale streaks across the water are not this kit's.** No kit geometry is shaped or placed like
+      that. They look like sun shadow edges cast by the Undertow storm's far geometry: hard parallel bands toward the
+      camera. **LEAD-ASK:** please route to rendering (storm stream) for the GPU check; they're visible on lavapipe too.
+  - **83, ch01_bell_room:**
+    - U03 faces the room's south wall, which was a blank bay behind Rhen. It now carries the tower's service pipe and
+      a coral curtain.
+    - **The yellow-green haze is the diver lantern's light scattering in the underwater fog** (the UnderwaterRig's;
+      the rendering-underwater stream's), not the kit. **LEAD-ASK:** route the haze strength to them.
+    - **GPU:** the wall reads busier; the haze is unchanged by this commit.
+  - **Checks:**
+    - Tools: test_oruvel_kit (its storm-soaked check caught the new parapets until they got the storm weathering),
+      test_oruvel_moorings, test_zone_dressing_ch01 and the Underway tests OK.
+    - Godot `--filter`: ch01 20/0, underway 9/0, edge_walls 2/0.
+    - validate_data clean.
 - **M5-A3P-1402 (Act III, Ch20): the rest landing `memory_landing`. MERGE-READY @ f3466e20** (review: art).
   - A small flagged fragment with a curved bench and one steady held lamp: 1754 / 274 triangles.
   - It hangs in the undertow_cage arena. Viewed at a walker's eye and from away.
@@ -1337,6 +1370,7 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- PC pass 7 fixes (7769d2ad): re-check rows 59, 76, 77 and 83 on the GPU (expectations in Now).
 - Ch1 Underway pass (922cd122): Underway caustics on a real GPU (strength 1.2, and whether caustics inside the sun's shadows read wrong), and the dive well's floats from the deck.
 - Prologue dressing pass (b39caa29): look at P01 and P02 on a real GPU for the Iskarra towers' grime streaks and tide band, the plaza puddles' gloss and the amber lamp globes.
 - **M3-ENV-1323 (2026-10-30):** A/B `battle_arena_underway_tower` with its Sun node hidden. Rectangles that

@@ -106,6 +106,15 @@ MATERIALS: dict[str, dict] = {
     "ov_carved": weather(*TIMBER[:2], (0.25, 0.5), base_triplanar=True, triplanar_sharpness=6.0,
                          col_tint=hexc("#E4E0DA"), normal_strength=0.7, roughness_base=0.78, specular_base=0.3,
                          cavity_darken=0.25, variation_value=0.06, variation_warmth=0.02, **DRY),
+    # PC pass 7 row 59: the hero ridge gull limewashed (ov_cabins._paint_gull): chalk white over the carving's grain,
+    # worn through at the edges; its bill ochre, its wingtips and tail soot-grey.
+    "ov_gull_limewash": weather(*TIMBER[:2], (0.25, 0.5), base_triplanar=True, triplanar_sharpness=6.0,
+                                col_paint=hexc("#E9E5DC"), paint_cover=0.78, normal_strength=0.7, roughness_base=0.8,
+                                specular_base=0.3, cavity_darken=0.3, variation_value=0.05, **DRY),
+    "ov_gull_bill": weather(*TIMBER[:2], (0.25, 0.5), base_triplanar=True, col_paint=hexc("#C9A23C"), paint_cover=0.85,
+                            normal_strength=0.5, roughness_base=0.7, **DRY),
+    "ov_gull_tips": weather(*TIMBER[:2], (0.25, 0.5), base_triplanar=True, col_paint=hexc("#45464A"), paint_cover=0.85,
+                            normal_strength=0.6, roughness_base=0.8, **DRY),
     # Coir lashings and tarred tether / stays.
     "ov_rope": weather(*WOVEN, (0.12, 0.12), base_triplanar=False, col_tint=hexc("#9C7E5A"), normal_strength=1.0,
                        roughness_base=0.95, use_salt=False, **DRY),
