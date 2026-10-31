@@ -2,8 +2,8 @@
 id: M4-A2P-1003
 title: "Request: Act II as-played read-through, Ch10–Ch13 flow fixes (lead/gate-big27 @ ce18caafa)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "act1-chapters"
 depends_on: []
 reviewer: narrative
 milestone: M4
@@ -52,5 +52,25 @@ The problems are the **mounting gaps**:
 ## Acceptance criteria
 - [ ] Ch10 → Ch14 can be played through by flow alone (E1).
 - [ ] Each row fixed, or answered here with a reason.
+
+## Done (act1-chapters, 2026-10-30)
+- **D3/E1:** each chapter hands on: `ch10_dawn_gate` → `ch11/sunken_vey` Landing; `ch11_held_by_you` → `ch12/keth_pass` PassFoot; `ch12_down_the_other_side` → `ch13/ansedra` Moorings; Sefir's door after the pact (a `rest` interact) → `ch13/ansedra_lacquer_court` CourtEntry. **Ch9 → Ch10 is not wired:** Ch9 ends on the end card, which ADR 0042's note keeps as the end of Act I (accept returns to the title). Pointing `end_card.next_location` at `ch10/ossa_fen` FenEdge is a shipping-boundary call, so it's a LEAD-ASK in the live log.
+- **E2:** the `ledgers` beat and trigger need `ch13_ethren_bound`.
+- **D1:** `ch10_causeway` plays in the first Reedhollow arrive.
+- **E3:** the first Ansedra arrive plays `ch13_still_city`, then `ch13_tobin`, then sets the new `ch13_guest_of_sefir` (the layout's state row read it, but nothing set it, so Kerrid never showed at the moorings).
+- **E4:** a `cold_ledge` touch box across the saddle plays `ch12_breath` and sets `ch12_toma_saw_breath`, after the Ram. The greybox's `cold_ledge` mark is at the saddle, after the terrace, so the beat follows the mark.
+- **D2:** a `kirru_ressa` overheard touch at Reedhollow.
+- **D5:** a `conduit_mark` touch over the conduit court plays `ch11_housing_mark` and sets `ch11_rhen_admitted`.
+- **E5:** the first Keth Pass arrive plays `ch12_cold_road`. Barks, NPCs, side scenes and camps are wired for every Ch12–13 zone: Keth Pass (6 overheard), Quellan (3 overheard, 4 people, Dorro's cord, the boy's knot, the inn camp), Cloudloom (the keeper), Ansedra (5 overheard, the bargeman, the seamstress, the leaning flame, Corran's house, Kerrid at the moorings, the guest-house camp), the Sanctum (the kneeler, the child, Wenna's mark), the Archive (the clerk, the Velamir register). The shrines are save shrines through ShrineServices (`{"save_shrine": id}`: rest, attune, save, travel), with network rows `quellan_shrine` (by the well, its own `Shrine` spawn) and `ansedra_shrine` (the moorings); each also plays its shrine text. Hollowmere's and the Pale Rim's are wired the same way, under M4-A2P-1012.
+- **D4:** `held_by_you` places Landing.
+- **E6:** the herd-cord row is gated on the new `ch12_herd_cord_seen`.
+- **E7:** the descent still plays on the FromQuellan arrival (its marks `descent_1..7` stand at the saddle), and it now goes straight on to Ch13, so the walk back down never happens.
+- **E8:** a `pact` touch at `kerrid_moorings` (after `ch13_archive_read`); the arrive row is gone. `a_rest` now runs until `ch14_started`, because the pact sets `ch13_complete` and so hid it.
+- **E9:** the roll is an arrive row on the next Archive visit; its trigger and beat are gone. `la_roll` points at the door.
+- **D11:** an Ossa Fen arrive row after `ch10_drowner_defeated` plays `ch10_what_went_up` once (`ch10_what_went_up_seen`).
+- **D12:** waits on story's flag split (`ch10_net_promised`); the pickup follows it.
+- **E12:** a `knot_post` interact plays `ch12_the_knot`.
+- **D16:** M4-A2P-075.
+- Tests: the ch10–ch13 thread tests play each fix; qa_threads and the objective tracker are green.
 
 ## Review log

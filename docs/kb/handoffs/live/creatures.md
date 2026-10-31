@@ -1302,3 +1302,120 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - Quellan, Hollowmere and Ansedra (`late_prefixes`), plus Reedhollow's Kirru: fishers wading, a pair talking, a youngster watching, on the clips the Kirru have;
   - shots `crowd_vignette_{quellan,hollowmere,ansedra,reedhollow}_*`;
   - viewed: Quellan square and well, Hollowmere dock, Ansedra moorings. The Hollowmere platform cameras are re-aimed, and they and Reedhollow are still to view (next).
+- **The Act II town vignettes, done @ f2588bcc7** (your 20:26 relay):
+  - **Quellan** (8): children clapping and at stones in the square, a well rope hauled, cloth folded and cord mended at the doors, a sweeper.
+  - **Hollowmere's dawn** (4): work only, no games, after the burning.
+  - **Ansedra's moorings** (7): the polers' families.
+  - **Reedhollow** (6 Kirru): fishers on the ring's edge (the lagoon is a mangrove stand, so wading was dropped), a pair talking, a youngster watching, on the Kirru's own clips.
+  - **Checks:** tools test_npc OK; Godot crowd 20/0, villager 47/0.
+  - **Shots, all viewed:** `crowd_vignette_quellan_{square,well}`, `_hollowmere_{dock,platforms,mender}`, `_ansedra_moorings`, `_reedhollow_lagoon`. All new, no baselines. The existing Act II crowd shots gain people (shots session).
+- **MERGE-READY @ f2588bcc7** (includes M3-HER-1168 @ 445d5888e).
+- **BACKLOG EMPTY:**
+  - M4-CRE-702 and M3-CRE-666 are in review (character);
+  - M3-HER-1168's Drownbell re-measure is integration-qa's;
+  - Act III stays planning-only.
+- **Your 21:56 relay (ADR 0207): Act III production started.**
+  - **Tasks:** M5-A3P-1800..1808, the lane's regulars and wildlife:
+    - wick_crawler, chain_lamp, spire_moth (Ch19);
+    - held_shoal, drowned_lantern (Ch20);
+    - deep_scuttler, hull_rasp (Ch17);
+    - the conduit crawler's Act III row; the Kite's gulls.
+    - The Act III bosses (the Cage, the tide matron, the old leviathan) are not in this range. **LEAD-ASK:** say if they're mine or creatures-b's.
+  - **M5-A3P-1805, the deep scuttler @ b82b920e4:**
+    - the scuttler's rig and clips; darker plates, seams opened, small raw wounds, a second pair of eyes, a barbed spine ridge (the new silhouette); 1.3× the scuttler's size in battle;
+    - byte-identical build, PROVENANCE, portrait, review shot `creature_deep_scuttler` (viewed; no baseline);
+    - tools test_creatures OK; Godot creature 160/0.
+    - For Combat: an enemies.json row and the Ch17 moorings encounter.
+- **MERGE-READY @ b82b920e4.** Next: M5-A3P-1806, the hull rasp (claimed).
+- **M5-A3P-1806, the hull rasp @ 63c6157ef:**
+  - the hullgnaw's rig, clips and breach; a darker, salt-scabbed body; eleven glowing bore-holes; salt-white keel timbers as the breakable part; 0.62× the hullgnaw;
+  - byte-identical build, PROVENANCE, portrait, shot `creature_hull_rasp` (viewed);
+  - tools test_creatures OK (floor and sink exemptions as the hullgnaw's); Godot creature 160/0.
+- **MERGE-READY @ 63c6157ef.** Next: M5-A3P-1800, the wick crawler (claimed; a new build from its sheet).
+- **M5-A3P-1800, the wick crawler @ 8cc959b6e:**
+  - the sheet as written: 5.6k triangles, 44 bones; feet pinned; KO eased (only the collapse slide flags);
+  - byte-identical build, PROVENANCE, portrait, shot `creature_wick_crawler` (viewed);
+  - tools test_creatures OK; Godot creature 160/0.
+  - `clip_by_skill` waits for Combat's skill ids.
+- **MERGE-READY @ 8cc959b6e.** Next: M5-A3P-1801, the chain lamp (claimed).
+- **M5-A3P-1801, the chain lamp @ a22b86fa5:**
+  - 4.6k triangles, 20 bones;
+  - the light shows in slits between the louvres, which open on the beat;
+  - the cage swings as a pendulum and falls when the shackle parts;
+  - audit clean; byte-identical, PROVENANCE, portrait, shot `creature_chain_lamp` (viewed).
+  - **Also fixed:** the wick crawler's thimble, cup and reservoir were inside out (lathe order). Its portrait is re-rendered; `creature_wick_crawler` has no baseline yet.
+- **MERGE-READY @ a22b86fa5.** Next: M5-A3P-1802, the spire moth (claimed).
+- **M5-A3P-1802, the spire moth @ b89f039ec:**
+  - the flue moth's rig, mesh, clips and brow mark; pale fur, no embers, glassy wings; `creature_flue_moth` still identical;
+  - byte-identical, PROVENANCE, portrait, shot `creature_spire_moth` (viewed).
+  - **Also:** the chain lamp's `lit_ceramic` hex corrected, rebuilt.
+- **MERGE-READY @ b89f039ec.** Ch19's three are done. Next: M5-A3P-1803, the held shoal (claimed).
+- **M5-A3P-1803, the held shoal @ c0611d659:**
+  - 24 fish of held light in three counter-turning rings round a crusted net float (its open seam is the weak point);
+  - the rise rule measured at 0 mm in every clip; `idle_turned` for the targetable state;
+  - 5.8k triangles, 54 bones; byte-identical, PROVENANCE, portrait, shot `creature_held_shoal` (viewed).
+  - Tech/Combat: an idle that follows its untargetable phase.
+- **MERGE-READY @ c0611d659.** Next: M5-A3P-1804, the drowned lantern (claimed).
+- **M5-A3P-1804 the drowned lantern** (Ch20), at review:
+  - a drowned street-lamp globe become a jelly, its held light in the bell; the crazed seam is the weak point;
+  - the rise rule at 0 mm in every clip (the heart rides the root, not the glass); the KO sinks the globe, not the root;
+  - 3.5k triangles, 25 bones; byte-identical, PROVENANCE, portrait, shot `creature_drowned_lantern` (viewed).
+- **MERGE-READY @ 647105978.** Next: M5-A3P-1807, the conduit crawler's Act III row (claimed).
+- **M5-A3P-1807 the conduit crawler's Act III use** (Ch19), at review:
+  - the same model and creatures.json row (a foe's row is found by its model scene); feet pinned in every clip and the
+    brush and wiper no longer drag, so the clip audit is clean; byte-identical, portrait re-rendered, shot viewed;
+  - its shot also differs from the baseline by the earlier leg rework (563eda19e): the shots session recaptures.
+  - Combat: **M5-A3P-1849** requests the enemies.json rows and encounters for all eight Act III regulars.
+- **MERGE-READY @ a1d431c1a.** Next: M5-A3P-1808, the kite gulls (claimed).
+- **M5-A3P-1808 the Kite's gulls** (Ch18 K02), at review:
+  - WildlifeGullFlock's `follow` (a node path): the flock flies in that node's space, and the layer sets its frame
+    each step (drawing, flush, culling and draw bounds all follow); validated and tested (Godot wildlife 29/0);
+  - the row `kite_wake` on review stage `kite_gulls.json` (the Kite has no zone yet: its scene adds the row with
+    `follow` set to its Kite node, moving before the layer); new shot `wildlife_kite_gulls` (viewed).
+- **MERGE-READY @ e3ba147b7.**
+- **M5-A3P-1810 VillagerLayer flag rows**, at review (Tech):
+  - a row's `flag` / `not_flag` shows it while / until a flag is set (checked each tick, combined with `shown`);
+    validator checks the flags are declared, and a `flag` row is a variant of its crowd person's own row;
+  - Godot villager 49/0, crowd 21/0; tools test_npc OK. For the Ch18 revisits.
+- Filed, **blocked**:
+  - M5-A3P-1809, the Ch20 held shapes: no Ch20 zones or location ids yet;
+  - M5-A3P-1811, the Ch18 crowd variants (Haluna backs-to-the-water, the Kirru farewell-tide again): the Act III
+    flags aren't declared yet.
+- **MERGE-READY @ 888e2b159.**
+- **BACKLOG EMPTY:** every Act III regular and wildlife task in my list (M5-A3P-1800 to 1808) is at review, and
+  1810 is too.
+  - 1809 and 1811 wait on Act III zones and flags; 1849 waits on Combat.
+  - The Act III bosses wait on the open LEAD-ASK.
+  - No Act I/II FAST-TRACK is open for me.
+  - **LEAD-ASK:** give me the bosses, or a busier track to supplement.
+- Lead 23:26 (the backlog's empty: continue the Act III bestiary, or supplement characters' story clips):
+  - **M5-A3P-1812, the Cage's sheet amended** (roster order of work 1), at review. The bays become seats, each founder
+    seated and chained at the wrists and ankles, reconciled with act3_ch20.md §5 and U08:
+    - the breakable part is each seat's chains, with a weak point on the hasp beside the hip, never the person;
+    - the broken bars fall and stay lit, and nothing rises (rule 2);
+    - freed founders say "thank you", stand free and stay shown, then fall in U08;
+    - 58 bones; the VFX anchors find the hasps by bone.
+  - **M3-CIN-1250** (crowd routines in step) was already fixed by 42438cd55: `--filter=zone_cast` 5/0. To review.
+  - The Cage's *build* and the other Act III bosses still wait on the boss LEAD-ASK. Creatures-b built the Act I/II
+    bosses, so I'm not starting them uninvited.
+- **MERGE-READY @ d6fe335c7.** Next: the characters' Act I people story clips (M3-HER-1133) if no one holds them; checking.
+- **Answer to creatures-b's M5-A3P-1854 (the Cage's sheet): yes, hand it over.**
+  - I found the request after writing M5-A3P-1812, the amendment (seats and chains), in parallel.
+  - The sheet and the Cage are creatures-b's from now on. The amendment in the_cage.md is their starting draft:
+    revise or replace any of it, with the authorship credit as they proposed.
+  - Ownership: creatures-b may claim `docs/kb/art/creatures/act3/the_cage.md` in ownership.md.
+  - My boss LEAD-ASK is withdrawn. The Act III bosses are creatures-b's (M5-A3P-1851 to 1853), as the Act I/II split.
+- **M3-HER-1133, Act I people's story clips** (supplementing characters, ADR 0207), doing:
+  - built now: Kell's `trim_wicks`, `take_scissors` and `light_beacon`; Neme's `clear_plates`, `carry_food`,
+    `watch` and `laugh_breaks`; Osu's `set_shell`. Each is a spec in villager_story_clips.json (appended), and only
+    those three libraries were regenerated.
+  - 8 review shots `villager_{kell,neme,osu}_*` (pending_baseline), viewed. Godot villager 49/0.
+  - test_villagers: the expected lists are updated. The two reds that are left (tender and tobin rebuild byte for
+    byte) fail without my change too: characters' WIP.
+  - Left for characters: Liss's `haul_rope` and Pell's `storm_call` (requested_clips.json is under their active
+    M3-CHR-1000 edits, so I didn't touch it).
+  - Left for cinematics: boat_seller, ferryman, inquisitor and passenger_child have no rig (routing).
+- **MERGE-READY @ 84e2853db.**
+- **BACKLOG EMPTY:** my Act III list is done. The Cage and the bosses are creatures-b's (handed over), and 1809 and
+  1811 are blocked on Act III zones and flags. M3-HER-1133's remaining clips are characters' (heroes) or
+  cinematics' (routing). Ready for the next assignment.

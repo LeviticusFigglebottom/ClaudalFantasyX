@@ -1,6 +1,6 @@
 {
   "audio_menu": {
     "doc": "M3-UI-02 (SPEC §6.11 'audio sliders'): the Audio settings page. 'rows' are UiSettings ids (accessibility.json settings, whose rows the Audio track owns: M2-AUD-06's volumes, read by AudioDirector through mix.json volume_settings) shown on this page, in this order, and left off the Accessibility page. An id missing from accessibility.json is skipped, and with none present the Settings hub hides its Audio row. Values step with Left and Right (a click steps up; the wheel moves the rows), and every change applies and saves at once.",
-    "rows": ["master_volume", "music_volume", "sfx_volume", "voice_volume", "reduced_audio"]
+    "rows": ["master_volume", "music_volume", "sfx_volume", "voice_volume", "mono_audio", "reduced_audio"]
   }
 }

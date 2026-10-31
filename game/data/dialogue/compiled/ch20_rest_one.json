@@ -1,0 +1,19 @@
+{
+ "format": 1,
+ "scene": "ch20_rest_one",
+ "source": "game/data/dialogue/ch20/ch20_rest_one.dlg",
+ "start": "ch20_rest_one",
+ "nodes": {
+  "ch20_rest_one": {
+   "headers": {"location": "ch20/undertow_layers"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["U15"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 2.0}, "src": 8},
+    {"op": "cue", "cue": "anim", "args": ["liss", "sit_with", "lamp_box"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "anim", "args": ["toma", "sit"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "sit"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "wait", "args": [20.0], "kwargs": {}, "src": 12}
+   ]
+  }
+ }
+}

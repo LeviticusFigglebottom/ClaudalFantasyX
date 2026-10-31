@@ -1,0 +1,37 @@
+{
+ "format": 1,
+ "scene": "ch20_ilun_release",
+ "source": "game/data/dialogue/ch20/ch20_ilun_release.dlg",
+ "start": "ch20_ilun_release",
+ "nodes": {
+  "ch20_ilun_release": {
+   "headers": {"location": "ch20/undertow_layers"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "camera", "args": ["U07"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 1.0}, "src": 11},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 12},
+    {"op": "line", "id": "ch20_ilun_001", "key": "DLG_CH20_ILUN_001", "speaker": "ilun", "emotion": "worried", "voice": "", "src": 13, "name_key": "DLG_NAME_ILUN_TEYO"},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 14},
+    {"op": "if_not", "cond": ["flag", "ch02_heard_pila"], "to": 10, "src": 15},
+    {"op": "line", "id": "ch20_ilun_002", "key": "DLG_CH20_ILUN_002", "speaker": "asha", "emotion": "tender", "voice": "", "src": 16},
+    {"op": "line", "id": "ch20_ilun_003", "key": "DLG_CH20_ILUN_003", "speaker": "ilun", "emotion": "soft_smile", "voice": "", "src": 17, "name_key": "DLG_NAME_ILUN_TEYO"},
+    {"op": "goto", "to": 13, "src": 15},
+    {"op": "line", "id": "ch20_ilun_004", "key": "DLG_CH20_ILUN_004", "speaker": "asha", "emotion": "sad", "voice": "", "src": 19},
+    {"op": "line", "id": "ch20_ilun_005", "key": "DLG_CH20_ILUN_005", "speaker": "ilun", "emotion": "neutral", "voice": "", "src": 20, "name_key": "DLG_NAME_ILUN_TEYO"},
+    {"op": "goto", "to": 13, "src": 18},
+    {"op": "if_not", "cond": ["flag", "ch18_haluna_lifted"], "to": 16, "src": 22},
+    {"op": "line", "id": "ch20_ilun_006", "key": "DLG_CH20_ILUN_006", "speaker": "asha", "emotion": "tender", "voice": "", "src": 23},
+    {"op": "goto", "to": 16, "src": 22},
+    {"op": "cue", "cue": "music", "args": ["release_sting"], "kwargs": {"fade": 0.0}, "src": 25},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "ilun", "count": 40, "motion": "spiral_up", "rate": "slow"}, "src": 26},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "camera", "args": ["U08"], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "net_float", "count": 1, "motion": "spiral_up", "rate": "slow"}, "src": 29},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 30},
+    {"op": "set", "flag": "ch20_ilun_released", "value": ["lit", true], "src": 31},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 32}
+   ]
+  }
+ }
+}

@@ -1,0 +1,32 @@
+{
+ "format": 1,
+ "scene": "ch20_virel_release",
+ "source": "game/data/dialogue/ch20/ch20_virel_release.dlg",
+ "start": "ch20_virel_release",
+ "nodes": {
+  "ch20_virel_release": {
+   "headers": {"location": "ch20/undertow_layers"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "camera", "args": ["U14"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 1.0}, "src": 9},
+    {"op": "line", "id": "ch20_virel_007", "key": "DLG_CH20_VIREL_007", "speaker": "virel", "emotion": "neutral", "voice": "", "src": 10, "name_key": "DLG_NAME_VIREL_WENNA"},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 11},
+    {"op": "line", "id": "ch20_virel_008", "key": "DLG_CH20_VIREL_008", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 12},
+    {"op": "cue", "cue": "anim", "args": ["liss", "look_at", "virel"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 14},
+    {"op": "line", "id": "ch20_virel_009", "key": "DLG_CH20_VIREL_009", "speaker": "liss", "emotion": "surprised", "voice": "", "src": 15},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 16},
+    {"op": "line", "id": "ch20_virel_010", "key": "DLG_CH20_VIREL_010", "speaker": "liss", "emotion": "tender", "voice": "", "src": 17},
+    {"op": "cue", "cue": "music", "args": ["release_sting"], "kwargs": {"fade": 0.0}, "src": 18},
+    {"op": "line", "id": "ch20_virel_011", "key": "DLG_CH20_VIREL_011", "speaker": "virel", "emotion": "laugh", "voice": "", "src": 19, "name_key": "DLG_NAME_VIREL_WENNA"},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "virel", "count": 40, "motion": "spiral_up", "rate": "slow"}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "tuning_key", "count": 1, "motion": "spiral_up", "rate": "slow"}, "src": 22},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 23},
+    {"op": "set", "flag": "ch20_virel_released", "value": ["lit", true], "src": 24},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 25}
+   ]
+  }
+ }
+}

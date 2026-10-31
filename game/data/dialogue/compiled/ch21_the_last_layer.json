@@ -1,0 +1,22 @@
+{
+ "format": 1,
+ "scene": "ch21_the_last_layer",
+ "source": "game/data/dialogue/ch21/ch21_the_last_layer.dlg",
+ "start": "ch21_the_last_layer",
+ "nodes": {
+  "ch21_the_last_layer": {
+   "headers": {"location": "ch21/heart"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "camera", "args": ["HT01"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "music", "args": ["heart_approach"], "kwargs": {"fade": 3.0}, "src": 11},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "heart_floor", "count": 300, "drift": "down_seaward", "rate": "slow"}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "camera", "args": ["HT02"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_bound"], "kwargs": {"at": "two_lamps", "count": 2}, "src": 15},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 17}
+   ]
+  }
+ }
+}

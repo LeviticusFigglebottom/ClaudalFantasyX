@@ -478,6 +478,256 @@
     "beat": "to_choir"
    },
    "yaw": 0.0
+  },
+  {
+   "id": "bark_rhen_forward",
+   "activation": "touch",
+   "at": [
+    15.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    58.0
+   ],
+   "once": true,
+   "requires_flag": "ch16_started",
+   "payload": {
+    "dialogue": "ch16_bark_rhen_forward",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_ysolde_corran",
+   "activation": "touch",
+   "at": [
+    45.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    58.0
+   ],
+   "once": true,
+   "requires_flag": "ch16_started",
+   "payload": {
+    "dialogue": "ch16_bark_ysolde_corran",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_liss_cairns",
+   "activation": "touch",
+   "at": [
+    80.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    58.0
+   ],
+   "once": true,
+   "requires_flag": "ch16_started",
+   "payload": {
+    "dialogue": "ch16_bark_liss_cairns",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_toma_walked_back",
+   "activation": "touch",
+   "at": [
+    110.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    58.0
+   ],
+   "once": true,
+   "requires_flag": "ch16_started",
+   "payload": {
+    "dialogue": "ch16_bark_toma_walked_back",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_kerrid_south",
+   "activation": "touch",
+   "at": [
+    145.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    58.0
+   ],
+   "once": true,
+   "requires_flag": "ch16_started",
+   "payload": {
+    "dialogue": "ch16_bark_kerrid_south",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "bark_asha_mother",
+   "activation": "touch",
+   "at": [
+    175.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    58.0
+   ],
+   "once": true,
+   "requires_flag": "ch16_started",
+   "payload": {
+    "dialogue": "ch16_bark_asha_mother",
+    "overheard": true
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "npc_cairn_wader",
+   "activation": "interact",
+   "at": [
+    38.57142857142857,
+    0.0,
+    -2.6
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch16_started",
+   "payload": {
+    "dialogue": "ch16_bark_cairn_wader"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "npc_turning_back",
+   "activation": "interact",
+   "at": [
+    124.28571428571429,
+    0.0,
+    2.6
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch16_started",
+   "payload": {
+    "dialogue": "ch16_bark_turning_back"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "counting_stone",
+   "activation": "interact",
+   "at": [
+    67.14285714285714,
+    0.0,
+    2.6
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LOOK",
+   "requires_flag": "ch16_started",
+   "payload": {
+    "dialogue": "ch16_find_the_counting_stone"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch16_found_counting_stone"
+  },
+  {
+   "id": "fallen_cairn",
+   "activation": "interact",
+   "at": [
+    152.85714285714286,
+    0.0,
+    -2.6
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LOOK",
+   "requires_flag": "ch16_started",
+   "payload": {
+    "dialogue": "ch16_side_the_fallen_cairn"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch16_rebuilt_cairn"
+  },
+  {
+   "id": "shrine",
+   "activation": "interact",
+   "at": [
+    -20.0,
+    0.0,
+    3.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch16_started",
+   "payload": {
+    "beat": "shrine",
+    "save_shrine": "pale_rim_shrine"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "camp",
+   "activation": "interact",
+   "at": [
+    190.0,
+    0.0,
+    3.0
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch16_started",
+   "payload": {
+    "dialogue": "ch16_camp_coming_up"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch16_camp_talk"
   }
  ],
  "encounters": {

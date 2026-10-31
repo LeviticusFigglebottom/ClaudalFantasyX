@@ -1,0 +1,23 @@
+// M5-A3P-1014. Ending E5 "Nothing comes" (C, 1.5 min). GOODBYE: HER VOICE. act3_ending.md §2 E5.
+// On the dark, floating Kite, Asha tries to sing, properly, for the first time since the Letting. She draws breath and
+// NOTHING COMES. Rhen doesn't comfort her with words; he sits beside her. sea_glow held at its last 0.06: the last of the
+// risen dead leaving the water; the sea nearly dark, BUT NOT YET (its first full dark is E6's). `silence`: the quietest
+// scene in the game. No line.
+title: ending_nothing_comes
+location: ch18/kite
+---
+@letterbox on
+@camera E10
+@music silence fade=0.0
+@anim asha draw_breath
+@wait 4.0
+@anim asha open_mouth
+@wait 5.0
+@mark rhen by_asha walk
+@anim rhen sit by_asha
+@wait 8.0
+@vfx glimmer_lift at=sea_last count=3 motion=spiral_up rate=slow
+@wait 6.0
+@fade out 3.0
+@letterbox off
+===

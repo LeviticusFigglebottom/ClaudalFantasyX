@@ -30,25 +30,16 @@
        "chapter": 13
       },
       {
-       "set": "ch13_started"
-      }
-     ]
-    },
-    {
-     "when": {
-      "set": [
-       "ch13_archive_read"
-      ],
-      "unset": [
-       "ch13_pact_of_silence"
-      ]
-     },
-     "steps": [
-      {
-       "place": "FromArchive"
+       "play": "ch13_still_city"
       },
       {
-       "play": "ch13_the_pact"
+       "play": "ch13_tobin"
+      },
+      {
+       "set": "ch13_guest_of_sefir"
+      },
+      {
+       "set": "ch13_started"
       }
      ]
     }
@@ -71,6 +62,43 @@
         "location": "ch13/lamp_archive",
         "spawn": "Door"
        }
+      }
+     ]
+    },
+    "pact": {
+     "when": {
+      "set": [
+       "ch13_archive_read"
+      ],
+      "unset": [
+       "ch13_pact_of_silence"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch13_the_pact"
+      }
+     ]
+    },
+    "rest": {
+     "when": {
+      "set": [
+       "ch13_pact_of_silence"
+      ]
+     },
+     "steps": [
+      {
+       "go": {
+        "location": "ch13/ansedra_lacquer_court",
+        "spawn": "CourtEntry"
+       }
+      }
+     ]
+    },
+    "shrine": {
+     "steps": [
+      {
+       "play": "ch13_shrine_ansedra"
       }
      ]
     }
@@ -184,6 +212,24 @@
     {
      "when": {
       "set": [
+       "ch13_read_ledgers"
+      ],
+      "unset": [
+       "ch13_read_cantor_roll"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Door"
+      },
+      {
+       "play": "ch13_archive_roll"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
        "ch13_read_cantor_roll"
       ],
       "unset": [
@@ -214,7 +260,8 @@
     "ledgers": {
      "when": {
       "set": [
-       "ch13_entered_archive"
+       "ch13_entered_archive",
+       "ch13_ethren_bound"
       ],
       "unset": [
        "ch13_read_ledgers"
@@ -223,21 +270,6 @@
      "steps": [
       {
        "play": "ch13_archive_ledgers"
-      }
-     ]
-    },
-    "roll": {
-     "when": {
-      "set": [
-       "ch13_read_ledgers"
-      ],
-      "unset": [
-       "ch13_read_cantor_roll"
-      ]
-     },
-     "steps": [
-      {
-       "play": "ch13_archive_roll"
       }
      ]
     }

@@ -1243,6 +1243,143 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     so B11 frame runs need a wall-clock budget of over an hour.
 - **MERGE-READY @ e9551cf83:** M4-A2P-1600's renumbering, the B11 timing finding (for integration-qa), the cutscene_frames
   fix.
+- **big29 red test_zone_map_pois, fixed, MERGE-READY @ 4d5c9ed0b:**
+  - The Underway map's `stair_lip` POI follows A2's widened low_lights trigger (z −28).
+  - tools test OK; zone_map 22, 0 failed.
+  - **My miss:** I didn't run the tools suite after moving a trigger in A2. I now run it for any layout change.
+  - Full tools suite on this head: the remaining reds are other tracks':
+    - characters: rig_integrity (10 rigs), hero_clips (Asha's and Sefir's clip lists), villagers;
+    - audio: audio_loudness;
+    - env-art: palette_check, the Haluna H07 chapel face;
+    - the Lead: test_screenshots, wildlife_zone_ossa_fen_walk0 with no baseline.
+- **Ch11 staging (the Lead's next item):** already on integration since big27 (de52fb88, at_mark 61fc9729).
+  - Every Ch11 music cue id resolves (sunken_vey, lamp_engine, lowlight, nhoa_bound; audio's renders fill the files).
+  - The five stills postdate the zones' last change.
+  - The people still wait on M4-CIN-1305: the Ch11 layouts have no party actors, Nhoa included.
+- **FAST-TRACK, Haluna's hidden frame (the human's black-screen report), MERGE-READY @ this commit (git log -1 -- game/levels/ch02/haluna/haluna_actor_pose.gd):**
+  - The fix: HalunaActorPose (Asha's beach pose, about 0.2 s of per-bone solve) no longer poses in the frame that adds
+    Haluna during a router swap; it poses on its first process frame, which is still under the fade. Tests and captures
+    (no swap) pose at once, as before.
+  - Measured with integration-qa's scene_swap_probe (`--to=haluna --resident-loads --warm-resident`, headless):
+    - before (10 runs): frame 0 727–1011 ms, median ≈ 810; frame 1 25–110 ms;
+    - after (7 runs): frame 0 528–782 ms, median ≈ 670; frame 1 230–326 ms; no frame over 1 s;
+    - instantiate (threaded) unchanged, at about 0.8–1.2 s.
+  - **Tried and dropped:**
+    - **Deferring the zone's own start-spawn snap and the director's `_ready` snap during a swap** (Systems' file): no
+      measurable gain. The router place_at's the travel spawn inside the same measured frame 0, and that snap (about
+      0.35 s headless, the director building its occluders' triangles) is paid there either way.
+    - **An `await process_frame` version of the pose deferral:** 2 of 7 probe runs crashed (signal 11, mid-swap). The
+      `_process` one-shot that shipped crashed 0 of 7, and the baseline 0 of 10.
+  - **LEAD-ASK (integration-qa / Systems):** the rest of frame 0 is outside Haluna's `_ready`. The biggest piece is
+    that first director snap at the router's place_at. Building the director's triangle cache on the instantiate
+    thread, or snapping a frame later, would take out about another 0.35 s. That is router and director code, not my
+    lane.
+  - Tests: haluna 66/0, fp_ 30/0, scene_router 17/0, cutscene_pose 5/0, slice_shots 1/0; gdlint/gdformat clean. MERGE-READY @ 97c591c34.
+  - **Seen, not mine:** `test_haluna_villagers` logs "Parent node is busy setting up children" from
+    `villager_layer.gd:267 _spot` (the new VillagerLayer build in `_ready`). The tests pass; flagging it for the
+    VillagerLayer owner.
+- **Ch13 staging (M4-A2P-075, from act2_ch13_direction.md), MERGE-READY @ this commit:**
+  - `game/data/cutscene/ch13/{ansedra,sanctum,lamp_archive}.json`: every Ch13 scene's shots and marks. A03–A06 and S02
+    replace the greybox's ids of other meaning, per the notes. Story had already set the pacing holds in the scripts.
+  - Checked against the greybox and the dressing with a projector:
+    - the close singles (A04, A05, A13, S06, S09) look at the eye line; the notes' 1.4 m cut the heads at 85 mm;
+    - R04 (Corran's margin) looks down onto the roll table's page;
+    - R08's pull-out ends over the ledger table's eight pages; the notes' frame looked 1.5 m past it;
+    - R06 now holds Ysolde's hands and Liss; the notes' frame lost Ysolde;
+    - R10 is Sefir at the real reading table (the notes looked at the empty floor), lit by `archive_lamp`, a
+      cinematics prop (`ch13/archive_lamp.tscn`) that the script's `@light archive_lamp off` puts out.
+  - In-engine: every shot and mark the Ch13 scripts call resolves after staging, except R10 and `reading_table` in
+    the pact scene (it plays in Ansedra).
+  - **Requests:** M4-A2P-077 (chapters): Corran's house is a solid block, so A15's front room needs a room; and
+    `ch13_sefir_closes_the_book` needs to play in the Lamp Archive. M4-CIN-1305 now lists Ch13's people; no Ch13 zone
+    has Sefir, Ysolde, Liss, Tobin, Merel, Ethren or the householder.
+  - Tests: cutscene_staging 2/0, act2_dialogue 1/0, dialogue_vs 3/0; validate_data and taskboard clean. No stills yet:
+    the sets have no people.
+- **Ch14–Ch16 staging (M4-A2P-075), MERGE-READY @ this commit** (Ch14 59cfb82ae, Ch15 8b60911ca, Ch16 here):
+  - Staging files:
+    - `game/data/cutscene/ch13/ansedra_lacquer_court.json` (Ch14: the notes said ch14/, but staging files go by the
+      zone's location id);
+    - `ch15/open_sea.json` and `ch17/hollowmere.json` (Ch15);
+    - `ch16/{pale_rim,drowned_choir}.json` (Ch16).
+  - The replace lists follow the notes.
+  - Every frame was checked with a projector against the greybox. The moves where the notes missed their subject:
+    - Ch14:
+      - W03 is from over the water steps (the notes' camera stood on the court looking out);
+      - W04 looks up to Sefir on the 0.8 m dais;
+      - W07 and W08 frame the Conclave gallery (x −12, 2 m up);
+      - W11 is over Toma's shoulder;
+      - W14/W15 hold Tobin sitting;
+      - L01, L03, L09 and L12 hold the bier, the stern and Merel.
+    - Ch15:
+      - Kerrid's confession singles look at his seated eye line;
+      - Rhen's `kerrid_opposite` is at his right, out of every Kerrid single;
+      - K03, H05, H13 and H14 reframed;
+      - H16 is from the dock (the notes' camera was behind the ship's hull).
+    - Ch16:
+      - the Pale Rim has its own ship now (deck 3 m), and both of the notes' W01 and W02 were inside it;
+      - C07 holds Asha kneeling; C16 and S02 keep Kerrid in frame.
+    - Every chapter: the 85 mm singles look at the eye line, not 1.4 m.
+  - Scripts (cues only):
+    - ch14_the_vows: Liss runs to her own `liss_tobin` (she shared Tobin's mark);
+    - ch15: `H11 track=toma`; Liss gets `fathers_door_liss` (she shared her father's mark);
+    - ch16: `C02 track=asha`.
+  - In-engine across the eight Ch13–Ch16 zones: every shot and mark the scripts call resolves after staging, except
+    Ch13's R10 (M4-A2P-077).
+  - Tests: act2_dialogue 1/0, dialogue_vs 3/0, cutscene_staging 2/0; dlgc, validate_data and taskboard clean.
+  - **Still blocked:**
+    - People: none of these zones has its scripted cast. Ch14–Ch16 are added to M4-CIN-1305; until then, stills
+      show empty sets.
+    - **Chapters:** ch15.json's flow plays none of Ch15's scenes (`ch15_the_dock_master` included, which story
+      flagged).
+  - **Next:** Act III cinematics (ADR 0207, M5-A3P-1600..1699), and the PC-QUEUE. M4-A2P-070 still waits on the
+    people.
+- **@vfx/@sfx places (M4-A2P-075), MERGE-READY @ this commit's parent:** `at=` takes a mark or an actor, and 11 of the
+  Ch13–Ch16 places were neither (so their light and sound never played). All are now staged, and a check over every
+  Ch13–Ch16 script finds no unplaced `at=`.
+- **M5-A3P-1600, the memory look (`@memory`), MERGE-READY @ this commit** (review: art):
+  - A screen layer under the letterbox, fade and box. It drains the colour, washes toward the look's colour, and
+    softens and pales the edges. CutsceneMemory and its shader; the looks are data (sequencer.json `memory`: `white`
+    and `held`); the scene's end clears it. It costs the sequencer two lines (998/1000).
+  - Used in ch16_kesh_memory: on under the white fade-in, off under the white fade-out.
+  - Viewed on lavapipe (K04 with and without the layer): the shader compiles and the look reads.
+  - Tests:
+    - test_cutscene_sequencer 24/0 (two new);
+    - cutscene_directives 2/0, act2_dialogue, dialogue_vs, cutscene_staging;
+    - tools test_dlgc and the corpus suites 141 OK; check_drafts clean.
+  - **For env-art (LEAD-ASK):** Kesh's memory has no set; K01–K08 frame the open dark past the Choir's floor. The
+    Lamplighters and young Sefir are on M4-CIN-1305.
+- **BACKLOG EMPTY (2026-10-30, evening): every open item in this lane waits on another track:**
+  - **Act II stills** (M4-A2P-070..075, Ch10–Ch16 staged): wait on the people (M4-CIN-1305, the chapters track; the
+    Saints from creatures-b).
+  - **Ch13's R10 and Corran's front room:** M4-A2P-077 (chapters).
+  - **Ch15's flow:** plays none of Ch15's scenes (chapters).
+  - **Kesh's memory set:** env-art.
+  - **PC-QUEUE:** the GPU.
+  - **Act III (ADR 0207):**
+    - Ch19's vigil already reuses the prologue's P01/P02 and its `by_asha` mark (nothing to stage);
+    - Ch17's drafts (D01–D18) need Dace's hull, cabin and dry-dock set in `ch17/hollowmere`, which isn't built;
+    - Ch18 and Ch20 have no zones;
+    - M5-A3P-1600 (`@memory`) is in review. The Ch20 drafts can open each memory with `@memory on 1.5 look=held`;
+      I'm noting that for story, not editing their drafts.
+  - **Capacity offer (ADR 0207 §1):** cinematics can take frames, staging or cutscene tooling for another track by
+    request task.
+- **Lead's question: the Haluna add-to-tree split (the human's black-screen report). Status, MERGE-READY @ fdc9ece5d (the revert):**
+  - **97c591c34 is reverted here.** It deferred Asha's beach pose one frame during a swap.
+    - Probe runs on this head and the earlier one (scene_swap_probe `--to=haluna --resident-loads --warm-resident`,
+      headless): with the deferral, 3 of 19 crashed (signal 11, mid-swap, just after the prewarm finishes); without
+      it, 0 of 16. No symbols, so I can't prove the cause, but a crash on Haluna entry is worse than the ~130 ms it
+      saved.
+  - **Numbers on this head (after big31 moved the villagers off the main thread), without the deferral (6 runs):**
+    - hidden frame 0 is 576–715 ms (median ≈ 600), frame 1 36–93 ms;
+    - instantiate (threaded) ≈ 0.75 s; no hidden frame over 1 s (ADR 0029 met).
+    - With the deferral it was 406–502 ms, with 190–300 ms moved into frame 1.
+  - **These are my measurements with integration-qa's probe, not integration-qa's own.** Please have integration-qa
+    re-run it on the merged head. Their ~1.5 s reading predates big31 and doesn't reproduce here, even before my
+    change.
+  - **Left in frame 0:** mainly the router's place_at camera snap (the director builds its occluder triangles,
+    ~0.35 s). That's router/director code (Systems), already asked as a LEAD-ASK above. Taking it out safely means
+    building the triangle cache on the instantiate thread, not deferring work into the next frames.
+  - Tests after the revert: haluna 66/0; gdlint clean.
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan

@@ -31,6 +31,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 6274
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -276,9 +277,10 @@ def build_idle() -> ck.Clip:
 def build_attack() -> ck.Clip:
     c = ck.Clip("attack", ATTACK_SEC)  # a brush jab: it rocks back, cocks the brush, and jabs it out
     hold_legs(c, ATTACK_SEC)
-    for t, rx, loc, la, lb, ra in ((0.0, 0, (0, 0, 0), 0, 0, 0), (0.25, -5.0, (0, 0.024, -0.02), -40.0, 0.0, -8.0),
-                                   (ATTACK_CONTACT, 6.0, (0, 0.036, 0.03), -18.0, -58.0, -6.0),
-                                   (0.62, 3.0, (0, 0.02, 0.015), -14.0, -40.0, -4.0),
+    for t, rx, loc, la, lb, ra in ((0.0, 0, (0, 0, 0), 0, 0, 0), (0.25, -5.0, (0, 0.024, -0.02), -40.0, 0.0, -22.0),
+                                   (ATTACK_CONTACT, 6.0, (0, 0.036, 0.03), -18.0, -58.0, -20.0),
+                                   (0.62, 3.0, (0, 0.02, 0.015), -14.0, -40.0, -14.0),
+                                   (0.86, 0, (0, 0, 0), -6.0, -14.0, -5.0),  # settled before the brush sets down
                                    (ATTACK_SEC, 0, (0, 0, 0), 0, 0, 0)):
         c.key("body", t, (rx, 0, 0), loc)
         c.key("arm_l_a", t, (la, 0, 0))
@@ -329,6 +331,8 @@ def build_ko() -> ck.Clip:
             for i in range(3):
                 c.key(f"leg_{tag}{i}_a", t, (0, 0, sd * KO_THIGH * s))
                 c.key(f"leg_{tag}{i}_b", t, (0, 0, sd * KO_SHIN * s))
+    for t, s in ((0.0, 0.0), (0.1, 0.35), (0.3, 0.9), (0.45, 1.0), (KO_SEC, 1.0)):  # the arms fold up before it sinks
+        for tag in ("l", "r"):
             c.key(f"arm_{tag}_a", t, (-KO_ARM[0] * s, 0, 0))
             c.key(f"arm_{tag}_b", t, (-KO_ARM[1] * s, 0, 0))
     return c
@@ -336,6 +340,15 @@ def build_ko() -> ck.Clip:
 
 def build_clips() -> list[ck.Clip]:
     return [build_idle(), build_attack(), build_cast(), build_hit(), build_ko()]
+
+
+# The planted feet hold their spots (common/grounding.py) while the body rocks, jabs and leans over them, and in the
+# KO while the knees fold up and the body sinks between them (M5-A3P-1807: the clip audit's foot slip).
+PINNED_LEGS = [(f"leg_{tag}{i}_a", f"leg_{tag}{i}_b", 2, 1.0 if tag == "l" else -1.0) for tag in "lr" for i in range(3)]
+
+
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    return gr.pinned(rig, mesh, ck.with_variety(build_clips()), PINNED_LEGS, only=gr.PIN_CLIPS + ("ko",))
 
 
 # ---------------------------------------------------------------------------------------------
@@ -389,7 +402,8 @@ def report(rig: ck.Rig, mesh: ck.Mesh, clips: list[ck.Clip]) -> None:
 
 def build() -> tuple[ck.Rig, ck.Mesh, list[ck.Clip]]:
     rig = build_rig()
-    return rig, build_mesh(rig), build_clips()
+    mesh = build_mesh(rig)
+    return rig, mesh, export_clips(rig, mesh)
 
 
 def main() -> None:

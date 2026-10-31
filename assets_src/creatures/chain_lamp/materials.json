@@ -1,0 +1,16 @@
+{
+  "_doc": "The chain lamp's surfaces (docs/kb/art/creatures/act3/chain_lamp.md). cage: the brass frame, rings, base plate, domed cap (going bronze_patina toward its crown, by vertex colour), drip cone and the cap's eye; louvre: the eight brass leaves, worn bright on their free edges, their inner faces lit_ceramic reflectors (vertex colour); lamp: the salt-glass core and the bound light in it, glimmer_bound, steady (the light never changes: the louvres do; creatures README rule 3, color_script.md rule 2); chain: the dry lacquer_black iron links, the ring and the shackle; pin: the shackle pin, its hairline spawn_wound crack the weak point (ADR 0151), closed, a slow weak-point pulse. Colours are palette.json swatches; write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "cage": {"metallic": 0.6, "roughness_dry": 0.4, "roughness_wet": 0.25, "specular": 0.6, "wet_darken": 0.5,
+             "clearcoat_wet": 0.3, "detail_scale": 32.0, "detail_albedo": 0.12, "detail_bump": 0.3, "cavity_albedo": 0.5,
+             "emission_energy": 0.0},
+    "louvre": {"metallic": 0.5, "roughness_dry": 0.35, "roughness_wet": 0.22, "specular": 0.6, "detail_scale": 28.0,
+               "detail_albedo": 0.1, "detail_bump": 0.2, "cavity_albedo": 0.3, "emission_energy": 0.0},
+    "lamp": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "detail_albedo": 0.0, "detail_bump": 0.0,
+             "emission_color": "#4FB3B0", "emission_energy": 1.5},
+    "chain": {"metallic": 0.4, "roughness_dry": 0.7, "roughness_wet": 0.5, "specular": 0.4, "detail_scale": 40.0,
+              "detail_albedo": 0.15, "detail_bump": 0.4, "cavity_albedo": 0.5, "emission_energy": 0.0},
+    "pin": {"metallic": 0.4, "roughness_dry": 0.5, "specular": 0.5, "detail_albedo": 0.0, "detail_bump": 0.0,
+            "emission_color": "#3FE0C8", "emission_energy": 2.2, "emission_pulse_hz": 0.3, "emission_pulse_depth": 0.35}
+  }
+}

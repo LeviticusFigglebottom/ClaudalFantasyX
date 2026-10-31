@@ -1,0 +1,17 @@
+{
+  "_doc": "The drowned lantern's surfaces (docs/kb/art/creatures/act3/drowned_lantern.md). glass: the globe and its skirt's eight lobes, crazed salt_glass (cavity in the craze lines), its emission mask the held light's glow on the glass near it (glimmer_held, steady); crust: the old brass cap gone bronze toward patina where the spawn's wet lacquer_black-to-abyss_navy crust leaves it bare, the hanging ring, and the one short open seam down into the glass lit spawn_wound with a slow weak-point pulse (ADR 0151); chain: wet iron links; cord: the frayed wick-cords and fine cords, sand_cloth darkened wet; light: the held beads, salt_glass lit glimmer_held, steady (color_script.md rule 1). Colours are palette.json swatches; write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "glass": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "wet_darken": 0.2, "clearcoat_wet": 0.8,
+              "detail_albedo": 0.04, "detail_bump": 0.08, "cavity_albedo": 0.5,
+              "emission_color": "#7FC6D9", "emission_energy": 0.9},
+    "crust": {"metallic": 0.2, "roughness_dry": 0.45, "roughness_wet": 0.15, "specular": 0.6, "clearcoat_wet": 0.9,
+              "detail_scale": 22.0, "detail_albedo": 0.12, "detail_bump": 0.5, "cavity_albedo": 0.4,
+              "emission_color": "#3FE0C8", "emission_energy": 2.2, "emission_pulse_hz": 0.3, "emission_pulse_depth": 0.4},
+    "chain": {"metallic": 0.4, "roughness_dry": 0.6, "roughness_wet": 0.25, "specular": 0.5, "clearcoat_wet": 0.6,
+              "detail_albedo": 0.1, "detail_bump": 0.3, "emission_energy": 0.0},
+    "cord": {"roughness_dry": 0.9, "roughness_wet": 0.55, "specular": 0.2, "wet_darken": 0.6, "detail_scale": 60.0,
+             "detail_albedo": 0.2, "detail_bump": 0.4, "emission_energy": 0.0},
+    "light": {"roughness_dry": 0.3, "specular": 0.4, "detail_albedo": 0.0, "detail_bump": 0.0,
+              "emission_color": "#7FC6D9", "emission_energy": 1.2}
+  }
+}

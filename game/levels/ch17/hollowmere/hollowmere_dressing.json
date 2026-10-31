@@ -77,6 +77,16 @@
   },
   {
    "at": [
+    27.55,
+    1.6,
+    -21.05
+   ],
+   "energy": 0.7,
+   "range": 4.0,
+   "flicker": 0.3
+  },
+  {
+   "at": [
     42.15,
     0.75,
     0.75
@@ -391,7 +401,7 @@
    "yaw_deg": 180.0
   },
   {
-   "piece": "hm_lashed_hulls",
+   "piece": "hm_dockmaster_house",
    "at": [
     28.0,
     -19.0
@@ -510,8 +520,8 @@
   {
    "piece": "hm_windmill",
    "at": [
-    76.0,
-    -10.0
+    66.0,
+    -14.0
    ],
    "y": -0.9,
    "yaw_deg": -60.0
@@ -693,6 +703,33 @@
    "at": [
     78.0,
     -24.0
+   ],
+   "y": -0.9,
+   "yaw_deg": 30.0
+  },
+  {
+   "piece": "hm_drydock_berth",
+   "at": [
+    82.25,
+    -16.639
+   ],
+   "y": -0.9,
+   "yaw_deg": 30.0
+  },
+  {
+   "piece": "hm_drydock_berth",
+   "at": [
+    86.5,
+    -9.278
+   ],
+   "y": -0.9,
+   "yaw_deg": 30.0
+  },
+  {
+   "piece": "hm_drydock_berth_first",
+   "at": [
+    90.75,
+    -1.916
    ],
    "y": -0.9,
    "yaw_deg": 30.0

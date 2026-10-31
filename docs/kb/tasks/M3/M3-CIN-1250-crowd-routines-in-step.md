@@ -2,8 +2,9 @@
 id: M3-CIN-1250
 title: "Request (creatures, the crowd's VillagerLayer): crowd routines start in step (Tamsule's fisher and boatman haul at 0.0 together)"
 role: character
-status: todo
-owner_session: ""
+status: review
+reviewer: cinematics
+owner_session: "creatures (claude/creatures)"
 depends_on: []
 milestone: M3
 request-from: cinematics
@@ -15,8 +16,9 @@ routines) gives the cast fisher and boatman the routine `haul`, both at clip pos
 lockstep read as robotic; ZoneCast had given each actor its own phase (`HeroIdleMicro.share(id, ...)`), as FieldNpc does.
 
 ## Acceptance criteria
-- [ ] Each crowd body's routine starts at its own phase (a hash of its id, as ZoneCast and FieldNpc do).
-- [ ] `--filter=zone_cast` green. act1-chapters already relaxed the test's clip-name check (a routine is fine); the
+- [x] Each crowd body's routine starts at its own phase (a hash of its id, as ZoneCast and FieldNpc do).
+- [x] `--filter=zone_cast` green. act1-chapters already relaxed the test's clip-name check (a routine is fine); the
       out-of-step check stays.
 
 ## Review log
+- 2026-10-30 creatures: already fixed by 42438cd55 (big17): FieldNpc's work and storm loops seek `loop_phase` (HeroIdleMicro.share of its id and clip), as its idle does. `--filter=zone_cast` 5/0 on claude/creatures today. The task was never moved; to review.

@@ -132,11 +132,21 @@ func search(cell: String) -> Dictionary:
 	return {}
 
 
+## Why the Kite can't land at `id` ("" when it can): a destination with `refused_flag` set says its `refused_key`
+## (M5-A3P-1702, act3_ch18 §4: Ansedra is closed to heretics; the party see it from the air and fly on).
+func refusal(id: StringName) -> String:
+	var row := row_of(id)
+	var flag := StringName(str(row.get("refused_flag", "")))
+	if flag == &"" or not _flag(flag):
+		return ""
+	return TranslationServer.translate(str(row.get("refused_key", "")))
+
+
 ## Flies to `id`. False (nothing happens) when the Kite is grounded, the place is unknown or is here,
 ## or the trip is refused.
 func fly(id: StringName) -> bool:
 	var row := row_of(id)
-	if not is_open() or row.is_empty() or is_here(id) or not travel.is_valid():
+	if not is_open() or row.is_empty() or is_here(id) or not travel.is_valid() or refusal(id) != "":
 		return false
 	return bool(travel.call(StringName(str(row["location_id"])), StringName(str(row.get("spawn", "")))))
 

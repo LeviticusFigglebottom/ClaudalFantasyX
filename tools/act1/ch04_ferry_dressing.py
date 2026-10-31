@@ -129,11 +129,31 @@ def ferry_fittings() -> list[dict]:
     return out
 
 
+# M4-A2P-1403 (cloud-qa, the Lead 10-30): the hero caught on the derelict's hold hatch coaming (0.42 m) walking straight
+# at its corner. Its collider is an octagon: a cross of two boxes and, on each corner, a box turned 45 degrees whose
+# outer face is the chamfer (HATCH_CHAMFER_M on each side), so the capsule meets a 45-degree face and slides round.
+HATCH_CHAMFER_M = 0.25
+
+
+def derelict_hatch() -> list[dict]:
+    ox, oy, oz = DERELICT_AT
+    hx, hz, hhx, hhz, hh = bt.MAIN_HATCH
+    cx, cz, c = ox + hx, oz + hz, HATCH_CHAMFER_M
+    out = [box("DerelictHatch", cx - hhx, cx + hhx, oy, oy + hh, cz - hhz + c, cz + hhz - c),
+           box("DerelictHatchZ", cx - hhx + c, cx + hhx - c, oy, oy + hh, cz - hhz, cz + hhz)]
+    t = c / math.sqrt(2.0)  # the corner triangle's height from its hypotenuse (the chamfer face)
+    for k, (sx, sz) in enumerate(((1, 1), (-1, 1), (-1, -1), (1, -1))):
+        mx, mz = cx + sx * (hhx - c * 0.5), cz + sz * (hhz - c * 0.5)  # the chamfer face's midpoint
+        nx, nz = -sx / math.sqrt(2.0), -sz / math.sqrt(2.0)  # inward, across the face
+        out.append({"id": f"DerelictHatchCorner{k}", "pos": [r3(mx + nx * t * 0.5), r3(oy + hh * 0.5), r3(mz + nz * t * 0.5)],
+                    "size": [r3(c * math.sqrt(2.0)), r3(hh), r3(t)], "yaw": 45.0 if sx * sz > 0 else -45.0})
+    return out
+
+
 def derelict_fittings() -> list[dict]:
     ox, oy, oz = DERELICT_AT
     out = []
-    hx, hz, hhx, hhz, hh = bt.MAIN_HATCH
-    out.append(box("DerelictHatch", ox + hx - hhx, ox + hx + hhx, oy, oy + hh, oz + hz - hhz, oz + hz + hhz))
+    out += derelict_hatch()
     x0, x1, z0, z1, h = bt.GALLEY
     d0, d1, _dh = bt.GALLEY_DOOR
     out += [box("DerelictGalleyW", ox + x0, ox + x0 + 0.12, oy, oy + h, oz + z0, oz + z1),

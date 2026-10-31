@@ -36,7 +36,7 @@
     {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 37},
     {"op": "cue", "cue": "anim", "args": ["liss", "step_back"], "kwargs": {}, "src": 38},
     {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 39},
-    {"op": "cue", "cue": "camera", "args": ["H11"], "kwargs": {}, "src": 40},
+    {"op": "cue", "cue": "camera", "args": ["H11"], "kwargs": {"track": "toma"}, "src": 40},
     {"op": "cue", "cue": "anim", "args": ["toma", "lift", "tobin"], "kwargs": {}, "src": 41},
     {"op": "cue", "cue": "mark", "args": ["toma", "jetty_end_toma", "walk"], "kwargs": {}, "src": 42},
     {"op": "cue", "cue": "mark", "args": ["liss", "jetty_end_liss", "walk"], "kwargs": {}, "src": 43},

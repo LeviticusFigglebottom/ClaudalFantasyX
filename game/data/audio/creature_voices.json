@@ -496,6 +496,7 @@
     "malcor_venn": "silent",
     "abiding_first": "silent",
     "abiding_guard": "silent",
-    "court_stillguard": "silent"
+    "court_stillguard": "silent",
+    "storm_crawler": {"family": "crab", "_note": "M4-A2P-1012: the Ch16 storm crawler is a rim crawler the storm throws up; it shares the rim crawler's set", "events": {"idle": "cre_rim_crawler_idle", "attack": "cre_rim_crawler_attack", "hurt": "cre_rim_crawler_hurt", "death": "cre_rim_crawler_death", "move": "cre_rim_crawler_skitter"}}
   }
 }

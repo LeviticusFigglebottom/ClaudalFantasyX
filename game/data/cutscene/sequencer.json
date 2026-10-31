@@ -21,6 +21,15 @@
   "fade_ease": -1.8,
   "letterbox_ease": -2.0,
   "light_ease": 2.2,
+  "_memory_note": "M5-A3P-1600: @memory on|off [sec] [look=<id>] (CutsceneMemory) eases a screen layer under the letterbox, the fade and the box: desaturate (0-1) drains the colour, wash (0-1) mixes the whole frame toward wash_color, and between edge_inner and edge_outer (in screen heights from the centre: 1 is the top edge's middle, about 2 the corners) the picture blurs (edge_blur_lod, a mip level of the screen) and washes further by edge_wash. white is Kesh's memory (act2_ch16_direction.md K01-K08: desaturated to white, soft edges); held is the Undertow's drowned memories (act3_ch20.md: held and slowed), toward glimmer_held's #7FC6D9 (docs/kb/tech/glimmer.md).",
+  "memory": {
+    "ease": -1.6,
+    "default_look": "white",
+    "looks": {
+      "white": {"desaturate": 0.82, "wash": 0.28, "wash_color": "#F4F1EA", "edge_inner": 0.75, "edge_outer": 1.9, "edge_wash": 0.85, "edge_blur_lod": 3.0},
+      "held": {"desaturate": 0.6, "wash": 0.14, "wash_color": "#7FC6D9", "edge_inner": 0.9, "edge_outer": 2.0, "edge_wash": 0.55, "edge_blur_lod": 2.5}
+    }
+  },
   "_hold_note": "M2-FP-103 (the playtest: a kneeling Asha stood up for her first line): an @anim of one of hold_clips is a pose the actor holds (a hero body's play_clip hold) until its own next @anim or @mark, and its lines don't play the talk or idle clip over it. Any other @anim is a gesture, after which lines play talk and idle again.",
   "hold_clips": ["kneel_over_rhen", "laugh", "offer_hand", "face_west", "sit_in_shallows", "sit_up", "sit_steps", "spear_level", "catch_rhen", "take_hand", "vigil_book_shut", "stand_apart", "kneel", "lie_in_shallows"],
   "_stand_in_note": "M2-FP-103: clip_stand_ins maps '<actor>/<clip>' to a clip the rig has, played while the requested clip (assets_src/characters/requested_clips.json) is not built yet; the real clip plays as soon as the rig carries it. Rhen lies in the shallows as his KO pose (the human's playtest: his kneel twinned Asha's), sits up into his kneel and stands as his rise.",

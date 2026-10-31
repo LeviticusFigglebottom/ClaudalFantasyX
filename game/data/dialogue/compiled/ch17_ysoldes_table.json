@@ -1,0 +1,33 @@
+{
+ "format": 1,
+ "scene": "ch17_ysoldes_table",
+ "source": "game/data/dialogue/ch17/ch17_ysoldes_table.dlg",
+ "start": "ch17_ysoldes_table",
+ "nodes": {
+  "ch17_ysoldes_table": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "camera", "args": ["D18"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "mark", "args": ["ysolde", "fathers_table", "walk"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "lay_out", "keth_cord"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "lay_out", "stone_rubbings"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "lay_out", "blank_page"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch17_table_001", "key": "DLG_CH17_TABLE_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 16},
+    {"op": "line", "id": "ch17_table_002", "key": "DLG_CH17_TABLE_002", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 17},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "touch", "blank_page"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 19},
+    {"op": "line", "id": "ch17_table_003", "key": "DLG_CH17_TABLE_003", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 20},
+    {"op": "if_not", "cond": ["flag", "ch12_ysolde_confessed"], "to": 17, "src": 21},
+    {"op": "line", "id": "ch17_table_004", "key": "DLG_CH17_TABLE_004", "speaker": "ysolde", "emotion": "soft_smile", "voice": "", "src": 22},
+    {"op": "goto", "to": 17, "src": 21},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 24},
+    {"op": "set", "flag": "ch17_verse_begun", "value": ["lit", true], "src": 25},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 26}
+   ]
+  }
+ }
+}

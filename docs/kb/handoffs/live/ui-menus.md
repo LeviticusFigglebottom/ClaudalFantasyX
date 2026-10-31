@@ -1410,3 +1410,110 @@ MERGE-READY @ ace2d088c: M4-A2P-1705 (ADR 0121), plus requests M4-A2P-1703 and M
     chapters'. Requested as **M4-A2P-1706** (cinematics: act1-chapters).
   - **Waiting:** the Drownbell re-measure, on M3-HER-1168 (creatures).
 MERGE-READY @ 3df48256a: M4-A2P-1707, the Act II Continue sweep; M4-A2P-1706 requested.
+- 2026-10-31 00:50, **the Lead's 21:46 note: the Ch6 and Ch8 objective rows** (M4-A2P-1708, 5f317889c).
+  - **The HUD already does it.** The line slides in by itself only when an objective applies. The empty line (OBJ_NONE,
+    or a zone's idle_keys line) waits for the button, and the Where-to-next card says the same. New rows need nothing
+    from the UI: the tracker reads them, and validate_data checks their targets.
+  - **New guard, test_objective_coverage (2/0):** every location with a zone map (prologue to Ch13) has a main
+    objective row, and the empty line on arrival stays hidden. Brine Shoals, Corrow and the Coilspire are KNOWN_EMPTY
+    until act1-chapters' rows land. Then the run prints that the entry is stale, without failing.
+  - **To act1-chapters:** four mid-zone gaps where the line goes empty unless a cutscene bridges them (list in
+    M4-A2P-1708's notes): Haluna's wake after `ch04_shell_set`, Pemakar after `ch05_met_kerrid`, the bell galleries
+    after `ch07_tidecup_played`, and Corrow night after `ch09_ebbing_danced`.
+MERGE-READY @ 5f317889c: M4-A2P-1708, the objective coverage guard.
+- 2026-10-31 01:40, **the Lead's 21:56 note (ADR 0207): Act III UI begins** (my range M5-A3P-1700–1799). The Ch6/Ch8
+  objective check came first (M4-A2P-1708, already MERGE-READY).
+  - **M5-A3P-1700, the closing credits roll** (act3_ending CR):
+    - CreditsRoll and CreditsRollModel, data in `game/data/ui/credits.json`.
+    - The roll is timed to `roll_sec` (credits_suite).
+    - The beach-rite vignette at 62% fades the roll and its black out and emits `vignette_started(id)` for
+      Cinematics. It plays once.
+    - Holding Confirm runs it 4x faster (keys and pad). Holding Cancel skips once `credits_seen` is set. The hint is
+      filled for the device in use.
+    - At the end `credits_seen` is set, and `next_scene` or the title opens.
+    - **Tests and checks:** test_credits_roll 4/0; shot `credits_roll` (pending_baseline), viewed; a ui_sfx.json row
+      (the end turns the page), audio audit clean; validate_data 0/0; taskboard ok.
+  - **LEAD-ASK:** who and what should the credits name? Today they hold facts only: the title, "Original score,
+    composed for this game.", the Godot engine (MIT), the fonts (OFL), and the MakeHuman / MPFB2 data (CC0). The
+    human's own credit, the tracks' roles, and any wording about how the game was made are the human's call; nothing
+    is invented. Until then a 7-minute roll is sparse.
+  - **For Cinematics:**
+    - play `beach_rite` on `vignette_started`;
+    - set `next_scene` to E7's post-credits scene;
+    - for audio: match `roll_sec` to credits_suite's length when it's rendered.
+  - **Next in Act III UI:** the Kite as the Ch18 hub (KiteMapMenu exists; Act III opens the world map, SPEC §6.6),
+    then the optional-content log.
+MERGE-READY @ 5c4c9ca6b: M5-A3P-1700, the closing credits roll.
+
+- **2026-10-30, after the Lead's 23:26 note:**
+  - **M5-A3P-1700 follow-up (c2b8608b5):**
+    - The credits are a scene of their own (`credits_roll.tscn`, `CreditsRoll.SCENE`), for E6 to change to.
+    - Vignettes are named by `scene`. One that isn't built yet is passed over, so the roll never holds on black.
+    - Request M5-A3P-1701 to cinematics: E6 → credits, the beach-rite scene, and `next_scene` for E7.
+    - The credits stay facts-only, per the Lead, while the content question is with the human.
+  - **M5-A3P-1702, the Kite's Act III revisits (9a4d0b55f):**
+    - Oruvel joins the chart (from ch01_started).
+    - Ansedra is listed from Ch13 but greyed "Closed to heretics" once `ch14_declared_heretics` is set. These are the
+      new `refused_flag` and `refused_key` fields; `fly()` refuses it.
+    - **Tests and checks:** test_kite_map 13/0; `kite_map` rendered with Act III flags into scratch and viewed, with
+      no baseline written; validate_data 0/0; taskboard ok; lint ok.
+    - The audio audit's UI section is 0. It still exits 1 on three support skills from the integration branch
+      (`cut_the_line`, `court_reinforce`, `court_wait`), which is not this track's.
+  - **Next:** the optional-content log (Act III's revisits and errands, act3_ch18). Then the ending flow, once
+    slice-polish's E7 lands.
+MERGE-READY @ 9a4d0b55f: M5-A3P-1702, the Kite's Act III revisits (with c2b8608b5, the credits scene).
+
+- **M5-A3P-1703, the Kite's log (52cd5a5bb):**
+  - "The ship's log" on the Kite chart opens a read-only page:
+    - the eight revisits (Seen once each side scene has played, with what changed there);
+    - the seven heirloom errands ("Rhen, for Dace": where it waits, then Carried).
+  - The chart's ring follows each row. There are no counts or percentages (act3_ch18 rule 3).
+  - Data: `game/data/world/kite_log.json`. Model: KiteLogModel.
+  - Declared `ch18_revisit_<town>` (8 flags). Request **M5-A3P-1704** asks cinematics to set them as each revisit
+    scene plays; nothing sets them yet.
+  - **Tests and checks:** test_kite_map 15/0; shot `kite_log` (pending_baseline), rendered and viewed;
+    validate_data 0/0; taskboard ok; lint ok; audio audit UI 0.
+  - **Next:** the ending flow, once slice-polish's E7 lands. Meanwhile, more Act III UI per ADR 0207.
+MERGE-READY @ 52cd5a5bb: M5-A3P-1703, the Kite's log.
+
+- **M5-A3P-1705, the Vowbound menus lose names (80f0fdcc3):**
+  - A Vowbound whose `released_flag` is set leaves the battle Call list (`BattleVowboundHud.bound_ids`) and the
+    Status page's Bound line, which now shares that rule. There is no animation (act3_ch20 §9).
+  - **For combat (M5-A3P-1013):** add `released_flag` (`ch20_<id>_released`, already declared) to the six
+    vowbound.json rows. The UI reads it as soon as it's there.
+  - **Tests and checks:** vowbound 119/0 and status 57/0. Freeing the sandbox fixes the bound_ids test's leftover
+    node, which was there before. validate_data 0/0; taskboard ok; lint ok.
+MERGE-READY @ 80f0fdcc3: M5-A3P-1705, the Vowbound menus lose a name on release.
+
+- **M5-A3P-1706, the ledger page for Ch17 B05 (dd8d136e1):**
+  - LedgerReader writes Dace's entries (`ch17_ledger_page_*`) on a page under "Dace Sallow's ledger". They
+    still caption below.
+  - Each held `turn_page` gate turns the page when it ends. Past the last entry the turns land on blank pages.
+  - It takes no input and fades out when the scene ends. Sound: page_turned → ui_page.
+  - **Request M5-A3P-1707 (cinematics):** call `LedgerReader.mount(host, sequencer)` before `ch17_the_ledger`
+    plays.
+  - **Tests and checks:** test_ledger_reader 3/0; shot `ledger_reader` (pending_baseline), rendered and viewed;
+    validate_data 0/0; taskboard ok; lint ok; audio audit UI 0.
+MERGE-READY @ dd8d136e1: M5-A3P-1706, the ledger page.
+
+- **M5-A3P-1708, the Vowbound answers (a27a38bc0):**
+  - B09's hook. As Kesh is called she answers over herself, after Asha's call bark: "I hold. Call, and I will come."
+    until `ch17_chose_the_unbinding` is set, then "You chose. A thousand years, and one of you finally chose."
+  - The lines are the script's own keys, from `game/data/ui/vowbound_answers.json`.
+  - No shot changes: captures read no flags.
+  - **Tests and checks:** test_battle_barks 6/0; vowbound 119/0; validate_data 0/0; taskboard ok; lint ok.
+MERGE-READY @ a27a38bc0: M5-A3P-1708, the Vowbound answers (Ch17 B09).
+
+- **Small items:**
+  - **M4-A2P-1708:** dropped the stale KNOWN_EMPTY entries. Ch6 and Ch8's objective rows have landed, so
+    test_objective_coverage now holds every mapped zone (2/0).
+  - **M5-A3P-1709, request to progression (design):** kite.json `secrets` is empty, so every chart search finds
+    nothing. Design names the secret places; the menu reads them as they are.
+  - Fixed M5-A3P-1702's reviewer to `progression`; the board has no design role.
+- **Blocked or waiting, not idle:**
+  - **The ending flow:** waits on E7's staging (M5-A3P-1015, todo). When E7 has a scene, set credits.json
+    `next_scene` and the beach-rite vignette's `scene` (request M5-A3P-1701).
+  - **The Drownbell re-measure:** waits on M3-HER-1168, in review.
+  - **Mounts in the cinematics lane:** M5-A3P-1704 (revisit flags) and M5-A3P-1707 (the ledger page).
+  - **For combat (M5-A3P-1013):** `released_flag` in vowbound.json.
+MERGE-READY @ 9807c2d55: M4-A2P-1708 (KNOWN_EMPTY dropped) and M5-A3P-1709 (request), docs and tests only.

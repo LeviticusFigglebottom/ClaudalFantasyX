@@ -25,6 +25,9 @@ func test_the_galleries_lead_to_lowlight_and_back() -> void:
 	assert_eq(Game.state.chapter, 11, "the chapter step")
 	assert_true(bool(Game.get_flag(&"ch11_started")))
 	assert_true(zone.player.position.distance_to(zone.spawn_marker(&"Landing").position) < 0.01, "at the landing")
+	assert_true(_trigger(&"conduit_mark").on_touched())
+	assert_true(bool(Game.get_flag(&"ch11_rhen_admitted")), "M4-A2P-1003 D5: the housing-mark plays in the court")
+	assert_false(_trigger(&"conduit_mark").is_available(), "once")
 	assert_true(_trigger(&"to_lowlight").on_touched())
 	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch11/lowlight", "spawn": "Gate"}])
 	_close()
@@ -53,6 +56,9 @@ func test_the_galleries_lead_to_lowlight_and_back() -> void:
 	_open(VEY)
 	story.begin()
 	assert_true(bool(Game.get_flag(&"ch11_complete")), "back up the galleries: B11 closes the chapter")
+	assert_eq(
+		hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch12/keth_pass", "spawn": "PassFoot"}], "on to Ch12 (E1)"
+	)
 	_close()
 	Game.state = saved_state
 

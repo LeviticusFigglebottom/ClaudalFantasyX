@@ -120,8 +120,11 @@ def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None)
     mx.bus("hum_motif", 3.4, send=0.7)
     mx.bus("hum_root", 6.2, send=0.6)
     build(mx)
+    # width 0.7 (the Lead's 10-30 21:25 accessibility item, tools/audio/mono_check.py): at full width the hall's late
+    # field under the bar-9 hum went out of phase for a moment and lost 8.5 dB in mono; at 0.7 the worst moment is a
+    # 6.4 dB thinning and the cue keeps its hall.
     hall = ModFDNReverb(rt60=4.5, rt60_high=1.8, predelay=0.04, size=1.3, mod_depth=10.0, mod_rate=0.35,
-                        early_level=0.2, lowcut=80.0, seed=SEED % 9973)
+                        early_level=0.2, lowcut=80.0, width=0.7, seed=SEED % 9973)
     _, loop = mx.render(reverb=hall, reverb_return_db=-1.0)
     rep: dict = {}
     _, loop = master_loop(np.zeros((0, 2)), loop, TARGET_LUFS, ceiling_db=-2.0, report=rep)

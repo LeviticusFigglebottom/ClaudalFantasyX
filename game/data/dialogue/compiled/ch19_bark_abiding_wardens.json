@@ -1,0 +1,35 @@
+{
+ "format": 1,
+ "scene": "ch19_bark_abiding_wardens",
+ "source": "game/data/dialogue/ch19/ch19_bark_abiding_wardens.dlg",
+ "start": "ch19_bark_abiding_wardens",
+ "nodes": {
+  "ch19_bark_abiding_wardens": {
+   "headers": {"location": "ch19/iskarra_spire"},
+   "ops": [
+    {"op": "line", "id": "ch19_wardens_001", "key": "DLG_CH19_WARDENS_001", "speaker": "hesper_oan", "emotion": "tender", "voice": "", "src": 10, "name_key": "DLG_NAME_HESPER_OAN_WARDEN_HESPER_OAN"},
+    {"op": "line", "id": "ch19_wardens_002", "key": "DLG_CH19_WARDENS_002", "speaker": "ilsabet_rue", "emotion": "neutral", "voice": "", "src": 11, "name_key": "DLG_NAME_ILSABET_RUE_ILSABET_RUE"}
+   ]
+  },
+  "ch19_bark_wardens_half": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch19_wardens_003", "key": "DLG_CH19_WARDENS_003", "speaker": "hesper_oan", "emotion": "sad", "voice": "", "src": 16, "name_key": "DLG_NAME_HESPER_OAN_WARDEN_HESPER_OAN"}
+   ]
+  },
+  "ch19_bark_wardens_kerrid": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch19_wardens_004", "key": "DLG_CH19_WARDENS_004", "speaker": "hesper_oan", "emotion": "neutral", "voice": "", "src": 21, "name_key": "DLG_NAME_HESPER_OAN_WARDEN_HESPER_OAN"},
+    {"op": "line", "id": "ch19_wardens_005", "key": "DLG_CH19_WARDENS_005", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 22}
+   ]
+  },
+  "ch19_bark_wardens_end": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch19_wardens_006", "key": "DLG_CH19_WARDENS_006", "speaker": "ilsabet_rue", "emotion": "neutral", "voice": "", "src": 27, "name_key": "DLG_NAME_ILSABET_RUE_ILSABET_RUE"},
+    {"op": "set", "flag": "ch19_abiding_beaten", "value": ["lit", true], "src": 28}
+   ]
+  }
+ }
+}

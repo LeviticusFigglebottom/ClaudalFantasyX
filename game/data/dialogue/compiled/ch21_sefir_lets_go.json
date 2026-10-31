@@ -1,0 +1,28 @@
+{
+ "format": 1,
+ "scene": "ch21_sefir_lets_go",
+ "source": "game/data/dialogue/ch21/ch21_sefir_lets_go.dlg",
+ "start": "ch21_sefir_lets_go",
+ "nodes": {
+  "ch21_sefir_lets_go": {
+   "headers": {"location": "ch21/heart"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "camera", "args": ["HT14"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "anim", "args": ["sefir", "reach_for", "kesh"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "kesh_far", "count": 20, "motion": "spiral_up", "rate": "slow"}, "src": 11},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 12},
+    {"op": "line", "id": "ch21_letsgo_001", "key": "DLG_CH21_LETSGO_001", "speaker": "sefir", "emotion": "grief", "voice": "", "src": 13},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "anim", "args": ["sefir", "lower_hand"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 16},
+    {"op": "line", "id": "ch21_letsgo_002", "key": "DLG_CH21_LETSGO_002", "speaker": "sefir", "emotion": "tender", "voice": "", "src": 17},
+    {"op": "cue", "cue": "camera", "args": ["HT15"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "anim", "args": ["sefir", "reflection_ripples"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "sefir", "count": 40, "motion": "spiral_up", "rate": "slow"}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 22}
+   ]
+  }
+ }
+}

@@ -1705,6 +1705,40 @@
       "mean_turns_min": {
         "smart": 30
       }
+    },
+    {
+      "id": "ch16_storm_wakes",
+      "chapter": "Ch16 set piece (the storm wakes at the Drowned Choir: hold three breaths until the sea comes, Kerrid locked in holding the line; the storm wall sends crawlers and skates and telegraphs the wall; scripted_escape counts as a win; act2 ch16.md §5b, the Act II regular band; tuned by the chapters combat seat; the ch08_seawall loadout until M4-A2P-019)",
+      "kind": "set_piece",
+      "encounter": "ch16_storm_wakes",
+      "active": [
+        "kerrid",
+        "toma",
+        "asha"
+      ],
+      "reserve": [
+        "rhen",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          5,
+          35
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          90,
+          100
+        ],
+        "smart": [
+          95,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 80,
+      "loadout": "ch08_seawall",
+      "swell": "good"
     }
   ]
 }

@@ -3,6 +3,81 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 3e7910593: the Lead's 23:05 FAST-TRACK (the two ERRORs). It pre-empts the score (ADR 0207).**
+  - **UiAudio "already connected" on every resident battle return (134 in Ch1–Ch6):**
+    - Cause: the field leaves the tree for the battle and comes back with its connections intact. `step()` had dropped it from `watched`, so the director's `watch()` connected every hooked signal again.
+    - Fix: a node now carries the UiAudio that connected it (meta `ui_audio_connected`). A second `watch()` only resumes its reads, and a signal still plays its row once.
+  - **ashcrown_audio.gd:53 `unbind(0)`:** the trial's `ran` has three arguments and went through `unbind(argc - 3)`, which is 0 and an ERROR. Now three arguments connect plainly, and only a signal with more drops its extras.
+  - **Test:** `tests/unit/test_audio_reconnect.gd` (2) fails on any engine error (QaLogger), not only script errors. It reproduces both on the old code (the exact messages) and passes on the fix.
+  - **Checks:** gdlint and gdformat clean; Godot audio_reconnect 2/0, ui_ 58/0, ashcrown 22/0, audio_runtime 11/0, battle_audio 22/0. ui_'s "2 left nodes in the tree" happens without this change too.
+- **MERGE-READY @ e8755571d: Act III production starts (ADR 0207; the Lead's 21:56 item). The score, part 1, is the Unbinding themes (M5-A3P-1950, to review); part 2, the finale, is begun (M5-A3P-1951).**
+  - **Merged integration** (46d8a067 onward) into claude/audio; it was clean.
+  - **Storage, ADR 0208:** Act III's new audio is plain git under `assets/audio/act3/`, the same route as Act II's (LFS uploads are still refused from the cloud). The budget is 150 MiB; plain audio was at 100.3 MiB of 105. **LEAD-ASK:** accept ADR 0208 (repository size) on merge.
+  - **The sung Letting is derived, never retyped.** motifs.py `letting_verse()` is the first verse turned upward line by line, its close climbing to the held E6 on *tash*. `assets_src/music/act3/lamptongue.py` holds lamptongue.md's eight verses and its syllable rules. Asha's voice stays the vowel-shaped breath-flute vocalise (SPEC §16 Q4 still open); choirs use the procedural formant voices, as Act II's do.
+  - **New cues** (assets/audio/act3/music/; music.json rows):
+    - `the_letting` (H07, a 53 s loop): she sings the Eighth Verse twice; the score follows her, cool and held, then the choir and the rising glass. Its `release`, `the_letting_release` (H08), holds the E6 while the strings thin to it alone.
+    - `release_sting`: Ch20's six releases and Kesh's; the Letting's cell on metallophone and glass, with no voice and no cadence.
+    - `unbinding_swell` (H09, 109 s): the full choir and orchestra, the only time in the game, sing the Hush's first phrase in Lamptongue twice. The second time it resolves **upward**, B D E | A, to A major on *tash*.
+    - `heart_approach` (H01–H02, a loop): the Hush's first phrase backwards, as reversed piano over the heart's drone.
+    - `heart_rest` (R1): the drone alone.
+  - **Battle:** `battle.encounters` maps `ch21_sefir_letting` (H07's fight, pending combat) to `the_letting`, so the battle keeps her song.
+  - **Checks:**
+    - render_all: loudness, loop seams, and `--determinism` (all identical).
+    - mono fold: Act III has 0 failing files.
+    - validate_data 0; taskboard OK.
+    - tools tests: audio_loudness, audio_data, motifs (+1), lamptongue_sung (new), all OK.
+    - Godot tests: music_release 4/0, audio_runtime 11/0, battle_audio 22/0, music_transitions 7/0.
+    - Skipped: screenshots, Blender, coverage.
+  - **PC-QUEUE, by ear:**
+    - `unbinding_swell`'s A major resolution: the loudest moment in the game by design, momentary max -6.3.
+    - The Letting's vocalise vowels.
+- **MERGE-READY @ 4ff7c51c5: the Act III score, part 2, the finale (M5-A3P-1951, to review).**
+  - **`kesh_first_voice`** (H03, a loop): the seven verses' first lines in turn, in Lamptongue, a step higher each, over a 3+3+2 drum and string ostinato; her own verse is the fullest.
+  - **`sefir_warden`** (H04): the Order hums ORDER_HUM over airless strings, and his motif hangs on its C#.
+  - **`sefir_heart`** (H05–H06): the storm's note on the heart's A under rock-fusion percussion in 7/8, his C# now the A's major third.
+  - **Battle:** `ch21_kesh` and `ch21_sefir_heart` are pending rows in `battle.encounters`.
+  - **For combat:**
+    - H04's fight has no id in the drafts yet: it needs a row to `sefir_warden`.
+    - A BattleCycle `cycle_changed` signal would let Kesh's verses follow her element.
+  - **Checks:** render_all loudness, seams and determinism (all identical; kesh's seam re-placed half a beat in); true peaks under -1; mono fold 0 failing; validate_data 0; audio_loudness and audio_data OK; Godot battle_audio 22/0, music_transitions 7/0.
+- **MERGE-READY @ 39e91137c: the Act III score, part 3, the ending (M5-A3P-1952, to review).**
+  - **The cues:**
+    - `goodbye_imra`: one piano A after she is gone.
+    - `ending_lift_bed`: the drone and a glass shimmer.
+    - `goodbye_dace`: the current-song on harp with four bars of the lullaby inside it; same notes, D dorian and A minor.
+    - `goodbye_kerrid`: his stair slowing to a stop.
+    - `ending_dock`: solo piano, the Hush resolving to A.
+    - `credits_suite`: the shipped themes in pilgrimage order, ending on the lullaby on piano.
+    - `post_credits_lamp`: the star-path on a low metallophone.
+  - **Checks:** render_all loudness and determinism (all identical); the lift bed's seam; mono fold 0 failing; validate_data 0; audio_loudness and audio_data OK; Godot audio_runtime 11/0.
+  - **PC-QUEUE:**
+    - The credits suite's hush-to-piano join (it thins 7.5 dB in mono there).
+    - goodbye_dace's harp by ear.
+  - **Not done yet:** the 17 Act III cutscene `@sfx` (velamir_lullaby_hum, match_struck, hull_meets_water and the others); then the Ch17–Ch20 cues.
+- **MERGE-READY @ 6fcbce03d: the Lead's 21:25 item, the audio accessibility pass (M4-A2P-1952, to review).**
+  - **Sliders reach every sound.** Every bus sends to a slider bus (UI, World and Combat under SFX; Ambience with the effects slider). Two fixes:
+    - **Strays:** a player that never names a bus would sit on Master, under no slider but the master's. `AudioDirector.route_stray` now moves it to mix.json `stray_bus` (SFX). Nothing hits this today (the dialogue blip goes to Voice, the cutscene sound fallback to SFX); it guards any track's future players.
+    - **Voice-like barks:** the townsfolk's chatter (`villager_murmur_*`) was on World, under the effects slider only. It now plays on a new **Walla** bus sending through World, so the voice slider reaches it while it still ducks under a line and keeps the zone's reverb. The voice slider's help text says so.
+    - Battle barks are dialogue lines (the Voice blip), and the creatures' voices are effects; neither changes.
+  - **Mono.** A new `mono_audio` setting on the Audio page folds Master to (L + R) / 2: a StereoEnhance with `pan_pullout` 0, applied live.
+    - The new `tools/audio/mono_check.py` checks all 1,289 renders (186 of them stereo).
+    - One failed: `sefir_theme` lost 8.5 dB at 39.4 s, where its hall's late field went out of phase under the bar-9 hum. Re-rendered with the hall at width 0.7, it now thins by 6.4 dB for that moment; loudness is unchanged at -15.98 LUFS.
+    - The largest whole-file loss is 2.1 LU (kesh_memory). Fifteen music cues thin by 4–7.4 dB for a moment and keep every part (listed by the tool). **PC-QUEUE:** sefir_theme at bar 9, by ear.
+  - **Captions.** The game has no captions setting. Dialogue, narration and voice-over are subtitled, but non-dialogue cues aren't. That is requested from UI as **M4-A2P-1953**: a `captions` setting (default off) and a caption line. Audio then emits the battle tells and the off-screen story `@sfx` with loc keys.
+  - **Act I tells are distinct.** The new `tools/audio/tell_check.py` checks the seven Act I wind-ups:
+    - each against its enemy's attack;
+    - each against every tell it can meet in one fight.
+
+    All are distinct; the closest is Hullgnaw's coil against its bite (4.8 times as long, 1.28 times brighter). The Cinder Matron's recrust (Ch5) and the Grip (Ch8) sound alike (3.8 dB apart in colour) but never share a fight, so that pair is reported, not failed.
+  - **Touched outside audio's files:**
+    - `test_ui_settings.gd`: its pinned settings list gains `mono_audio`, one id appended.
+    - accessibility.json, audio_menu.json, strings.csv: appended rows, each in its own commit.
+  - **Checks:**
+    - gdlint and gdformat clean (game, tests); validate_data 0; taskboard OK.
+    - tools tests: audio_data, audio_loudness, dialogue_clarity, mono_check (new), tell_check (new), all OK.
+    - Godot tests: audio_accessibility 3/0 (new), ui_settings 12/0, settings 49/0, audio_menu 4/0, audio_runtime 11/0, life_audio 14/0, battle_audio 22/0, battle_stings 8/0, flame_audio 3/0, prop_audio 2/0, music_release 4/0.
+    - Skipped: screenshots (none shows the Audio page: the settings shots are the hub, Accessibility and Controls, and the Accessibility page leaves audio_menu.json's rows off, so `mono_audio` moves no baseline), Blender, coverage.
+- **BACKLOG EMPTY (after 6fcbce03d):** waiting on Ch11 and Ch13 staging, combat's Ch14–Ch16 fights, env-art-b's merge and UI's M4-A2P-1953.
 - **MERGE-READY @ 1ad5bbcfb: the Lead's 21:05 item.**
   - **The Act II boss themes as played in the intros (bdc5ef22):** done at d04d79422 (above). Each sting now lands with the title card at 0.7 s, under the boss cue's 3.5 s duck.
   - **Victory stings:** each Act II boss win returns to the field (the chapter flows: `victory_flag`, then the zone), not into a scene of grief, the same as Act I. So the one modest victory figure (pentatonic, open fifths) stays, with no triumphant boss fanfare. act1_mix_pass `--act 2`: 62 handovers, none with a step over 3 LU. Victory → field is level in every Act II zone (-16.0 against -16.0 to -16.1, at most 0.1 LU).
