@@ -796,3 +796,18 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
   - `qa_capsules`: zones clean. Its one red is Act II battle foes with no body (`abiding_*`, `court_stillguard`): not mine.
   - Tools: chapter_flow, ch10_fen_dressing, ch15_hollowmere_dressing, qa_flag_reach, locations, kite and loc tests all OK.
 - MERGE-READY Ch17 wired (M5-A3P-1001) + Ch18 critical path (M5-A3P-1004 part 1) @ a1c190305
+
+## 2026-10-31: Ch18 revisits (M5-A3P-1004, continued)
+- **K07 and K08 on one arrival.** The night aboard, the rest, then Iskarra at the chart table in the morning. Nobody is stranded ashore with no way back to the deck, and the dead `k_iskarra` objective row is removed.
+- **Revisits wired, each a `ch18.json` block for its zone:**
+  - **Hollowmere:** the dock-master at work, Dace's hooks, Tobin's drawings. Ch17's hull triggers are now blocked by `ch17_complete`.
+  - **Corrow** (its hand-kept layout, append-only): daylight, the low town drained, Marra's watch at the stair head, Toma's and Kerrid's heirlooms, K21.
+  - **Tamsule** (K20), **Pemakar** (K19) and **Quellan** (`quellan_act3()`).
+- **Requests filed:**
+  - **M5-A3P-1018 → environment:** Oruvel after the storm (Kell must not be seen in Act III, and Ch01Zone can't hide its cast), plus a Kite destination.
+  - **M5-A3P-1019 → architect:** a HalunaStory hook for Toma's lifting and Asha's heirloom (ADR 0035).
+- **Known gap:** older zones' Act I field barks may still play on a Ch18 visit where their flags allow. Each zone's owner can gate them with `blocked_by_flag: ch18_started`.
+- **Checks:**
+  - validate_data, dlgc, taskboard, gdlint and gdformat clean.
+  - Godot `ch18_thread` 5/0; ch05 4/0, ch07 5/0, ch08 6/0, ch10, ch12 2/0, ch17 3/0.
+  - Tools: chapter_flow, corrow_kit, pemakar_kit, ch12_keth_dressing, keth OK. The dressing generators re-run with no change to their output.

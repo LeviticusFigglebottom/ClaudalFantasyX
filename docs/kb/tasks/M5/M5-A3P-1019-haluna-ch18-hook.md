@@ -1,7 +1,7 @@
 ---
 id: M5-A3P-1019
-title: "Request (tech): a story hook on Haluna for Ch18 (Toma's lifting on the beach, Asha's heirloom)"
-role: tech
+title: "Request (architect): a story hook on Haluna for Ch18 (Toma's lifting on the beach, Asha's heirloom)"
+role: architect
 status: todo
 owner_session: ""
 depends_on: [M5-A3P-1004]
@@ -17,7 +17,7 @@ Two Ch18 scenes are at `ch02/haluna`:
 Haluna runs on HalunaStory, which isn't data-driven (ADR 0035 says new chapters use ZoneStory and must not copy HalunaStory). So ChapterRegistry's shared-zone rule (chapter_flow.md "Shared zones", M5-A3P-1001) can't reach it.
 
 ## Ask
-One of these (tech's call):
+One of these (the architect's call):
 - **(a)** HalunaStory hands over to ZoneStory from `ch18_started` on: a ZoneStory child that plays `ch18.json`'s `ch02/haluna` block, with the layout triggers it needs.
 - **(b)** HalunaStory gains a small data hook for Act III triggers.
 
