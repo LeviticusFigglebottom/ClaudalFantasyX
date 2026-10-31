@@ -54,3 +54,26 @@ func test_the_director_builds_its_prop_listener_and_routes_props_to_it() -> void
 	fire.free()
 	dir.stop_all_players()
 	dir.free()
+
+
+func test_the_archive_lamp_goes_out_with_its_light() -> void:
+	# Ch13 R10: the scene's silence, then `@light archive_lamp off 1.0`; the flame's breath follows the light down
+	var props := PropAudio.new(AudioData.table(AudioData.PROP_SFX))
+	var lamp := _prop("res://game/data/cutscene/ch13/archive_lamp.tscn")
+	var light := OmniLight3D.new()
+	light.name = "archive_lamp"
+	light.light_energy = 1.8
+	lamp.add_child(light)
+	var p := props.attach(lamp)
+	assert_true(p != null and p.playing, "the lamp's flame sounds")
+	var full := p.volume_db
+	props.step()
+	assert_between(p.volume_db, full - 0.01, full + 0.01, "at its own level while lit")
+	light.light_energy = 0.9
+	props.step()
+	assert_between(p.volume_db, full - 6.1, full - 5.9, "half the light, about 6 dB down")
+	light.light_energy = 0.0
+	props.step()
+	assert_false(p.playing, "out with the light")
+	assert_eq(props.followers.size(), 0, "and no longer followed")
+	lamp.free()
