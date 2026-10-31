@@ -272,7 +272,7 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 	await _fade_to(1.0)
 	if keep:
 		_detach_resident()
-		if not park_return:
+		if not park_return or not return_park.enabled:
 			_prewarm_return()  # the park loads it once the battle is in, not beside the battle's own instantiate
 	var parked: Node = null
 	var warmed := return_park.prewarmed and return_park.holds(scene_path)
@@ -300,7 +300,7 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 		_measure_visible(stats, _fade_lifted)
 	await _fade_to(0.0)
 	_busy = false
-	if keep and park_return:
+	if keep and park_return and return_park.enabled:
 		_park_return(fight)
 
 
@@ -401,7 +401,7 @@ func _park_return(fight: BattleRequest) -> void:
 	if DisplayServer.get_name() == "headless" and not ResidentLoads.run_headless:
 		loads = null  # as the victory panel's prepare_return: no zone loads in a headless run
 	await return_park.start(dest, loads, fight, _resident_path)
-	if return_park.path == dest and not is_busy():
+	if return_park.path == dest and not is_busy() and return_park.prewarm_in_fight:
 		# Row 74 on the PC: the swap-in still waited ~2.5 s on the prewarm compiling Haluna's pipelines. They compile
 		# now, during the fight (the stage holds the swap only if Return comes first).
 		return_park.prewarmed = true

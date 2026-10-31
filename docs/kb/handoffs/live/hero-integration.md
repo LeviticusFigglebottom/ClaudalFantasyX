@@ -2272,3 +2272,30 @@ MERGE-READY @ (this commit).
   - `test_clean_shutdown` also stops after the "reached its quit" assert when the probe never ran, rather than reporting a garbage exit time.
 - **Checked on the big37 merge (f5305b150), with `GODOT` unset:** clean_shutdown 1/0 (the probe ran to its quit), battle_return 2/0, scene_router_swap 17/0.
 MERGE-READY @ (this commit).
+
+### 2026-10-31: big37 regression on the PC (Drownbell → Haluna 1.18–1.22 s on big36, 1.36 / 2.62 / 5.03 / 9.05 s on big37). Bisected headless: no difference found
+- **Headless A/B** (worktrees of 1983de0a = big36 and f5305b15 = big37, `return_probe --cases=drownbell`, alternating runs):
+
+| | big36 | big37 |
+|---|---|---|
+| field in | 776 / 843 / 783 / 814 ms | 791 / 862 / 776 ms |
+| input | 913–964 ms | 903–987 ms |
+| covered | 2.57–2.67 s | 2.51–2.66 s |
+| fight | 5.69 s | 5.70 s |
+
+  - No errors and no crashes on either build. One big36 run printed nothing once; two reruns were clean.
+  - Headless fight FPS is capped (about 145) and equal on both, so it can't show a GPU-side frame regression.
+- **Code read of 1983de0a..f5305b15** (`game/` minus data): nothing big37 adds runs per frame in a fight or touches Haluna's GPU path.
+  - audio's UiAudio guard and PropAudio light followers: Haluna has no light-following prop.
+  - my row 85 `_exit_tree`: runs only at quit.
+  - creatures' f6c23ed1: villagers hold their override materials and no longer swap them at teardown. Their tick returns off-tree, which is cheaper during a fight.
+  - Four new boss battle scenes, not loaded by the Drownbell.
+  - Fenn's re-export: Fenn isn't in Haluna.
+  - The clip libraries are .tres on both builds (the .res revert was never in big36).
+- **The PC's own pattern:** the times rise run after run (1.36 → 9.05 s, separate processes), and the fight rendered 561 frames in 10 s against about 1,450. That looks cumulative on the machine (shader cache, or the disk the 59 GB log filled on big33) rather than per-process code. Nothing confirms it yet.
+- **To bisect on the GPU without a rebuild, ReturnPark now reads two switches:**
+  - `-- --no-park`: the park is off; the return loads and instantiates as on big35.
+  - `-- --no-park-prewarm`: the park stays, but its shader prewarm moves back to the swap-in (as before ADR 0209 amendment 1).
+  - Headless check: plain → parked + prewarmed; `--no-park-prewarm` → parked, not prewarmed; `--no-park` → not parked, instantiate 2.9 s. return_park 3/0, battle_return 2/0, scene_router 17/0.
+- **Suggested PC runs (with `battle_return_probe`):** big37 plain ×3, then `--no-park-prewarm` ×3, then plain ×3 again after clearing the Godot shader cache (`%APPDATA%/Godot/app_userdata/<project>/shader_cache`) and checking the free space on C:. If plain recovers after the cache clear, it's the machine. If only `--no-park-prewarm` recovers, it's my prewarm in the fight, and I'll revert it.
+MERGE-READY @ (this commit).
