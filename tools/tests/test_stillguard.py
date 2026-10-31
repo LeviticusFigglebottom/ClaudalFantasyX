@@ -251,7 +251,7 @@ class TestIvo(unittest.TestCase):
         called = dialogue_calls(IVO)
         self.assertTrue(called)
         self.assertEqual(called - set(IVO_CLIPS) - {"look_at"}, set())
-        text = hero_clips.library_text(IVO)
+        text = hero_clips.out_path(IVO).read_text(encoding="utf-8")
         self.assertEqual(set(re.findall(r'resource_name = &"([a-z_0-9]+)"', text)), set(IVO_CLIPS))
 
     def test_rig_rules(self):

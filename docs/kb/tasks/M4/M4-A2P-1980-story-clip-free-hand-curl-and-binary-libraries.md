@@ -2,7 +2,7 @@
 id: M4-A2P-1980
 title: "Story clips: a per-clip finger curl for a free hand (a fist), and binary .res libraries for Asha and Rhen"
 role: character
-status: review
+status: doing
 owner_session: "creatures-b (claude/creatures-b), supplementing (ADR 0207)"
 depends_on: [M3-CHR-1000]
 reviewer: character
@@ -50,19 +50,8 @@ a good fit).
   test). (b) **Split:** the story clips go in `<hero>_story_clips.tres`, merged into one library by the import rule
   (clip names unchanged), with the stage scenes taking the merged library. creatures-b's default is (a), the test's
   own note. It needs characters' yes, since it changes the pipeline.
-- 2026-10-31, part 2 done with default (a). Characters hadn't answered, and the Lead said to take the default.
-  - Asha's and Rhen's libraries are committed as compressed binary `<hero>_clips.res` (0.65 and 0.66 MB).
-    hero_clips.py builds the text, then saves it through tools/characters/clips_to_res.gd (headless Godot,
-    `$HYMN_GODOT` or `godot` on PATH). The save is deterministic for its `res://` path.
-  - `<hero>_clips.res.sha256` is the hash of the text source; the tools tests compare it, so they need no Godot.
-  - `library_text(hero)` serves the tests the text without writing it. `BINARY_LIBS` names the binary heroes.
-  - asset_import_rules.gd's `animation_library_path` falls back to the `.res` sibling.
-  - 18 stage scenes and scene_loads.json point at `.res`; test_footsteps_jog falls back to it.
-  - Checks: tools tests (hero_clips, hero_battle_clips, hero_locomotion, stillguard) 60/0; Godot `--filter=hero`
-    116/0; footsteps 8/0.
-  - **Gotcha:** an existing `.godot` cache keeps the imported asha/rhen GLBs (and their `_lod1`) pointing at the
-    deleted `.tres`. Deleting the `.md5` does not force a reimport. Reimport them in the editor, or add any line to
-    their `.import` files and run `godot --headless --import`; Godot rewrites the files back. A fresh checkout is
-    fine.
+- 2026-10-31: part 2's binary libraries (a0ba72003) were reverted by the Lead's decision: characters own the clip
+  pipeline, and their .tres rebuild (abf7391b) stands. The .res conversion is offered to characters as M4-A2P-1981,
+  with the size and load numbers; they decide. Part 1 (Rhen's knock fist, fb31999db) stays, for characters' review.
 
 ## Review log

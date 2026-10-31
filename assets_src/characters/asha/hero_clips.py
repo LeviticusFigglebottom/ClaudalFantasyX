@@ -5242,53 +5242,6 @@ def out_path(hero: str) -> Path:
     return ROOT / "assets" / "characters" / hero / "anim" / f"{hero}_clips.tres"
 
 
-# M4-A2P-1980: Asha's and Rhen's libraries outgrew test_hero_clips' text bound, so they are committed as binary,
-# compressed AnimationLibrary resources (<hero>_clips.res: 0.66 MB where the text was 4 MB). tools/characters/
-# clips_to_res.gd saves them from this build's text (it needs Godot: `godot` on PATH, or $HYMN_GODOT); the save is
-# deterministic for a given res:// path. <hero>_clips.res.sha256 holds the sha256 of the text it was saved from, so a
-# test can tell the binary is current without Godot. AssetImportRules takes the .res where the .tres is absent.
-BINARY_LIBS = {"asha", "rhen"}
-_TEXT: dict = {}
-
-
-def res_path(hero: str) -> Path:
-    return out_path(hero).with_suffix(".res")
-
-
-def sha_path(hero: str) -> Path:
-    return out_path(hero).with_name(f"{hero}_clips.res.sha256")
-
-
-def library_text(hero: str) -> str:
-    """The hero's library as text: the committed .tres, or for BINARY_LIBS this build (cached per process)."""
-    if hero not in BINARY_LIBS:
-        return out_path(hero).read_text(encoding="utf-8")
-    if hero not in _TEXT:
-        _TEXT[hero] = build(hero)
-    return _TEXT[hero]
-
-
-def write_binary(hero: str, text: str) -> None:
-    """Saves `text` as res_path(hero) through Godot and records its sha256 (BINARY_LIBS)."""
-    import hashlib  # noqa: PLC0415
-    import os  # noqa: PLC0415
-    import shutil  # noqa: PLC0415
-    import subprocess  # noqa: PLC0415
-    import tempfile  # noqa: PLC0415
-
-    godot = os.environ.get("HYMN_GODOT") or shutil.which("godot")
-    if godot is None:
-        raise SystemExit("hero_clips: Godot is needed to save %s (godot on PATH, or $HYMN_GODOT)" % res_path(hero))
-    with tempfile.TemporaryDirectory() as tmp:
-        src = Path(tmp) / f"{hero}_clips.tres"
-        src.write_text(text, encoding="utf-8")
-        dst = "res://" + res_path(hero).relative_to(ROOT).as_posix()
-        subprocess.run([godot, "--headless", "--path", str(ROOT), "--script", "res://tools/characters/clips_to_res.gd",
-                        "--", str(src), dst], check=True, capture_output=True)
-    sha_path(hero).write_text(hashlib.sha256(text.encode("utf-8")).hexdigest() + "\n", encoding="utf-8")
-    out_path(hero).unlink(missing_ok=True)
-
-
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--hero", choices=sorted(PERSONA), action="append")
@@ -5297,13 +5250,8 @@ def main() -> int:
         p = out_path(hero)
         p.parent.mkdir(parents=True, exist_ok=True)
         text = build(hero)
-        if hero in BINARY_LIBS:  # M4-A2P-1980
-            write_binary(hero, text)
-            print(f"wrote {res_path(hero).relative_to(ROOT)} ({res_path(hero).stat().st_size / 1e6:.2f} MB from "
-                  f"{len(text) / 1e6:.2f} MB of text, {len(CLIPS[hero])} clips)")
-        else:
-            p.write_text(text, encoding="utf-8")
-            print(f"wrote {p.relative_to(ROOT)} ({len(text) / 1e6:.2f} MB, {len(CLIPS[hero])} clips)")
+        p.write_text(text, encoding="utf-8")
+        print(f"wrote {p.relative_to(ROOT)} ({len(text) / 1e6:.2f} MB, {len(CLIPS[hero])} clips)")
         if hero in BATTLE_STANCE:
             bp, n = build_battle(hero)
             print(f"wrote {bp.relative_to(ROOT)} ({n} clips)")

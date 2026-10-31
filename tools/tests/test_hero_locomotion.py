@@ -63,7 +63,7 @@ class TestHeroLocomotion(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.sk = {h: hero_clips.Skeleton(ROOT / "assets" / "characters" / h / f"{h}.glb") for h in HEROES}
-        cls.subs = {h: _subresources(hero_clips.library_text(h)) for h in HEROES}
+        cls.subs = {h: _subresources(hero_clips.out_path(h).read_text(encoding="utf-8")) for h in HEROES}
         cls.data = json.loads(hero_clips.LOCO_DATA.read_text(encoding="utf-8"))
         cls.fk = {}
 
