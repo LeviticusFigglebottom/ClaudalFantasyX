@@ -397,5 +397,11 @@ flags = {
 "ch20_cage_broken": "Ch20 U07: the Cage encounter's victory_flag (the four founders fought as one); read by H01.",
 "ch20_complete": "Ch20 U08 (ch20_thank_you): the founders' four thank-yous; the flow hands off to Ch21.",
 "ch21_unbound": "Ch21 H09 (M5-A3P-1014, ch21_great_unbinding): the Great Unbinding; every held mote rises. Read by the Ending's flow.",
-"credits_seen": "Credits (M5-A3P-1700): the closing credits have run to their end in this save; holding Cancel may skip them after that."
+"credits_seen": "Credits (M5-A3P-1700): the closing credits have run to their end in this save; holding Cancel may skip them after that.",
+"ch18_revisit_pemakar_seen": "Ch18 §4 (revisit): the Kite's visit to Pemakar has played ch18_revisit_pemakar (Pemakar's mooring rings and Garo's boats), once (M5-A3P-1004).",
+"ch18_revisit_tamsule_seen": "Ch18 §4 (revisit): the Kite's visit to Tamsule has played ch18_revisit_tamsule (Tamsule's restarted Reefball season), once (M5-A3P-1004).",
+"ch18_revisit_corrow_seen": "Ch18 §4 (revisit): the Kite's visit to Corrow has played ch18_revisit_corrow (Corrow's stair watch again), once (M5-A3P-1004).",
+"ch18_revisit_quellan_seen": "Ch18 §4 (revisit): the Kite's visit to Quellan has played ch18_revisit_quellan (Quellan's new cord, from the air), once (M5-A3P-1004).",
+"ch18_revisit_hollowmere_seen": "Ch18 §4 (revisit): the Kite's visit to Hollowmere has played ch18_revisit_hollowmere (Hollowmere's dock-master at work again), once (M5-A3P-1004).",
+"ch18_revisit_ansedra_seen": "Ch18 §4 (revisit): the Kite's visit to Ansedra has played ch18_revisit_ansedra (Ansedra from the air, closed to heretics), once (M5-A3P-1004)."
 }
