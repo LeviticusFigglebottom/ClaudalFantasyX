@@ -691,6 +691,11 @@
       "id": "old_shoal",
       "scene": "res://game/creatures/old_shoal/old_shoal_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "the_cage",
+      "scene": "res://game/creatures/the_cage/the_cage_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
     }
   ],
   "creature_stage": {

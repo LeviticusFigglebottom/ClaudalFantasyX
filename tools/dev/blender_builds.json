@@ -531,6 +531,16 @@
       ]
     },
     {
+      "id": "creature_the_cage",
+      "owner": "character",
+      "sources": ["assets_src/creatures/the_cage/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/the_cage/*.glb", "assets/creatures/the_cage/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/the_cage/build_the_cage.py", "--", "--out", "assets/creatures/the_cage/the_cage.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "the_cage"]
+      ]
+    },
+    {
       "id": "creature_shoal_skipper",
       "owner": "character",
       "sources": ["assets_src/creatures/shoal_skipper/**", "assets_src/creatures/common/**"],

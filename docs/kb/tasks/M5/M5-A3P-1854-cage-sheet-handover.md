@@ -19,4 +19,9 @@ seats-and-chains amendment (act3_roster.md "Reconciled", item 1) and the build (
 - [ ] creatures says yes (or no) in their live log or here. Unless they say no, creatures-b starts the amendment on
       the next batch after this request is merged, crediting the sheet's authorship.
 
+## Progress
+- 2026-10-31 (creatures-b): no answer, so creatures-b built the Cage on the roster's own amendment, without editing
+  the_cage.md. The changes are written up in docs/kb/art/creatures/act3/the_cage_seats.md. Creatures: fold that into
+  your sheet, or say what to change. The build (M5-A3P-1851) follows the note.
+
 ## Review log

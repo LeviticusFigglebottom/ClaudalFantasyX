@@ -377,6 +377,23 @@
       "contact": {"attack": 1.5, "cast": 2.2, "bite": 1.2},
       "loop": ["idle", "ready"],
       "stand_in": {"height": 3.8, "radius": 3.2}
+    },
+    "the_cage": {
+      "scene": "res://game/creatures/the_cage/the_cage_battle.tscn",
+      "contact": {"attack": 0.6, "cast": 1.0},
+      "loop": ["idle"],
+      "vfx_anchors": {"core": "vfx_core"},
+      "phases": {
+        "break_q1": {"clip": "break_q1", "sec": 0, "hide": ["Q1Whole"],
+                     "show": ["Q1Broken"], "hide_after": ["FounderQ1"]},
+        "break_q2": {"clip": "break_q2", "sec": 0, "hide": ["Q1Whole", "Q2Whole"],
+                     "show": ["Q1Broken", "Q2Broken"], "hide_after": ["FounderQ1", "FounderQ2"]},
+        "break_q3": {"clip": "break_q3", "sec": 0, "hide": ["Q1Whole", "Q2Whole", "Q3Whole"],
+                     "show": ["Q1Broken", "Q2Broken", "Q3Broken"], "hide_after": ["FounderQ1", "FounderQ2", "FounderQ3"]},
+        "break_q4": {"clip": "break_q4", "sec": 0, "hide": ["Q1Whole", "Q2Whole", "Q3Whole", "Q4Whole"],
+                     "show": ["Q1Broken", "Q2Broken", "Q3Broken", "Q4Broken"], "hide_after": ["FounderQ1", "FounderQ2", "FounderQ3", "FounderQ4"]}
+      },
+      "stand_in": {"yaw_deg": 45.0, "height": 4.3, "radius": 2.0}
     }
   }
 }
