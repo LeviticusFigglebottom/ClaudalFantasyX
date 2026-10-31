@@ -2827,12 +2827,12 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
 # hem bones of each panel keep SKIRT_TRAIL of their last frame's swing while the solve lets them fall back in (they
 # still kick out at once, as far as the leg needs): the hem flicks out with the stride and drifts back. The cycle starts
 # on the plain solve (the transitions join it there) and its last frame is set to its first, so the loop closes.
-SKIRT_TRAIL = 0.6  # the share of the previous frame's extra swing kept, per 15 fps frame
+SKIRT_TRAIL = 0.75  # share of the previous frame's extra swing kept per 15 fps frame (cloud pass 6: more lag)
 SKIRT_TRAIL_CLIPS = {"walk", "run"}
 # row 56 (big38, real GPU: the run's skirt still a bell, "no legs showing"): below the knee the outer skirt now rides the
 # legs' own weights (build_asha OUTER_LEG_SHARE), so in the locomotion clips (LOCO_CLIPS: the cycles and their starts,
 # stops and turns, so they still join) the knee and hem panels swing out only this share of the clearance solve
-SKIRT_LOCO_SWING = 0.35
+SKIRT_LOCO_SWING = 0.6  # cloud pass 6: at 0.35 the hem gathered at the ankles
 SKIRT_LOCO_BACK = -0.2  # the back panels (their outward direction's +Z below this) keep the full clearance: the back of
 # the hem spans both legs (half on each), so a heel kicked back would pass through it
 
