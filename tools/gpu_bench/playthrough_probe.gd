@@ -13,7 +13,8 @@ extends Node
 ## takes input), PLAY_TELEPORT (hops held back by the zone's guards: the hero jumps beside the target),
 ## PLAY_SWEEP (at the target with no progress: it steps onto each trigger near it),
 ## PLAY_SKIP (a soft-lock on a puzzle: the objective's until flag raised so the smoke goes on; the step is unplayed),
-## PLAY_HOLD (a hold prompt showed: its action is held until the prompt goes),
+## PLAY_HOLD (a hold prompt showed: its action is held until the prompt goes), PLAY_SKIP_SCENE (stuck in a cutscene
+## for STUCK_S: ui_cancel is held, the sequencer's skip),
 ## PLAY_FELL (the hero fell out of the world after a hop: put back on the ground; no fall recovery in the game),
 ## PLAY_NO_TARGET (the field takes input but the objective names no target), PLAY_ARRIVED / PLAY_TIMEOUT.
 
@@ -46,6 +47,7 @@ const TRIGGER_RAY_M := 2.0
 const FLOOR_SEARCH_M := 4
 
 var _opts: Dictionary = {}
+var _skip_holding := false
 var _t0 := 0
 var _last_progress := 0.0
 var _flags: Array[String] = []
@@ -117,6 +119,7 @@ func _run() -> void:
 			stuck_logged = false
 			softlock_logged = false
 		if cur is FieldBattle:
+			_skip_hold(false)
 			result_at = await _battle_step(cur as FieldBattle, result_at, t)
 			continue
 		result_at = -1.0
@@ -138,7 +141,10 @@ func _run() -> void:
 					print("PLAY_HOLD %.1f %s" % [t, held])
 				Input.action_press(held)
 				continue
-			if t >= next_tap:
+			# Past STUCK_S, a cutscene is held to skip (ui_cancel held: the sequencer's skip), as a stuck player would.
+			if t - _last_progress > STUCK_S and _skip_hold(true):
+				print("PLAY_SKIP_SCENE %.1f %s: ui_cancel held to skip the cutscene" % [t, path])
+			if t >= next_tap and not _skip_holding:
 				# Past CANCEL_AFTER_S with no progress, every other tap is ui_cancel: a menu the hero opened closes.
 				var cancel := t - _last_progress > CANCEL_AFTER_S and int(t / TAP_S) % 2 == 1
 				_tap(&"ui_cancel" if cancel else &"ui_accept")
@@ -152,6 +158,7 @@ func _run() -> void:
 					)
 				)
 			continue
+		_skip_hold(false)
 		if busy_since >= 0.0 and t - busy_since < SETTLE_INPUT_S:
 			continue
 		busy_since = -1.0
@@ -405,6 +412,18 @@ func _floor_in(p: FieldController, a: Node3D) -> Vector3:
 				if it == null or it.contains_point(on):
 					return on
 	return _on_ground(p, a.global_position, TRIGGER_RAY_M)
+
+
+## Presses (true) or releases (false) ui_cancel as a held key; true when that changed the hold.
+func _skip_hold(on: bool) -> bool:
+	if _skip_holding == on:
+		return false
+	_skip_holding = on
+	var ev := InputEventAction.new()
+	ev.action = &"ui_cancel"
+	ev.pressed = on
+	Input.parse_input_event(ev)
+	return true
 
 
 ## The action of a showing HoldPrompt (&"" when none); every other held prompt action is released.

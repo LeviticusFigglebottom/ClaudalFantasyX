@@ -122,6 +122,24 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## STATUS (01:10): big33 Ch6 → end card, the binding hang; big34 fresh run started
+- **big33 (5695a69ce), F8 Ch6 → end card, second try.**
+  - Ch6 and Ch7 play by objective. Ch8 plays Corrow, Ivo, the path fight, the door (576.6 s), both flue-moth fights
+    and the flue tiers.
+  - With the probe's landing fix, the crown binding fires (`ch08_virel_bound` at 855.9 s). The flue puzzle itself is
+    still skipped by the probe (PLAY_SKIP).
+  - **Then the run stops inside the binding scene. This is a game bug, M3-C08-1400 (act1-chapters, high).**
+    `ch08_binding.dlg:26` `@mark virel virel_gone` walks Virel about 2,500 m to the off-stage park at 1 m/s.
+    `CutsceneSequencer._finish` plays every walk out, so the player has no control for about 42 minutes after Asha's
+    last line. A debug script saw `_awaiting` = wait with `wait_left` 2483 s, counting down in real time.
+  - Holding ui_cancel (skip) gets out; tapping ui_accept doesn't. No other `.dlg` has a `@mark` more than 200 m off.
+  - The same task asks for the missing objective row (crown → binding).
+- **Probe:** past 90 s stuck in a cutscene, it now holds ui_cancel (PLAY_SKIP_SCENE), as a stuck player would. It lands
+  on a floor point inside a trigger that spans a void (the crown's trigger spans the spire's well).
+- **Now:** big34 (9317c6b6c), one continuous fresh-profile run New Game → end card (`--secs=12000`, detached).
+  ERROR lines will be counted against a target of 0.
+- **Queued:** Ch8's Coilspire door after big35 merges (the touch-beat fix), then the Act II smoke, Ch10 → Ch13.
+
 ## STATUS (23:35): objectives preview on 7a37c3d53, then big33 and the Lead's 23:06 ask
 - **Preview on act1-chapters' 7a37c3d53 (F8 Ch6 → end card).** With the new rows, the probe plays Ch6 and Ch7 by
   objective. In Ch8 it plays Corrow and Ivo, the Coilspire path fight, and the Coilspire door
