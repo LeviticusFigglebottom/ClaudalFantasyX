@@ -43,6 +43,7 @@ const OUT_OF_WORLD_Y := -500.0
 ## Jumps find the ground with a ray from this high above the spot.
 const GROUND_RAY_M := 40.0
 const TRIGGER_RAY_M := 2.0
+const FLOOR_SEARCH_M := 4
 
 var _opts: Dictionary = {}
 var _t0 := 0
@@ -380,7 +381,30 @@ func _step_onto(p: FieldController, a: Node3D) -> void:
 	for i in 3:
 		await get_tree().physics_frame
 	p.velocity = Vector3.ZERO
-	p.global_position = _on_ground(p, a.global_position, TRIGGER_RAY_M)
+	p.global_position = _floor_in(p, a)
+
+
+## A floor point inside trigger `a` near its height. A trigger can span a void (the Coilspire crown's spans the spire's
+## well), so its own point is tried first, then a ring of points out to FLOOR_SEARCH_M.
+func _floor_in(p: FieldController, a: Node3D) -> Vector3:
+	var it := a as Interactable
+	for r in range(0, FLOOR_SEARCH_M + 1):
+		for dx in range(-r, r + 1):
+			for dz in range(-r, r + 1):
+				if maxi(absi(dx), absi(dz)) != r:
+					continue
+				var at := a.global_position + Vector3(dx, 0, dz)
+				var q := PhysicsRayQueryParameters3D.create(
+					at + Vector3.UP * TRIGGER_RAY_M, at + Vector3.DOWN * TRIGGER_RAY_M
+				)
+				q.exclude = [p.get_rid()]
+				var hit := p.get_world_3d().direct_space_state.intersect_ray(q)
+				if hit.is_empty():
+					continue
+				var on := (hit["position"] as Vector3) + Vector3.UP * SWEEP_LIFT_M
+				if it == null or it.contains_point(on):
+					return on
+	return _on_ground(p, a.global_position, TRIGGER_RAY_M)
 
 
 ## The action of a showing HoldPrompt (&"" when none); every other held prompt action is released.
