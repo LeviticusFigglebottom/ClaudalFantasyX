@@ -5,7 +5,7 @@
  "start": "ch19_the_kite_comes_down",
  "nodes": {
   "ch19_the_kite_comes_down": {
-   "headers": {"location": "prologue"},
+   "headers": {"location": "ch19/iskarra"},
    "ops": [
     {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 7},
     {"op": "cue", "cue": "fade", "args": ["in", 2.0], "kwargs": {}, "src": 8},

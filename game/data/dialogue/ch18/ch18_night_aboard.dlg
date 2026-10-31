@@ -5,7 +5,7 @@ title: ch18_night_aboard
 location: ch18/kite
 ---
 @camera K14
-@music kite_night fade=3.0
+@music the_kite fade=3.0
 @mark kerrid stern_rail walk
 @wait 3.0
 <<if not ($ch10_camp_talk or $ch11_camp_talk or $ch12_camp_talk or $ch13_camp_talk or $ch14_camp_talk or $ch15_camp_talk or $ch16_camp_talk)>>

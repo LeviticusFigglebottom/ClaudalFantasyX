@@ -12,6 +12,8 @@ request-from: narrative
 ## Goal
 The Ch17 scripts (M5-A3P-1000) name cues that `game/data/audio` doesn't have yet. Briefs: act3_ch17.md §6 and the
 drafts README "Music cues the drafts name".
+- **Resolved (2026-10-31, act2-plan):** `hollowmere_morning` now plays audio's `hollowmere` (M3-AUD-852), and the zone row `ch17/hollowmere` → `hollowmere` is appended to music.json.
+- **Still asked:** `the_choice` (it never resolves), `kite_first_lamp`, and the sound `sea_flat_lap`.
 - **Music:**
   - `hollowmere_morning`;
   - `the_choice`: it never resolves;

@@ -36,3 +36,8 @@ SKILL_CHAIN_LAMP_SWING,Swing
 SKILL_SPIRE_GLASS_FLARE,Glass Flare
 SKILL_SPIRE_PALE_RAKE,Pale Rake
 LOCATION_CH19_ISKARRA_SPIRE,"Iskarra, the Lamp Spire"
+OBJ_CH19_VIGIL,Go to Asha on the steps.
+OBJ_CH19_HITCH,Kerrid is sitting at the plaza's edge.
+OBJ_CH19_SPIRE,"In the morning, climb to the spire's crown."
+OBJ_CH19_SIDE_WORDS,Ysolde is on the steps with her book open.
+OBJ_CH19_ENGINE,Shut down the anchor-engine.

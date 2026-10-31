@@ -8,7 +8,7 @@
    "headers": {"location": "ch18/kite"},
    "ops": [
     {"op": "cue", "cue": "camera", "args": ["K14"], "kwargs": {}, "src": 7},
-    {"op": "cue", "cue": "music", "args": ["kite_night"], "kwargs": {"fade": 3.0}, "src": 8},
+    {"op": "cue", "cue": "music", "args": ["the_kite"], "kwargs": {"fade": 3.0}, "src": 8},
     {"op": "cue", "cue": "mark", "args": ["kerrid", "stern_rail", "walk"], "kwargs": {}, "src": 9},
     {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 10},
     {"op": "if_not", "cond": ["not", ["or", ["or", ["or", ["or", ["or", ["or", ["flag", "ch10_camp_talk"], ["flag", "ch11_camp_talk"]], ["flag", "ch12_camp_talk"]], ["flag", "ch13_camp_talk"]], ["flag", "ch14_camp_talk"]], ["flag", "ch15_camp_talk"]], ["flag", "ch16_camp_talk"]]], "to": 8, "src": 11},

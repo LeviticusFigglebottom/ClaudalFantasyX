@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch18_heirloom_asha",
+ "source": "game/data/dialogue/ch18/ch18_heirloom_asha.dlg",
+ "start": "ch18_heirloom_asha",
+ "nodes": {
+  "ch18_heirloom_asha": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "line", "id": "ch18_heir_003", "key": "DLG_CH18_HEIR_003", "speaker": "neme", "emotion": "tender", "voice": "", "src": 7},
+    {"op": "line", "id": "ch18_heir_004", "key": "DLG_CH18_HEIR_004", "speaker": "asha", "emotion": "grief", "voice": "", "src": 8},
+    {"op": "set", "flag": "ch18_heirloom_asha", "value": ["lit", true], "src": 9}
+   ]
+  }
+ }
+}

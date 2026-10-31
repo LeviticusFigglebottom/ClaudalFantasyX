@@ -1,0 +1,10 @@
+// M5-A3P-1003. Ch18 §5, one hero's heirloom errand. Split from ch18_heirloom_rhen.dlg, whose header has the rules: ZoneStory plays one scene file
+// per beat or bark.
+title: ch18_heirloom_asha
+location: ch02/haluna
+---
+// Haluna, the Velamir house: Imra's lantern-staff.
+Neme [tender]: Your mother left this with me. She said you'd need a longer one. #line:ch18_heir_003
+Asha [grief]: She was right. #line:ch18_heir_004
+<<set $ch18_heirloom_asha = true>>
+===
