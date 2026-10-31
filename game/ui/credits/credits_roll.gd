@@ -12,6 +12,8 @@ signal vignette_started(id: StringName)
 signal finished
 
 const TITLE_SCENE := EndCard.DEFAULT_RETURN_SCENE
+## The credits as a scene of their own: the ending's last cutscene (act3_ending E6) changes to it.
+const SCENE := "res://game/ui/credits/credits_roll.tscn"
 
 var model: CreditsRollModel
 ## How an ending changes scene: Callable(path). Unset: FlowRouting.change_scene. Tests set a recorder.
@@ -25,6 +27,7 @@ var _hint: Label
 var _labels: Array[Label] = []
 var _height := 0.0
 var _ended := false
+var _vignette: Node
 ## Confirm and Cancel held, from the input events (keys and pad alike).
 var _fast := false
 var _skip := false
@@ -68,7 +71,11 @@ func advance(delta: float, fast: bool = false, skip: bool = false) -> void:
 		return
 	var started := model.advance(delta, fast, skip)
 	if started != &"":
+		_show_vignette(model.vignette)
 		vignette_started.emit(started)
+	elif model.phase != CreditsRollModel.Phase.VIGNETTE and _vignette != null:
+		_vignette.queue_free()
+		_vignette = null
 	_apply()
 	if model.is_done():
 		_end()
@@ -99,6 +106,20 @@ func _apply() -> void:
 	_hint.modulate.a = a
 	# The black stays through the lead-in and the end; only a vignette lets the scene behind show.
 	_black.color.a = a if model.phase == CreditsRollModel.Phase.VIGNETTE else 1.0
+
+
+## The vignette on show (null when none): its scene, instanced behind the roll's black.
+func vignette_node() -> Node:
+	return _vignette
+
+
+func _show_vignette(row: Dictionary) -> void:
+	var packed := load(str(row.get("scene", ""))) as PackedScene
+	if packed == null:
+		return
+	_vignette = packed.instantiate()
+	add_child(_vignette)
+	move_child(_vignette, 0)  # behind the black, which fades out to show it
 
 
 func _end() -> void:

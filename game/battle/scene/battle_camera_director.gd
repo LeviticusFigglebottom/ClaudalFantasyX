@@ -129,6 +129,7 @@ static func rest_fit(cam: Dictionary, xf: Transform3D, fov: float, enemy_ids: Ar
 		if row.is_empty():
 			continue
 		var look := xf.origin - xf.basis.z.normalized() * float(cam.get("default_look_m", 1.0))
+		look += Vector3.UP * float(row.get("look_up_m", 0.0))  # PC pass 7 row 61: a colossus's head kept in frame
 		var pos := xf.origin + xf.basis.z * float(row.get("back_m", 0.0)) + Vector3.UP * float(row.get("up_m", 0.0))
 		return [Transform3D(Basis.looking_at(look - pos, Vector3.UP), pos), float(row.get("fov", fov))]
 	return [xf, fov]

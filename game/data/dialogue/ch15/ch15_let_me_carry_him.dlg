@@ -37,7 +37,7 @@ Toma [grief]: Let me carry him. Please. I don't ask you to forgive me. Let me ca
 @wait 4.0
 @anim liss step_back
 @wait 2.0
-@camera H11
+@camera H11 track=toma
 @anim toma lift tobin
 @mark toma jetty_end_toma walk
 @mark liss jetty_end_liss walk

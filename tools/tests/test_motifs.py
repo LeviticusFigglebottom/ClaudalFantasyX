@@ -40,6 +40,21 @@ class LettingTest(unittest.TestCase):
         self.assertGreater(self.m._degree(letting[-1][0]), self.m._degree(letting[-2][0]), "the last step rises")
         self.assertGreaterEqual(letting[-1][1], 2.0, "held, on tash")
 
+    def test_the_sung_letting_is_the_first_verse_turned_upward(self) -> None:
+        m = self.m
+        verse = _mod("hush_first_verse").VERSE
+        sung = m.letting_verse()
+        self.assertEqual(len(sung), 4, "four lines, as every verse (lamptongue.md)")
+        self.assertEqual(sung[0], m.letting()[:-1], "line 1 is the Letting's cell")
+        for line, src in zip(sung[:3], verse[:3]):
+            self.assertEqual([b for _, b in line], [float(b) for _, b in src], "the first verse's own rhythm")
+            for (a, _), (b, _), (x, _), (y, _) in zip(src, src[1:], line, line[1:]):
+                self.assertEqual(m._degree(y) - m._degree(x), -(m._degree(b) - m._degree(a)), f"{a}->{b} mirrored")
+        close = sung[3]
+        self.assertEqual(close[-1][0], m.LETTING_TASH[0], "it ends on the held E6, on tash")
+        self.assertTrue(all(m._degree(q) > m._degree(p) for (p, _), (q, _) in zip(close, close[1:])), "climbing")
+        self.assertEqual(m._degree(close[-1][0]) - m._degree(verse[3][-1][0]), 7, "the first verse's close, up an octave")
+
     def test_the_degree_helpers_round_trip(self) -> None:
         for n in ("A4", "B4", "C5", "E5", "G5", "A5", "C6", "E6"):
             self.assertEqual(self.m._note(self.m._degree(n)), n)

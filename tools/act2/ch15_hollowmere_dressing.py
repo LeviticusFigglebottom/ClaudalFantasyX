@@ -77,6 +77,13 @@ DACE_AT = (78.0, -24.0, 30.0)  # seen at the zone's edge in Ch15 (Ch17's heart)
 # Ch17's dry-dock row (M5-A3P-1500): three empty berths beside Dace's, along his hull's beam toward the dock's east end,
 # BERTH_PITCH_M apart, the first (Tobin's post, B07) nearest the dock and Dace's "the last one" (B03).
 BERTH_PITCH_M = 8.5
+# Aldous Varrow's house (fathers_door at HousePlatform1's door): the furnished deckhouse, his table lit by a hanging oil
+# lamp (Ch17 B07, B11). TABLE_AT is hollowmere.py's, in the piece's frame; LAMP_OVER_TABLE_M its flame over the deck.
+DOCKMASTER_BLOCK = "HousePlatform1"
+DOCKMASTER_PIECE = "hm_dockmaster_house"
+DM_TABLE_AT = (0.45, 2.05)
+DM_DECK_Y = 0.9
+LAMP_OVER_TABLE_M = 1.6
 BERTHS = ("hm_drydock_berth", "hm_drydock_berth", "hm_drydock_berth_first")
 FLOTILLA_AT = (25.0, -5.0)
 
@@ -84,6 +91,16 @@ WATER_NAME = "hollowmere_dawn_water_material.tres"
 WATER = {"col_deep": "Color(0.1098, 0.2275, 0.2902, 1)", "col_scatter_shallow": "Color(0.3529, 0.5098, 0.5294, 1)",
          "col_sss": "Color(0.3922, 0.5490, 0.5686, 1)", "scatter_energy": "0.1", "caustic_strength": "0.0"}
 ENV_NAME = "hollowmere_dawn_environment.tres"
+# Ch17's night (M5-A3P-1500; act3_ch17 B08 "the choice" and B09 on the hull's deck): the open sea's Ch15 night sky and
+# its unlamped LUT, with Hollowmere's own fog and a touch more ambient, so the flotilla reads by its oil flames and the
+# signal lamps' held cyan. B06's dusk is env-art's ch17 grade (assets/environments/zones/ch17). The Act III chapters'
+# states rows load either by environment_res (M5-A3P-1001).
+NIGHT_ENV_NAME = "hollowmere_night_environment.tres"
+NIGHT_SRC = ROOT / "game" / "levels" / "ch15" / "open_sea" / "open_sea_night_environment.tres"
+NIGHT_SET = {"resource_name": '"hollowmere_ch17_night"', "ambient_light_energy": "0.22", "tonemap_exposure": "1.3",
+             "fog_density": "0.006", "fog_light_energy": "0.25"}
+CABIN_LAMP = (-2.75, 3.4, -0.35)  # dace_hull_frame's cabin lamp over the desk, in the hull's frame (x, y, z)
+HATCH_SPILL = (-3.0, 3.65, 0.0)  # its light spilling up through the open hatch onto the deck (B06, B08 by night)
 LUT_NAME = "lut_ch15_hollowmere_dawn.png"
 LUT_DAWN = {  # colour script ch15 at Hollowmere: grey-rose dawn, the oil lamps' warmth kept, the rest cool and soft
     "saturation": 0.85, "s_curve": 0.35, "toe_hex": "#1C3A4A", "toe_strength": 0.35, "toe_end": 0.34,
@@ -156,7 +173,8 @@ def _row(piece: str, x: float, z: float, y: float = 0.0, yaw: float = 0.0, **ext
 def dressing() -> dict:
     b = blocks()
     pieces = dock_rows(b) + jetty_rows(b)
-    pieces += [_row("hm_lashed_hulls", v["pos"][0], v["pos"][2], WATER_Y, HOUSE_YAW)
+    pieces += [_row(DOCKMASTER_PIECE if k == DOCKMASTER_BLOCK else "hm_lashed_hulls", v["pos"][0], v["pos"][2], WATER_Y,
+                    HOUSE_YAW)
                for k, v in sorted(b.items()) if k.startswith("HousePlatform") and k[13:].isdigit()]
     pieces += [_row("hm_lashed_hulls", x, z, WATER_Y, yaw) for x, z, yaw in HOMES]
     pieces += [_row("hm_windmill", x, z, WATER_Y, yaw) for x, z, yaw in WINDMILLS]
@@ -180,6 +198,17 @@ def dressing() -> dict:
                for x, z, yaw in DEBRIS_AT]
     lights = [{"at": _flame(x, z, yaw), "energy": OIL_ENERGY, "range": OIL_RANGE_M, "flicker": OIL_FLICKER}
               for x, z, yaw in OIL_LAMPS]
+    hp = b[DOCKMASTER_BLOCK]["pos"]
+    yaw = math.radians(HOUSE_YAW)
+    tx = hp[0] + DM_TABLE_AT[0] * math.cos(yaw) + DM_TABLE_AT[1] * math.sin(yaw)
+    tz = hp[2] - DM_TABLE_AT[0] * math.sin(yaw) + DM_TABLE_AT[1] * math.cos(yaw)
+    lights.append({"at": [r3(tx), r3(WATER_Y + DM_DECK_Y + LAMP_OVER_TABLE_M), r3(tz)], "energy": 0.7, "range": 4.0,
+                   "flicker": OIL_FLICKER})
+    dyaw = math.radians(DACE_AT[2])
+    for (cx, cy, cz), energy, rng_m in ((CABIN_LAMP, 0.6, 3.5), (HATCH_SPILL, 0.35, 5.0)):
+        lights.append({"at": [r3(DACE_AT[0] + cx * math.cos(dyaw) + cz * math.sin(dyaw)), r3(WATER_Y + cy),
+                              r3(DACE_AT[1] - cx * math.sin(dyaw) + cz * math.cos(dyaw))],
+                       "energy": energy, "range": rng_m, "flicker": OIL_FLICKER})
     lights.append({"at": [SUPPER_AT[0] + 0.15, 0.75, SUPPER_AT[1] - 0.2], "energy": 0.6, "range": 3.5,
                    "flicker": OIL_FLICKER})
     lights += [{"at": [x + 0.55, 3.0, z], "energy": 0.8, "range": 6.0, "color": SIGNAL_COLOR, "flicker": SIGNAL_FLICKER}
@@ -220,6 +249,17 @@ def water() -> str:
         assert len(idx) == 1, key
         lines[idx[0]] = f"shader_parameter/{key} = {value}"
     return "\n".join(lines) + "\n"
+
+
+def night_environment() -> str:
+    """The open sea's night grade with NIGHT_SET, for Ch17's night on the flotilla."""
+    import re  # noqa: PLC0415
+
+    text = NIGHT_SRC.read_text(encoding="utf-8")
+    for key, value in NIGHT_SET.items():
+        text, n = re.subn(rf"^{re.escape(key)} = .*$", f"{key} = {value}", text, flags=re.M)
+        assert n == 1, key
+    return text
 
 
 def environment() -> str:
@@ -318,6 +358,7 @@ def main() -> None:
     (ZONE / WATER_NAME).write_text(water(), encoding="utf-8")
     write_lut()
     (ZONE / ENV_NAME).write_text(environment(), encoding="utf-8")
+    (ZONE / NIGHT_ENV_NAME).write_text(night_environment(), encoding="utf-8")
     wire_scene()
 
 

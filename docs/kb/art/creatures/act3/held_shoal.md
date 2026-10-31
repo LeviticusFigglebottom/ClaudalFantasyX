@@ -131,3 +131,15 @@ everything onto the floor (y ≥ 0).
 - **Two shoals in one fight** would need marks more than 2.2 m apart, or a smaller ring (1.6 m) for the encounter.
 - **The other rooms.** Is the shoal only the Oruvel market's (fish), or does each remembered room get its own held
   memory (a Corrow kitchen's smoke, a Reefball crowd's ball)? Those would be new sheets, not this one.
+
+## As built (M5-A3P-1803, 2026-10-30)
+`assets_src/creatures/held_shoal/build_held_shoal.py`, as the sheet:
+- **Shape:** 5,817 triangles, 54 bones, the four slots. The seam's light is on the `crust` slot's emission mask.
+- **The rise rule holds:** `--report` measures the light's largest upward step between baked frames as 0.000 mm in
+  every clip, `idle_b` and `hit_b` included.
+- **Loops:** the idle loops by symmetry (each ring turns one fish-spacing over 6 s). `idle_turned` draws the rings in
+  to 1.0 m across and is listed in the row's `loop`.
+- **Simplified:** in the attack the fish keep their ring heading rather than turning to face the target (the rings
+  swing forward together).
+- **Still open:** the status- or phase-driven idle that would show `idle_turned` is Tech's (open questions).
+- Portrait, and review shot `creature_held_shoal`.

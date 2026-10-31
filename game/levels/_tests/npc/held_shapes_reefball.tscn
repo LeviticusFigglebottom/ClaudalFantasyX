@@ -1,0 +1,58 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://game/world/npc/crowd_far.gd" id="1_crowd"]
+
+[sub_resource type="Environment" id="Env_held"]
+background_mode = 1
+background_color = Color(0.016, 0.035, 0.055, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.09, 0.2, 0.26, 1)
+ambient_light_energy = 0.6
+tonemap_mode = 4
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="Mat_stone"]
+albedo_color = Color(0.11, 0.15, 0.18, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="Mesh_tier"]
+material = SubResource("Mat_stone")
+size = Vector3(15, 0.6, 1.4)
+
+[sub_resource type="PlaneMesh" id="Mesh_floor"]
+material = SubResource("Mat_stone")
+size = Vector2(40, 40)
+
+[node name="HeldShapesReefball" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env_held")
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+mesh = SubResource("Mesh_floor")
+
+[node name="Tier0" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.30, -4.00)
+mesh = SubResource("Mesh_tier")
+
+[node name="Tier1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.30, -5.40)
+mesh = SubResource("Mesh_tier")
+
+[node name="Tier2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.90, -6.80)
+mesh = SubResource("Mesh_tier")
+
+[node name="Tier3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.50, -8.20)
+mesh = SubResource("Mesh_tier")
+
+[node name="CrowdFar" type="Node3D" parent="."]
+script = ExtResource("1_crowd")
+data_path = "res://game/levels/_tests/npc/held_shapes_reefball.json"
+threaded = false
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.9944, 0.1061, 0, -0.1061, 0.9944, 0, 3.2, 9)
+current = true
+fov = 55.0

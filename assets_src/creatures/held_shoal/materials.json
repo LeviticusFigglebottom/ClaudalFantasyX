@@ -1,0 +1,14 @@
+{
+  "_doc": "The held shoal's surfaces (docs/kb/art/creatures/act3/held_shoal.md). beads: the fish's motes, salt_glass lit glimmer_held, steady (held light: color_script.md rule 1; palette.json allows glimmer_held for held motes and the Undertow's held light), the mask 0.4-1.0 per bead so each fish has depth; fishbody: the dark abyss_navy inner bodies the light is held in; float: the fisher's glass net float where its crust leaves it bare, glass not light; crust: the spawn's wet lacquer_black-to-abyss_navy carapace on the float, the wet scrap of net, and the one short open seam lit spawn_wound with its slow weak-point pulse (ADR 0151). Colours are palette.json swatches; write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "beads": {"roughness_dry": 0.3, "specular": 0.4, "detail_albedo": 0.0, "detail_bump": 0.0,
+              "emission_color": "#7FC6D9", "emission_energy": 1.2},
+    "fishbody": {"roughness_dry": 0.5, "roughness_wet": 0.3, "specular": 0.3, "detail_albedo": 0.05, "detail_bump": 0.1,
+                 "emission_energy": 0.0},
+    "float": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "wet_darken": 0.2, "clearcoat_wet": 0.8,
+              "detail_albedo": 0.04, "detail_bump": 0.06, "emission_energy": 0.0},
+    "crust": {"roughness_dry": 0.4, "roughness_wet": 0.15, "specular": 0.6, "clearcoat_wet": 0.9, "detail_scale": 22.0,
+              "detail_albedo": 0.12, "detail_bump": 0.5, "cavity_albedo": 0.4,
+              "emission_color": "#3FE0C8", "emission_energy": 2.2, "emission_pulse_hz": 0.3, "emission_pulse_depth": 0.4}
+  }
+}

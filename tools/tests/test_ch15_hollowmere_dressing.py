@@ -65,7 +65,7 @@ class HollowmereTests(unittest.TestCase):
 
     def test_every_oil_lamp_carries_its_light(self) -> None:
         oil = [l for l in self.d["fire_lights"] if "color" not in l]
-        self.assertEqual(len(oil), len(GEN.OIL_LAMPS) + 1, "the lamps and the supper's")
+        self.assertEqual(len(oil), len(GEN.OIL_LAMPS) + 4, "the lamps, the house, the cabin, its spill and the supper")
         for (x, z, yaw), light in zip(GEN.OIL_LAMPS, oil):
             self.assertEqual(light["at"], GEN._flame(x, z, yaw))
 
@@ -112,3 +112,31 @@ class OpenSeaTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Ch17RoomsTests(unittest.TestCase):
+    """Ch17 (M5-A3P-1500): the dock-master's house on its platform with its lamp over the table, and the dry-dock row."""
+
+    def test_the_dockmaster_house_and_its_table_lamp(self) -> None:
+        self.assertEqual(GEN.DM_TABLE_AT, hollowmere.TABLE_AT, "the generator's table is the kit's")
+        self.assertEqual(GEN.DM_DECK_Y, hollowmere.DECK_Y)
+        d = GEN.dressing()
+        houses = [p for p in d["pieces"] if p["piece"] == GEN.DOCKMASTER_PIECE]
+        self.assertEqual(len(houses), 1, "one dock-master's house")
+        hp = GEN.blocks()[GEN.DOCKMASTER_BLOCK]["pos"]
+        self.assertEqual(houses[0]["at"], [hp[0], hp[2]])
+        lamps = [lt for lt in d["fire_lights"] if abs(lt["at"][0] - 27.55) < 0.01 and abs(lt["at"][2] + 21.05) < 0.01]
+        self.assertEqual(len(lamps), 1, "the lamp hangs over his table (HousePlatform1 turned 180 degrees)")
+
+    def test_the_berth_row_ends_at_daces_hull(self) -> None:
+        d = GEN.dressing()
+        rows = [p for p in d["pieces"] if p["piece"].startswith("hm_drydock_berth")]
+        self.assertEqual([p["piece"] for p in rows][-1], "hm_drydock_berth_first", "the first berth is the row's far end")
+        self.assertEqual(len(rows), 3)
+
+    def test_the_night_grade_is_the_open_seas_with_hollowmeres_fog(self) -> None:
+        text = GEN.night_environment()
+        self.assertIn('resource_name = "hollowmere_ch17_night"', text)
+        self.assertIn("fog_density = 0.006", text)
+        on_disk = (GEN.ZONE / GEN.NIGHT_ENV_NAME).read_text(encoding="utf-8")
+        self.assertEqual(on_disk, text, "the file is the generator's")

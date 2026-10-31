@@ -594,6 +594,25 @@
    "yaw_deg": 40.0
   },
   {
+   "piece": "pipe_run",
+   "at": [
+    40.0,
+    13.6
+   ],
+   "y": 0.0,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "coral_curtain",
+   "at": [
+    41.6,
+    13.55
+   ],
+   "y": 0.0,
+   "yaw_deg": 180.0,
+   "scale": 0.8
+  },
+  {
    "piece": "floor_slab",
    "at": [
     77.0,

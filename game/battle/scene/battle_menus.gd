@@ -524,6 +524,16 @@ func skill_help(engine: BattleEngine, skill_id: StringName, next_in: int) -> Str
 	if engine.current != null and not BattleCycle.allows(engine.current, skill_id):  # out of battle: no actor yet
 		return fail_text(BattleCycle.FAIL_OUT_OF_CYCLE, engine.current)  # M4-A2P-025: not this turn's element
 	var parts: PackedStringArray = []
+	if bool(sk.get("echo", false)):  # M4-A2P-1007 A8: Nhoa's Echo names what it copies, and reads as the copy
+		var copy := BattleEcho.row(engine, sk)
+		if copy.is_empty():
+			parts.append(tr("HUD_HELP_ECHO_NONE"))
+			if next_in >= 0:
+				parts.append(next_turn_text(display_name(engine.current), next_in))
+			return " · ".join(parts)
+		var copied := tr(str(engine.db.skill(engine.last_foe_skill).get("name_key", "")))
+		parts.append(tr("HUD_HELP_ECHO_FMT").format({"skill": copied}))
+		sk = copy
 	parts.append("%s, %s" % [_kind_text(str(sk.get("kind", ""))), _target_text(str(sk.get("target", "single_foe")))])
 	for inflict: Variant in sk.get("statuses", []):
 		var sid := str((inflict as Dictionary).get("id", ""))
@@ -531,6 +541,12 @@ func skill_help(engine: BattleEngine, skill_id: StringName, next_in: int) -> Str
 		var status_name := tr(key) if key != "" else sid
 		var fmt := "HUD_HELP_GRANTS_FMT" if StatusGlyph.is_buff(StringName(sid)) else "HUD_HELP_INFLICTS_FMT"
 		parts.append(tr(fmt).format({"status": status_name}))
+	var cured: PackedStringArray = []  # M4-A2P-1007 A13: what it cures (Hesk's Cord Lift lifts seven)
+	for sid: Variant in sk.get("cleanses", []):
+		var ckey := str((engine.db.statuses.get(StringName(str(sid)), {}) as Dictionary).get("name_key", ""))
+		cured.append(tr(ckey) if ckey != "" else str(sid))
+	if not cured.is_empty():
+		parts.append(tr("HUD_HELP_CURES_FMT").format({"statuses": tr("HUD_HELP_LIST_SEP").join(cured)}))
 	var delay := int(sk.get("delay_ranks", 0))
 	if delay > 0:
 		parts.append(tr("HUD_HELP_DELAY_FMT").format({"n": delay}))

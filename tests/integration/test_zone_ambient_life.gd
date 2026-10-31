@@ -77,3 +77,18 @@ func test_a_zone_fire_fade_reaches_every_lamp() -> void:
 		assert_eq(o.distance_fade_begin, 70.0, "from 70 m")
 		assert_eq(o.distance_fade_length, 20.0, "over 20 m")
 	dressing.free()
+
+
+func test_fill_lights_are_shadowless_and_out_of_the_fog() -> void:
+	var dressing := ZoneKitDressing.new()
+	dressing.layout = {
+		ZoneKitDressing.KEY_FILL: [{"pitch_deg": -25.0, "yaw_deg": -135.0, "color": "#9FB4C8", "energy": 0.6}],
+	}
+	dressing._place_fill_lights()
+	var lights := dressing.get_node(NodePath(String(ZoneKitDressing.FILL_LIGHTS))).get_children()
+	assert_eq(lights.size(), 1, "one fill")
+	var l := lights[0] as DirectionalLight3D
+	assert_false(l.shadow_enabled, "a fill casts no shadow (the cutscene stage takes shadowed lights for the key)")
+	assert_eq(l.light_volumetric_fog_energy, 0.0, "fog-lamp rule")
+	assert_between(l.light_energy, 0.599, 0.601, "its energy")
+	dressing.free()

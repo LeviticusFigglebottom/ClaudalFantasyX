@@ -11,6 +11,9 @@ const ON_FIELD_READY := &"field_ready"
 const ON_NEAR := &"near"
 const ON_FLAG := &"flag"
 const TAG_SHRINE := &"shrine"
+## A row asking that play has unlocked a Swell fill mode (M4-A2P-1007 A20): GameStateData.swell "unlocked" holds only
+## the modes unlocked through play, never the starting ones.
+const KEY_SWELL_UNLOCK := "requires_swell_unlock"
 
 var data: Dictionary = {}
 var tips: Array[Dictionary] = []
@@ -20,14 +23,22 @@ var queue: Array[Dictionary] = []
 var _is_set: Callable
 var _mark: Callable
 var _enabled: Callable
+var _swell_unlocked: Callable
 
 
 ## `flag_check`: Callable(flag) -> bool (default Game.get_flag); `flag_mark`: Callable(flag) (default
-## Game.set_flag); `enabled`: Callable() -> bool (default the Accessibility setting tutorial_tips).
-func _init(flag_check: Callable = Callable(), flag_mark: Callable = Callable(), enabled: Callable = Callable()) -> void:
+## Game.set_flag); `enabled`: Callable() -> bool (default the Accessibility setting tutorial_tips); `swell_check`:
+## Callable() -> bool, whether play has unlocked a Swell mode (default Game.state's swell record).
+func _init(
+	flag_check: Callable = Callable(),
+	flag_mark: Callable = Callable(),
+	enabled: Callable = Callable(),
+	swell_check: Callable = Callable()
+) -> void:
 	_is_set = flag_check if flag_check.is_valid() else func(f: StringName) -> bool: return bool(Game.get_flag(f))
 	_mark = flag_mark if flag_mark.is_valid() else func(f: StringName) -> void: Game.set_flag(f, true)
 	_enabled = enabled if enabled.is_valid() else func() -> bool: return UiSettings.shared().tutorial_tips_enabled()
+	_swell_unlocked = swell_check if swell_check.is_valid() else TutorialTips.swell_unlocked_in_save
 	data = load_data()
 	for t: Variant in data.get("tips", []):
 		tips.append(t as Dictionary)
@@ -103,8 +114,16 @@ func _raise(matches: Callable) -> void:
 		var any: Array = t.get("requires_any", [])
 		if not any.is_empty():
 			ready = ready and any.any(func(f: Variant) -> bool: return bool(_is_set.call(StringName(str(f)))))
+		if bool(t.get(KEY_SWELL_UNLOCK, false)):
+			ready = ready and bool(_swell_unlocked.call())
 		if ready:
 			queue.append(t)
+
+
+## True when the save holds a Swell fill mode unlocked through play.
+static func swell_unlocked_in_save() -> bool:
+	var unlocked: Variant = (Game.state.swell if Game.state != null else {}).get("unlocked", [])
+	return unlocked is Array and not (unlocked as Array).is_empty()
 
 
 ## A flag tip's `when`: one flag, or a list of which any raises it (the Act I route and the slice's both teach).

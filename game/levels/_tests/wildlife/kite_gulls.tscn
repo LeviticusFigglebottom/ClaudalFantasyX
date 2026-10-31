@@ -1,0 +1,127 @@
+[gd_scene load_steps=16 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/wildlife/kite_gulls_stage.gd" id="1_stage"]
+[ext_resource type="Script" path="res://game/world/wildlife/wildlife_layer.gd" id="2_layer"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
+sky_top_color = Color(0.18, 0.498, 0.839, 1)
+sky_horizon_color = Color(0.663, 0.863, 0.949, 1)
+sky_curve = 0.12
+ground_bottom_color = Color(0.055, 0.29, 0.333, 1)
+ground_horizon_color = Color(0.663, 0.863, 0.949, 1)
+sun_angle_max = 20.0
+
+[sub_resource type="Sky" id="Sky_main"]
+sky_material = SubResource("Sky_mat")
+
+[sub_resource type="Environment" id="Env_main"]
+background_mode = 2
+sky = SubResource("Sky_main")
+ambient_light_source = 3
+ambient_light_color = Color(0.055, 0.29, 0.333, 1)
+ambient_light_sky_contribution = 0.7
+tonemap_mode = 4
+tonemap_exposure = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Mat_sea"]
+albedo_color = Color(0.106, 0.42, 0.478, 1)
+roughness = 0.3
+
+[sub_resource type="PlaneMesh" id="Mesh_sea"]
+material = SubResource("Mat_sea")
+size = Vector2(8000, 8000)
+
+[sub_resource type="StandardMaterial3D" id="Mat_hull"]
+albedo_color = Color(0.42, 0.33, 0.25, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="Mesh_hull"]
+material = SubResource("Mat_hull")
+size = Vector3(3.2, 1.0, 16)
+
+[sub_resource type="BoxMesh" id="Mesh_rail_side"]
+material = SubResource("Mat_hull")
+size = Vector3(0.1, 0.1, 16)
+
+[sub_resource type="BoxMesh" id="Mesh_rail_stern"]
+material = SubResource("Mat_hull")
+size = Vector3(3.2, 0.1, 0.1)
+
+[sub_resource type="CylinderMesh" id="Mesh_mast"]
+material = SubResource("Mat_hull")
+top_radius = 0.1
+bottom_radius = 0.14
+height = 9.0
+
+[sub_resource type="StandardMaterial3D" id="Mat_sail"]
+albedo_color = Color(0.91, 0.886, 0.82, 1)
+roughness = 0.9
+cull_mode = 2
+
+[sub_resource type="QuadMesh" id="Mesh_sail"]
+material = SubResource("Mat_sail")
+size = Vector2(5.5, 6)
+
+[sub_resource type="BoxMesh" id="Mesh_post"]
+material = SubResource("Mat_hull")
+size = Vector3(0.1, 0.5, 0.1)
+
+[node name="KiteGullsStage" type="Node3D"]
+script = ExtResource("1_stage")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env_main")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.7433, -0.498, 0.4467, 0, 0.6677, 0.7444, -0.669, 0.5533, -0.4963, 0, 20, 0)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="Sea" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, -60, 60)
+mesh = SubResource("Mesh_sea")
+
+[node name="Kite" type="Node3D" parent="."]
+
+[node name="Hull" type="MeshInstance3D" parent="Kite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("Mesh_hull")
+
+[node name="RailL" type="MeshInstance3D" parent="Kite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.55, 1.1, 0)
+mesh = SubResource("Mesh_rail_side")
+
+[node name="RailR" type="MeshInstance3D" parent="Kite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.55, 1.1, 0)
+mesh = SubResource("Mesh_rail_side")
+
+[node name="RailStern" type="MeshInstance3D" parent="Kite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -7.6)
+mesh = SubResource("Mesh_rail_stern")
+
+[node name="PostL" type="MeshInstance3D" parent="Kite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.55, 0.85, -7.6)
+mesh = SubResource("Mesh_post")
+
+[node name="PostR" type="MeshInstance3D" parent="Kite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.55, 0.85, -7.6)
+mesh = SubResource("Mesh_post")
+
+[node name="Mast" type="MeshInstance3D" parent="Kite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.5, 2)
+mesh = SubResource("Mesh_mast")
+
+[node name="Sail" type="MeshInstance3D" parent="Kite"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 5.8, 2.1)
+mesh = SubResource("Mesh_sail")
+
+[node name="Camera3D" type="Camera3D" parent="Kite"]
+transform = Transform3D(0.7944, 0.0677, -0.6037, -0, 0.9938, 0.1114, 0.6075, -0.08853, 0.7894, -6.5, 4.2, -1.5)
+current = true
+fov = 60.0
+
+[node name="WildlifeLayer" type="Node3D" parent="."]
+script = ExtResource("2_layer")
+zone_id = &"_tests/kite_gulls"
+data_path = "res://game/levels/_tests/wildlife/kite_gulls.json"
+cull = false

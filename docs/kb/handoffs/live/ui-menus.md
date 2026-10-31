@@ -1444,3 +1444,110 @@ MERGE-READY @ 5f317889c: M4-A2P-1708, the objective coverage guard.
   - **Next in Act III UI:** the Kite as the Ch18 hub (KiteMapMenu exists; Act III opens the world map, SPEC §6.6),
     then the optional-content log.
 MERGE-READY @ 5c4c9ca6b: M5-A3P-1700, the closing credits roll.
+
+- **2026-10-30, after the Lead's 23:26 note:**
+  - **M5-A3P-1700 follow-up (c2b8608b5):**
+    - The credits are a scene of their own (`credits_roll.tscn`, `CreditsRoll.SCENE`), for E6 to change to.
+    - Vignettes are named by `scene`. One that isn't built yet is passed over, so the roll never holds on black.
+    - Request M5-A3P-1701 to cinematics: E6 → credits, the beach-rite scene, and `next_scene` for E7.
+    - The credits stay facts-only, per the Lead, while the content question is with the human.
+  - **M5-A3P-1702, the Kite's Act III revisits (9a4d0b55f):**
+    - Oruvel joins the chart (from ch01_started).
+    - Ansedra is listed from Ch13 but greyed "Closed to heretics" once `ch14_declared_heretics` is set. These are the
+      new `refused_flag` and `refused_key` fields; `fly()` refuses it.
+    - **Tests and checks:** test_kite_map 13/0; `kite_map` rendered with Act III flags into scratch and viewed, with
+      no baseline written; validate_data 0/0; taskboard ok; lint ok.
+    - The audio audit's UI section is 0. It still exits 1 on three support skills from the integration branch
+      (`cut_the_line`, `court_reinforce`, `court_wait`), which is not this track's.
+  - **Next:** the optional-content log (Act III's revisits and errands, act3_ch18). Then the ending flow, once
+    slice-polish's E7 lands.
+MERGE-READY @ 9a4d0b55f: M5-A3P-1702, the Kite's Act III revisits (with c2b8608b5, the credits scene).
+
+- **M5-A3P-1703, the Kite's log (52cd5a5bb):**
+  - "The ship's log" on the Kite chart opens a read-only page:
+    - the eight revisits (Seen once each side scene has played, with what changed there);
+    - the seven heirloom errands ("Rhen, for Dace": where it waits, then Carried).
+  - The chart's ring follows each row. There are no counts or percentages (act3_ch18 rule 3).
+  - Data: `game/data/world/kite_log.json`. Model: KiteLogModel.
+  - Declared `ch18_revisit_<town>` (8 flags). Request **M5-A3P-1704** asks cinematics to set them as each revisit
+    scene plays; nothing sets them yet.
+  - **Tests and checks:** test_kite_map 15/0; shot `kite_log` (pending_baseline), rendered and viewed;
+    validate_data 0/0; taskboard ok; lint ok; audio audit UI 0.
+  - **Next:** the ending flow, once slice-polish's E7 lands. Meanwhile, more Act III UI per ADR 0207.
+MERGE-READY @ 52cd5a5bb: M5-A3P-1703, the Kite's log.
+
+- **M5-A3P-1705, the Vowbound menus lose names (80f0fdcc3):**
+  - A Vowbound whose `released_flag` is set leaves the battle Call list (`BattleVowboundHud.bound_ids`) and the
+    Status page's Bound line, which now shares that rule. There is no animation (act3_ch20 §9).
+  - **For combat (M5-A3P-1013):** add `released_flag` (`ch20_<id>_released`, already declared) to the six
+    vowbound.json rows. The UI reads it as soon as it's there.
+  - **Tests and checks:** vowbound 119/0 and status 57/0. Freeing the sandbox fixes the bound_ids test's leftover
+    node, which was there before. validate_data 0/0; taskboard ok; lint ok.
+MERGE-READY @ 80f0fdcc3: M5-A3P-1705, the Vowbound menus lose a name on release.
+
+- **M5-A3P-1706, the ledger page for Ch17 B05 (dd8d136e1):**
+  - LedgerReader writes Dace's entries (`ch17_ledger_page_*`) on a page under "Dace Sallow's ledger". They
+    still caption below.
+  - Each held `turn_page` gate turns the page when it ends. Past the last entry the turns land on blank pages.
+  - It takes no input and fades out when the scene ends. Sound: page_turned → ui_page.
+  - **Request M5-A3P-1707 (cinematics):** call `LedgerReader.mount(host, sequencer)` before `ch17_the_ledger`
+    plays.
+  - **Tests and checks:** test_ledger_reader 3/0; shot `ledger_reader` (pending_baseline), rendered and viewed;
+    validate_data 0/0; taskboard ok; lint ok; audio audit UI 0.
+MERGE-READY @ dd8d136e1: M5-A3P-1706, the ledger page.
+
+- **M5-A3P-1708, the Vowbound answers (a27a38bc0):**
+  - B09's hook. As Kesh is called she answers over herself, after Asha's call bark: "I hold. Call, and I will come."
+    until `ch17_chose_the_unbinding` is set, then "You chose. A thousand years, and one of you finally chose."
+  - The lines are the script's own keys, from `game/data/ui/vowbound_answers.json`.
+  - No shot changes: captures read no flags.
+  - **Tests and checks:** test_battle_barks 6/0; vowbound 119/0; validate_data 0/0; taskboard ok; lint ok.
+MERGE-READY @ a27a38bc0: M5-A3P-1708, the Vowbound answers (Ch17 B09).
+
+- **Small items:**
+  - **M4-A2P-1708:** dropped the stale KNOWN_EMPTY entries. Ch6 and Ch8's objective rows have landed, so
+    test_objective_coverage now holds every mapped zone (2/0).
+  - **M5-A3P-1709, request to progression (design):** kite.json `secrets` is empty, so every chart search finds
+    nothing. Design names the secret places; the menu reads them as they are.
+  - Fixed M5-A3P-1702's reviewer to `progression`; the board has no design role.
+- **Blocked or waiting, not idle:**
+  - **The ending flow:** waits on E7's staging (M5-A3P-1015, todo). When E7 has a scene, set credits.json
+    `next_scene` and the beach-rite vignette's `scene` (request M5-A3P-1701).
+  - **The Drownbell re-measure:** waits on M3-HER-1168, in review.
+  - **Mounts in the cinematics lane:** M5-A3P-1704 (revisit flags) and M5-A3P-1707 (the ledger page).
+  - **For combat (M5-A3P-1013):** `released_flag` in vowbound.json.
+MERGE-READY @ 9807c2d55: M4-A2P-1708 (KNOWN_EMPTY dropped) and M5-A3P-1709 (request), docs and tests only.
+
+- **Act I and II requests, which come before Act III (ADR 0207):**
+  - **M3-HER-1153:** BattleChoreo checks a leaving stand-in is valid before the cast. Its freed-cast lint row is
+    gone (freed_cast_lint: 0 new); choreo 58/0.
+  - **M3-UI-1242, answered:** the Act II objective rows were rewritten (M4-A2P-109). None ends on a later chapter's
+    start; qa_threads 1/0.
+  - **M4-A2P-1004, answered:** F1, F5 and F8 were already fixed in the first-hour pass; the task names the tests.
+  - **M4-A2P-1007:**
+    - A20: a new-Swell-mode tip on the first field after play unlocks a mode.
+    - A8: Echo's help names its copy and reads as it.
+    - A13: a cure names what it cures, so Cord Lift lists all seven.
+    - The other rows are answered: A5 and A9 wait on M3-UI-1240/1241; A1, A2, A18 and A19 are already met.
+    - Tests: tutorial_tips 10/0 and battle_help_lines 2/0.
+- **Full battle suite after these pushes:** 871 run, 1 failed. The failure is not this track's:
+  `test_battle_act2_ability_vfx::test_every_act_two_foe_skill_has_its_own_effect`. The flat-engine's `flat_pulse` and
+  `engine_churn` (combat, M4-A2P-1200, fa9ac41ff on the integration branch) have no ability effect yet. That is for
+  rendering or VFX, and nothing in this track touches skills.json or the effects.
+- **M3-HER-1167 (ca32fb142):** the title's first-zone warm-up, measured with the probe's `--warm-scene` on Haluna. The
+  swap holds 158 frames (was 477), the worst hidden frame is 760 ms (≤ 1 s), and the entry is 3.26 s (was 5.3 s).
+  integration-qa's re-measure is open.
+MERGE-READY @ ca32fb142: M3-HER-1153, M4-A2P-1007, and the answers on M3-UI-1242, M4-A2P-1004 and M3-HER-1167.
+
+BACKLOG EMPTY: every open ui row waits on another track.
+- The ending flow waits on E7's staging (M5-A3P-1015, cinematics, todo). Then set credits.json `next_scene` and the
+  beach-rite vignette's scene (M5-A3P-1701).
+- M3-UI-1240 (rooted marker) waits on M4-A2P-020.
+- M3-UI-1241 (cover marker) waits on M4-A2P-021.
+- M4-A2P-1014 (the Ullari woman's portrait) waits on M4-A2P-053.
+- M4-A2P-1953 (sound captions) waits on M4-A2P-1952.
+- The Drownbell re-measure waits on M3-HER-1168 (in review).
+- The Kite's secret places wait on progression (M5-A3P-1709).
+- The released flags wait on combat (M5-A3P-1013).
+- The revisit flags and the ledger mount wait on cinematics (M5-A3P-1704 and M5-A3P-1707).
+- The credits' content waits on the human (LEAD-ASK).

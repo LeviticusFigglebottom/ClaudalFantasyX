@@ -289,3 +289,18 @@ the tip).
 - **Fish scatter.** A startled school spreads to `scatter_spread` times its spread (fish 2.2, rays 1.4) as it darts,
   and closes back up over `startle_s`. The shoal's bounds include the scattered spread.
 - Tests: `test_the_party_flushes_perched_gulls_one_after_another` and `test_a_startle_throws_the_school_apart`.
+
+## The Kite's gulls (M5-A3P-1808, 2026-10-30)
+Act III roster, Ch18 K02: Act I's gull kind riding the Kite's wake as the world opens. No new mesh.
+- **`follow`** (a `flocks` row's optional key): a node path from the WildlifeLayer to a moving node. The flock's
+  centre, perches and birds are then in that node's space. Each step the layer sets the flock's `frame` (the node's
+  transform in the layer's space): every bird is drawn through it, the party's flush is measured in it, its culling
+  bounds move with it (`world_bounds()`), and the gull MultiMeshes' draw bounds are refitted when it moves. A paused
+  (off-screen) flock is still carried along.
+- **Order:** the followed node should move before the layer steps (a lower `process_priority`), or perched birds
+  trail the rail by a frame.
+- **The row:** `game/levels/_tests/wildlife/kite_gulls.json`, `kite_wake`: six gulls in a loose ring 6 m across
+  astern and 3–5 m above the deck, two of them standing on the stern rail at the start. The Kite has no zone yet: its
+  scene adds this row to its WildlifeLayer with `follow` set to its Kite node.
+- **Review:** `kite_gulls.tscn` (a greybox Kite under way on a wide turn, the camera aboard), shot
+  `wildlife_kite_gulls`. Validated (validate_wildlife.py), tested (tools test_wildlife; Godot wildlife).

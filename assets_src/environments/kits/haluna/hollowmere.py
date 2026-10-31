@@ -39,6 +39,9 @@ Ch15's first visit (M4-A2P-045, env-art-b; docs/kb/plan/act2/zones/ch15_hollowme
   hm_drydock_berth_first  the first berth, where Dace built his first hull (B07): the same, but its fender post's
                       top is worn pale where Tobin sat, an old rope coiled at its foot, and the rotted keel and rib
                       stubs of that first hull lie in the mud under the pontoon's open end.
+  hm_dockmaster_house  Aldous Varrow's home (Ch17 B07, B11; HousePlatform1): hm_lashed_hulls with the deckhouse
+                      furnished: his table and two benches, a lamp hook over it, a shelf of jars and a rolled chart,
+                      a sleeping mat, a net hung on the wall. The table at TABLE_AT; the door as hm_lashed_hulls'.
   hm_oil_lamp         a hanging clay oil lamp on its bracket (the zone puts a real light at its flame). Origin at the
                       bracket's foot.
 """
@@ -69,7 +72,7 @@ TRI_BUDGET = {"hm_lashed_hulls": (9000, 700), "hm_windmill": (5000, 400), "hm_ti
               "hm_dock_4m": (2500, 200), "hm_dock_4m_open_n": (2500, 200), "hm_dock_4m_open_s": (2500, 200), "hm_dock_4m_open_ns": (2500, 200),
               "pyre_raft": (2500, 320), "hm_ship": (14000, 900), "hm_supper_table": (1500, 150),
               "hm_oil_lamp": (600, 80),
-              "hm_drydock_berth": (5000, 400), "hm_drydock_berth_first": (6500, 500)}
+              "hm_drydock_berth": (5000, 400), "hm_dockmaster_house": (11000, 700), "hm_drydock_berth_first": (6500, 500)}
 
 DECK_Y = 0.9
 HULL_LEN = 10.0
@@ -113,11 +116,11 @@ def _hull(mb, cz: float, lod: bool, *, plated: bool, rng) -> None:
                              weather=WOOD, variation=float(rng.random()))
 
 
-def build_lashed_hulls(seed: int = 2301) -> list[kc.MeshBuilder]:
+def build_lashed_hulls(seed: int = 2301, name: str = "hm_lashed_hulls", furnished: bool = False) -> list[kc.MeshBuilder]:
     out = []
     for lod in (False, True):
-        rng = kc.rng_for("hm_lashed_hulls", seed)
-        mb = kc.MeshBuilder("hm_lashed_hulls" + ("-lod1" if lod else ""))
+        rng = kc.rng_for(name, seed)
+        mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
         timber, lash = mb.material(M_TIMBER), mb.material(M_LASH)
         _hull(mb, -HULL_GAP, lod, plated=True, rng=rng)
         _hull(mb, HULL_GAP, lod, plated=False, rng=rng)
@@ -172,8 +175,71 @@ def build_lashed_hulls(seed: int = 2301) -> list[kc.MeshBuilder]:
                                  seg=1, weather=WOOD)
             kc.tube(mb, np.array([[-3.2, DECK_Y, 0.4], [-3.2, DECK_Y + 0.7, 0.4]]), np.array([0.28, 0.28]), 10,
                     mb.material(M_DRIFT), cap_end=True)
+        if furnished and not lod:
+            _dockmaster_room(mb, (hx, hz, hh, cz), rng)
         out.append(mb)
     return out
+
+
+TABLE_AT = (0.45, 2.05)  # hm_dockmaster_house's table (x, z) in the piece: the fathers_table mark stands by it
+
+
+def _dockmaster_room(mb, room: tuple[float, float, float, float], rng) -> None:
+    """The dock-master's room inside the deckhouse (Ch17 B07, B11): a woven floor mat, his table and two benches, a
+    shelf of jars and a rolled chart, a sleeping mat along the back wall, a net hung on the west wall, and the hook his
+    oil lamp hangs from over the table (the zone hangs hm_oil_lamp there and lights it)."""
+    hx, hz, hh, cz = room
+    timber, drift, lash = mb.material(M_TIMBER), mb.material(M_DRIFT), mb.material(M_LASH)
+    woven, clay, sail = mb.material(M_WOVEN), mb.material(M_CLAY), mb.material(M_SAIL)
+    kc.rounded_block(mb, (0.0, DECK_Y + 0.012, cz), (hx - 0.15, 0.012, hz - 0.15), woven, radius=0.005, seg=1)
+    tx, tz = TABLE_AT
+    kc.rounded_block(mb, (tx, DECK_Y + 0.72, tz), (0.55, 0.03, 0.35), timber, radius=0.01, seg=1, weather=WOOD)
+    for ox, oz in ((-0.48, -0.28), (0.48, -0.28), (-0.48, 0.28), (0.48, 0.28)):
+        kc.tube(mb, np.array([[tx + ox, DECK_Y, tz + oz], [tx + ox, DECK_Y + 0.7, tz + oz]]), 0.03, 4, timber)
+    for sz in (-1.0, 1.0):  # the benches either side of it
+        bz = tz + sz * 0.62
+        kc.rounded_block(mb, (tx, DECK_Y + 0.42, bz), (0.5, 0.025, 0.13), timber, radius=0.01, seg=1, weather=WOOD)
+        for ox in (-0.42, 0.42):
+            kc.rounded_block(mb, (tx + ox, DECK_Y + 0.2, bz), (0.03, 0.2, 0.1), timber, radius=0.005, seg=1)
+    # The lamp hook over the table, from the ridge.
+    ridge = DECK_Y + hh + math.tan(0.6) * (hz + 0.05) - 0.1
+    kc.tube(mb, np.array([[tx, ridge, cz], [tx, DECK_Y + 1.75, cz], [tx, DECK_Y + 1.7, cz + 0.08]]), 0.012, 3,
+            mb.material(M_COPPER))
+    # The shelf on the east wall: a board on two brackets, jars and a rolled chart on it.
+    sx = hx - 0.2
+    kc.rounded_block(mb, (sx, DECK_Y + 1.35, cz), (0.14, 0.02, 0.8), timber, radius=0.005, seg=1, weather=WOOD)
+    for z in (cz - 0.6, cz + 0.6):
+        kc.tube(mb, np.array([[hx - 0.06, DECK_Y + 1.15, z], [sx - 0.1, DECK_Y + 1.33, z]]), 0.02, 4, timber)
+    for k in range(4):
+        z = cz - 0.6 + k * 0.32
+        r = float(rng.uniform(0.06, 0.09))
+        kc.tube(mb, np.array([[sx, DECK_Y + 1.37, z], [sx, DECK_Y + 1.37 + r * 2.2, z]]), np.array([r, r * 0.7]), 7,
+                clay, cap_end=True)
+    kc.tube(mb, np.array([[sx - 0.02, DECK_Y + 1.42, cz + 0.55], [sx - 0.02, DECK_Y + 1.42, cz + 0.85]]), 0.05, 6, sail,
+            cap_start=True, cap_end=True)
+    # The sleeping mat and a folded blanket along the back (+Z) wall.
+    kc.rounded_block(mb, (-0.6, DECK_Y + 0.06, cz + hz - 0.45), (0.95, 0.05, 0.36), woven, radius=0.03, seg=1)
+    kc.rounded_block(mb, (-1.3, DECK_Y + 0.16, cz + hz - 0.45), (0.22, 0.06, 0.3), mb.material(M_CLOTH_RED),
+                     radius=0.04, seg=1)
+    # A mended net hung on the west wall from three pegs, sagging between them.
+    wx = -hx + 0.07
+    pegs = [(wx, DECK_Y + 1.6, cz + dz) for dz in (-0.9, 0.0, 0.9)]
+    for p in pegs:
+        kc.tube(mb, np.array([[-hx + 0.02, p[1], p[2]], [wx + 0.06, p[1], p[2]]]), 0.015, 4, drift)
+    rows = []
+    for k in range(5):
+        y = DECK_Y + 1.6 - k * 0.22
+        zs = np.linspace(cz - 0.9, cz + 0.9, 9)
+        rows.append(np.stack([np.full_like(zs, wx + 0.02), y - 0.12 * np.sin((zs - cz + 0.9) / 0.9 * math.pi) ** 2
+                              * (1.0 - k * 0.15), zs], -1))
+    for r in rows:
+        kc.tube(mb, r, 0.006, 3, lash)
+    for j in range(0, 9, 2):
+        kc.tube(mb, np.array([r[j] for r in rows]), 0.006, 3, lash)
+
+
+def build_dockmaster_house(seed: int = 2310) -> list[kc.MeshBuilder]:
+    return build_lashed_hulls(seed, "hm_dockmaster_house", furnished=True)
 
 
 def _windmill(mb, lod: bool, origin=(0.0, 0.0, 0.0), scale: float = 1.0, *, far: bool = False) -> None:
@@ -850,5 +916,6 @@ TARGETS = {
     "hm_supper_table": build_supper_table,
     "hm_oil_lamp": build_oil_lamp,
     "hm_drydock_berth": build_drydock_berth,
+    "hm_dockmaster_house": build_dockmaster_house,
     "hm_drydock_berth_first": build_drydock_berth_first,
 }

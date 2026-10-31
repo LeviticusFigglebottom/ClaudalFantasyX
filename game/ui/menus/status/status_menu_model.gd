@@ -49,7 +49,8 @@ const JOIN_KEY := "ITEMS_MENU_LIST_JOIN"
 ## at sea (docs/kb/plan/act2/ui/kerrid.md section 3). No stat, gauge or colour changes with it.
 const NOTES := {&"kerrid": [&"ch15_kerrid_revealed", "STATUS_MENU_KERRID_UNRISEN"]}
 ## The Vowbound a hero calls (docs/kb/plan/act2/ui/screens.md section 3): vowbound.json rows whose `caller` is the
-## hero, bound once their `bound_flag` is set, in data (bind) order.
+## hero, bound once their `bound_flag` is set (and gone again once their `released_flag` is, M5-A3P-1705), in data
+## (bind) order.
 const BOUND_KEY := "STATUS_MENU_BOUND"
 const BOUND_NONE_KEY := "STATUS_MENU_BOUND_NONE"
 const SLOT_KEYS := {ItemDB.SLOT_WEAPON: "STATUS_MENU_WEAPON", ItemDB.SLOT_ARMOR: "STATUS_MENU_ARMOR"}
@@ -130,13 +131,15 @@ func note_of(cid: StringName) -> String:
 func bound_of(cid: StringName) -> Dictionary:
 	var names: Array[String] = []
 	var calls := false
+	var flags := sheet.state.flags
+	var is_set := func(f: StringName) -> bool: return bool(flags.get(String(f), false))
 	for row: Variant in BattleVowbound.load_config():
 		var d := row as Dictionary
 		if d == null or StringName(str(d.get("caller", ""))) != cid:
 			continue
 		calls = true
-		var flag := str(d.get("bound_flag", ""))
-		if flag != "" and bool(sheet.state.flags.get(flag, false)):
+		# The battle's own rule (bound, and not released: M5-A3P-1705), so the two menus never disagree.
+		if not BattleVowboundHud.bound_ids([d], is_set).is_empty():
 			names.append(_tr(str(d.get("name_key", ""))))
 	if not calls:
 		return {"has": false, "text": ""}

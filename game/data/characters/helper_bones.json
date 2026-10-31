@@ -18,7 +18,7 @@
     "clear_m": 0.075,
     "slack_m": 0.004,
     "max_swing_deg": 95.0,
-    "lag_deg_per_45": 40.0,
+    "lag_deg_per_45": 60.0,
     "grid_deg": 2.5,
     "bisect": 12,
     "floor_clear_m": 0.012,

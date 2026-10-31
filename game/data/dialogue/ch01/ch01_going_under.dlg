@@ -29,6 +29,10 @@ Rhen [afraid]: Go! Don't look back, go! #line:ch01_under_001
 // the frame from under_rhen rather than at the player, who is still up on the pen. U11 looks down at a slant, so
 // the last of the light is at the top of the frame, and more of it sinks past into the dark (under_deep).
 @light DiveLamp on
+// PC pass 7 row 75: U10/U11 were near-black. A cool rim under the hull's near edge and the surface lit past its far
+// edge give the hull a silhouette; both go out with the lantern.
+@light HullRim on
+@light DiveSurface on
 @music going_under fade=0.5
 @fade in 1.5
 @vfx glimmer_held at=under_rhen count=60 drift=down_seaward
@@ -38,6 +42,8 @@ Rhen [afraid]: Go! Don't look back, go! #line:ch01_under_001
 @wait 17.4
 @fade out 2.5
 @light DiveLamp off 2.5
+@light HullRim off 2.5
+@light DiveSurface off 2.5
 @music silence fade=2.0
 Narrator(rhen) [neutral]: My father used to sing the currents. I hadn't heard it in eleven years. Then nothing. #line:ch01_under_002 #vo
 @wait 3.0

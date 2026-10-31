@@ -1,0 +1,231 @@
+{
+ "_doc": "M4-A2P-075 (Ch15, cinematics'): Hollowmere's cutscene shots and marks for Ch15's arrival, staged from act2_ch15_direction.md. H04 replaces the greybox's supper-table frame (its H01-H03 stay: the script's H01-H03 are at sea, in ch15/open_sea.json). H05 faces the dock-master from his door (the notes' camera saw his back); H06 is a long lens from the barge, so the two stay small and unheard; fathers_door_liss puts Liss beside him (she shared his mark). H11 tracks Toma (track=toma in the script) down the jetty; H13 looks out to the raft; H14 holds Liss at the jetty end; H16 is from the dock, so the hull doesn't hide the quay (the notes' camera was behind the ship). The ship's deck marks are on the Ship block's top (2.5 m). lamp_housing and lamp_crack (ch15_pyre_raft's @vfx at=) are Tobin's lamp in Liss's hands at jetty_end_liss.",
+ "replace": [
+  "H04"
+ ],
+ "shots": {
+  "H04": {
+   "pos": [
+    6.89,
+    3.0,
+    -30.57
+   ],
+   "look_at": [
+    15.0,
+    1.4,
+    -8.3
+   ],
+   "fov": 60
+  },
+  "H05": {
+   "pos": [
+    28.6,
+    1.65,
+    -18.4
+   ],
+   "look_at": [
+    28.0,
+    1.6,
+    -16.6
+   ],
+   "fov": 16
+  },
+  "H06": {
+   "pos": [
+    2.6,
+    1.6,
+    0.8
+   ],
+   "look_at": [
+    28.2,
+    1.3,
+    -16.3
+   ],
+   "fov": 14
+  },
+  "H09": {
+   "pos": [
+    58.72,
+    1.6,
+    3.08
+   ],
+   "look_at": [
+    58.13,
+    1.4,
+    -0.27
+   ],
+   "fov": 38
+  },
+  "H10": {
+   "pos": [
+    58.66,
+    1.6,
+    2.73
+   ],
+   "look_at": [
+    57.7,
+    1.4,
+    0.1
+   ],
+   "fov": 27
+  },
+  "H11": {
+   "pos": [
+    59.6,
+    1.6,
+    1.6
+   ],
+   "look_at": [
+    57.4,
+    1.2,
+    0.2
+   ],
+   "fov": 38
+  },
+  "H12": {
+   "pos": [
+    49.65,
+    4.0,
+    4.7
+   ],
+   "look_at": [
+    55.25,
+    1.4,
+    -5.0
+   ],
+   "fov": 60
+  },
+  "H13": {
+   "pos": [
+    59.2,
+    1.6,
+    0.75
+   ],
+   "look_at": [
+    66.0,
+    0.4,
+    0.0
+   ],
+   "fov": 38
+  },
+  "H14": {
+   "pos": [
+    58.9,
+    1.5,
+    -1.6
+   ],
+   "look_at": [
+    61.0,
+    1.52,
+    -0.7
+   ],
+   "fov": 16
+  },
+  "H15": {
+   "pos": [
+    43.08,
+    1.5,
+    1.65
+   ],
+   "look_at": [
+    40.4,
+    1.4,
+    0.1
+   ],
+   "fov": 27
+  },
+  "H16": {
+   "pos": [
+    14.0,
+    1.9,
+    -1.4
+   ],
+   "look_at": [
+    24.5,
+    2.4,
+    5.8
+   ],
+   "fov": 38
+  }
+ },
+ "marks": {
+  "fathers_door_liss": [
+   28.5,
+   0.0,
+   -16.0,
+   40.0
+  ],
+  "jetty_end_toma": [
+   61.2,
+   0.0,
+   0.4,
+   270.0
+  ],
+  "jetty_end_liss": [
+   61.0,
+   0.0,
+   -0.7,
+   270.0
+  ],
+  "dockmaster_quay": [
+   20.5,
+   0.0,
+   1.2,
+   180.0
+  ],
+  "ship_deck_1": [
+   23.5,
+   2.5,
+   7.0,
+   90.0
+  ],
+  "ship_deck_2": [
+   25.5,
+   2.5,
+   6.4,
+   90.0
+  ],
+  "ship_deck_3": [
+   27.5,
+   2.5,
+   7.4,
+   90.0
+  ],
+  "ship_deck_4": [
+   29.5,
+   2.5,
+   6.6,
+   90.0
+  ],
+  "ship_deck_5": [
+   31.5,
+   2.5,
+   7.2,
+   90.0
+  ],
+  "ship_deck_6": [
+   33.5,
+   2.5,
+   6.5,
+   90.0
+  ],
+  "ship_deck_7": [
+   35.5,
+   2.5,
+   7.3,
+   90.0
+  ],
+  "lamp_housing": [
+   60.75,
+   1.0,
+   -0.7,
+   0.0
+  ],
+  "lamp_crack": [
+   60.75,
+   1.05,
+   -0.6,
+   0.0
+  ]
+ }
+}

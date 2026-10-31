@@ -11,6 +11,7 @@ const ARRIVE := &"test_cutscene_arrive"
 const TRACK := &"test_cutscene_track"
 const GROUP := &"test_cutscene_group"
 const RELEASE_VFX := &"test_cutscene_release_vfx"
+const MEMORY := &"test_cutscene_memory"
 const CARD := &"test_cutscene_card"
 const DT := 1.0 / 30.0
 const MAX_FRAMES := 3000
@@ -408,6 +409,50 @@ func test_a_release_lets_the_held_light_already_there_go() -> void:
 	var field := fields[0] as GlimmerField
 	assert_true(field.is_releasing() or field.get_mode() == GlimmerState.Mode.RELEASED, "the held field is letting go")
 	_drive()
+	_free()
+
+
+func test_a_memory_eases_in_and_out_and_the_end_takes_it_off() -> void:
+	# M5-A3P-1600 (act2_ch16_direction.md K01-K08: Kesh's memory, desaturated to white, soft edges).
+	_start(MEMORY)
+	var rect := seq.overlay.get_node_or_null(CutsceneMemory.NODE_NAME) as ColorRect
+	assert_true(rect != null and rect.visible, "@memory on puts the layer up")
+	assert_eq(rect.get_index(), 0, "under the letterbox, the fade and the box")
+	var mat := rect.material as ShaderMaterial
+	var held: Dictionary = (seq.config["memory"]["looks"] as Dictionary)["held"]
+	assert_eq(float(mat.get_shader_parameter(&"desaturate")), float(held["desaturate"]), "look=held's numbers")
+	_frame()
+	var early := CutsceneMemory.amount(seq.overlay)
+	assert_true(early > 0.0 and early < 0.5, "it eases in (%.3f after a frame)" % early)
+	_drive_until(func() -> bool: return lines_seen > 0)
+	assert_eq(CutsceneMemory.amount(seq.overlay), 1.0, "the full look by the line")
+	lines_pending = 0
+	seq.overlay.box.skip_reveal()
+	seq.overlay.box.advance_requested.emit()
+	_drive_until(func() -> bool: return lines_seen > 1)
+	assert_eq(CutsceneMemory.amount(seq.overlay), 0.0, "@memory off eases it out")
+	assert_false(rect.visible, "and hides the layer")
+	lines_pending = 0
+	seq.overlay.box.skip_reveal()
+	seq.overlay.box.advance_requested.emit()
+	_drive()
+	assert_eq(finished_ids, [MEMORY])
+	assert_eq(CutsceneMemory.amount(seq.overlay), 0.0, "the scene's end takes a memory left on off")
+	assert_false(rect.visible)
+	_free()
+
+
+func test_an_unknown_memory_look_changes_nothing() -> void:
+	var step := DialogueStep.new()
+	step.cue = &"memory"
+	step.args = ["on", 1.0]
+	step.kwargs = {"look": "no_such_look"}
+	seq._ensure_overlay()
+	var ran: Array = []
+	var motion := func(_k: StringName, _s: float, _f: Callable) -> void: ran.append(true)
+	assert_false(CutsceneMemory.cue(seq.overlay, step, seq.config, motion, seq.finished), "no row, no look")
+	assert_true(ran.is_empty())
+	assert_eq(CutsceneMemory.amount(seq.overlay), 0.0)
 	_free()
 
 

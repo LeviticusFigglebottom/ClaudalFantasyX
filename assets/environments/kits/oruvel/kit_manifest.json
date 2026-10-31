@@ -139,7 +139,7 @@
         3600,
         420
       ],
-      "bytes": 438424,
+      "bytes": 447396,
       "lods": {
         "lintel_gull_open": 2960,
         "lintel_gull_open-lod1": 338
@@ -304,10 +304,10 @@
         6000,
         1500
       ],
-      "bytes": 198192,
+      "bytes": 527464,
       "lods": {
-        "reef_edge_far": 2382,
-        "reef_edge_far-lod1": 254
+        "reef_edge_far": 4590,
+        "reef_edge_far-lod1": 1274
       }
     },
     "salvage_heap": {
