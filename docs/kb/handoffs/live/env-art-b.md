@@ -1304,3 +1304,9 @@ SELF-RENDERED @ baf421df: the Lacquer Court from the Barge, Steps and CourtEntry
   4. the Pemakar weir courses' look in the day preview.
   Otherwise env-art takes M3-ENV-1331, 1332 and 1333 now.
 - **Mine, in progress now:** 81 (the Brine camp seam). 84's remaining blockiness is texture resolution (M3-ENV-1331, env-art's texture), unless the leave above covers it too.
+- **81 Brine camp seam: fixed (7e7a4d38).** The seam is the channel's cells (x -24, z < -24), not the apron. The `channel_straight` pieces' banks rose to y 0.16 against the patches' 0.04, above the tide's wet band, so from the camp they read as a pale plane ending at the cell's straight edge. They now sink 0.12 m to sit flush.
+  - **Viewed** in ch06_brine_camp before and after: the pale strip and its edge are gone. Checked ch06_brine_road too.
+  - **Tried first, reverted (no change):** sinking the apron and adding a ring of patches round the grid.
+  - **Checks:** test_brine_shoals_kit OK, Godot ch06 5 and brine 5 pass, validate_data OK.
+  - **MERGE-READY @ 7e7a4d38.**
+- **Rows still waiting:** 78 (7ddf44d4, ready, unmerged); 62, 79 and 80 (env-art's kit previews: the LEAD-ASK above); 84 (M3-ENV-1331, env-art's texture).
