@@ -1,4 +1,4 @@
-# big39: 338 shots: 116 PASS, 144 DRIFT (0 size mismatch), 78 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big39: 372 shots: 121 PASS, 151 DRIFT (0 size mismatch), 100 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 NO-BASELINE slice_end_card (pending_baseline)
 DRIFT battle_hud_preview rmse 0.06883 (limit 0.00800)
 DRIFT battle_swap_menu rmse 0.06883 (limit 0.00800)
@@ -299,32 +299,46 @@ DRIFT creature_fen_leech rmse 0.08856 (limit 0.00800)
 DRIFT creature_scree_crawler rmse 0.05364 (limit 0.00800)
 DRIFT creature_rim_crawler rmse 0.00899 (limit 0.00800)
 DRIFT creature_flat_engine rmse 0.01872 (limit 0.00800)
+DRIFT slice_dock_night_yes rmse 0.03333 (limit 0.00800)
 DRIFT slice_verse_hall rmse 0.19509 (limit 0.00800)
 PASS battle_arena_seawall_stairhead_storm rmse 0.00242 (limit 0.00800)
+PASS battle_arena_seawall_stairhead_hoist rmse 0.00195 (limit 0.00800)
 DRIFT battle_arena_seawall_stairhead_surge rmse 0.06747 (limit 0.00800)
 DRIFT battle_arena_coilspire_headland_path rmse 0.02272 (limit 0.00800)
+PASS battle_arena_coilspire_tier_landing rmse 0.00540 (limit 0.00800)
 PASS pemakar_p04_harbour_day rmse 0.00702 (limit 0.00800)
 DRIFT pemakar_p11_sea_cut_weir_day rmse 0.03561 (limit 0.00800)
+DRIFT battle_arena_keth_seep_terrace rmse 0.18512 (limit 0.00800)
 DRIFT battle_arena_lowlight_engine_hall rmse 0.08532 (limit 0.00800)
 DRIFT battle_arena_ossa_fen_roots rmse 0.08398 (limit 0.00800)
+DRIFT battle_arena_bridal_barge_night rmse 0.01011 (limit 0.00800)
 DRIFT battle_arena_ansedra_lagoon_escape rmse 0.04417 (limit 0.00800)
 DRIFT revenant_tells_reflection rmse 0.01338 (limit 0.00800)
+DRIFT revenant_tells_reflection_off rmse 0.01428 (limit 0.00800)
 DRIFT revenant_tells_shadow rmse 0.01161 (limit 0.00800)
 DRIFT revenant_tells_shadow_off rmse 0.01133 (limit 0.00800)
+NO-BASELINE battle_arena_drowned_choir_ring
 NO-BASELINE battle_arena_iskarra_spire_crown
 NO-BASELINE battle_arena_undertow_cage
+NO-BASELINE battle_arena_undertow_heart
 NO-BASELINE battle_arena_undertow_heart_letting
 NO-BASELINE hollowmere_m01_dace_hull
+NO-BASELINE hollowmere_m02_raft_city_dusk
 NO-BASELINE kite_k01_moored
 DRIFT zone_oruvel_o01 rmse 0.11260 (limit 0.00800)
+DRIFT zone_oruvel_o07 rmse 0.29869 (limit 0.00800)
 DRIFT zone_oruvel_o09 rmse 0.39785 (limit 0.00800)
 DRIFT zone_oruvel_o12 rmse 0.02665 (limit 0.00800)
+DRIFT zone_oruvel_o16 rmse 0.02001 (limit 0.00800)
 NO-BASELINE zone_underway_u01
 NO-BASELINE zone_underway_u03
+NO-BASELINE zone_underway_u06
 NO-BASELINE zone_underway_u07
 NO-BASELINE zone_underway_u08
+NO-BASELINE first_verse_stage_v01
 NO-BASELINE first_verse_stage_v02
 DRIFT brightwater_landing_f01 rmse 0.02259 (limit 0.00800)
+PASS brightwater_landing_f06 rmse 0.00656 (limit 0.00800)
 DRIFT zone_oruvel_storm_o12 rmse 0.02815 (limit 0.00800)
 DRIFT zone_oruvel_storm_o16 rmse 0.02867 (limit 0.00800)
 PASS ch07_tamsule_market rmse 0.00567 (limit 0.00800)
@@ -335,5 +349,25 @@ NO-BASELINE ch08_corrow_flood
 DRIFT ch08_corrow_lake rmse 0.05273 (limit 0.00800)
 PASS ch08_coilspire_storm rmse 0.00000 (limit 0.00800)
 NO-BASELINE ch08_corrow_storm
+NO-BASELINE ch05_ashcrown_forecourt
 DRIFT ch05_ashcrown_crown rmse 0.03033 (limit 0.00800)
+DRIFT ch05_ashcrown_court rmse 0.02740 (limit 0.00800)
 NO-BASELINE battle_arena_ashcrown_forecourt_day
+NO-BASELINE ch04_haluna_wake_feast
+PASS ch04_haluna_wake_lane rmse 0.00065 (limit 0.00800)
+NO-BASELINE creature_kahre
+PASS creature_virel rmse 0.00000 (limit 0.00800)
+NO-BASELINE creature_hesk
+NO-BASELINE creature_ethren
+NO-BASELINE creature_ilun_held
+NO-BASELINE creature_kahre_held
+NO-BASELINE creature_hesk_held
+NO-BASELINE creature_nhoa_held
+NO-BASELINE battle_ch08_intercept
+NO-BASELINE battle_ch08_counter
+NO-BASELINE kite_map
+NO-BASELINE field_menu_kite
+NO-BASELINE field_menu_map_keth_pass
+NO-BASELINE field_menu_map_lowlight
+NO-BASELINE slice_neme_table (pending_baseline)
+NO-BASELINE ch01_oruvel_storm (pending_baseline)
