@@ -33,6 +33,28 @@
       ]
     }
   },
+  "boss_rim_lights": {
+    "doc": "The PC's GPU QA row 61 (passes 5 and 7, the big38 Act I sign-off): at its rest frame the Undertow's Reach was a dark mass against the night sky; framing alone (camera.rest_by_enemy) could not make it read. A boss with a row gets its lights: OmniLight3Ds along the lens-to-boss line from its body's centre (behind_m > 0 a rim behind it, < 0 a key on the lens's side; up_m higher), in a light_color palette swatch, at energy over range_m, no shadows (BattleBossLight).",
+    "undertows_reach": {
+      "swatch": "moon_blue",
+      "lights": [
+        {
+          "color": "#9DB4D9",
+          "energy": 10.0,
+          "range_m": 24.0,
+          "behind_m": 6.0,
+          "up_m": 2.0
+        },
+        {
+          "color": "#9DB4D9",
+          "energy": 12.0,
+          "range_m": 30.0,
+          "behind_m": -7.0,
+          "up_m": 4.0
+        }
+      ]
+    }
+  },
   "effects": {
     "hit_none": {
       "kind": "particles",

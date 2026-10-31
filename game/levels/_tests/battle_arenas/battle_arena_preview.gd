@@ -47,6 +47,7 @@ func _frame_as_the_fight(stage: Node3D, layout: Dictionary) -> void:
 	)
 	_camera.transform = fit[0]
 	_camera.fov = float(fit[1])
+	BattleBossLight.apply(stage.get_child(party.size()) as Node3D, enemies[0], _camera.global_position)  # as its fight
 
 
 func _seat(stage: Node3D, ids: Array[StringName], slots: Array) -> void:
