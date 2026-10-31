@@ -3,6 +3,16 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ bc41b3147: Act III cutscene sounds (M5-A3P-1953, to review).** Every `@sfx` the Act III drafts name now has a row.
+  - **13 new** under `assets/audio/act3/sfx/`:
+    - velamir_lullaby_hum: the lullaby hummed, one file for both Asha (Ch18) and Imra (E1);
+    - pell_farewell_tide: Pell sings the clutch's rising line for Nhoa;
+    - match_struck: E7's lamp;
+    - the Kite's settle, strain and floor-touch;
+    - Iskarra's engine stopping, Kerrid's hitch spilling, the flat sea, Haluna's murmured names, the clutch's hum, the shell into the lagoon, the wind in the sails.
+  - **4 alias rows** to the Kite's existing foley (kite_engines_stop, sails_fill, rope_creak, hull_meets_water).
+  - **Checks:** determinism; targets rule act3/sfx; validate_data 0; audio_loudness and audio_data OK; Godot audio_runtime 11/0.
+  - **Next:** Ch17–Ch20's music cues: hollowmere_morning, the_choice, kite_first_lamp, kite_theme, kite_night, haluna_lifting, reedhollow_return, kerrid_hitch, engine_down, the_eye, undertow_descent, the six memory_* cues, the_cage, thank_you.
 - **MERGE-READY @ 626528274: the Lead's 01:21 item, the Act II cue placement in slice-polish's newest Ch13–Ch16 staging (m2-slice @ ff50ec33).**
   - **Staged now:** Ch13's ansedra, ansedra_lacquer_court, lamp_archive (with the `archive_lamp` prop) and sanctum; Ch15's open_sea; Ch16's drowned_choir and pale_rim.
   - **The check:** act1_playthrough `--act 2 --holds`, run in a scratch worktree of m2-slice with audio's current data and tools copied in. No missing cue and no cue ending inside a held shot, in any of them; only the 13 known notes (deliberate `fade=0.0` cuts and ansedra named twice).
