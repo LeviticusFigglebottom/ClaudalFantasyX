@@ -2829,6 +2829,7 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
 # on the plain solve (the transitions join it there) and its last frame is set to its first, so the loop closes.
 SKIRT_TRAIL = 0.75  # share of the previous frame's extra swing kept per 15 fps frame (cloud pass 6: more lag)
 SKIRT_TRAIL_CLIPS = {"walk", "run"}
+SKIRT_EDGE = 0.25  # the width (in the panel direction's components) over which the trail and the back's full swing fade
 # row 56 (big38, real GPU: the run's skirt still a bell, "no legs showing"): below the knee the outer skirt now rides the
 # legs' own weights (build_asha OUTER_LEG_SHARE), so in the locomotion clips (LOCO_CLIPS: the cycles and their starts,
 # stops and turns, so they still join) the knee and hem panels swing out only this share of the clearance solve
@@ -2859,11 +2860,15 @@ def _skirt_trail(sk: "Skeleton", res: dict) -> dict:
         a = list(angs)
         out_x, out_z = float(ax[2]), -float(ax[0])  # the panel's outward direction (ax = down x out)
         # the front and the staff side (her right, -X; the staff's pivot steers round those panels) stay on the solve
-        staff_side = out_x < SKIRT_TRAIL_STAFF_X and out_z > SKIRT_TRAIL_STAFF_Z
-        if p is not None and out_z < SKIRT_TRAIL_FRONT and not staff_side:
+        # cloud pass 6 (a white notch through the back panel): faded over SKIRT_EDGE, not cut, so neighbouring panels
+        # never part
+        staff_side = smooth((SKIRT_TRAIL_STAFF_X - out_x) / SKIRT_EDGE + 0.5) * smooth(
+            (out_z - SKIRT_TRAIL_STAFF_Z) / SKIRT_EDGE + 0.5)
+        f = SKIRT_TRAIL * smooth((SKIRT_TRAIL_FRONT - out_z) / SKIRT_EDGE + 0.5) * (1.0 - staff_side)
+        if p is not None and f > 0.0:
             for lv in range(1, len(a)):  # the knee and hem bones; the hip bone stays on the solve
                 if p[lv] > a[lv]:
-                    a[lv] = a[lv] + SKIRT_TRAIL * (p[lv] - a[lv])
+                    a[lv] = a[lv] + f * (p[lv] - a[lv])
         out[h] = (ax, tuple(a), sc)
     sk.skirt_trail = {h: v[1] for h, v in out.items()}
     return out
@@ -2921,8 +2926,11 @@ def helper_pose(sk: "Skeleton", g: dict, out: dict, hips=None) -> None:
     if w > 0.0:
         sk.skirt_clear = sk.last_skirt  # row 56: the staff still keeps clear of the full clearance swing's cloth  # row 56: in the locomotion clips the legs' own weights carry the front and sides of the hem
         k = 1.0 - w * (1.0 - SKIRT_LOCO_SWING)
-        sk.last_skirt = {h: (ax, an if -float(ax[0]) < SKIRT_LOCO_BACK else (an[0],) + tuple(x * k for x in an[1:]), sc)
-                         for h, (ax, an, sc) in sk.last_skirt.items()}
+        res = {}
+        for h, (ax, an, sc) in sk.last_skirt.items():
+            kb = k + (1.0 - k) * smooth((SKIRT_LOCO_BACK - -float(ax[0])) / SKIRT_EDGE + 0.5)  # faded, no step
+            res[h] = (ax, (an[0],) + tuple(x * kb for x in an[1:]), sc)
+        sk.last_skirt = res
     if getattr(sk, "skirt_trail", None) is not None:  # row 56: the hem's momentum in the walk and run cycles
         sk.last_skirt = _skirt_trail(sk, sk.last_skirt)
     for h, (axis, angs, sc) in sk.last_skirt.items():

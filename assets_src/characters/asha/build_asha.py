@@ -192,11 +192,11 @@ def unwrap_faces(ob: bpy.types.Object, mats: set[str], seams: set | None = None,
 
 
 HAND_FOOT_RATIO = 0.3  # the donor's hands and feet are dense (~10.7k tris); cut for the LOD0 budget
-UNDER_LEG_SHARE = 0.0  # GPU QA row 56 (cloud pass 6: the underskirt split into two leg tubes and showed through the
-# back panel): the underskirt now moves exactly as the outer skirt over it
+UNDER_LEG_SHARE = 0.3  # GPU QA row 56 (cloud pass 6: the underskirt split into two leg tubes and showed through the
+# back panel at 0.6): the underskirt hem's own share of the legs' weights, on top of the outer skirt's, halved at the centre
 OUTER_LEG_SHARE = 0.5  # GPU QA row 56 (cloud pass 6: at 1.0 it read as trousers below the knee): the outer skirt hem's
 # share of the legs' own weights, faded out toward the hem's centre (OUTER_LEG_CENTRE) so one drape spans the legs
-OUTER_LEG_CENTRE = 1.0  # the fade's width, in thigh-head spacings from the centre line: no leg share at x = 0
+OUTER_LEG_CENTRE = 0.6  # the fade's width, in thigh-head spacings from the centre line: no leg share at x = 0
 UNDER_SKIRT_RATIO = 0.10  # M1-CHR-15: the legs and hips kept whole under the skirts, cut for the LOD0 budget (0.25 until the denser skirt of the big17 review)
 
 
@@ -798,6 +798,8 @@ def main() -> int:
             z_knee = float(bone_head(skel, "DEF-shin.L")[2])
             z_in = Pc[inner, 2]
             a = UNDER_LEG_SHARE * np.clip((z_knee - z_in) / max(z_knee - float(z_in.min()), 1e-6), 0.0, 1.0)
+            u_i = np.clip(np.abs(Pc[inner, 0]) / max(x_leg, 1e-6), 0.0, 1.0)  # cloud pass 6: faded at the centre too
+            a = a * (0.5 + 0.5 * u_i * u_i * (3.0 - 2.0 * u_i))
             Wc[inner] = (1.0 - a[:, None]) * W_out + a[:, None] * W_legs[pos]
         ob = part_object(opaque)
         apply_weights(ob, Wc, wnames, skel)
