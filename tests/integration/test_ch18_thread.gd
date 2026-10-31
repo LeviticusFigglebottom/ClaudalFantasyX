@@ -2,12 +2,17 @@ extends TestCase
 ## M5-A3P-1004: Ch18 "The Kite", the critical path, headless, on the real chapter data
 ## (game/data/flow/chapters/ch18.json): the maiden flight, the chart table (the world opens), Reedhollow's Act III block
 ## (Pell through the gate, the farewell-tide taught), back aboard at night and Iskarra at the chart table in the
-## morning; and the revisits with their heirlooms (Hollowmere, Corrow).
+## morning; and the revisits with their heirlooms (Hollowmere, Corrow, Tamsule, Pemakar, Quellan).
 
 const KITE := "res://game/levels/ch18/kite/kite.tscn"
 const REEDHOLLOW := "res://game/levels/ch10/reedhollow/reedhollow.tscn"
 const HOLLOWMERE := "res://game/levels/ch17/hollowmere/hollowmere.tscn"
 const CORROW := "res://game/levels/ch08/corrow/corrow.tscn"
+const REVISITS := {
+	"res://game/levels/ch07/tamsule/tamsule.tscn": &"ch18_revisit_tamsule",
+	"res://game/levels/ch05/pemakar/pemakar.tscn": &"ch18_revisit_pemakar",
+	"res://game/levels/ch12/quellan/quellan.tscn": &"ch18_revisit_quellan",
+}
 
 var saved_state: GameStateData
 var zone: GreyboxZone
@@ -102,6 +107,23 @@ func test_corrow_in_ch18_keeps_a_watch() -> void:
 	assert_true(_trigger(&"ch18_heirloom_kerrid").try_interact())
 	assert_true(bool(Game.get_flag(&"ch18_heirloom_kerrid")), "the watch's anchor")
 	_close()
+	Game.state = saved_state
+
+
+func test_each_town_offers_its_revisit_once_the_world_opens() -> void:
+	for path: String in REVISITS:
+		Game.state = GameStateData.new()
+		Game.state.chapter = 18
+		Game.set_flag(&"ch18_started")
+		_open(path)
+		story.begin()
+		assert_false(_trigger(&"ch18_revisit").is_available(), "%s: not before the chart table" % path)
+		_close()
+		Game.set_flag(&"ch18_world_open")
+		_open(path)
+		story.begin()
+		assert_true(_trigger(&"ch18_revisit").try_interact(), "%s: %s" % [path, REVISITS[path]])
+		_close()
 	Game.state = saved_state
 
 

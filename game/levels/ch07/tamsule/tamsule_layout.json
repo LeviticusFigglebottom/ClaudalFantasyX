@@ -1,5 +1,5 @@
 {
-  "doc": "M3-C07-02 greybox: ch07/tamsule, the port at the Tidecup (act1_ch07.md B01-B03, B08, B10). Flat decks at height 0 joined by plank bridges over the river: the river-mouth quay where the barge ties up (south), the floating market (centre), the stilt lane (west), the gantry foot under the Bell (north), the market boats by the gantry where Tavi finds Rhen (north-east), and the harbour where the coastal trader casts off (east). The Bell hangs on its gantry beyond the north edge, out of reach (the arena is ch07/tamsule_bell_galleries, a stand-in for env-art's and the Reefball agent's ch07/tamsule_bell). Dressed with env-art's port pieces (M3-C07-04, tamsule.md) by tools/act1/ch07_tamsule_port_dressing.py (ADR 0200): the blocks stay the walk, the river 1.6 m under the decks is water (no floor: rails in tamsule_collision.json keep the player on the decks), and the Bell's ring stands on its axis at (0, -1.6, -75); shot ids are the beat sheet's T01-T08 proposals, plus T09 (B10's look back at the moorings, a proposal).",
+  "doc": "M3-C07-02 greybox: ch07/tamsule, the port at the Tidecup (act1_ch07.md B01-B03, B08, B10). Flat decks at height 0 joined by plank bridges over the river: the river-mouth quay where the barge ties up (south), the floating market (centre), the stilt lane (west), the gantry foot under the Bell (north), the market boats by the gantry where Tavi finds Rhen (north-east), and the harbour where the coastal trader casts off (east). The Bell hangs on its gantry beyond the north edge, out of reach (the arena is ch07/tamsule_bell_galleries, a stand-in for env-art's and the Reefball agent's ch07/tamsule_bell). Dressed with env-art's port pieces (M3-C07-04, tamsule.md) by tools/act1/ch07_tamsule_port_dressing.py (ADR 0200): the blocks stay the walk, the river 1.6 m under the decks is water (no floor: rails in tamsule_collision.json keep the player on the decks), and the Bell's ring stands on its axis at (0, -1.6, -75); shot ids are the beat sheet's T01-T08 proposals, plus T09 (B10's look back at the moorings, a proposal). Act III (M5-A3P-1004, act2-plan supplementing): the Kite's return in Ch18: a mooring ring at the harbour (gull_ring) where Pio's band is re-tied, K20, and the revisit (trigger ch18_revisit).",
   "block_color": "#a2825c",
   "sun": {"pitch_deg": -78.0, "yaw_deg": 0.0, "energy": 3.2, "color": "#fff3e7"},
   "environment": {"background": "#5a6a70", "ambient_color": "#b8d8e0", "ambient_energy": 0.8},
@@ -51,7 +51,8 @@
     "drift_ysolde": [0.7, 0, 17.6, 180],
     "way_quay_bridge_n": [0, 0, 11.6, 180],
     "way_gantry_bridge_s": [0, 0, -3.6, 180],
-    "way_gantry_bridge_n": [0, 0, -8.4, 180]
+    "way_gantry_bridge_n": [0, 0, -8.4, 180],
+    "gull_ring": [26.0, 0.0, 11.0, 90.0]
   },
   "actors": {
     "liss": {"at": [-1.5, 0, 21.5, 180], "color": "#7a8c5a"},
@@ -74,7 +75,8 @@
     "T06": {"pos": [14, 3, -3], "look_at": [11, 1, -13], "fov": 50},
     "T07": {"pos": [8.4, 1.5, -12.4], "look_at": [10.4, 1.5, -12], "fov": 30},
     "T08": {"pos": [31, 2.4, 15], "look_at": [0, 14, -75], "fov": 55},
-    "T09": {"pos": [26, 1.5, 0], "look_at": [7.0, 0.6, -53.3], "fov": 20}
+    "T09": {"pos": [26, 1.5, 0], "look_at": [7.0, 0.6, -53.3], "fov": 20},
+    "K20": {"pos": [21.0, 2.2, 6.5], "look_at": [26.5, 1.0, 11.0], "fov": 42}
   },
   "camera_volumes": [
     {"id": "StiltLane", "mode": "pan_follow", "at": [-20.0, 2.0, 4.0], "size": [13.0, 5.0, 6.0], "pos": [-10.5, 4.0, 2.5], "look_at": [-20.0, 1.2, 4.0], "fov": 46.4, "priority": 1}
@@ -93,6 +95,7 @@
     {"id": "shrine", "activation": "interact", "at": [12, 0, 3], "size": [1.6, 0, 1.2], "prompt_key": "FIELD_PROMPT_REST", "requires_flag": "ch07_arrived", "payload": {"save_shrine": "tamsule_shrine"}},
     {"id": "trader", "activation": "interact", "at": [-10, 0, 6], "size": [1.6, 0, 1.6], "prompt_key": "SHOP_PROMPT", "requires_flag": "ch07_arrived", "payload": {"shop": "tamsule_trader"}},
     {"id": "inn", "activation": "interact", "at": [-24, 0, 6], "size": [1.6, 0, 1.6], "prompt_key": "INN_PROMPT", "requires_flag": "ch07_arrived", "payload": {"inn": "tamsule_inn"}},
-    {"id": "outfitter", "activation": "interact", "at": [4, 0, 4], "size": [1.6, 0, 1.6], "prompt_key": "SHOP_PROMPT", "requires_flag": "ch07_arrived", "payload": {"reefball_outfitter": "tamsule"}}
+    {"id": "outfitter", "activation": "interact", "at": [4, 0, 4], "size": [1.6, 0, 1.6], "prompt_key": "SHOP_PROMPT", "requires_flag": "ch07_arrived", "payload": {"reefball_outfitter": "tamsule"}},
+    {"id": "ch18_revisit", "activation": "interact", "at": [25.4, 0.0, 11.0], "size": [1.4, 0, 1.4], "once": true, "prompt_key": "FIELD_PROMPT_LISTEN", "requires_flag": "ch18_world_open", "payload": {"dialogue": "ch18_revisit_tamsule"}}
   ]
 }

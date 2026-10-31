@@ -1,5 +1,5 @@
 {
-  "doc": "M3-C05-02: Pemakar (act1_ch05.md B01-B06, B11), moved on to env-art's Pemakar kit (M3-C05-1213, ADR 0200: the kit's frame, tools/act1/ch05_pemakar_dressing.py: the harbour a quay at the shore, the market and the forge on tier 0, the inn on tier 2, the graves on tier 4, the crown channel on tier 9). It was a greybox, flat for the controller (no step-up): the town loop climbs north from the harbour (z +) to the crown channel (z -). Harbour and wake-wall, the sea-cut weir to the east of the harbour, the market terraces, the forge lane, the grave terraces beside the paddies, the inn on the third tier, the crown channel and its bell. Env-art's Pemakar terrace stone kit replaces the blocks. The layout's light is Lanternfall night (the ch05 frame's stand-in); the 'variants' row is the day after the binding (B11). Shot ids are the sheet's proposals (P01-P12; P06N the inn gate at night, P09_garo the insert of Garo's boat, P02D the harbour road at dawn).",
+  "doc": "M3-C05-02: Pemakar (act1_ch05.md B01-B06, B11), moved on to env-art's Pemakar kit (M3-C05-1213, ADR 0200: the kit's frame, tools/act1/ch05_pemakar_dressing.py: the harbour a quay at the shore, the market and the forge on tier 0, the inn on tier 2, the graves on tier 4, the crown channel on tier 9). It was a greybox, flat for the controller (no step-up): the town loop climbs north from the harbour (z +) to the crown channel (z -). Harbour and wake-wall, the sea-cut weir to the east of the harbour, the market terraces, the forge lane, the grave terraces beside the paddies, the inn on the third tier, the crown channel and its bell. Env-art's Pemakar terrace stone kit replaces the blocks. The layout's light is Lanternfall night (the ch05 frame's stand-in); the 'variants' row is the day after the binding (B11). Shot ids are the sheet's proposals (P01-P12; P06N the inn gate at night, P09_garo the insert of Garo's boat, P02D the harbour road at dawn). Act III (M5-A3P-1004, act2-plan supplementing): the Kite's return in Ch18: Garo at the forge folding mooring rings, K19, and the revisit (trigger ch18_revisit).",
   "sun": {"pitch_deg": -55.0, "yaw_deg": -20.0, "energy": 0.45, "color": "#5a6c94"},
   "environment": {"background": "#141a2e", "ambient_color": "#6c7898", "ambient_energy": 0.8},
   "block_color": "#3b3836",
@@ -176,7 +176,8 @@
     "P10": {"pos": [24.0, 20.628, -32.016], "look_at": [11.0, 18.228, -30.104], "fov": 44},
     "P11": {"pos": [21.0, 1.5, 31.5], "look_at": [15.0, 1.9, 26.6], "fov": 40},
     "P12": {"pos": [17.1, 2.8, 25.425], "look_at": [14.6, 2.6, 26.5], "fov": 36},
-    "P02D": {"pos": [3.0, 2.977, 22.05], "look_at": [12.6, 1.8, 26.5], "fov": 40}
+    "P02D": {"pos": [3.0, 2.977, 22.05], "look_at": [12.6, 1.8, 26.5], "fov": 40},
+    "K19": {"pos": [3.2, 9.6, 1.6], "look_at": [6.3, 8.9, -1.7], "fov": 42}
   },
   "camera_volumes": [
     {"id": "Harbour", "mode": "pan_follow", "at": [0.0, 2.0, 26.0], "size": [12.0, 5.0, 8.0], "pos": [-4.5, 5.0, 29.5], "look_at": [0.0, 1.8, 23.5], "fov": 46.4, "priority": 1}
@@ -193,7 +194,8 @@
     {"id": "bark_after_boats", "at": [6.0, 1.2, 25.65], "size": [4, 0, 3], "once": true, "requires_flag": "ch05_kahre_bound", "payload": {"dialogue": "ch05_bark_after_boats", "overheard": true}, "yaw": 0.0},
     {"id": "bark_after_grave", "at": [10.0, 17.628, -30.016], "size": [4, 0, 3], "once": true, "requires_flag": "ch05_kahre_bound", "payload": {"dialogue": "ch05_bark_after_grave", "overheard": true}, "yaw": 4.764},
     {"id": "bark_after_band", "at": [1.68, 8.028, -1.61], "size": [4, 0, 3], "once": true, "requires_flag": "ch05_kahre_bound", "payload": {"dialogue": "ch05_bark_after_band", "overheard": true}, "yaw": 0.649},
-    {"id": "harbour_road", "at": [0.0, 1.2, 26.5], "size": [12, 0, 1.5], "requires_flag": "ch05_kahre_bound", "blocked_by_flag": "ch05_done", "payload": {"beat": "dawn"}, "yaw": 0.0}
+    {"id": "harbour_road", "at": [0.0, 1.2, 26.5], "size": [12, 0, 1.5], "requires_flag": "ch05_kahre_bound", "blocked_by_flag": "ch05_done", "payload": {"beat": "dawn"}, "yaw": 0.0},
+    {"id": "ch18_revisit", "activation": "interact", "at": [6.8, 8.028, -0.9], "size": [1.4, 0, 1.2], "once": true, "prompt_key": "FIELD_PROMPT_LISTEN", "requires_flag": "ch18_world_open", "payload": {"dialogue": "ch18_revisit_pemakar"}}
   ],
   "variants": [
     {"when": {"set": ["ch05_kahre_bound"]}, "sun": {"pitch_deg": -24.0, "yaw_deg": -72.0, "energy": 2.4, "color": "#ffd9b0"}, "environment": {"background": "#9fb2c4", "ambient_color": "#c8c0b4", "ambient_energy": 0.65}, "hide": ["elder", "boat_seller", "weir_child", "folder_2", "ferryman", "Lamps"], "show": ["boat_fisher"], "environment_res": "res://game/levels/ch05/pemakar/pemakar_day_environment.tres"}

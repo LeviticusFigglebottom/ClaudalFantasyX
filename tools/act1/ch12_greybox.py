@@ -351,8 +351,17 @@ def cloudloom() -> dict:
     }
 
 
+def quellan_act3(layout: dict) -> dict:
+    """Ch18's return to Quellan (M5-A3P-1004, act3_ch18.md §4; act2-plan supplementing): Dorro's daughter at her door
+    with a new cord on the post. One trigger, waiting on ch18_world_open, a step east of Ch12's cord errand."""
+    layout["triggers"].append({"id": "ch18_revisit", "activation": "interact", "at": [11.5, 0.0, -3.0],
+                               "size": [1.4, 0, 1.2], "once": True, "prompt_key": "FIELD_PROMPT_LISTEN",
+                               "requires_flag": "ch18_world_open", "payload": {"dialogue": "ch18_revisit_quellan"}})
+    return layout
+
+
 def main() -> None:
-    for name, layout in (("keth_pass", keth_pass()), ("quellan", quellan()), ("cloudloom", cloudloom())):
+    for name, layout in (("keth_pass", keth_pass()), ("quellan", quellan_act3(quellan())), ("cloudloom", cloudloom())):
         out = ZONES / name / f"{name}_layout.json"
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(layout, indent=1) + "\n", encoding="utf-8")

@@ -764,6 +764,26 @@
    },
    "yaw": 0.0,
    "blocked_by_flag": "ch12_camp_talk"
+  },
+  {
+   "id": "ch18_revisit",
+   "activation": "interact",
+   "at": [
+    11.5,
+    0.0,
+    -3.0
+   ],
+   "size": [
+    1.4,
+    0,
+    1.2
+   ],
+   "once": true,
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch18_world_open",
+   "payload": {
+    "dialogue": "ch18_revisit_quellan"
+   }
   }
  ]
 }

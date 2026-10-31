@@ -61,9 +61,17 @@ revisits, Haluna's lifting), §5 (the heirlooms). File-to-beat map: drafts READM
   - Ch17's boarding now goes to the Kite.
 - **Test:** `tests/integration/test_ch18_thread.gd` covers the critical path and the child's gate.
 
+## Done since (the revisits)
+- **K07 and K08 on one arrival.** The night aboard, the rest, then Iskarra at the chart table in the morning. Nobody is left ashore with no way back to the deck. The revisits are offered between K02 and K05.
+- **Hollowmere:** the dock-master at work (`ch18_revisit`), Dace's hooks at the rack, and Tobin's drawings on the table. Ch17's hull interactables are now blocked by `ch17_complete`.
+- **Corrow** (its hand-kept layout, appended): from `ch18_started`, daylight, the low town drained, and Marra and her child at the stair head. Also `ch18_revisit`, Toma's and Kerrid's heirlooms, `ivo_stone`, `stair_foot`, and K21.
+- **Tamsule** (gull ring, K20), **Pemakar** (Garo at the forge, K19) and **Quellan** (`quellan_act3()` in `tools/act1/ch12_greybox.py`): one `ch18_revisit` each.
+- `ch18.json` has a block for each of those zones (ChapterRegistry: chapter 18).
+- `test_ch18_thread` (5 cases) covers them. The Ch5, Ch7, Ch8, Ch10 and Ch12 threads are unchanged and green.
+
 ## Still to do here
-- The revisits and heirlooms in their own zones: Oruvel, Pemakar, Tamsule, Corrow, Quellan, Hollowmere.
-- **Haluna** (`ch18_backs_to_the_water`, `ch18_heirloom_asha`) needs a story hook. `ch02/haluna` runs on HalunaStory, not ZoneStory (ADR 0035), so it is a tech question.
-- Ch18's objective rows and zone map for the Kite.
+- **Oruvel:** M5-A3P-1018 (the post-storm look, no Kell, a Kite destination).
+- **Haluna:** M5-A3P-1019 (a HalunaStory hook).
+- **Known gap:** the older zones' own field barks (Tamsule's Tidecup-week barks, for example) may still play on a Ch18 visit where their flags allow. Each zone's owner can gate them with `blocked_by_flag: ch18_started` when it next touches the zone.
 
 ## Review log
