@@ -1470,9 +1470,22 @@ The six relays from 23:06 to 03:02 reached this session only at 03:35, after the
   staging row now covers the Ending's `ending_*` scenes).
 - MERGE-READY @ 758ce108a. This covers the fights, regulars, reds, PC rows 82/86 and the audits. The Ch20/Ch21/Ending
   zones and flows wait on the LEAD-ASK above: take them, or take act2-plan's.
+- **LEAD-ANSWERED (04:43):**
+  - The split: my lane is `game/levels` and the flow data (the chapters' `ch1x.json` and the zones). act2-plan's lane
+    is the `.dlg` scripts, loc and objective text. So my Ch19–Ch21 zones and flows stand, with `ending.json` and
+    Ch18Zone's ending path.
+  - **For act2-plan:** on your next integration merge, take this branch's `game/levels/ch19..ch21/**`,
+    `tools/act3/ch18..ch21_greybox.py` and `game/data/flow/chapters/ch19..ch21.json`, `ending.json`, and drop your
+    `tools/act1/ch19..21_greybox.py` zones and flows and your `_fought` victory flags. My flows use `_beaten`. Your Ending
+    rows in `ch21.json` are covered by my `ending.json`. If your zones carry env-art kit instancing you want kept,
+    send me the scene nodes and I'll add them to my generators' scenes.
+  - **M5-A3P-1020** (act2-plan's patch to my ch17.json) is reviewed and already in place on this branch. The
+    `aboard` beat sets `ch17_complete`, then `go` goes to `ch18/kite` Deck, exactly as the patch reads.
+    test_ch17_thread asserts the hand-off. Nothing to change; act2-plan can close the task.
+- MERGE-READY @ e4a239266 (unchanged code since 758ce108a; this entry is the log only).
 
 ## Exact next step
-**Waiting on the LEAD-ASK above (the Act III overlap with act2-plan)**, then BACKLOG EMPTY. Every Act III row assigned to act1-chapters is built and in review (M5-A3P-1001, 1004,
+**BACKLOG EMPTY (the Lead answered the overlap at 04:43: zones and flows are mine).** Every Act III row assigned to act1-chapters is built and in review (M5-A3P-1001, 1004,
 1007, 1009, 1011, 1013, 1015, 1017 and 1849; the combat rows for 1852 and 1853). What is left waits on other tracks:
 1. **M5-A3P-1009's mid-battle line hook** (battle-presentation): when it lands, wire the fight lines
    (`ch19_bark_abiding_wardens`, `ch20_bark_vowbound_fights`, `ch21_bark_sefir`) to their triggers and play each in
