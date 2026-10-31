@@ -518,6 +518,10 @@
     "sefir_warden": "silent",
     "sefir_heart": "silent",
     "sefir_letting": "silent",
-    "letting_stilled": "silent"
+    "letting_stilled": "silent",
+    "drowned_lantern": "silent",
+    "held_shoal": "silent",
+    "deep_scuttler": {"family": "crab", "events": {"idle": "cre_scuttler_idle", "attack": "cre_scuttler_attack", "hurt": "cre_scuttler_hurt", "death": "cre_scuttler_death", "move": "cre_scuttler_skitter"}, "_note": "M5-A3P-1849: deep_scuttler (Ch17's outer moorings) shares scuttler's set"},
+    "hull_rasp": {"family": "eel", "events": {"idle": "cre_hullgnaw_idle", "attack": "cre_hullgnaw_attack", "hurt": "cre_hullgnaw_hurt", "death": "cre_hullgnaw_death", "move": "cre_hullgnaw_slither"}, "_note": "M5-A3P-1849: hull_rasp (Ch17's outer moorings) shares hullgnaw's set"}
   }
 }
