@@ -1,4 +1,4 @@
-# big30: 582 shots: 174 PASS, 180 DRIFT (0 size mismatch), 224 NO-BASELINE, 4 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big30: 588 shots: 174 PASS, 180 DRIFT (0 size mismatch), 230 NO-BASELINE, 4 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 NO-BASELINE slice_end_card (pending_baseline)
 PASS glimmer_dusk rmse 0.00000 (limit 0.00800)
 PASS glimmer_night_held rmse 0.00000 (limit 0.00800)
@@ -580,4 +580,10 @@ NO-BASELINE ch11_engine_t02 (pending_baseline)
 NO-BASELINE ch11_nhoa_n05 (pending_baseline)
 NO-BASELINE ch11_bench_t05 (pending_baseline)
 NO-BASELINE ch12_breath_p04 (pending_baseline)
+NO-BASELINE ch12_knot_p05 (pending_baseline)
 NO-BASELINE ch12_voices_q04 (pending_baseline)
+NO-BASELINE ch12_hesk_c07 (pending_baseline)
+NO-BASELINE npc_haluna_vignette_causeway
+NO-BASELINE npc_haluna_vignette_lane_games
+NO-BASELINE npc_haluna_vignette_lane_mender
+NO-BASELINE npc_haluna_vignette_night_market
