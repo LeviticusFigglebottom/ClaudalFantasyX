@@ -9,7 +9,9 @@ What it reports:
                 new game: every flag the code sets (a `set_flag` literal in game/, or a data key that names a flag the
                 code sets, such as a trial's `landed_flag`) counts as available; a group runs when its `when.set` flags
                 are; it adds its `set` steps, battle victory flags, its scenes' <<set>>s (through <<jump>>s) and the
-                zones it goes to. `unset` conditions are ignored (they make beats one-shot, never reachable).
+                zones it goes to. `unset` conditions are ignored (they make beats one-shot, never reachable). Rows
+                and triggers that wait on a later act's flag (ch10_ onward: the Act III revisits in Act I's towns,
+                M5-A3P-1004) are later content, not Act I's, and are left out.
   zones         Act I zones that no reachable step goes to (the chapter's start zone aside).
   orphans       Ch1–Ch9 dialogue scenes that no flow, trigger, jump or code names.
 
@@ -27,6 +29,7 @@ from pathlib import Path
 ACT1_CHAPTERS = [f"ch0{n}" for n in range(1, 10)]
 READ_KEYS = {"requires_flag", "blocked_by_flag", "flag", "flags", "unlock_flag", "night_flag", "storm_flag",
              "until_flag", "objective_flag"}
+LATER_ACT_FLAG = re.compile(r"^ch(1\d|2\d)_")  # a flag of Ch10 onward (Acts II and III)
 SET_FLAG_CODE = re.compile(r'(?:set_flag\(\s*|sets?_flag\s*:?=\s*)&?"([a-z0-9_]+)"')  # a call, or an Interactable's
 GET_FLAG_CODE = re.compile(r'get_flag\(\s*&?"([a-z0-9_]+)"')
 DLG_SET = re.compile(r"<<set \$(\w+) = true>>")
@@ -39,6 +42,12 @@ DLG_JUMP = re.compile(r"<<jump (\S+)>>")
 def load(path: Path) -> object:
     return json.loads(path.read_text(encoding="utf-8"))
 
+
+
+
+def _later(flags: list) -> bool:
+    """True when any of `flags` is a later act's (Ch10 onward): the row is that act's content."""
+    return any(LATER_ACT_FLAG.match(str(f)) for f in flags)
 
 class Audit:
     def __init__(self, root: Path) -> None:
@@ -127,13 +136,19 @@ class Audit:
         for c, data in self.chapters.items():
             for zid, z in data.get("zones", {}).items():
                 for i, g in enumerate(z.get("arrive", [])):
+                    if _later(g.get("when", {}).get("set", [])):
+                        continue
                     groups.append((f"{zid} arrive[{i}]", zid, set(g.get("when", {}).get("set", [])), g["steps"],
                                    "arrive"))
                 for bid, g in z.get("beats", {}).items():
+                    if _later(g.get("when", {}).get("set", [])):
+                        continue
                     groups.append((f"{zid} beat:{bid}", zid, set(g.get("when", {}).get("set", [])), g["steps"],
                                    "beat"))
                 for t in self.layouts.get(zid, {}).get("triggers", []):
                     req = t.get("requires_flag")
+                    if req and _later([req]):
+                        continue
                     triggers.append((f"{zid} trigger:{t['id']}", zid, {req} if req else set(), t.get("payload", {}),
                                      t.get("sets_flag")))
         done_g: set[str] = set()

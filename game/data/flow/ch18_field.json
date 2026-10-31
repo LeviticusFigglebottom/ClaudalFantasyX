@@ -1,12 +1,13 @@
 {
-  "doc": "Ch18 field tunables (M5-A3P-1004; as ch09_field.json). Read by Ch18Zone (the maiden flight's lifts) and Ch10Zone (Reedhollow's farewell-tide, taught: turn_back). hold: between <<event hold_input <prompt>>> and <<event hold_input_end>> in a scene, the scene's time runs only while `action` is held (CutsceneHoldGate). prompts maps each prompt id to its loc key (game/data/loc/ch18.csv); layer and bottom_px as Ch9's.",
+  "doc": "Ch18 field tunables (M5-A3P-1004; as ch09_field.json). Read by Ch18Zone (the maiden flight's lifts) and Ch10Zone (Reedhollow's farewell-tide, taught: turn_back; the Ending's landing, M5-A3P-1015: take_the_strain, its key in ch21.csv). hold: between <<event hold_input <prompt>>> and <<event hold_input_end>> in a scene, the scene's time runs only while `action` is held (CutsceneHoldGate). prompts maps each prompt id to its loc key (game/data/loc/ch18.csv); layer and bottom_px as Ch9's.",
   "hold": {
     "action": "field_interact",
     "prompts": {
       "lift_one": "FIELD_PROMPT_CH18_LIFT_ONE",
       "lift_two": "FIELD_PROMPT_CH18_LIFT_TWO",
       "lift_three": "FIELD_PROMPT_CH18_LIFT_THREE",
-      "turn_back": "FIELD_PROMPT_CH18_TURN_BACK"
+      "turn_back": "FIELD_PROMPT_CH18_TURN_BACK",
+      "take_the_strain": "FIELD_PROMPT_ENDING_TAKE_THE_STRAIN"
     },
     "layer": 33,
     "bottom_px": 96.0

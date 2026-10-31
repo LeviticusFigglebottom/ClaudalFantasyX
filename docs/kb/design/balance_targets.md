@@ -307,3 +307,36 @@ Root Stomp and a two-turn charged Drowning Grasp.
   answer. As provisional, every policy lost by attrition (role 0–5%).
 - **The Lamp Engine's answer** now has its adds (M4-A2P-022). The role play kills the tenders first, then works the
   engine, so it has a real band. Its low numbers fit the Ch8 loadout; re-tune on the Ch11 loadout.
+
+### Act III: Ch20's release fights and the Cage, Ch21's Kesh and Sefir (M5-A3P-1013, M5-A3P-1017; the chapters combat seat)
+Measured at 500 seeds (2026-10-31). The suites are in `tools/balance/targets.json`. The loadouts are `ch20_layer1..6`,
+`ch20_cage` (Kesh alone to call), `ch21_kesh` and `ch21_sefir` (nobody to call: every Vowbound released).
+
+| Suite | Kind | `naive` | `role_answer` | `smart` |
+|---|---|---|---|---|
+| `ch20_ilun` .. `ch20_ethren` (six) | regular (the Act III band) | 0–8.4 | 89.0–99.4 | 100 |
+| `ch20_the_cage` | boss | 0 | 70.0 | 100 (34 mean turns) |
+| `ch21_kesh` | boss | 0 | 57.6 | 99.8 (31.3 mean turns) |
+| `ch21_sefir_warden` | boss | 0 | 59.8 | 100 |
+| `ch21_sefir_heart` | boss | 0 | 63.8 | 100 |
+| `ch21_sefir_letting` | set piece | 0.4 | 89.6 | 100 |
+
+- **The held release fights** are single armoured foes, each answered by the hero vowbound.md names. Their `release` phase
+  holds the lift clip. Each one's answer is what wins it.
+- **The Cage:** four founders' seats, each answered by a different hero. Each seat's phase `when_down` is its
+  neighbour, so as one breaks, the next grows stronger. HP is the steep lever: 600 gives 87%, 800 gives 25%.
+- **Kesh** cycles six elements by phase, open to Ysolde's ice and then her fire. Her voices are the Vowbound's own
+  rows (their power is shared), so the levers are agility, defence and HP. Agility 5 and HP 2700 hold the smart ease
+  floor (≥ 30 mean turns).
+- **The Letting's `naive` floor is 0%, not the Ch8 waves' 10%.** The verse is pushed back by every reach that lands
+  unguarded, and Sefir can't be felled (an `hp_floor_pct`), so a masher who never covers the verse loses. That is the
+  fight's point. Every Stilled strength that lifted the masher to 10% pushed the role answer (Toma covering, Kerrid
+  breaking the Stilled) past 95%: str 7 gave 12 and 99.5; str 10 at defence 45 gives 0.4 and 89.6.
+- **The Ch18 optional bosses** (combat rows for creatures-b's M5-A3P-1852/1853; no models yet, so qa capsules; placement
+  waits on Design's Kite world map and secret coordinates, SPEC §6.6):
+  - `ch18_tide_matron` (the Cinder Matron's rig as a coral kiln: the Crust, then the Pour at 60% with its telegraphed
+    recrust) is in the Act III boss band: role 68.6, smart 100 at 30.2 mean turns.
+  - `ch18_old_leviathan`, the superboss, has its own band: naive ≤ 2%, smart 50–90% with ≥ 60 mean turns, p90 ≤ 160,
+    and role report only. A role answer that never heals can't last a fight that is long by design. At 500 seeds:
+    smart 84.2 at 134 turns, p90 146. Settle gives Protect and Shell, not Regen; Regen on 8000 HP outhealed every
+    policy.

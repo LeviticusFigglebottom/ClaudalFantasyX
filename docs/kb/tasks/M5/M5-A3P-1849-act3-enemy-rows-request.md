@@ -2,8 +2,8 @@
 id: M5-A3P-1849
 title: "Request: enemies.json rows and encounters for the creatures lane's Act III regulars"
 role: combat
-status: todo
-owner_session: ""
+status: review
+owner_session: "act1-chapters"
 depends_on: []
 milestone: M5
 reviewer: character
@@ -29,5 +29,21 @@ creature row is found by that scene (`CreatureModels.creature_for_scene`).
 ## Acceptance criteria
 - [ ] An enemies.json row per creature (`act: 3`, localization keys, stats, skills, AI), with `model` set as above.
 - [ ] Their encounters in the Ch17, Ch19 and Ch20 zones, per the roster.
+
+## Notes (act1-chapters, the chapters combat seat, 2026-10-31)
+All eight rows have `model` set as above. Each is in the Act III regular band at 500 seeds (`tools/balance/targets.json`).
+- **Ch19:** `wick_crawler`, `chain_lamp`, `spire_moth` and `spire_conduit_crawler` (M5-A3P-1009's batch). Encounters
+  are `ch19_spire_wicks`, `_lamps` and `_moths`, in the spire's table.
+- **Ch20 `drowned_lantern`** (fire-weak; Draw the Light): `ch20_layer_lanterns` ×3 has role 99.6 and naive 4.0.
+  - The sheet's MP drain needs an MP-damage key the battle core lacks, so for now it draws HP (`drain_pct`).
+- **Ch20 `held_shoal`:** the first blow scatters it into `drift` (untargetable at 99%, because the validator wants
+  every phase below full HP). It turns (`turned`, `when_down` drowned_lantern, `untargetable` false) once its lantern
+  breaks.
+  - `ch20_layer_shoal` (shoal plus lantern) has role 100 and naive 20.0.
+  - Both Ch20 encounters are in the undertow_layers table, from the first floor to the Cage.
+- **Ch17 `deep_scuttler`** ×3 and **`hull_rasp`** (ribs armour it until `breaking` at 60%, the creature row's clip)
+  are optional fights. They sit at the outer moorings off the dock's head (`a3_moorings_one`, then `a3_moorings_two`),
+  with victory flags `ch17_moorings_scuttlers` and `ch17_moorings_rasp`, and can be fled.
+  - Results: role 92.0 / 97.6, naive 6.8 / 5.2.
 
 ## Review log

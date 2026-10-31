@@ -60,7 +60,17 @@
 "hesper_oan": "characters, M5-A3P-1202 (the Wardens' bodies)",
 "ilsabet_rue": "characters, M5-A3P-1202",
 "chain_lamp": "creatures, M5-A3P-1801 (the chain lamp)",
-"spire_moth": "creatures, M5-A3P-1802 (the spire moth)"
+"spire_moth": "creatures, M5-A3P-1802 (the spire moth)",
+"cage_orin": "creatures-b, M5-A3P-1851 (the Cage)",
+"cage_halde": "creatures-b, M5-A3P-1851 (the Cage)",
+"cage_isse": "creatures-b, M5-A3P-1851 (the Cage)",
+"cage_cael": "creatures-b, M5-A3P-1851 (the Cage)",
+"sefir_warden": "character, M5-A3P-1849 (a revenant Sefir battle body)",
+"sefir_heart": "character, M5-A3P-1849 (a revenant Sefir battle body)",
+"sefir_letting": "character, M5-A3P-1849 (a revenant Sefir battle body)",
+"letting_stilled": "character, M5-A3P-1849 (the Stilled)",
+"tide_matron": "creatures-b, M5-A3P-1852 (the Tide Matron)",
+"old_leviathan": "creatures-b, M5-A3P-1853 (the Old Leviathan)"
     }
   },
   "unraised_doc": "test_qa_threads.gd: a flag a thread's chapter or main objectives wait on that its thread never raises -> why it isn't a softlock, and the task that closes the gap.",
