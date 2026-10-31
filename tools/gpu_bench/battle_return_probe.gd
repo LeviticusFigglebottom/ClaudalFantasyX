@@ -16,6 +16,7 @@ const TIMEOUT_FRAMES := 1800
 const SLOW_FRAME_MS := 50.0
 
 var _opts: Dictionary = {}
+var _fight := PackedFloat64Array()
 
 
 func _ready() -> void:
@@ -58,8 +59,15 @@ func _run() -> void:
 	await _frames(SETTLE_FRAMES)
 	# --fight-s: a realistic fight length before the win (a parked return build needs the fight's time; ADR 0209).
 	var fight_until := Time.get_ticks_msec() + int(float(_opts.get("fight-s", "0")) * 1000.0)
+	# The fight's own frames: a return prewarm that compiles mid-fight shows here as stutter.
+	var fight := PackedFloat64Array()
+	var fl := Time.get_ticks_usec()
 	while Time.get_ticks_msec() < fight_until:
 		await get_tree().process_frame
+		var fn := Time.get_ticks_usec()
+		fight.append((fn - fl) / 1000.0)
+		fl = fn
+	_fight = fight
 	print("RETURN_PROBE_STEP find %s" % get_tree().current_scene)
 	var fb := _find(get_tree().current_scene, "FieldBattle")
 	if fb == null:
@@ -116,6 +124,10 @@ func _run() -> void:
 			"frames": frames.size(),
 			"worst_frame_ms": worst,
 			"frames_over_50ms": slow,
+			"fight_frames": _fight.size(),
+			"fight_worst_ms": _worst(_fight),
+			"fight_over_33ms": _count_over(_fight, 33.0),
+			"fight_over_50ms": _count_over(_fight, SLOW_FRAME_MS),
 			"input_state_at_end": why,
 			"swap": router.get(&"last_swap_stats"),
 		}
@@ -149,3 +161,17 @@ func _until(cond: Callable) -> void:
 		await get_tree().process_frame
 		if cond.call():
 			return
+
+
+static func _worst(f: PackedFloat64Array) -> float:
+	var w := 0.0
+	for x in f:
+		w = maxf(w, x)
+	return w
+
+
+static func _count_over(f: PackedFloat64Array, ms: float) -> int:
+	var n := 0
+	for x in f:
+		n += 1 if x > ms else 0
+	return n
