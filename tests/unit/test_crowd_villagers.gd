@@ -488,6 +488,56 @@ func test_a_freed_silhouette_leaves_no_material_behind() -> void:
 	assert_eq(alive, 0, "no silhouette material outlives the figure")
 
 
+## PC row 85: leaving the tree swaps no material (the pass-3 clear put the body's own materials back mid-teardown), and
+## a freed crowd person's tinted copies don't outlive it (NpcTints caches them weakly).
+func test_leaving_the_tree_keeps_the_materials_and_freeing_frees_them() -> void:
+	var zone := _greybox_zone(["figure"])
+	var spot := {"npc_id": "haluna_dock_mender", "crowd": "haluna_dock_mender", "stand_in": "CrowdSpots/mender"}
+	spot["at"] = [2.0, 0.0, -2.0, 0.0]
+	var layer := _layer(
+		zone,
+		[
+			{
+				"npc_id": "storm_figure_exit",
+				"body": "crowd_man_lean_a",
+				"silhouette": "#5fd6e0",
+				"stand_in": "CutsceneStage/Actors/figure",
+				"attach": "child"
+			},
+			spot
+		]
+	)
+	layer.build()
+	var figure := layer.villager(&"storm_figure_exit")
+	var worn := _override_ids(figure.actor)
+	var parent := zone.get_parent()
+	parent.remove_child(zone)
+	assert_eq(_override_ids(figure.actor), worn, "out of the tree, the figure still wears the same materials")
+	parent.add_child(zone)
+	var refs := _override_refs(layer.villager(&"haluna_dock_mender").actor)
+	var worn_copies := 0
+	for r in refs:
+		if r.get_ref() != null:
+			worn_copies += 1
+	assert_true(worn_copies > 0, "the mender wore tinted copies")
+	_done()
+	var alive := 0
+	for r in refs:
+		if r.get_ref() != null:
+			alive += 1
+	assert_eq(alive, 0, "no tinted material outlives the person")
+
+
+func _override_ids(actor: Node) -> Array[int]:
+	var ids: Array[int] = []
+	for node: Node in actor.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		for i in mi.mesh.get_surface_count():
+			var m := mi.get_surface_override_material(i)
+			ids.append(m.get_instance_id() if m != null else 0)
+	return ids
+
+
 ## Weak references to every surface override under `actor`, gathered in a function of their own: GDScript keeps an
 ## expression's last value in a stack slot until its function returns, which would hold one material alive.
 func _override_refs(actor: Node) -> Array[WeakRef]:

@@ -52,16 +52,16 @@
     "stubble": 0.7,
     "stubble_grey": 0.9,
     "fingertip_oil": 0.4,
-    "scalp_density": 0.6,
+    "scalp_density": 0.95,
     "seed": 136,
     "lip": "#7A4A40",
     "stubble_shadow": 0.2
   },
   "_hair": {
-    "grey_strands": true,
+    "grey_strands": "all",
     "brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.4"},
     "hairline_feather": 0.45,
-    "kind": "cropped",
+    "kind": "short",
     "tufts": true,
     "card_width_m": [0.0025, 0.004],
     "hairline": "male",
@@ -70,17 +70,17 @@
       0.006,
       0.01
     ],
-    "recede": 0.045,
+    "recede": 0.02, "alpha_boost": 1.6,
     "scalp_cards": [
       300,
       230,
       150
     ],
     "hairline_cards": 0,
-    "colour": "#9E978C",
-    "grey": "#D6D2CA",
-    "grey_share": 0.35,
-    "underpaint": "#ABA49A",
+    "colour": "#C4BEB4",
+    "grey": "#E2DED6",
+    "grey_share": 0.6,
+    "underpaint": "#B8B2A8",
     "brow": "#8E877C",
     "spec": "#CFC8BC",
     "grey_width_k": 1.3

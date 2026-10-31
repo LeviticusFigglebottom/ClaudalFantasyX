@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/creature/creature.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "clasp"
+shader = ExtResource("1_shader")
+shader_parameter/cavity_albedo = 0.5
+shader_parameter/detail_albedo = 0.12
+shader_parameter/detail_bump = 0.3
+shader_parameter/detail_scale = 24
+shader_parameter/emission_color = Color(0.247059, 0.878431, 0.784314, 1)
+shader_parameter/emission_energy = 2.2
+shader_parameter/metallic = 0.5
+shader_parameter/roughness_dry = 0.45
+shader_parameter/roughness_wet = 0.3
+shader_parameter/specular = 0.55

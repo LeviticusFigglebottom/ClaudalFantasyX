@@ -240,6 +240,9 @@ JOBS = [
      _source_files("assets_src/sfx/act2_ability_sfx.py"), "sfx"),
     ("assets_src/sfx/act2_cutscene_sfx.py", "assets/audio/sfx",
      _source_files("assets_src/sfx/act2_cutscene_sfx.py"), "sfx"),
+    # M5-A3P-1953 (ADR 0208): Act III's cutscene sounds, plain git under assets/audio/act3/sfx/
+    ("assets_src/sfx/act3_cutscene_sfx.py", "assets/audio/act3/sfx",
+     _source_files("assets_src/sfx/act3_cutscene_sfx.py"), "sfx"),
     ("assets_src/sfx/act2_ui_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/act2_ui_sfx.py"), "sfx"),
     ("assets_src/sfx/act1_foley_detail_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/act1_foley_detail_sfx.py"),
      "sfx"),

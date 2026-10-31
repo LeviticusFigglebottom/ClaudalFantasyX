@@ -50,5 +50,8 @@ a good fit).
   test). (b) **Split:** the story clips go in `<hero>_story_clips.tres`, merged into one library by the import rule
   (clip names unchanged), with the stage scenes taking the merged library. creatures-b's default is (a), the test's
   own note. It needs characters' yes, since it changes the pipeline.
+- 2026-10-31: part 2's binary libraries (a0ba72003) were reverted by the Lead's decision: characters own the clip
+  pipeline, and their .tres rebuild (abf7391b) stands. The .res conversion is offered to characters as M4-A2P-1981,
+  with the size and load numbers; they decide. Part 1 (Rhen's knock fist, fb31999db) stays, for characters' review.
 
 ## Review log

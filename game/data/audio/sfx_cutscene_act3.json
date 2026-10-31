@@ -1,0 +1,188 @@
+{
+  "version": 1,
+  "doc": "Act III cutscene sounds (M5-A3P-1953): every @sfx the Act III drafts (docs/kb/story/act3/drafts/) name that no other row plays. Thirteen are new (assets_src/sfx/act3_cutscene_sfx.py, under assets/audio/act3/sfx/, plain git, ADR 0208); four are the drafts' names for the Kite's own foley (sfx_act3.json) and play its files. Same row format as sfx.json; AudioData.sfx_rows merges this file in.",
+  "sfx": {
+    "sea_flat_lap": {
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "files": [
+        "res://assets/audio/act3/sfx/sea_flat_lap.ogg"
+      ],
+      "_note": "M5-A3P-1953: ch17_pulled_from_the_sea: the sea gone flat after the storm, small slow laps on the hull (assets_src/sfx/act3_cutscene_sfx.py; plain git, ADR 0208)"
+    },
+    "names_murmured": {
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "files": [
+        "res://assets/audio/act3/sfx/names_murmured.ogg"
+      ],
+      "_note": "M5-A3P-1953: ch18_backs_to_the_water: Haluna saying its dead's names under its breath, many low voices, no word clear (assets_src/sfx/act3_cutscene_sfx.py; plain git, ADR 0208)"
+    },
+    "clutch_hum": {
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "files": [
+        "res://assets/audio/act3/sfx/clutch_hum.ogg"
+      ],
+      "_note": "M5-A3P-1953: ch18_farewell_tide_taught: the Kirru clutch humming its own line as Asha learns the tune (assets_src/sfx/act3_cutscene_sfx.py; plain git, ADR 0208)"
+    },
+    "velamir_lullaby_hum": {
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "files": [
+        "res://assets/audio/act3/sfx/velamir_lullaby_hum.ogg"
+      ],
+      "_note": "M5-A3P-1953: ch18_farewell_tide_taught (Asha) and ending_imra (Imra): the Velamir lullaby hummed, the first verse's first two lines, one woman's closed-mouth voice (assets_src/sfx/act3_cutscene_sfx.py; plain git, ADR 0208)"
+    },
+    "shell_into_water": {
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "files": [
+        "res://assets/audio/act3/sfx/shell_into_water.ogg"
+      ],
+      "_note": "M5-A3P-1953: ch18_through_the_gate: Pell's old shell into the lagoon: a plunk, a ring of lapping, a clack going down (assets_src/sfx/act3_cutscene_sfx.py; plain git, ADR 0208)"
+    },
+    "engine_hum_stops": {
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "files": [
+        "res://assets/audio/act3/sfx/engine_hum_stops.ogg"
+      ],
+      "_note": "M5-A3P-1953: ch19_the_engine_stops: Iskarra's spire engine stopping on the last lever: the bound hum sinking, a ratchet running down, the last knock (assets_src/sfx/act3_cutscene_sfx.py; plain git, ADR 0208)"
+    },
+    "rope_slips": {
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "files": [
+        "res://assets/audio/act3/sfx/rope_slips.ogg"
+      ],
+      "_note": "M5-A3P-1953: ch19_the_hitch: Kerrid's hitch spilling on one pull: a soft rip of fibre, the tail running, slack on the planks (assets_src/sfx/act3_cutscene_sfx.py; plain git, ADR 0208)"
+    },
+    "kite_settles": {
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "files": [
+        "res://assets/audio/act3/sfx/kite_settles.ogg"
+      ],
+      "_note": "M5-A3P-1953: ch19_the_kite_comes_down: the Kite settling on the drowned plaza: engines idling down, the hull's long creak, rigging slack (assets_src/sfx/act3_cutscene_sfx.py; plain git, ADR 0208)"
+    },
+    "kite_engine_strains": {
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "files": [
+        "res://assets/audio/act3/sfx/kite_engine_strains.ogg"
+      ],
+      "_note": "M5-A3P-1953: ch20_down_the_eye: both engines labouring a fifth over idle down the throat, the vanes uneven, the hull complaining (assets_src/sfx/act3_cutscene_sfx.py; plain git, ADR 0208)"
+    },
+    "kite_touches_floor": {
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "files": [
+        "res://assets/audio/act3/sfx/kite_touches_floor.ogg"
+      ],
+      "_note": "M5-A3P-1953: ch20_down_the_eye: the keel touching the Undertow's first floor: a deep soft contact, glassy grinding, then still (assets_src/sfx/act3_cutscene_sfx.py; plain git, ADR 0208)"
+    },
+    "pell_farewell_tide": {
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "files": [
+        "res://assets/audio/act3/sfx/pell_farewell_tide.ogg"
+      ],
+      "_note": "M5-A3P-1953: ch20_nhoa_release: Pell sings the farewell-tide for Nhoa: one low voice on the clutch's rising line (reedhollow CLUTCH) (assets_src/sfx/act3_cutscene_sfx.py; plain git, ADR 0208)"
+    },
+    "match_struck": {
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "files": [
+        "res://assets/audio/act3/sfx/match_struck.ogg"
+      ],
+      "_note": "M5-A3P-1953: ending_first_lamp: Mother Kell's wick lights the first oil lamp: the scratch, the flare, the small flame catching (assets_src/sfx/act3_cutscene_sfx.py; plain git, ADR 0208)"
+    },
+    "wind_in_sails": {
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "files": [
+        "res://assets/audio/act3/sfx/wind_in_sails.ogg"
+      ],
+      "_note": "M5-A3P-1953: ending_the_kite_comes_down: the Kite gliding dark on sail alone: wind in the canvas, the sheets humming (assets_src/sfx/act3_cutscene_sfx.py; plain git, ADR 0208)"
+    },
+    "kite_engines_stop": {
+      "files": [
+        "res://assets/audio/sfx/act3/kite_engine_stop.ogg"
+      ],
+      "bus": "World",
+      "voices": 1,
+      "_note": "M5-A3P-1953: the drafts' name for the Kite's own `kite_engine_stop` (kite_foley.py, M3-AUD-859): the same files"
+    },
+    "sails_fill": {
+      "files": [
+        "res://assets/audio/sfx/act3/kite_sail_fill_1.ogg",
+        "res://assets/audio/sfx/act3/kite_sail_fill_2.ogg"
+      ],
+      "bus": "World",
+      "voices": 2,
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 300,
+      "_note": "M5-A3P-1953: the drafts' name for the Kite's own `kite_sail_fill` (kite_foley.py, M3-AUD-859): the same files"
+    },
+    "rope_creak": {
+      "files": [
+        "res://assets/audio/sfx/act3/kite_rope_strain_1.ogg",
+        "res://assets/audio/sfx/act3/kite_rope_strain_2.ogg",
+        "res://assets/audio/sfx/act3/kite_rope_strain_3.ogg"
+      ],
+      "bus": "World",
+      "voices": 2,
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 400,
+      "_note": "M5-A3P-1953: the drafts' name for the Kite's own `kite_rope_strain` (kite_foley.py, M3-AUD-859): the same files"
+    },
+    "hull_meets_water": {
+      "files": [
+        "res://assets/audio/sfx/act3/kite_landing.ogg"
+      ],
+      "bus": "World",
+      "voices": 1,
+      "_note": "M5-A3P-1953: the drafts' name for the Kite's own `kite_landing` (kite_foley.py, M3-AUD-859): the same files"
+    }
+  }
+}

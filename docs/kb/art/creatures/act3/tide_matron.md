@@ -42,7 +42,7 @@ once as **the Matron's kind**. Every difference is material and growth, never sh
 | The kelp | `saltgrass`, dark and wet (clearcoat) | none |
 | The shut firebox | `volcanic_stone` grate under `coral_stone` growth | **none** (the fire is out: the read) |
 | The heart port | `salt_glass`, polished | the heart behind it: `glimmer_bound` `#4FB3B0`, steady (README rule 3: the Lit Age bound it, as in her sister) |
-| The weak point | one hairline seam in the salt-glass port | `spawn_wound` `#3FE0C8`, closed, never shedding (a construct) |
+| The weak point | her sister's sight-glass on the right flank (as built; the sheet first said a seam in the heart port) | `spawn_wound` `#3FE0C8`, closed, never shedding (a construct) |
 
 No `ember_orange` anywhere: the fire is gone. No `glimmer_lift` (she doesn't die) and no `glimmer_held` (she isn't
 the Undertow's).
@@ -71,8 +71,10 @@ waiting was right.
 `phase_change`, `bank_the_fire`, `slag_pour`, `recrust_gather`, `recrust`). The variant is a second GLB built by the
 same build script with a `tide` flag that swaps the materials and adds `Reef` and `Kelp` in place of `Crust`. Its
 clips are the same keys, retimed **slower** (×1.25): she is under water and older. Two clip changes:
-- `bank_the_fire` becomes **`bank_the_tide`**: the same pose, but the reef shelf grows (the `Reef` mesh's shelves
-  scale up from 0 over 0.8 s through a `ReefGrow` bone) where her sister's firebox flared.
+- `bank_the_fire` becomes **`bank_the_tide`**: the same pose; the reef shelf growing is an effect at `vfx_phase`
+  (battle presentation's), where her sister's firebox flared. (Built 2026-10-30: no `ReefGrow` bone, so the rig
+  stays one.) `slag_pour`, `recrust_gather` and `recrust` are `tide_pour`, `regrow_gather` and `regrow`;
+  `phase_change` is the Calm: she draws in over the shut firebox and bows, with no burst.
 - `ko` becomes **`bank`** (2.8 s): she settles onto the anvil-stone, the head bowing last; the kelp settles still;
   it ends at rest. It is the Ch5 ending made into a clip.
 

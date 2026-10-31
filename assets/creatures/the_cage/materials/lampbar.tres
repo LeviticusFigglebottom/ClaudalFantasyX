@@ -1,0 +1,15 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/creature/creature.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "lampbar"
+shader = ExtResource("1_shader")
+shader_parameter/detail_albedo = 0.04
+shader_parameter/detail_bump = 0.1
+shader_parameter/emission_color = Color(0.309804, 0.701961, 0.690196, 1)
+shader_parameter/emission_energy = 1.2
+shader_parameter/metallic = 0
+shader_parameter/roughness_dry = 0.15
+shader_parameter/roughness_wet = 0.1
+shader_parameter/specular = 0.7

@@ -37,7 +37,7 @@ STILL = (0.0, 0.0, 0.0, 0.0)
 # the chin; the group's half-width at the root in deg; the drape's bias: back (+) or forward (-) per metre of drop)
 BACK_GROUPS = ((-108.0, 0.74, 14.0, 0.30), (-136.0, 0.80, 15.0, 0.22), (-162.0, 0.84, 14.0, 0.14),
                (162.0, 0.84, 14.0, 0.14), (136.0, 0.80, 15.0, 0.22), (108.0, 0.74, 14.0, 0.30))
-FRONT_GROUPS = ((-86.0, 0.74, 10.0, -0.12), (86.0, 0.74, 10.0, -0.12))  # GPU QA row 54 (pass 5): was 7 deg, -0.30
+FRONT_GROUPS = ((-86.0, 0.74, 8.0, -0.12), (86.0, 0.74, 8.0, -0.12))  # row 54: pass 5 was 7 deg, -0.30; pass 7 10->8
 FALL_LIFT = (0.0050, 0.0085)  # m at s = 1: inner and outer layer off the scalp (over the scalp cards' 1.2-4 mm)
 FALL_CLEAR = 0.010  # m: off the cloth (avoid() already includes the garments' own offsets)
 FALL_STEP = 0.022  # m per drape step
@@ -49,7 +49,7 @@ DRAPE_GRID = 1e-5  # m: the drape's state is rounded to this every step (the ite
 # numpy's SIMD paths leave in the field and the projections, so hosts disagreed by a micron by the tips)
 HEAD_REACH = 0.04  # m: farther than this from the head skin a point is off the head
 BIAS_FADE = 0.18  # m of drop over which a group's back/forward bias fades
-COHESION = {"b": 0.45, "f": 0.9}  # (GPU QA row 54: was 0.35/0.6; strands floated apart)  # how far a group's strands close up below the head, behind and in front
+COHESION = {"b": 0.45, "f": 1.0}  # (GPU QA row 54: was 0.35/0.6; strands floated apart)  # how far a group's strands close up below the head, behind and in front
 LATERAL = 0.12  # an outward push off the sides of the head per unit drop (fading with the bias)
 FRONT_LATERAL = 0.0  # GPU QA row 54 (pass 5): the front locks fall along the cheek and jaw, not out past them
 BODY_PULL = 0.4  # pull toward the nearest surface under the strand, per unit drop

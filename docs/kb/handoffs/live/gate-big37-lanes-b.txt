@@ -1,0 +1,23 @@
+# sha b76e6c329fff812958b99d6de8ed6b24df80407f
+res://tests/integration/test_battle_audio_live.gd
+res://tests/integration/test_ch10_thread.gd
+res://tests/integration/test_ch18_thread.gd
+res://tests/integration/test_ch19_walkable.gd
+res://tests/integration/test_memory_replay.gd
+res://tests/integration/test_qa_encounters.gd
+res://tests/unit/test_act2_ui_as_played.gd
+res://tests/unit/test_ashcrown_audio.gd
+res://tests/unit/test_audio_live_hooks.gd
+res://tests/unit/test_audio_reconnect.gd
+res://tests/unit/test_audio_runtime.gd
+res://tests/unit/test_battle_stings.gd
+res://tests/unit/test_creature_audio.gd
+res://tests/unit/test_creature_bosses_act2.gd
+res://tests/unit/test_cutscene_audio.gd
+res://tests/unit/test_flags.gd
+res://tests/unit/test_memories.gd
+res://tests/unit/test_music_release.gd
+res://tests/unit/test_objective_coverage.gd
+res://tests/unit/test_reefball_audio.gd
+res://tests/unit/test_ui_polish_audio.gd
+res://tests/unit/test_zone_return.gd

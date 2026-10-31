@@ -1,0 +1,59 @@
+{
+  "_doc": "The Old Shoal (act3/old_shoal.md, M5-A3P-1853): skin (cold blue-grey hide, the beak in vertex colour), shell (tortoiseshell scutes under coral, the coral domes), eye (small, dark, wet), weed (saltgrass ribbons, wet), stone (the standing stones on the crown). No emission in any slot: it was never part of the cycle. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "skin": {
+      "metallic": 0.0,
+      "roughness_dry": 0.68,
+      "roughness_wet": 0.3,
+      "specular": 0.4,
+      "detail_scale": 6.0,
+      "detail_albedo": 0.16,
+      "detail_bump": 0.7,
+      "cavity_albedo": 0.55,
+      "emission_energy": 0.0
+    },
+    "shell": {
+      "metallic": 0.0,
+      "roughness_dry": 0.82,
+      "roughness_wet": 0.42,
+      "specular": 0.3,
+      "detail_scale": 5.0,
+      "detail_albedo": 0.22,
+      "detail_bump": 1.0,
+      "cavity_albedo": 0.55,
+      "emission_energy": 0.0
+    },
+    "eye": {
+      "metallic": 0.0,
+      "roughness_dry": 0.08,
+      "roughness_wet": 0.05,
+      "specular": 0.8,
+      "detail_albedo": 0.0,
+      "detail_bump": 0.0,
+      "emission_energy": 0.0
+    },
+    "weed": {
+      "metallic": 0.0,
+      "roughness_dry": 0.5,
+      "roughness_wet": 0.2,
+      "specular": 0.5,
+      "clearcoat_wet": 0.8,
+      "detail_scale": 12.0,
+      "detail_albedo": 0.12,
+      "detail_bump": 0.3,
+      "cavity_albedo": 0.3,
+      "emission_energy": 0.0
+    },
+    "stone": {
+      "metallic": 0.0,
+      "roughness_dry": 0.86,
+      "roughness_wet": 0.5,
+      "specular": 0.3,
+      "detail_scale": 8.0,
+      "detail_albedo": 0.2,
+      "detail_bump": 0.8,
+      "cavity_albedo": 0.5,
+      "emission_energy": 0.0
+    }
+  }
+}
