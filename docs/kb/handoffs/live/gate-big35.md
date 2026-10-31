@@ -31,3 +31,13 @@ GATE-BUILT @ a22bb284
 ## Fast gate
 - Selected: 140 test files.
 - Lane A (mine): 70; lane B (GATE-HELPER): 70, in `gate-big35-lanes-b.txt` @ f91030ac.
+
+## Mid-batch (the Lead, 00:26): ReturnPark, the human's last playtest item
+- **claude/hero-integration @ 74c732fc**: eea6c24e, row 74, a fight builds its cross-zone return scene while it runs
+  (ReturnPark, ADR 0209). The Drownbell → Haluna field-in goes from 3.39 s to 1.05 s headless. Clean; checks clean (validate_data
+  0/0, taskboard, gdlint, gdformat 1085).
+- To avoid testing a half-imported tree (big24's lesson), lane A was stopped at 50 of its 70 files (50 done, all green but the
+  routed test_qa_capsules), then the merge, then a fresh import. The re-gate is 33 files: lane A's 20 unrun ones, the
+  merge's selection, and every scene_router, return_park, battle_return, field_battle, battle_request and resident test,
+  plus a fresh tools suite. Every log is scanned for the engine's `Parameter "t" is null` (1 in 5 parked runs logged it,
+  per the Lead); if it appears it is routed to integration-qa and doesn't hold the batch.
