@@ -207,9 +207,15 @@ func test_smile_variant_is_opt_in_data() -> void:
 ## (hero_clips.py's solve): the skirt panels and the shoulder correctives, within a degree, and the lowest panel bones'
 ## floor gathers (scales) within 0.03.
 ## Sampled on 15 fps keys: between keys the baked helpers interpolate while the solve sees the interpolated body.
+## GPU QA row 56: the walk and run cycles and their starts and stops bake the hem's own motion on top of the solve
+## (hero_clips.py SKIRT_LOCO_SWING and SKIRT_TRAIL; test_hero_locomotion and rig_probe check them), so this samples a
+## story walk and a battle clip instead, which bake the plain solve.
 func test_helper_bones_match_the_baked_clips() -> void:
 	for spec: Array in [
-		["asha", &"kneel_over_rhen", 1.6], ["asha", &"walk", 0.6], ["asha", &"run", 0.4], ["toma", &"talk", 1.0]
+		["asha", &"kneel_over_rhen", 1.6],
+		["asha", &"walk_to_chamber", 0.6],
+		["asha", &"attack", 0.4],
+		["toma", &"talk", 1.0],
 	]:
 		var model := (load("res://assets/characters/%s/%s.glb" % [spec[0], spec[0]]) as PackedScene).instantiate()
 		_host().add_child(model)
