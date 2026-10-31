@@ -124,14 +124,14 @@ func test_the_first_verse_replays_without_its_battle_and_returns_to_the_title() 
 	_done()
 
 
-## M5-A3P-1710: each of the rest of Act I's memories (Ch4 to Ch9) plays to its end on its own stage, with its lines,
+## M5-A3P-1710: each memory of the rest of Act I and all of Act II (Ch4 to Ch16) plays to its end on its stage, with lines,
 ## no event and no change to the record, and goes back to the title.
-func test_the_rest_of_act_one_replays_cleanly() -> void:
+func test_acts_one_and_two_replay_cleanly() -> void:
 	var m := MemoriesModel.new(MemoriesModel.load_data())
 	var checked := 0
 	for row in m.memories:
 		var chapter := str(row["chapter"])
-		if chapter < "ch04" or chapter > "ch09":
+		if chapter < "ch04" or chapter > "ch16":
 			continue
 		var id := StringName(str(row["id"]))
 		var live := _live([StringName(str(row["unlock_flag"]))])
@@ -152,7 +152,7 @@ func test_the_rest_of_act_one_replays_cleanly() -> void:
 		replay.free()
 		MemoryReplay.take_gallery_request()
 		checked += 1
-	assert_eq(checked, 10, "the ten Ch4-Ch9 memories")
+	assert_eq(checked, 22, "the ten Ch4-Ch9 memories and the twelve of Act II")
 	_done()
 
 

@@ -94,7 +94,7 @@ func _open_title() -> TitleMenu:
 
 func test_the_act_one_memories_are_in_the_data() -> void:
 	var m := MemoriesModel.new(MemoriesModel.load_data())
-	assert_eq(m.chapters.size(), 10, "the prologue and Ch1 to Ch9 (M5-A3P-1710: the rest of Act I)")
+	assert_eq(m.chapters.size(), 17, "the prologue and Ch1 to Ch16 (M5-A3P-1710: Acts I and II)")
 	var ids: Array[StringName] = []
 	for row in m.memories:
 		ids.append(StringName(str(row["id"])))
@@ -118,7 +118,19 @@ func test_the_act_one_memories_are_in_the_data() -> void:
 		&"ch08_binding",
 		&"ch08_wall_falls",
 		&"ch09_the_ebbing",
-		&"ch09_the_road_out"
+		&"ch09_the_road_out",
+		&"ch10_farewell_tide",
+		&"ch11_nhoa",
+		&"ch12_hesk",
+		&"ch13_ethren",
+		&"ch13_the_pact",
+		&"ch14_the_vows",
+		&"ch14_first_ripple",
+		&"ch15_the_shoal",
+		&"ch15_current_song",
+		&"ch15_let_me_carry_him",
+		&"ch16_the_choir",
+		&"ch16_swept_away"
 	]:
 		assert_true(id in ids, "%s is a memory" % id)
 	assert_true(bool(m.memory(&"ch03_dock_at_night").get("night", false)), "the dock is at night (data)")

@@ -1,5 +1,5 @@
 {
-  "doc": "The Memories gallery (M3-MNU-02, SPEC §6.11; docs/kb/tech/ui.md section Memories gallery). 'chapters' are listed in this order, each with its name_key. Each memory replays one compiled dialogue scene ('scene', a .dlg title) on a freshly instanced 'stage' scene that ReplayStage.prepare() has quietened (no story autostart, no field encounters), through a CutsceneSequencer with replay on: flags are read live, nothing is written, no <<event>> is acted on, no autosave. 'stage_node' (optional) is the path to the scene's CutsceneStage when it is not the root's 'stage' property. 'spawn' (optional) places the player on Spawns/<spawn> first (the spawn the story plays it from). 'night' (optional, true) gives the zone first_playable.json haluna's night staging, as HalunaStory._night does: set_night(night, night_hide) and place_cast(night_cast, night_marks). 'replay_flags' (optional) are flags as they stood when the scene was first seen, set on the replay's copy of the record before the stage is built (a scene that checks its own unlock flag for a second visit, a zone whose look follows a later flag). A memory shows once 'unlock_flag' is set in the live run or the newest readable save. Titles are loc keys in game/data/loc/memories.csv. M5-A3P-1710 (post-game, SPEC §6.11): the rest of Act I, Ch4 to Ch9, two key scenes a chapter where the beat sheet has two (one for Ch4 and Ch6); each unlocks on the flag its scene, or the flow step straight after it, always sets, and replays with that flag unset, as it stood before.",
+  "doc": "The Memories gallery (M3-MNU-02, SPEC §6.11; docs/kb/tech/ui.md section Memories gallery). 'chapters' are listed in this order, each with its name_key. Each memory replays one compiled dialogue scene ('scene', a .dlg title) on a freshly instanced 'stage' scene that ReplayStage.prepare() has quietened (no story autostart, no field encounters), through a CutsceneSequencer with replay on: flags are read live, nothing is written, no <<event>> is acted on, no autosave. 'stage_node' (optional) is the path to the scene's CutsceneStage when it is not the root's 'stage' property. 'spawn' (optional) places the player on Spawns/<spawn> first (the spawn the story plays it from). 'night' (optional, true) gives the zone first_playable.json haluna's night staging, as HalunaStory._night does: set_night(night, night_hide) and place_cast(night_cast, night_marks). 'replay_flags' (optional) are flags as they stood when the scene was first seen, set on the replay's copy of the record before the stage is built (a scene that checks its own unlock flag for a second visit, a zone whose look follows a later flag). A memory shows once 'unlock_flag' is set in the live run or the newest readable save. Titles are loc keys in game/data/loc/memories.csv. M5-A3P-1710 (post-game, SPEC §6.11): the rest of Act I, Ch4 to Ch9, and Act II, Ch10 to Ch16, two key scenes a chapter where the beat sheet has two (one for Ch4 and Ch6); each unlocks on the flag its scene, or the flow step straight after it, always sets, and replays with that flag unset, as it stood before.",
   "chapters": [
     {"id": "prologue", "name_key": "MEMORIES_CHAPTER_PROLOGUE"},
     {"id": "ch01", "name_key": "MEMORIES_CHAPTER_CH01"},
@@ -10,7 +10,14 @@
     {"id": "ch06", "name_key": "MEMORIES_CHAPTER_CH06"},
     {"id": "ch07", "name_key": "MEMORIES_CHAPTER_CH07"},
     {"id": "ch08", "name_key": "MEMORIES_CHAPTER_CH08"},
-    {"id": "ch09", "name_key": "MEMORIES_CHAPTER_CH09"}
+    {"id": "ch09", "name_key": "MEMORIES_CHAPTER_CH09"},
+    {"id": "ch10", "name_key": "MEMORIES_CHAPTER_CH10"},
+    {"id": "ch11", "name_key": "MEMORIES_CHAPTER_CH11"},
+    {"id": "ch12", "name_key": "MEMORIES_CHAPTER_CH12"},
+    {"id": "ch13", "name_key": "MEMORIES_CHAPTER_CH13"},
+    {"id": "ch14", "name_key": "MEMORIES_CHAPTER_CH14"},
+    {"id": "ch15", "name_key": "MEMORIES_CHAPTER_CH15"},
+    {"id": "ch16", "name_key": "MEMORIES_CHAPTER_CH16"}
   ],
   "memories": [
     {
@@ -175,6 +182,114 @@
       "replay_flags": {"ch09_act_one_complete": false},
       "title_key": "MEMORY_CH09_THE_ROAD_OUT",
       "unlock_flag": "ch09_act_one_complete"
+    },
+    {
+      "id": "ch10_farewell_tide",
+      "chapter": "ch10",
+      "scene": "ch10_farewell_tide",
+      "stage": "res://game/levels/ch10/reedhollow/reedhollow.tscn",
+      "replay_flags": {"ch10_farewell_tide_seen": false},
+      "title_key": "MEMORY_CH10_FAREWELL_TIDE",
+      "unlock_flag": "ch10_farewell_tide_seen"
+    },
+    {
+      "id": "ch11_nhoa",
+      "chapter": "ch11",
+      "scene": "ch11_nhoa",
+      "stage": "res://game/levels/ch11/lowlight/lowlight.tscn",
+      "replay_flags": {"ch11_nhoa_bound": false},
+      "title_key": "MEMORY_CH11_NHOA",
+      "unlock_flag": "ch11_nhoa_bound"
+    },
+    {
+      "id": "ch12_hesk",
+      "chapter": "ch12",
+      "scene": "ch12_hesk",
+      "stage": "res://game/levels/ch12/cloudloom/cloudloom.tscn",
+      "replay_flags": {"ch12_hesk_bound": false},
+      "title_key": "MEMORY_CH12_HESK",
+      "unlock_flag": "ch12_hesk_bound"
+    },
+    {
+      "id": "ch13_ethren",
+      "chapter": "ch13",
+      "scene": "ch13_ethren",
+      "stage": "res://game/levels/ch13/sanctum/sanctum.tscn",
+      "replay_flags": {"ch13_ethren_bound": false},
+      "title_key": "MEMORY_CH13_ETHREN",
+      "unlock_flag": "ch13_ethren_bound"
+    },
+    {
+      "id": "ch13_the_pact",
+      "chapter": "ch13",
+      "scene": "ch13_the_pact",
+      "stage": "res://game/levels/ch13/ansedra/ansedra.tscn",
+      "replay_flags": {"ch13_pact_of_silence": false},
+      "title_key": "MEMORY_CH13_THE_PACT",
+      "unlock_flag": "ch13_pact_of_silence"
+    },
+    {
+      "id": "ch14_the_vows",
+      "chapter": "ch14",
+      "scene": "ch14_the_vows",
+      "stage": "res://game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn",
+      "replay_flags": {"ch14_vows_spoken": false},
+      "title_key": "MEMORY_CH14_THE_VOWS",
+      "unlock_flag": "ch14_vows_spoken"
+    },
+    {
+      "id": "ch14_first_ripple",
+      "chapter": "ch14",
+      "scene": "ch14_first_ripple",
+      "stage": "res://game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn",
+      "replay_flags": {"ch14_merel_taken": false},
+      "title_key": "MEMORY_CH14_FIRST_RIPPLE",
+      "unlock_flag": "ch14_merel_taken"
+    },
+    {
+      "id": "ch15_the_shoal",
+      "chapter": "ch15",
+      "scene": "ch15_the_shoal",
+      "stage": "res://game/levels/ch15/open_sea/open_sea.tscn",
+      "replay_flags": {"ch15_kerrid_revealed": false},
+      "title_key": "MEMORY_CH15_THE_SHOAL",
+      "unlock_flag": "ch15_kerrid_revealed"
+    },
+    {
+      "id": "ch15_current_song",
+      "chapter": "ch15",
+      "scene": "ch15_current_song",
+      "stage": "res://game/levels/ch15/open_sea/open_sea.tscn",
+      "replay_flags": {"ch15_hollowmere_answered": false},
+      "title_key": "MEMORY_CH15_CURRENT_SONG",
+      "unlock_flag": "ch15_hollowmere_answered"
+    },
+    {
+      "id": "ch15_let_me_carry_him",
+      "chapter": "ch15",
+      "scene": "ch15_let_me_carry_him",
+      "stage": "res://game/levels/ch17/hollowmere/hollowmere.tscn",
+      "replay_flags": {"ch15_toma_confessed": false},
+      "title_key": "MEMORY_CH15_LET_ME_CARRY_HIM",
+      "unlock_flag": "ch15_toma_confessed"
+    },
+    {
+      "id": "ch16_the_choir",
+      "chapter": "ch16",
+      "scene": "ch16_the_choir",
+      "stage": "res://game/levels/ch16/drowned_choir/drowned_choir.tscn",
+      "replay_flags": {"ch16_kesh_bound": false},
+      "title_key": "MEMORY_CH16_THE_CHOIR",
+      "unlock_flag": "ch16_kesh_bound"
+    },
+    {
+      "id": "ch16_swept_away",
+      "chapter": "ch16",
+      "scene": "ch16_swept_away",
+      "stage": "res://game/levels/ch16/drowned_choir/drowned_choir.tscn",
+      "replay_flags": {"ch16_act_two_complete": false},
+      "title_key": "MEMORY_CH16_SWEPT_AWAY",
+      "unlock_flag": "ch16_act_two_complete"
     }
   ]
 }
