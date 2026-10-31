@@ -70,7 +70,8 @@
                        "reel_shot": "item", "anchor_fall": "finisher",
                        "brine_spit": "cast", "shroud_sweep": "cast", "undertow_pull": "cast",
                        "gnaw": "finisher", "ladle_swing": "finisher", "pounce": "finisher",
-                       "hook_sweep": "cast", "rod_sweep": "cast"},
+                       "hook_sweep": "cast", "rod_sweep": "cast",
+                       "wardens_go_home": "cast", "cage_chains": "cast"},
     "item_style": "item",
     "reaction": {
       "doc": "The target's reaction on the contact beat. damage: recoil_m away from the actor and tilt_deg back, out and back over sec; heal: a lift_m rise; miss: a sidestep of dodge_m; push (M3-BPR-411): a hit that only pushes its target down the timeline (the ward shoved back by Rope Dive, Grip the Stair, Hand Closes; Drag Net) staggers it recoil_m back; immune (M3-BPR-406): a blow on a damage-immune foe (the Reach's Breach) stops dead, a stiff sideways shudder of shudder_m, shudders times over sec, no recoil, none under reduced motion. clip names the model clip tried first (the clip contract).",
