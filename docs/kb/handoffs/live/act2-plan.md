@@ -850,3 +850,5 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
 - **Every Act III thread is wired.** Godot ch14_16 1/0, ch17 3/0, ch18 5/0, ch19 1/0, ch20 1/0, ch21 1/0, `chapter_registry` 4/0, `zone_story` 20/0. The fights are the one gap left; each task names the battle step to add.
 - **Checks:** validate_data, dlgc, taskboard, gdlint and gdformat clean. Tools: hollowmere dressing, chapter_flow, kite_revisit_check, act3_rules, dlgc, loc and qa_flag_reach OK.
 - MERGE-READY Ch21 and the Ending wired (M5-A3P-1015) + integration merged @ 399ad0998
+
+- 2026-10-31: **MERGE-READY @ e95f41752**: objectives for Ch19 to Ch21 (`i_*`, `s_engine`, `u_*`, `h_centre`); zone maps and route rows for ch18/kite, ch19/iskarra and ch19/iskarra_spire. The Undertow and the Heart have no map (void zones; their objectives carry no zone). Touched UI's tests: `test_zone_map` greybox count 27→30 and the route's end is now the spire; `test_objective_tracker` route size 30→33. Also carries fdd7612df (Act III cue mapping). Gates: validate_data, taskboard, gdlint/gdformat, test_zone_map_pois, Godot filters objective/zone_map/ch18–ch21 all green.
