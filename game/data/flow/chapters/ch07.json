@@ -5,6 +5,7 @@
     "ch07/tamsule": {
       "party": {"party": ["rhen", "asha", "toma"], "reserve": ["ysolde"]},
       "arrive": [
+        {"when": {"set": ["ch18_world_open"], "unset": ["ch18_revisit_tamsule_seen"]}, "steps": [{"place": "Harbour"}, {"play": "ch18_revisit_tamsule"}, {"set": "ch18_revisit_tamsule_seen"}, {"go": {"location": "ch18/kite", "spawn": "Deck"}}]},
         {"when": {"unset": ["ch07_arrived"]}, "steps": [
           {"place": "RiverMouth"},
           {"chapter": 7},

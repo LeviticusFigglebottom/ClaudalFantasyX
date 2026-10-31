@@ -143,6 +143,27 @@
    "arrive": [
     {
      "when": {
+      "set": [
+       "ch18_world_open"
+      ],
+      "unset": [
+       "ch18_revisit_quellan_seen"
+      ]
+     },
+     "steps": [
+      {
+       "place": "FromPass"
+      },
+      {
+       "play": "ch18_revisit_quellan"
+      },
+      {
+       "set": "ch18_revisit_quellan_seen"
+      }
+     ]
+    },
+    {
+     "when": {
       "unset": [
        "ch12_reached_quellan"
       ]
@@ -202,6 +223,21 @@
        "play": "ch12_shrine_quellan"
       }
      ]
+    },
+    "to_kite": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch18/kite",
+        "spawn": "Deck"
+       }
+      }
+     ],
+     "when": {
+      "set": [
+       "ch18_world_open"
+      ]
+     }
     }
    }
   },

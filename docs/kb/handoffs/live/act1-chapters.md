@@ -1335,6 +1335,23 @@ done and in `status: review` (reviewer: narrative). Each task file's **Done** se
   - Tests: ch17 2/0, ch14_16 5/0 (the dry-dock walk included), the chapter-flow tools test, qa_threads 1/0.
 - MERGE-READY @ 4a6418b52
 
+### Act III Ch18 (M5-A3P-1004, the flow half; 10-31)
+- The new `ch18/kite` zone (`tools/act3/ch18_greybox.py`, Ch18Zone with the lifts' held input, a location row).
+- `chapters/ch18.json`: the maiden flight on boarding (Hollowmere's `aboard` hands on), the chart table opens the
+  world, and its courses stand round the table until Design's Kite world map exists. Reedhollow's gate and
+  farewell-tide (Ch10Zone holds `turn_back`), then the night aboard and Iskarra (`ch18_complete`).
+- **The revisits**, each once, as Act III rows in the towns' own chapter files:
+  - Pemakar, Tamsule and Corrow play on landing and go back aboard (env-art-b's generated layouts get no trigger);
+  - Quellan, Reedhollow and Hollowmere play on landing and offer `a3_to_kite`;
+  - Ansedra plays from the air.
+- **Requests filed:**
+  - M5-A3P-1201 to slice-polish: Oruvel's and Haluna's revisits (Ch1–Ch3 zones).
+  - M5-A3P-1200 to story: split the node files (the heirlooms are nodes too).
+- Tests: ch18 1/0, ch17 2/0, ch05 13/0, ch07 18/0, ch08 25/0, ch10 3/0, ch12 5/0, zone_map 22/0; the tools'
+  zone-map, locations and chapter-flow tests pass; qa_threads 1/0. `ch18_world_open` is listed as known-unraised
+  for the older threads.
+- MERGE-READY @ b9ba89ca7
+
 ## Exact next step
 **2026-10-30 ~23:50:** the FAST-TRACK and the Act II flows (M4-A2P-1003, 1012, 104, 105) are done and pushed.
 Next, in order:
