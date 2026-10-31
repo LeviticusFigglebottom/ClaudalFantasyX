@@ -2360,6 +2360,17 @@
         "PLACEHOLDER"
       ]
     },
+    "shellcarver_mat": {
+      "budget": [
+        3000,
+        200
+      ],
+      "bytes": 59252,
+      "lods": {
+        "shellcarver_mat": 651,
+        "shellcarver_mat-lod1": 42
+      }
+    },
     "shop_sign_forge": {
       "budget": [
         1800,

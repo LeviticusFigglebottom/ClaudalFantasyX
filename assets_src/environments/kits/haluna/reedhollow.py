@@ -13,6 +13,9 @@ for the strips (the greybox's), with the greybox's rails: 0.5 m high, 0.4 m wide
                     a bound edge-roll round it; no rail.
   clutch_stone      the clutch's stone on the shore: a low grey boulder, its top worn smooth by Kirru feet, three
                     shallow scratched lines where they stand to sing. 1.2 x 0.8 x 1.2 m.
+  shellcarver_mat   (M5-A3P-1403; act3_ch18 K04) the Kirru shell-carver's place behind the clutch: a woven reed mat,
+                    a driftwood stump worn into a carving block, a name-shell half-cut on it, two blanks and a scraped
+                    shell beside it, a bone awl and a small blade, nacre shavings, a water bowl. 1.4 x 1.0 m.
 """
 
 from __future__ import annotations
@@ -31,7 +34,7 @@ M_MUD = of.M_MUD
 M_STONE = "kit_causeway_stone"
 
 TRI_BUDGET = {"root_walk_6m": (6000, 300), "reed_causeway_6m": (6000, 300), "reed_platform_6m": (8000, 300),
-              "clutch_stone": (1500, 100)}
+              "clutch_stone": (1500, 100), "shellcarver_mat": (3000, 200)}
 
 STRIP_LEN = 6.0
 HALF_W = 1.8
@@ -196,5 +199,57 @@ def build_clutch_stone(seed: int = 3304) -> list[kc.MeshBuilder]:
     return out
 
 
+def _shell(mb, at, r: float, yaw: float, mat: str, lod: bool, *, cup: float = 0.35) -> None:
+    """A name-shell lying flat: a solid flattened oval (a lathe outline read as a ring at a walker's distance), its back
+    ribbed by a few shallow ridges; `cup` is its height against its length."""
+    m = mb.material(mat)
+    kc.rounded_block(mb, at, (r, max(r * cup * 0.5, 0.008), r * 0.78), m, rot=kc.rot_y(yaw), radius=r * 0.5,
+                     seg=1 if lod else 2)
+    if not lod:
+        for k in (-1, 0, 1):
+            c = np.array(at) + kc.rot_y(yaw) @ np.array([0.0, max(r * cup * 0.5, 0.008), k * r * 0.3])
+            along = kc.rot_y(yaw) @ np.array([r * 0.8, 0.0, 0.0])
+            kc.tube(mb, np.array([c - along, c + along]), 0.004, 3, m)
+
+
+def build_shellcarver_mat(seed: int = 3305) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("shellcarver_mat", seed)
+        mb = kc.MeshBuilder("shellcarver_mat" + ("-lod1" if lod else ""))
+        reed, bark = mb.material(M_REED), mb.material(M_BARK)
+        shell = mb.material(of.M_SHELL)
+        kc.rounded_block(mb, (0.0, 0.01, 0.0), (0.7, 0.01, 0.5), reed, radius=0.0, seg=1)  # the mat
+        sh = of.M_SHELL
+        # The carving block: a driftwood stump, its top cut flat and scored.
+        kc.tube(mb, np.array([[0.15, 0.0, -0.1], [0.15, 0.32, -0.1]]), np.array([0.2, 0.17]), 6 if lod else 12, bark,
+                cap_end=True)
+        _shell(mb, (0.15, 0.33, -0.1), 0.09, 0.4, sh, lod)  # the name-shell, half-cut, on the block
+        if not lod:
+            for k, (x, z) in enumerate(((-0.35, 0.2), (-0.15, 0.3))):  # two blanks waiting
+                _shell(mb, (x, 0.02, z), 0.08, float(rng.uniform(0, 3)), sh, lod)
+            _shell(mb, (0.5, 0.02, 0.28), 0.085, 1.9, sh, lod, cup=0.2)  # a scraped one, nearly flat
+            # The bone awl and the small blade laid by the block.
+            kc.tube(mb, np.array([[-0.25, 0.025, -0.25], [0.0, 0.02, -0.3]]), np.array([0.012, 0.003]), 5,
+                    mb.material("kit_carved_wood"), cap_start=True)  # bone-pale
+            kc.rounded_block(mb, (0.42, 0.025, -0.28), (0.07, 0.006, 0.014), mb.material(M_BARK), radius=0.003,
+                             seg=1)
+            blade = mb.material("kit_iskarra_bronze")
+            kc.rounded_block(mb, (0.53, 0.025, -0.28), (0.05, 0.002, 0.012), blade, radius=0.0, seg=1)
+            for k in range(14):  # nacre shavings round the block
+                a = float(rng.uniform(0, 2 * math.pi))
+                d = float(rng.uniform(0.22, 0.4))
+                kc.rounded_block(mb, (0.15 + math.cos(a) * d, 0.022, -0.1 + math.sin(a) * d * 0.7),
+                                 (float(rng.uniform(0.008, 0.02)), 0.002, 0.006), shell, rot=kc.rot_y(a), radius=0.0,
+                                 seg=1)
+            import props  # noqa: PLC0415
+
+            props.lathe(mb, [(0.0, 0.0), (0.06, 0.0), (0.1, 0.04), (0.11, 0.07), (0.09, 0.07), (0.0, 0.05)],
+                        "kit_earthenware", rng, sides=12, at=(-0.45, 0.02, -0.25))  # the water bowl
+        out.append(mb)
+    return out
+
+
 TARGETS = {"root_walk_6m": build_root_walk, "reed_causeway_6m": build_reed_causeway,
-           "reed_platform_6m": build_reed_platform, "clutch_stone": build_clutch_stone}
+           "reed_platform_6m": build_reed_platform, "clutch_stone": build_clutch_stone,
+           "shellcarver_mat": build_shellcarver_mat}
