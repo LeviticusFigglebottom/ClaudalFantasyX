@@ -2242,5 +2242,5 @@ MERGE-READY @ (this commit).
   - Worst hidden frame 718–893 → 548 ms headless; readies 616 → 164–175 ms.
 - **Headless now (injected clock, causeway fight → Haluna):** entry 1.18 → **0.95 s**; parked, instantiate 0.
 - **The `"t" is null` engine error:** 0 in 11 more parked runs (1 in 12 overall). The one hit was the first parked run after unimported script edits, so I can't reproduce it. I'm leaving it as watch-only.
-- **Tests:** return_park 3/0, battle_return 2/0, scene_router 17/0, shader_prewarm 22/0, resident_loads 11/0, field_battle 12/0, qa_encounters 1/0, camera_director 57/0 (plus the warm test), qa_field_camera 2/0. resident_reattach is still running.
+- **Tests:** return_park 3/0, battle_return 2/0, scene_router 17/0, shader_prewarm 22/0, resident_loads 11/0, field_battle 12/0, qa_encounters 1/0, camera_director 57/0 (plus the warm test), qa_field_camera 2/0, resident_reattach 1/0.
 MERGE-READY @ (this commit).
