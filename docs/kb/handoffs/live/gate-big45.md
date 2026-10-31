@@ -18,3 +18,15 @@ GATE-BUILT @ 88b258b5
 ## Fast gate
 - Selected: 1 test files (plus test_hero_stage).
 - Lane A (mine): 1; lane B (GATE-HELPER): 0, in `gate-big45-lanes-b.txt` @ 3fc847a9.
+
+## Fast-gate results
+- Import and boot clean; log check 0; `Parameter "t" is null`: not seen.
+- **test_hero_stage** 11/1: now `asha attack DEF-armpit.R: 38.8°` (094ffc75 makes the test sample a story walk and a battle clip). Tools:
+  **test_hero_clips** red (the committed libraries don't rebuild from the reworked hero_clips.py) and **test_rig_integrity Asha** red. All three are
+  characters' row 56 rework in progress: both commits say "rebuilding", and the rebuilt outputs aren't committed. Routed: **characters** (commit
+  the rebuilt asha.glb, LOD and library, then recheck the helper bones).
+- The rest is the standing routed list: test_b_arenas (env-art-b), test_cutscene_sfx_files' sequencer check and test_freed_cast_lint (audio),
+  test_creatures (creatures-b), test_status_names (ui). Known: test_palette_check, test_screenshots.
+
+GATE-FAST-DONE @ f6723271 (merge-approved under the standing rule: every red is branch content). In: row 56's panel-bone skirt sources,
+per the Lead. Its rebuilt outputs and the notch fix follow from characters.
