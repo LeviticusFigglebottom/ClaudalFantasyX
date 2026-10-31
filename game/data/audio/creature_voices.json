@@ -513,6 +513,11 @@
     "cage_orin": "silent",
     "cage_halde": "silent",
     "cage_isse": "silent",
-    "cage_cael": "silent"
+    "cage_cael": "silent",
+    "kesh_held": {"family": "vowbound", "_note": "M5-A3P-1017: Kesh held (Ch21 H03, her release fight) shares kesh's set", "events": {"idle": "cre_kesh_idle", "attack": "cre_kesh_attack", "hurt": "cre_kesh_hurt", "death": "cre_kesh_death", "move": "cre_kesh_surge"}},
+    "sefir_warden": "silent",
+    "sefir_heart": "silent",
+    "sefir_letting": "silent",
+    "letting_stilled": "silent"
   }
 }
