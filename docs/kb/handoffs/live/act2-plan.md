@@ -813,3 +813,4 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
   - Tools: chapter_flow, corrow_kit, pemakar_kit, ch12_keth_dressing, keth OK. The dressing generators re-run with no change to their output.
 - MERGE-READY Ch18 revisits (M5-A3P-1004 part 2) @ 8f35b42ab
 - **Fix to MERGE-READY @ 8f35b42ab:** hero-integration's guard M5-A3P-1981 (`tools/act3/kite_revisit_check.py`) found 6 Ch18 `arrive` rows that would replay on every Kite landing. They only placed the party and re-applied the zone's light, which the landing and the zone's own `_ready` already do. They are removed; each zone keeps its `ch18.json` block, with only beats, so the earlier chapter's arrival can't play. The check now reports 0 problems; `test_kite_revisit_check` OK; Godot `kite_landings` 1/0 and `ch18_thread` 5/0.
+- MERGE-READY Ch18 revisit-replay fix @ 984ed93c6
