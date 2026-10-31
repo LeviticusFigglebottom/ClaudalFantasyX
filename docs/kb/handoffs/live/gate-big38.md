@@ -27,3 +27,4 @@ GATE-BUILT @ 665ebfa0
 
 ## Fast gate
 - Selected: 0 test files.
+- Lane A (mine): 0; lane B (GATE-HELPER): 0, in `gate-big38-lanes-b.txt` @ bdfd9311.
