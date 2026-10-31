@@ -499,6 +499,10 @@
     "court_stillguard": "silent",
     "storm_crawler": {"family": "crab", "_note": "M4-A2P-1012: the Ch16 storm crawler is a rim crawler the storm throws up; it shares the rim crawler's set", "events": {"idle": "cre_rim_crawler_idle", "attack": "cre_rim_crawler_attack", "hurt": "cre_rim_crawler_hurt", "death": "cre_rim_crawler_death", "move": "cre_rim_crawler_skitter"}},
     "hesper_oan": "silent",
-    "ilsabet_rue": "silent"
+    "ilsabet_rue": "silent",
+    "spire_conduit_crawler": {"family": "crawler", "_note": "M5-A3P-1007: the spire's conduit crawler is the Act II crawler; it shares its set", "events": {"idle": "cre_conduit_crawler_idle", "attack": "cre_conduit_crawler_attack", "hurt": "cre_conduit_crawler_hurt", "death": "cre_conduit_crawler_death", "move": "cre_conduit_crawler_tick"}},
+    "spire_moth": {"family": "moth", "events": {"idle": "cre_flue_moth_idle", "attack": "cre_flue_moth_attack", "hurt": "cre_flue_moth_hurt", "death": "cre_flue_moth_death", "move": "cre_flue_moth_flutter"}, "_note": "M5-A3P-1007: the flue moth's glass-winged variant shares its set until audio gives it a glassier one"},
+    "wick_crawler": {"family": "crawler", "_note": "M5-A3P-1007: a Lit Age construct like the conduit crawler; it shares that set until audio gives it its own (brass legs, shears)", "events": {"idle": "cre_conduit_crawler_idle", "attack": "cre_conduit_crawler_attack", "hurt": "cre_conduit_crawler_hurt", "death": "cre_conduit_crawler_death", "move": "cre_conduit_crawler_tick"}},
+    "chain_lamp": "silent"
   }
 }
