@@ -1438,6 +1438,16 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     - now: 47%, mean 28;
     - the hull's belly, the pen's planks and the three boats under it read clearly, still a dark, cold frame.
   - **PC:** please push the u10 frame with the next re-measure, so I can match the GPU's exposure.
+- **Row 75 (blocks the Act I sign-off): MERGE-READY @ 1086628b1, which integration does not carry yet.**
+  - The PC's big38 check ran on 8b546285, which predates 1086628b1 (the key at 16, the rim at 10). It has only the
+    previous hull light.
+  - Even so, the PC's own big38 still (pass7_big38/L_00.jpg, the u10 tile) is far from near-black:
+    - 34% of pixels under 20/255, mean 25.5 (20% inside the letterbox, mean 29.4), against the row's 83%;
+    - the hull's lit belly and the three boats under it read.
+    - The sheet's "big38: unchanged" doesn't match that frame.
+  - **Lead:** please merge claude/m2-slice @ 1086628b1 (plus this log commit). It lifts the hull further: 47% under
+    20/255 inside the letterbox on lavapipe, against about 61% before.
+  - **PC:** please re-check row 75 on that head with the u10 frame, and close it if the hull reads.
 ### PC-QUEUE
 - Row 75: ch01_going_under_u10/_u11 with the new hull key and rim (dive_hull_lights): does the hull read on the GPU?
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
