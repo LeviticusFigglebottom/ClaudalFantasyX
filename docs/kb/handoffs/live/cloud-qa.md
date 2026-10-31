@@ -122,6 +122,28 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## STATUS (05:45): big36 (1983de0a2) reaches the Act I end card; Act II smoke started
+| commit | piece | reached | ERROR lines while playing |
+|---|---|---|---|
+| 1983de0a2 | fresh New Game → Ch6 | ch06/brine_shoals, 2328 s, ARRIVED | 7 (Ashcrown and Pemakar material/RID loads) |
+| 1983de0a2 | F8 Ch6 → Ch8 | `ch08_stair_hold_1` (probe stall, now fixed) | 6 (`character_shader_tiers` on Corrow load) |
+| 1983de0a2 | **F8 Ch8 → end card** | **end_card, 1184 s, ARRIVED** | **0** |
+
+- **The Act I path is complete on big36:** fresh New Game → Ch6, Ch6 → Ch8 (the earlier run), and Ch8 → end card.
+  Ch6 and Ch7 play by objective. Every stop in Ch8 was the probe:
+  - target selection left open;
+  - a set-piece turn with no foe up;
+  - a result Return pressed before the panel showed.
+- **Game issue still open: M3-C08-1400**, the binding holding the player for about 42 min. The probe's skip gets past
+  it. After that, the beacon, the run back, the stair holds, the hoist, the Reach (a scripted escape), the wall
+  falling, the rope, Ch9 and the end card all play.
+- **ERROR lines:** this Ch8 → end card run had 0 while playing, Corrow's post-beacon load included. On the Ch6 run
+  that same load gave 6, so the material/RID class isn't steady. It may be a race in headless material setup.
+  Next: lavapipe loads of Ashcrown and Corrow after the beacon.
+- **Act II smoke (now):** the Ch9 start with every Act I flag the run raised, then `--location=ch10/ossa_fen
+  --spawn=FenEdge --until=ansedra_lacquer_court` (Ch14's zone), i.e. Ch10 → Ch13. The end card leads back to the
+  title, so Act II can't be reached by playing through yet.
+
 ## STATUS (05:00): big36 fresh New Game → Ch6; the stuck fights were the probe
 | commit | piece | reached | ERROR lines while playing | at exit |
 |---|---|---|---|---|

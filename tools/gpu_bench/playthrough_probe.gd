@@ -3,7 +3,8 @@ extends Node
 ## A fresh-profile Act I smoke playthrough, headless (cloud QA, the Lead's ask 2026-10-30): New Game through Ch1 to the
 ## Haluna arrival, logging any soft-lock, stuck dialogue or missing transition.
 ##   XDG_DATA_HOME=<empty dir> godot --headless --path . --audio-driver Dummy \
-##     res://tools/gpu_bench/playthrough_probe.tscn -- [--until=ch02/haluna --secs=3600]
+##     res://tools/gpu_bench/playthrough_probe.tscn -- [--until=ch02/haluna --secs=3600 --chapter=ch09 --flags=a,b
+##     --location=ch10/ossa_fen --spawn=FenEdge]
 ## It plays as a guided player: the title's New Game; ui_accept tapped every TAP_S whenever the field isn't taking
 ## input (dialogue, cutscenes, cards); in the field, the hero hops HOP_M a physics frame toward the objective line's
 ## target (ObjectiveHud.target_position: the game's own "where next") and, near it, interacts. Fights are won live
@@ -94,8 +95,12 @@ func _run() -> void:
 				DebugReadouts.apply_chapter_start(start)
 				for f in str(_opts.get("flags", "")).split(",", false):
 					Game.set_flag(StringName(f))  # --flags=a,b: later in the chapter (a probe start, not the game's)
-				FlowRouting.go_to(StringName(str(start["location"])), StringName(str(start["spawn"])))
-				print("PLAY_CHAPTER_START %s" % chapter)
+				# --location=<id> [--spawn=<name>]: from that start, somewhere later (Act II from the Ch9 start with
+				# Act I's flags; the end card goes back to the title).
+				var loc := str(_opts.get("location", start["location"]))
+				var spawn := str(_opts.get("spawn", start["spawn"] if not _opts.has("location") else ""))
+				FlowRouting.go_to(StringName(loc), StringName(spawn))
+				print("PLAY_CHAPTER_START %s at %s %s" % [chapter, loc, spawn])
 	var router := get_tree().root.get_node(^"SceneRouter")
 	var last_scene := ""
 	var next_tap := 0.0
