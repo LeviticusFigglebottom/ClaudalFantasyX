@@ -1,0 +1,22 @@
+# sha 9c12040245cddebf81c4e2f37d1dc48768406d04
+res://tests/integration/test_ch08_thread.gd
+res://tests/integration/test_qa_capsules.gd
+res://tests/unit/test_accessibility_battle_speed.gd
+res://tests/unit/test_battle_act1_ability_vfx.gd
+res://tests/unit/test_battle_boss_light.gd
+res://tests/unit/test_battle_choreo.gd
+res://tests/unit/test_battle_impact.gd
+res://tests/unit/test_battle_party_kits.gd
+res://tests/unit/test_battle_reduced_motion_audit.gd
+res://tests/unit/test_battle_set_piece_stage.gd
+res://tests/unit/test_battle_stinger.gd
+res://tests/unit/test_battle_ysolde.gd
+res://tests/unit/test_creature_bosses_act1.gd
+res://tests/unit/test_creature_ethren_vowbound.gd
+res://tests/unit/test_creature_ilun_vowbound.gd
+res://tests/unit/test_creature_nhoa_vowbound.gd
+res://tests/unit/test_creature_vowbound_act2.gd
+res://tests/unit/test_kite_flight_card.gd
+res://tests/unit/test_lattice_save.gd
+res://tests/unit/test_resident_loads.gd
+res://tests/unit/test_ui_polish_audio.gd
