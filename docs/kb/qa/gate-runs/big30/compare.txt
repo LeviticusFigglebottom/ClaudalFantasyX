@@ -1,4 +1,4 @@
-# big30: 462 shots: 174 PASS, 180 DRIFT (0 size mismatch), 108 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big30: 468 shots: 174 PASS, 180 DRIFT (0 size mismatch), 114 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 NO-BASELINE slice_end_card (pending_baseline)
 PASS glimmer_dusk rmse 0.00000 (limit 0.00800)
 PASS glimmer_night_held rmse 0.00000 (limit 0.00800)
@@ -461,3 +461,9 @@ NO-BASELINE field_menu_map_keth_pass
 NO-BASELINE field_menu_map_lowlight
 NO-BASELINE field_menu_map_ansedra
 NO-BASELINE slice_neme_table (pending_baseline)
+NO-BASELINE ch01_oruvel_storm (pending_baseline)
+NO-BASELINE ch01_drop (pending_baseline)
+NO-BASELINE ch01_bell_room (pending_baseline)
+NO-BASELINE ch01_scale_hull (pending_baseline)
+NO-BASELINE ch01_kell_stall (pending_baseline)
+NO-BASELINE ch01_net_pen (pending_baseline)
