@@ -1057,3 +1057,23 @@ MERGE-READY @ 0a995f876 (head; includes a0ba72003):
   - Blender jobs `creature_tide_matron` and `creature_old_shoal`; the Cinder Matron's GLB is unchanged.
   - Checks: Godot creature 163/0, portrait 22/0; validate_data 0/0.
   - Shots: none in the manifest show them. Viewed: the clip sheets and portraits.
+
+## 2026-10-31 ~00:50: M5-A3P-1851 the Cage (the last Act III boss in my range)
+MERGE-READY @ 1c658c5ce: the Cage, built (to review: combat).
+- **Built from the roster's amendment**, because M5-A3P-1854 got no answer (the default logged 2026-10-30).
+  The_cage.md is unchanged. What the build does differently from it is in docs/kb/art/creatures/act3/the_cage_seats.md.
+- **The model:** four seats on the arc, chained at the wrists and ankles, with lit salt-glass bars, crown lamps and
+  keystone clasps (one spawn_wound seam each).
+  - Each quarter is  / , swapped by four **cumulative**  phases.
+  - The scene has  placeholders at the seats.
+  - 47 bones, 17.4k triangles (budget 22k), byte-reproducible.
+- **New pieces:** Blender job `creature_the_cage`, a portrait, PROVENANCE rows and tools/tests/test_the_cage.py.
+- **Checks:** Godot creature 163/0, portrait 22/0; validate_data 0/0.
+- **Viewed:** the portrait, the clip sheet, and a scratch render with q1 and q2 broken.
+- **For Combat:** the enemy row and phase HP thresholds (break_q4 just above 0 HP), `travel: none`, an arena mark.
+- **For characters:** the founders, seated.
+
+BACKLOG EMPTY: all my Act III bosses are built and in review (M5-A3P-1850 Kesh held, 1851 the Cage, 1852 the Tide
+Matron, 1853 the Old Shoal). M4-A2P-1980 is in review (characters). M4-A2P-1850 is battle-presentation's. What's
+left on these is other roles' (Combat's enemy rows and skills, characters' founders, battle presentation's effects
+and framing) or the LEAD-ASKs above (the Undertow heart's owner, the old_leviathan rename).
