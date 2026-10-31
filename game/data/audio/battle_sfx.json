@@ -188,7 +188,21 @@
     "the_seven": "hit_none",
     "brush_jab": "hit_none",
     "crawler_mend": "heal",
-    "crawler_tend": "status_apply"
+    "crawler_tend": "status_apply",
+    "flat_pulse": "hit_none",
+    "engine_churn": "status_apply",
+    "venn_sentence": "hit_none",
+    "grapnel_line": "hit_none",
+    "rod_sweep": "hit_none",
+    "still_hand": "hit_none",
+    "level_guard": "status_apply",
+    "seize_the_line": "status_apply",
+    "close_ranks": "status_apply",
+    "hook_thrust": "hit_none",
+    "hook_sweep": "hit_none",
+    "hook_draw": "hit_none",
+    "storm_bearing": "status_apply",
+    "storm_drag": "status_apply"
   },
   "skills": {
     "unravel": "skill_unravel",
