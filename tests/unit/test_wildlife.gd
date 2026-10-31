@@ -735,3 +735,64 @@ func test_rim_rays_glide_flat_over_the_sand_and_beat_their_fins() -> void:
 	assert_eq(buf.data[14], WildlifeBuffer.MODE_FLAP, "the fins beat (the shader's flap)")
 	assert_eq((layer.buffers[WildlifeLayer.FISH] as WildlifeBuffer).count, 0, "and no fish here")
 	layer.free()
+
+
+## M5-A3P-1808: a `follow` flock flies in its node's space, so a moving frame carries every bird with it.
+func test_a_follow_flock_rides_its_frame() -> void:
+	var kind: Dictionary = _kinds["kinds"]["gull"]
+	var row := _flock_row(2)
+	row["follow"] = "../Kite"
+	var still := WildlifeGullFlock.new(_flock_row(2), kind, 99, 5)
+	var riding := WildlifeGullFlock.new(row, kind, 99, 5)
+	assert_eq(riding.follow, NodePath("../Kite"), "the row's follow is its node path")
+	var frame := Transform3D(Basis(Vector3.UP, 0.7), Vector3(40.0, 15.0, -25.0))
+	for f in 600:
+		riding.frame = Transform3D(frame.basis, frame.origin + Vector3(0.0, 0.0, 9.0 * f * DT))
+		still.step(DT)
+		riding.step(DT)
+		for i in riding.count():
+			var want := riding.frame * still.transform_of(still.gulls[i])
+			assert_true(riding.transform_of(riding.gulls[i]).is_equal_approx(want), "bird %d moves with its frame" % i)
+	assert_true(riding.world_bounds().has_point(riding.transform_of(riding.gulls[0]).origin), "inside its bounds")
+
+
+## A follow flock's party flush is measured in its own space: a party standing by a perch in the layer's space.
+func test_a_follow_flock_is_flushed_in_its_own_space() -> void:
+	var kind: Dictionary = _kinds["kinds"]["gull"]
+	var row := _flock_row(2)
+	row["follow"] = "../Kite"
+	var flock := WildlifeGullFlock.new(row, kind, 99, 5)
+	flock.frame = Transform3D(Basis(Vector3.UP, PI * 0.5), Vector3(100.0, 0.0, 50.0))
+	var at := flock.perches[flock.gulls[0].perch]
+	var player := flock.frame * Vector3(at.x + 1.0, 0.0, at.z)
+	for f in 90:
+		flock.step(DT, player, true)
+	assert_ne(flock.gulls[0].state, WildlifeGullFlock.State.PERCHED, "the party by the perch lifts the bird")
+
+
+## The layer sets a follow flock's frame from its node each step, the perched birds go with it, and the MultiMesh
+## bounds follow (the review stage's data, kite_gulls.json).
+func test_the_layer_carries_a_follow_flock_with_its_node() -> void:
+	var stage := Node3D.new()
+	var kite := Node3D.new()
+	kite.name = "Kite"
+	stage.add_child(kite)
+	var layer := WildlifeLayer.new()
+	layer.data_path = "res://game/levels/_tests/wildlife/kite_gulls.json"
+	layer.cull = false
+	stage.add_child(layer)
+	(Engine.get_main_loop() as SceneTree).current_scene.add_child(stage)
+	var flock := layer.flocks[0]
+	var sitter := flock.gulls[0]
+	assert_eq(sitter.state, WildlifeGullFlock.State.PERCHED, "a bird starts on the rail")
+	var mmi := layer.multimeshes[WildlifeLayer.GULLS_PERCHED] as MultiMeshInstance3D
+	for f in 120:
+		kite.transform = Transform3D(Basis(Vector3.UP, 0.002 * f), Vector3(0.0, 30.0, 9.0 * f * DT))
+		layer.step(DT, Vector3.ZERO, false)
+		if sitter.state == WildlifeGullFlock.State.PERCHED:
+			var p := flock.perches[sitter.perch]
+			var want := kite.transform * Vector3(p.x, p.y, p.z)
+			assert_true(flock.transform_of(sitter).origin.is_equal_approx(want), "it stays on the rail")
+	assert_true(flock.frame.is_equal_approx(kite.transform), "the frame is the Kite's in the layer's space")
+	assert_true(mmi.multimesh.custom_aabb.is_equal_approx(flock.world_bounds()), "the draw bounds move with it")
+	stage.free()
