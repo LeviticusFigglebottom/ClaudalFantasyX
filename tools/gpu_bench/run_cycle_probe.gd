@@ -3,7 +3,7 @@ extends Node
 ## Human playtest check (c), 2026-10-30 (cloud QA pass 6): a hero's default run across one cycle, side and front.
 ##   godot-render --path . --audio-driver Dummy --fixed-fps 60 res://tools/gpu_bench/run_cycle_probe.tscn -- \
 ##     --out=/abs/dir [--stage=res://game/levels/_tests/characters/rhen/rhen_stage.tscn --clip=run --phases=12 \
-##     --cameras=Profile,Front]
+##     --cameras=Profile,Front --library=res://assets/characters/rhen/anim/rhen_clips.tres]
 ## The character look-dev stage poses the clip (asha_stage.gd's clip) at --phases even steps of its length; each
 ## camera renders each phase to <out>/<camera>_<nn>.png. Frames, not motion: the clip's own timing in the field is
 ## scaled by HeroLocomotion (run speed / run_clip_mps).
@@ -32,7 +32,7 @@ func _run() -> void:
 	var clip := StringName(str(_opts.get("clip", "run")))
 	var stage := (load(stage_path) as PackedScene).instantiate()
 	stage.set(&"clip", clip)
-	stage.set(&"clip_library", load("res://assets/characters/rhen/anim/rhen_clips.tres"))
+	stage.set(&"clip_library", load(str(_opts.get("library", "res://assets/characters/rhen/anim/rhen_clips.tres"))))
 	get_tree().root.add_child(stage)
 	await _settle()
 	var ap := stage.find_children("*", "AnimationPlayer", true, false)

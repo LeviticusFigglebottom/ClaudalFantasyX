@@ -122,6 +122,27 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## STATUS (07:05): Act II smoke on big36; the Lead's big41 render ask (Asha's run, Ashcrown and Pemakar shots)
+**Act II smoke (1983de0a2):** the Ch9 start with every Act I flag, then `--location=ch10/ossa_fen --spawn=FenEdge`.
+- **Ch10 plays:** the Drowner (31 s); "what went up" (the probe held skip on a stuck cutscene at 121 s); Reedhollow;
+  Pell kept out; the farewell tide; `ch10_complete` at 256 s.
+- **Ch11 plays:** Sunken Vey and Lowlight. The engine-house descent was skipped by the probe (PLAY_SKIP
+  `ch11_nhoa_bound`, a probe limit); `ch11_complete` at 476 s.
+- **Ch12 plays:** Keth Pass, the ram, the herd cord, Quellan, Cloudloom, Hesk bound, Ysolde's lie and her confession
+  (682 s).
+- **Then it stalls: M4-C12-100 (act1-chapters).** `q_on` has no target, and the way on is back down to Keth Pass. The
+  probe walked Quellan ↔ Cloudloom for 40 min, so Ch13 wasn't reached. I stopped it for the Lead's render ask.
+- **ERROR lines while playing: 62.** All are the same material/RID class:
+  - 47 at `field_camera_director.gd:576 view_blocker`, plus 5 at `:347 update`;
+  - 5 at `field_npc.gd:162 _ready` (4 × `Index p_surface = 0 out of bounds`, 1 × `unimplemented base type`);
+  - 4 at `scene_router.gd:657`.
+  The camera director's view-blocker material swap is now the biggest source. It needs a real-renderer check on the
+  PC (or lavapipe) to tell headless noise from real errors.
+
+**Now (the Lead's 06:43 ask):**
+- Asha's run, front and side, 12 phases, on lavapipe: 19e7f01c is rendered; claude/characters fccc3a1bf next.
+- Then the Ashcrown a01/a10 and Pemakar p04/p11 shots on big41 (89c4aaf20), rendered to scratch, never to baselines.
+
 ## STATUS (05:45): big36 (1983de0a2) reaches the Act I end card; Act II smoke started
 | commit | piece | reached | ERROR lines while playing |
 |---|---|---|---|
