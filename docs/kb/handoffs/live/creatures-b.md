@@ -1101,3 +1101,27 @@ MERGE-READY @ 44fb48a8d: M5-A3P-1855, the Undertow-heart (to review: combat).
 BACKLOG EMPTY: the Act III bosses (1850 Kesh held, 1851 the Cage, 1852 the Tide Matron, 1853 the Old Shoal) and the
 Undertow-heart (1855) are built and in review. M4-A2P-1980 is in review. What's left is other roles' (Combat's rows
 and skills, characters' founders and Sefir's figure) or the old_leviathan rename LEAD-ASK.
+
+## 2026-10-31 ~02:10: the Lead's 01:41 (drop the binary libraries; merge clean)
+- **Reverted a0ba72003** (the .res conversion) at c8f7af0bc, without rewriting history. Asha's and Rhen's libraries,
+  hero_clips.py, the import rule, the stage scenes, scene_loads.json and the hero tests are back to the base
+  byte for byte, so characters' .tres rebuild (abf7391b) wins cleanly. The PROVENANCE rows for my four bosses stay.
+- **Offered to characters as M4-A2P-1981** (request, todo), with the numbers:
+  - 4.02 → 0.65 MB (Asha) and 3.99 → 0.66 MB (Rhen).
+  - Cold load 595 → 28 ms and 573 → 30 ms.
+  - Godot's export already converts text to binary, so the win is for the editor, the tests and git.
+  - They decide. M4-A2P-1980 part 1 (Rhen's knock fist) stays in their review.
+- **Merged claude/new-session-mj8c3c in** (a merge commit; the branch was pushed, so no rebase). The only conflicts
+  were in three shared files, each resolved with both sides kept:
+  - PROVENANCE: both sides' rows.
+  - ownership: env-art's and env-art-b's new rows beside my updated row.
+  - the creatures import list: the union.
+  - A test merge of lead/gate-big36 conflicts in the same three files, which this merge resolves.
+- Checks on the merged tree:
+  - Godot creature 163/0; validate_data 0/0; taskboard OK; tools tests for my bosses OK.
+  - Godot portrait 21/1. The one failure, test_hero_portraits' `venn`, is **not this branch's**: his manifest
+    stage is game/levels/_tests/characters/stillguard/venn_face_cold.tscn, which has no `character_scene`. That
+    comes from the integration branch; my only portraits.json change is my four creature entries. For characters.
+
+MERGE-READY @ 17bfab43e: the Act III bosses (M5-A3P-1851 the Cage, 1852 the Tide Matron, 1853 the Old Shoal, 1855 the
+Undertow-heart), the a0ba72003 revert and M4-A2P-1981, merged with the integration branch.
