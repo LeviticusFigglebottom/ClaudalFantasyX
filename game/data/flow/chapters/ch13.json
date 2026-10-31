@@ -94,6 +94,13 @@
        }
       }
      ]
+    },
+    "shrine": {
+     "steps": [
+      {
+       "play": "ch13_shrine_ansedra"
+      }
+     ]
     }
    }
   },

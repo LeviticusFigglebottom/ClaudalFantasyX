@@ -268,6 +268,12 @@ JOBS = [
      ["kesh_first_voice.ogg", "kesh_first_voice.loop.json"], "music_loop"),
     ("assets_src/music/act3/sefir_finale.py", "assets/audio/act3/music",
      [f"{c}{ext}" for c in ("sefir_warden", "sefir_heart") for ext in (".ogg", ".loop.json")], "music_loop"),
+    # M5-A3P-1952: the ending (E1-E7, the credits)
+    ("assets_src/music/act3/ending.py", "assets/audio/act3/music",
+     ["goodbye_imra.ogg", "ending_lift_bed.ogg", "ending_lift_bed.loop.json", "goodbye_kerrid.ogg", "ending_dock.ogg",
+      "post_credits_lamp.ogg"], "music_loop"),
+    ("assets_src/music/act3/goodbye_dace.py", "assets/audio/act3/music", ["goodbye_dace.ogg"], "music"),
+    ("assets_src/music/act3/credits_suite.py", "assets/audio/act3/music", ["credits_suite.ogg"], "music"),
     # M4-A2P-092 (ADR 0175): the people bosses' stems
     ("assets_src/music/act2/malcor_venn.py", "assets/audio/act2/music",
      [f"malcor_venn_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),

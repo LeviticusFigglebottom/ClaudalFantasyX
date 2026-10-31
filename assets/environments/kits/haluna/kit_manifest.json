@@ -915,6 +915,17 @@
         "hm_dock_4m_open_s-lod1": 156
       }
     },
+    "hm_dockmaster_house": {
+      "budget": [
+        11000,
+        700
+      ],
+      "bytes": 253044,
+      "lods": {
+        "hm_dockmaster_house": 4102,
+        "hm_dockmaster_house-lod1": 368
+      }
+    },
     "hm_drydock_berth": {
       "budget": [
         5000,
@@ -2633,6 +2644,39 @@
       "lods": {
         "spire_crown_floor": 11404,
         "spire_crown_floor-lod1": 1532
+      }
+    },
+    "spire_lamp_engine": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 39208,
+      "lods": {
+        "spire_lamp_engine": 416,
+        "spire_lamp_engine-lod1": 104
+      }
+    },
+    "spire_quarters": {
+      "budget": [
+        6000,
+        400
+      ],
+      "bytes": 81628,
+      "lods": {
+        "spire_quarters": 972,
+        "spire_quarters-lod1": 96
+      }
+    },
+    "spire_tier": {
+      "budget": [
+        20000,
+        1500
+      ],
+      "bytes": 340872,
+      "lods": {
+        "spire_tier": 3186,
+        "spire_tier-lod1": 340
       }
     },
     "stillguard_rack": {

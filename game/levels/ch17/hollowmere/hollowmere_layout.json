@@ -2158,10 +2158,372 @@
     1.2
    ],
    "prompt_key": "FIELD_PROMPT_CH15_SHIP",
+   "requires_flag": "ch15_pyre_raft",
    "payload": {
     "beat": "to_rim"
    },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch17_started"
+  },
+  {
+   "id": "jetty",
+   "activation": "touch",
+   "at": [
+    56.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    3.6
+   ],
+   "once": true,
+   "requires_flag": "ch15_liss_told_father",
+   "blocked_by_flag": "ch15_toma_confessed",
+   "payload": {
+    "beat": "jetty"
+   },
    "yaw": 0.0
+  },
+  {
+   "id": "shrine",
+   "activation": "interact",
+   "at": [
+    3.0,
+    0.0,
+    1.4
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "beat": "shrine",
+    "save_shrine": "hollowmere_shrine"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "shop",
+   "activation": "interact",
+   "at": [
+    12.0,
+    0.0,
+    1.4
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "SHOP_PROMPT",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "shop": "hollowmere_chandler"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "supper",
+   "activation": "interact",
+   "at": [
+    40.0,
+    0.0,
+    -1.2
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch15_pyre_raft",
+   "payload": {
+    "dialogue": "ch15_two_daces"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_supper_with_father"
+  },
+  {
+   "id": "side_current_phrase",
+   "activation": "interact",
+   "at": [
+    8.0,
+    0.0,
+    -1.4
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "dialogue": "ch15_side_the_current_phrase"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_learned_current_phrase"
+  },
+  {
+   "id": "side_tally_hull",
+   "activation": "interact",
+   "at": [
+    12.0,
+    0.0,
+    -17.0
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LOOK",
+   "requires_flag": "ch15_toma_confessed",
+   "payload": {
+    "dialogue": "ch15_side_the_tally_hull"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_toma_on_the_tally"
+  },
+  {
+   "id": "camp",
+   "activation": "interact",
+   "at": [
+    44.0,
+    0.0,
+    -17.0
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch15_kerrid_revealed",
+   "payload": {
+    "dialogue": "ch15_camp_the_bottom_step"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch15_camp_talk"
+  },
+  {
+   "id": "npc_wright",
+   "activation": "interact",
+   "at": [
+    20.0,
+    0.0,
+    -1.4
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "dialogue": "ch15_bark_wright_pump"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch17_started"
+  },
+  {
+   "id": "npc_outside",
+   "activation": "interact",
+   "at": [
+    20.0,
+    0.0,
+    1.4
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "dialogue": "ch15_bark_outside_the_level"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch17_started"
+  },
+  {
+   "id": "npc_widow",
+   "activation": "interact",
+   "at": [
+    34.0,
+    0.0,
+    -1.4
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "dialogue": "ch15_bark_widow"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch17_started"
+  },
+  {
+   "id": "npc_lookout",
+   "activation": "interact",
+   "at": [
+    48.0,
+    0.0,
+    -1.4
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "dialogue": "ch15_bark_lookout"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch17_started"
+  },
+  {
+   "id": "npc_cook",
+   "activation": "interact",
+   "at": [
+    52.0,
+    0.0,
+    1.4
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "dialogue": "ch15_bark_raft_cook"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch17_started"
+  },
+  {
+   "id": "npc_kerrid",
+   "activation": "interact",
+   "at": [
+    28.0,
+    0.0,
+    -8.0
+   ],
+   "size": [
+    1.4,
+    0,
+    1.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch15_pyre_raft",
+   "payload": {
+    "dialogue": "ch15_bark_kerrid_night"
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch17_started"
+  },
+  {
+   "id": "bark_current_singer",
+   "activation": "touch",
+   "at": [
+    5.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    3.6
+   ],
+   "once": true,
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "dialogue": "ch15_bark_current_singer",
+    "overheard": true
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch17_started"
+  },
+  {
+   "id": "bark_child_pell",
+   "activation": "touch",
+   "at": [
+    16.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    3.6
+   ],
+   "once": true,
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "dialogue": "ch15_bark_child_pell",
+    "overheard": true
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch17_started"
+  },
+  {
+   "id": "bark_kerrid_floors",
+   "activation": "touch",
+   "at": [
+    38.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    3.6
+   ],
+   "once": true,
+   "requires_flag": "ch15_kerrid_revealed",
+   "payload": {
+    "dialogue": "ch15_bark_kerrid_floors",
+    "overheard": true
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch17_started"
+  },
+  {
+   "id": "bark_raft_child",
+   "activation": "touch",
+   "at": [
+    46.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    3.6
+   ],
+   "once": true,
+   "requires_flag": "ch15_pyre_raft",
+   "payload": {
+    "dialogue": "ch15_bark_raft_child",
+    "overheard": true
+   },
+   "yaw": 0.0,
+   "blocked_by_flag": "ch17_started"
   },
   {
    "id": "ch17_dock_master",

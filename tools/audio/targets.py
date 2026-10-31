@@ -34,6 +34,12 @@ RULES = [
      "a Vowbound let go: under the release line, never over it (M5-A3P-1950)"),
     ("act3/music/heart_rest.ogg", "integrated", -22.0, 0.5, -5.0,
      "R1's save point: the heart's drone alone, at a bed's stillness (M5-A3P-1951)"),
+    ("act3/music/goodbye_imra.ogg", "integrated", -24.0, 0.5, -3.0,
+     "E1: one piano note after her hum, never limited (M5-A3P-1952)"),
+    *[(f"act3/music/{c}.ogg", "integrated", -20.0, 0.5, -3.0, f"the ending's quiet {c} (M5-A3P-1952)")
+      for c in ("ending_lift_bed", "post_credits_lamp")],
+    ("act3/music/goodbye_dace.ogg", "integrated", -18.0, 0.5, -1.0,
+     "E2: a plucked harp goodbye, a little under a scene cue (M5-A3P-1952)"),
     ("act3/music/*.ogg", "integrated", -16.0, 0.5, -1.0, "Act III scene cues, themes and stings in plain git (ADR 0208)"),
     ("act3/ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "Act III beds (ADR 0208)"),
     # M3-AUD-859 (assets_src/sfx/act3/kite_foley.py; Git LFS): the Kite's deck beds and foley

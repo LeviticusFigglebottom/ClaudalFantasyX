@@ -151,7 +151,7 @@
     {"id": "npc_liss", "activation": "interact", "at": [-16.919, 12.0, -0.023], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "requires_flag": "ch08_hoist_cut_down", "blocked_by_flag": "ch09_ebbing_danced", "payload": {"dialogue": "ch09_bark_liss"}, "yaw": 3.23},
     {"id": "hobb_overheard", "once": true, "at": [-35.056, 0.6, 24.723], "size": [6, 0, 3], "requires_flag": "ch09_started", "blocked_by_flag": "ch09_ebbing_danced", "payload": {"dialogue": "ch09_bark_hobb", "overheard": true}, "yaw": 7.26},
     {"id": "stillguard_overheard", "once": true, "at": [-18.47, 0.6, 23.366], "size": [5, 0, 3], "requires_flag": "ch09_started", "blocked_by_flag": "ch09_ebbing_danced", "payload": {"dialogue": "ch09_bark_stillguard", "overheard": true}, "yaw": 3.82},
-    {"id": "landing", "at": [-27.105, 0.6, 29.856], "size": [5, 0, 2], "requires_flag": "ch09_started", "blocked_by_flag": "ch09_ebbing_danced", "payload": {"beat": "ebbing"}, "yaw": 5.73},
+    {"id": "landing", "at": [-27.372, 0.6, 27.17], "size": [5, 0, 2], "requires_flag": "ch09_started", "blocked_by_flag": "ch09_ebbing_danced", "payload": {"beat": "ebbing"}, "yaw": 5.73},
     {"id": "milestone", "at": [60.581, 12.0, 6.18], "size": [2, 0, 6], "requires_flag": "ch09_pell_joined", "blocked_by_flag": "ch09_kerrid_on_road", "payload": {"beat": "road_out"}, "yaw": -11.65}
   ],
   "variants": [

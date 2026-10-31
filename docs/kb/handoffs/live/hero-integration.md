@@ -2178,3 +2178,53 @@ MERGE-READY @ (this commit).
   - Act III: the Kite hub zone (`ch18/kite`) needs Ch18's chapter data first. I'll take its field side (party staging, camera volumes) when it lands.
 LEAD-ASK: the M5-A3P block now holds 1980 and 1981 (hero-integration). Is there an Act III chapter-select start (`ch18`) planned? Both guards would gain a runtime landing smoke from it.
 MERGE-READY @ (this commit).
+
+### 2026-10-30: the UiAudio reconnect ERROR (the Lead asked)
+- **It is caused by the resident return, but the fix is on audio's side.** The re-attached zone fires `node_added` again, `AudioDirector` asks `UiAudio.watch` again, and `watch()` connects the same `request` callable twice. The causeway fight-and-return logs 6 "Signal 'used' is already connected" errors.
+- SceneRouter can't stop `node_added` firing. The guard belongs in `UiAudio.watch`: skip a connection that already exists.
+- I tested that patch locally: 0 errors after the return, `--filter=audio` 185/0. I didn't commit it, because `game/audio/**` is audio's.
+- Filed as **M3-HER-1169** (role audio), with the exact diff and the repro command.
+- The Haluna `--ready-profile` split was already offered above. It's in big33 per the Lead's merge note.
+LEAD-ASK: please pass M3-HER-1169 to audio (a 4-line, tested guard in `ui_audio.gd`), or tell me to apply it myself if audio is busy.
+MERGE-READY @ (this commit).
+
+### 2026-10-30: Haluna re-measured after slice-polish's M4-A2P-070 (asha posed a frame after the swap), on big33
+- `--ready-profile`: asha's 168 ms is out of the add frame.
+  - What's left in the readies: root `.` 388 ms, WorldEnvironment 91 ms, Player 41 ms, BoundGlimmer 34 ms.
+  - They total 616 ms, so the readies didn't shrink overall.
+- The reveal wait after the add fell from **1.29 s to 50 ms**.
+- The worst hidden frame is 718–893 ms on a quiet box, under 1 s. Under load it is 1.6 s (the same run's return_probe).
+- `return_probe --cases=drownbell`: field in at 3.39 s, the player can move at 3.73 s. That's the same as before: the instantiate (1.3 s on the thread) and the add frame are still the cost.
+  - `black_ms` 10.2 s also counts the story moving on afterwards: Haluna, then the Ch4 chapter card, then Haluna Wake (Wake's own add frame is 4.2 s; that's a separate zone entry, not the return).
+- **Next lever for slice-polish:** the root's own 388 ms is what HalunaZone `_ready` still does on the add frame.
+  - Haluna Wake's 4.2 s hidden frame also deserves its own `--ready-profile` (`--to=res://game/levels/ch04/haluna_wake/haluna_wake.tscn`).
+MERGE-READY @ (this commit).
+- **Haluna Wake, `--ready-profile` (cold, quiet box):**
+  - The worst hidden frame is 720 ms, under 1 s. The instantiate takes 1.2 s on the thread.
+  - The readies total only 204 ms: Cast 60, Dressing/Water 39, Player 32, BoundGlimmer 19, root 11.
+  - The other ~500 ms of that frame is tree entry (render and physics instance registration for about 4,400 nodes), not `_ready`.
+  - The 4.2 s seen in return_probe came from the chain under load (Haluna, the card, then Wake), not from Wake itself. If a split is wanted there, it means fewer nodes, not lighter readies.
+MERGE-READY @ (this commit).
+
+### 2026-10-31: FAST-TRACK row 74. The Drownbell → Haluna cross-zone return is built while the fight runs (ADR 0209)
+- **What changed:** SceneRouter's new `ReturnPark` (`game/core/return_park.gd`).
+  - Once a fight is in and its return isn't the resident field, it threaded-loads the return scene and calls `ResidentLoads.prepare_return` (ui-menus' victory-panel call, now at fight start).
+  - It waits for those loads, instantiates on a worker (prebuild included, ShaderGlobals held), and parks the root off-tree.
+  - Return swaps the parked root in. A build still in flight is waited on.
+  - Any scripted fight with a cross-zone return gets this automatically.
+- **Numbers (headless, this box):**
+  - Injected clock (causeway fight → Haluna, `scene_swap_probe --cross-return`): entry **3.23 s → 1.18 s**, instantiate **2.05 s → 0**, parked true.
+  - `return_probe --cases=drownbell`, real flow and wall clock: field in **3.39 s → 1.05–1.09 s**, input **3.73 s → 2.0 s**, covered **4.1 s → 2.5 s**. Of that 2.5 s, 0.4 s is the fade-out and 0.7 s the fade-in; about 1.5 s is fully black (Haluna's add frame plus VillagerLayer's hold).
+- **Tests:**
+  - `tests/unit/test_return_park.gd` 3/0.
+  - `test_battle_return` adds a cross-zone case, 2/0.
+  - scene_router 17/0, resident_reattach 1/0, field_battle 12/0, qa_encounters 1/0, battle_request 3/0.
+- **For the PC (re-measure with `battle_return_probe`):**
+  - Your probe forces the win about 2.5 s into the fight (120 + 30 frames). On the PC the build may still be in flight then. It's waited on, but that's shorter than a real fight's head start.
+  - A `--fight-sec=10` style wait before the forced win would measure what a player gets.
+  - Watch for an engine `Parameter "t" is null`: one in five headless parked runs logged it, with no backtrace.
+- **For ui-menus:** the victory-panel `prepare_return` stays. It now finds the loads already in and costs nothing.
+- **For creatures:** VillagerLayer's reveal hold on Haluna is now one of the two things left under the fade (0.26 s headless).
+- **For slice-polish:** Haluna's add frame (root `_ready` 388 ms) is the other.
+- ADR **0209**. If another track took 0209 meanwhile, renumber mine.
+MERGE-READY @ (this commit).

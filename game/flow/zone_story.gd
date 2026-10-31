@@ -57,6 +57,10 @@ var active := false
 var hand_off: Callable = Callable()
 ## True once a run has handed off (nothing else plays after it).
 var handed_off := false
+## Touch-trigger payloads (a beat or a scene, not a bark) entered while a run played: a touch box fires once, on
+## entry, so the story keeps them and plays them in order once the run ends free (the 23:05 FAST-TRACK: Coilspire's
+## door, entered as the beacon scene ended, was lost). A hand-off drops them.
+var pending_touches: Array[Dictionary] = []
 
 var _zone: Node
 
@@ -82,6 +86,7 @@ func on_resident_return() -> void:
 	handed_off = false
 	busy = false
 	active = false
+	pending_touches.clear()
 	if autostart:
 		_autostart()  # now, not deferred: it waits for the scene_changed the router emits after placing the party
 
@@ -116,6 +121,10 @@ func run(steps: Array) -> void:
 	_hush()
 	await _steps(steps)
 	busy = handed_off
+	if handed_off:
+		pending_touches.clear()
+	elif not pending_touches.is_empty() and _free():
+		await _play_payload(pending_touches.pop_front())
 
 
 ## True when nothing is playing and nothing has handed off: a field encounter may start.
@@ -299,11 +308,18 @@ func _on_trigger(_id: StringName, payload: Dictionary) -> void:
 			overhear.play(variant(StringName(str(payload[KEY_DIALOGUE]))), _stage())
 		return
 	if not _free():
+		if busy and not handed_off and (payload.has(KEY_BEAT) or payload.has(KEY_DIALOGUE)):
+			pending_touches.append(payload)
 		return
+	_play_payload(payload)
+
+
+## Plays a trigger's beat (its `when` decides) or its scene. Await it.
+func _play_payload(payload: Dictionary) -> void:
 	if payload.has(KEY_BEAT):
-		play_beat(StringName(str(payload[KEY_BEAT])))
+		await play_beat(StringName(str(payload[KEY_BEAT])))
 	elif payload.has(KEY_DIALOGUE):
-		run([{"play": String(variant(StringName(str(payload[KEY_DIALOGUE]))))}])
+		await run([{"play": String(variant(StringName(str(payload[KEY_DIALOGUE]))))}])
 
 
 ## True when the last scene the main sequencer played reported <<event `ev`>>.

@@ -74,5 +74,24 @@ class IskarraSpireTests(unittest.TestCase):
                 v = np.array([sx - ex, sz - ez])
                 self.assertGreater(float(v @ to_sun), 0.0)  # the slot is on the engine's sunward side
 
+    def test_the_tier_leaves_the_stairwell_open(self) -> None:
+        """M5-A3P-1401: where the flight from the tier below arrives, no floor faces stand over it."""
+        mb = sp.build_tier()[0]
+        p, t = np.asarray(mb.pos), np.asarray(mb.tris)
+        c = p[t].mean(axis=1)
+        floor = np.abs(c[:, 1]) < 0.35
+        r, a = np.hypot(c[:, 0], c[:, 2]), np.arctan2(c[:, 2], c[:, 0]) % (2 * math.pi)
+        mid = (sp.STAIRWELL_A[0] + sp.STAIRWELL_A[1]) * 0.5
+        well = floor & (np.abs(a - mid) < 0.1) & (r > sp.STAIR_R[0] + 0.3) & (r < sp.STAIR_R[1] - 0.3)
+        self.assertEqual(int(well.sum()), 0)
+        # ... and the flight's top tread reaches the next tier's floor.
+        self.assertGreater(float(p[:, 1].max()), sp.TIER_H - 0.4)
+
+    def test_the_quarters_keep_the_childs_height_marks(self) -> None:
+        mb = sp.build_quarters()[0]
+        dark = mb.materials.index(sp.M_DARK)
+        self.assertEqual(sum(1 for m in mb.tri_mat if m == dark) // 12, len(sp.HEIGHT_MARKS_Y))
+
+
 if __name__ == "__main__":
     unittest.main()

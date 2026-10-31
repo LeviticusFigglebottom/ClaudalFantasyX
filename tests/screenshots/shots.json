@@ -9064,6 +9064,16 @@
       "scene": "res://game/levels/_tests/credits/credits_roll.tscn"
     },
     {
+      "id": "kite_log",
+      "pending_baseline": true,
+      "scene": "res://game/ui/kite/shots/kite_log.tscn"
+    },
+    {
+      "id": "ledger_reader",
+      "pending_baseline": true,
+      "scene": "res://game/ui/ledger/shots/ledger_reader.tscn"
+    },
+    {
       "id": "document_reader_three",
       "pending_baseline": true,
       "scene": "res://game/levels/_tests/document_reader/document_reader_three.tscn"
@@ -10371,6 +10381,103 @@
         960,
         720
       ]
+    },
+    {
+      "id": "wildlife_kite_gulls",
+      "scene": "res://game/levels/_tests/wildlife/kite_gulls.tscn",
+      "settle_frames": 120,
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "villager_kell_light_beacon",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/kell_light_beacon.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_kell_trim_wicks",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/kell_trim_wicks.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_kell_take_scissors",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/kell_take_scissors.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_neme_clear_plates",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/neme_clear_plates.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_neme_carry_food",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/neme_carry_food.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_neme_watch",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/neme_watch.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_neme_laugh_breaks",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/neme_laugh_breaks.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_osu_set_shell",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/osu_set_shell.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }

@@ -253,6 +253,21 @@ func test_bound_ids_follow_each_rows_flag() -> void:
 	]
 	var got: Array[StringName] = BattleVowboundHud.bound_ids(rows, func(f: StringName) -> bool: return f == &"b")
 	assert_eq(got, [&"kahre"] as Array[StringName])
+	_free()
+
+
+## M5-A3P-1705 (act3_ch20 U01-U06): a Vowbound released for good leaves the call list; its bond is not enough.
+func test_a_released_vowbound_is_no_longer_bound() -> void:
+	var rows: Array = [
+		{"id": "ilun", "bound_flag": "a", "released_flag": "a_gone"},
+		{"id": "kesh", "bound_flag": "b", "released_flag": "b_gone"},
+	]
+	var flags := {&"a": true, &"b": true}
+	var is_set := func(f: StringName) -> bool: return bool(flags.get(f, false))
+	assert_eq(BattleVowboundHud.bound_ids(rows, is_set), [&"ilun", &"kesh"] as Array[StringName])
+	flags[&"a_gone"] = true
+	assert_eq(BattleVowboundHud.bound_ids(rows, is_set), [&"kesh"] as Array[StringName], "one name left")
+	_free()
 
 
 func test_every_vowbound_refusal_reads_as_words() -> void:

@@ -19,6 +19,17 @@ The gap (the human's playtest note): battles had no action animation. This track
 - **Queue after this (the Lead's 21:56, ADR 0207):** the Act I readability pass, then the Act II one, then the
   paused Act I sweep (Ch6, Ch8). After that: Act III production (battle VFX, boss intros, the finale camera; ids
   M5-A3P-1900..1949), or an offer to slice-polish's Act II cutscene staging by request task.
+- **MERGE-READY @ 78342f98** (23:50): the readability fixes so far, full `--filter=battle` 864/0 at 3999100f.
+  - **Damage floats behind a HUD panel:** the Drownbell's "134" started under its boss read-out at 1.3. A float
+    now moves out of each shown panel (battle_hud.json damage.avoid: the boss read-out, help line, timeline, party
+    panel, command menu) by the shortest way on screen, clearing it by a float's height and rise. 3999100f,
+    78342f98; test_hud_float_clear.
+    - The menu, timeline and party panel lay their boxes out inside full-screen Controls, so their rects come from
+      their battle_hud.json sections.
+  - **SELF-RENDERED:** the Drownbell's and the Hullgnaw's hits at 1.3 are clear.
+  - **Checked clean at 1.3 (no overflow, no float over a panel; stills viewed):** tideline, Drownbell, both
+    causeway fights, Wickfry, Oil Slug, Shaft Limpet, Scuttlers, Hullgnaw, Underway Shoals.
+  - **Running:** the other 24 Act I fights.
 - **Running:** every Act I fight at 1.3 (the sweep covered 1.0). The Ch6 encounter sweep is paused so this pass has
   the CPU. Then the same pass for Act II.
 
