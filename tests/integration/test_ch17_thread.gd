@@ -5,6 +5,10 @@ extends Act2GreyboxCase
 ## lamp, Ysolde's table (B08, B10, B11); boarding the hull closes the chapter (B12).
 
 const HOLLOWMERE := "res://game/levels/ch17/hollowmere/hollowmere.tscn"
+## Ch15's Hollowmere (the zone's objectives) and Act II's end, as a save carries them into Ch17.
+const ACT_TWO_END: Array[StringName] = [
+	&"ch15_reached_hollowmere", &"ch15_liss_told_father", &"ch15_pyre_raft", &"ch15_complete", &"ch16_act_two_complete"
+]
 
 
 func test_ch15s_visit_keeps_ch15s_story() -> void:
@@ -16,7 +20,7 @@ func test_ch15s_visit_keeps_ch15s_story() -> void:
 
 
 func test_ch17_plays_hollowmere_in_order() -> void:
-	for f: StringName in [&"ch15_complete", &"ch16_act_two_complete"]:
+	for f: StringName in ACT_TWO_END:  # a save at the end of Act II
 		Game.set_flag(f)
 	visit(HOLLOWMERE)
 	assert_eq(Game.state.chapter, 17, "the chapter step")
