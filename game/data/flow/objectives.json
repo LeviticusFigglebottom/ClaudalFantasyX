@@ -125,7 +125,15 @@
       {"id": "k_reedhollow", "line_key": "OBJ_CH18_REEDHOLLOW", "requires": ["ch18_world_open"], "until": "ch18_pell_named"},
       {"id": "r_teach", "line_key": "OBJ_CH18_TEACH", "requires": ["ch18_pell_named"], "until": "ch18_learned_farewell_tide", "zone": "ch10/reedhollow", "target": {"zone": "ch10/reedhollow", "poi": "shore"}},
       {"id": "r_side_heirloom", "line_key": "OBJ_CH18_SIDE_REED_SPEAR", "requires": ["ch18_pell_named"], "until": "ch18_heirloom_pell", "zone": "ch10/reedhollow", "side": true, "target": {"zone": "ch10/reedhollow", "poi": "clutch"}},
-      {"id": "k_side_parcel", "line_key": "OBJ_CH18_SIDE_PARCEL", "requires": ["ch18_world_open"], "until": "ch18_heirloom_ysolde", "zone": "ch18/kite", "side": true}
+      {"id": "k_side_parcel", "line_key": "OBJ_CH18_SIDE_PARCEL", "requires": ["ch18_world_open"], "until": "ch18_heirloom_ysolde", "zone": "ch18/kite", "side": true},
+      {"id": "i_vigil", "line_key": "OBJ_CH19_VIGIL", "requires": ["ch19_started"], "until": "ch19_vigil", "zone": "ch19/iskarra"},
+      {"id": "i_hitch", "line_key": "OBJ_CH19_HITCH", "requires": ["ch19_vigil"], "until": "ch19_learned_the_hitch", "zone": "ch19/iskarra"},
+      {"id": "i_spire", "line_key": "OBJ_CH19_SPIRE", "requires": ["ch19_learned_the_hitch"], "until": "ch19_abiding_beaten", "zone": "ch19/iskarra"},
+      {"id": "i_side_words", "line_key": "OBJ_CH19_SIDE_WORDS", "requires": ["ch19_learned_the_hitch"], "until": "ch19_words_whole", "zone": "ch19/iskarra", "side": true},
+      {"id": "s_engine", "line_key": "OBJ_CH19_ENGINE", "requires": ["ch19_abiding_beaten"], "until": "ch19_engine_stopped", "zone": "ch19/iskarra_spire"},
+      {"id": "u_down", "line_key": "OBJ_CH20_DOWN", "requires": ["ch20_started"], "until": "ch20_ethren_released"},
+      {"id": "u_cage", "line_key": "OBJ_CH20_CAGE", "requires": ["ch20_ethren_released"], "until": "ch20_cage_broken"},
+      {"id": "h_centre", "line_key": "OBJ_CH21_CENTRE", "requires": ["ch21_started"], "until": "ch21_kesh_fought"}
     ]
   }
 }

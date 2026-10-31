@@ -31,7 +31,10 @@
       {"id": "ch15/open_sea", "name_key": "MAP_ROUTE_OPEN_SEA"},
       {"id": "ch17/hollowmere", "name_key": "MAP_ROUTE_HOLLOWMERE"},
       {"id": "ch16/pale_rim", "name_key": "MAP_ROUTE_PALE_RIM"},
-      {"id": "ch16/drowned_choir", "name_key": "MAP_ROUTE_DROWNED_CHOIR"}
+      {"id": "ch16/drowned_choir", "name_key": "MAP_ROUTE_DROWNED_CHOIR"},
+      {"id": "ch18/kite", "name_key": "MAP_ROUTE_KITE"},
+      {"id": "ch19/iskarra", "name_key": "MAP_ROUTE_ISKARRA"},
+      {"id": "ch19/iskarra_spire", "name_key": "MAP_ROUTE_ISKARRA_SPIRE"}
     ],
     "zones": [
       {
@@ -507,6 +510,31 @@
           {"id": "wheel", "name_key": "MAP_POI_KITE_WHEEL", "kind": "path", "at": [2.8, 0.0], "source": "mark:kite_wheel"},
           {"id": "chart", "name_key": "MAP_POI_KITE_CHART", "kind": "talk", "at": [10.0, 2.6], "source": "trigger:ch18_chart"},
           {"id": "bow", "name_key": "MAP_POI_KITE_BOW", "kind": "path", "at": [23.0, 0.0], "source": "mark:bow_rail"}
+        ]
+      },
+      {
+        "id": "ch19/iskarra",
+        "scene": "res://game/levels/ch19/iskarra/iskarra.tscn",
+        "name_key": "LOCATION_CH19_ISKARRA",
+        "shapes": "res://game/levels/ch19/iskarra/iskarra_layout.json",
+        "shape_kind": "greybox_layout",
+        "bounds": [-18.0, -18.0, 36.0, 36.0],
+        "pois": [
+          {"id": "steps", "name_key": "MAP_POI_ISK_STEPS", "kind": "path", "at": [-3.0, -9.5], "source": "mark:plaza_steps"},
+          {"id": "edge", "name_key": "MAP_POI_ISK_EDGE", "kind": "path", "at": [12.0, 6.0], "source": "mark:plaza_edge"},
+          {"id": "spire_door", "name_key": "MAP_POI_ISK_SPIRE_DOOR", "kind": "door", "at": [0.0, -15.0], "source": "trigger:ch19_to_spire"}
+        ]
+      },
+      {
+        "id": "ch19/iskarra_spire",
+        "scene": "res://game/levels/ch19/iskarra_spire/iskarra_spire.tscn",
+        "name_key": "LOCATION_CH19_ISKARRA_SPIRE",
+        "shapes": "res://game/levels/ch19/iskarra_spire/iskarra_spire_layout.json",
+        "shape_kind": "greybox_layout",
+        "bounds": [-13.0, -13.0, 26.0, 35.0],
+        "pois": [
+          {"id": "lectern", "name_key": "MAP_POI_ISK_LECTERN", "kind": "talk", "at": [0.0, 16.8], "source": "mark:duty_lectern"},
+          {"id": "engine", "name_key": "MAP_POI_ISK_ENGINE", "kind": "path", "at": [0.0, 3.5], "source": "mark:engine_lever"}
         ]
       },
       {

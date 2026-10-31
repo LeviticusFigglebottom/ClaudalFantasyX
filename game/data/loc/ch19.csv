@@ -11,3 +11,15 @@ LOCATION_CH19_ISKARRA,Iskarra
 LOCATION_CH19_ISKARRA_SPIRE,The Lamp Spire
 FIELD_PROMPT_CH19_SIT,Sit with Kerrid
 FIELD_PROMPT_CH19_ENGINE,Take the lever
+OBJ_CH19_VIGIL,Go to Asha on the steps.
+OBJ_CH19_HITCH,Kerrid is sitting at the plaza's edge.
+OBJ_CH19_SPIRE,"In the morning, climb to the spire's crown."
+OBJ_CH19_SIDE_WORDS,Ysolde is on the steps with her book open.
+OBJ_CH19_ENGINE,Shut down the anchor-engine.
+MAP_POI_ISK_STEPS,The steps
+MAP_POI_ISK_EDGE,The plaza's edge
+MAP_POI_ISK_SPIRE_DOOR,The spire's door
+MAP_POI_ISK_LECTERN,The duty lectern
+MAP_POI_ISK_ENGINE,The anchor-engine
+MAP_ROUTE_ISKARRA,Iskarra
+MAP_ROUTE_ISKARRA_SPIRE,Iskarra's spire

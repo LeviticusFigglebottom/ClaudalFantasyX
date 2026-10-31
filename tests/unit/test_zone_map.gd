@@ -130,8 +130,8 @@ func test_the_route_strip_marks_the_current_stop() -> void:
 	var act_break := MapModel.new(&"ch09/corrow_night", Vector3.INF, 0.0, _flags([])).route_stops()
 	assert_eq(act_break.size(), 5, "M3-UI-206: Act I's end runs on into Act II")
 	assert_eq(StringName(str(act_break[3]["id"])), &"ch10/ossa_fen", "Ossa Fen next")
-	var last := MapModel.new(&"ch16/drowned_choir", Vector3.INF, 0.0, _flags([])).route_stops()
-	assert_eq(last.size(), 3, "at the end of Act II: the two behind and itself")
+	var last := MapModel.new(&"ch19/iskarra_spire", Vector3.INF, 0.0, _flags([])).route_stops()
+	assert_eq(last.size(), 3, "M5-A3P-1015: at the route's end (Iskarra's spire): the two behind and itself")
 	assert_true(last[2]["current"])
 	assert_eq(MapModel.new(&"nowhere").route_stops().size(), 5, "off the route: the first stops")
 	assert_false(MapModel.new(&"nowhere").has_map())
@@ -233,10 +233,11 @@ func test_every_greybox_zone_builds_a_map() -> void:
 		assert_true(on_route, "%s is on the route" % id)
 	assert_eq(
 		seen,
-		27,
+		30,
 		(
-			"Act I's twelve (Ch1, Ch3's causeway (M2-FP-1000), Ch4's ferry (its wake reads Haluna's layout), Ch5 to Ch9)"
-			+ " and Act II's fifteen (Ch10 to Ch16, M3-UI-206)"
+			"Act I's twelve (Ch1, Ch3's causeway (M2-FP-1000), Ch4's ferry (its wake reads Haluna's layout), Ch5 to Ch9),"
+			+ " Act II's fifteen (Ch10 to Ch16, M3-UI-206) and Act III's three (the Kite, Iskarra and its spire;"
+			+ " M5-A3P-1015: the Undertow and the Heart have no map)"
 		)
 	)
 
