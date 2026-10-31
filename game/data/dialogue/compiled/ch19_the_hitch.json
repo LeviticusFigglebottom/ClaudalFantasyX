@@ -8,7 +8,7 @@
    "headers": {"location": "ch19/iskarra"},
    "ops": [
     {"op": "cue", "cue": "camera", "args": ["I03"], "kwargs": {}, "src": 10},
-    {"op": "cue", "cue": "music", "args": ["kerrid_hitch"], "kwargs": {"fade": 2.0}, "src": 11},
+    {"op": "cue", "cue": "music", "args": ["kerrid_last_night"], "kwargs": {"fade": 2.0}, "src": 11},
     {"op": "cue", "cue": "mark", "args": ["kerrid", "plaza_edge", "walk"], "kwargs": {}, "src": 12},
     {"op": "cue", "cue": "anim", "args": ["kerrid", "sit", "plaza_edge"], "kwargs": {}, "src": 13},
     {"op": "cue", "cue": "mark", "args": ["rhen", "plaza_edge_b", "walk"], "kwargs": {}, "src": 14},

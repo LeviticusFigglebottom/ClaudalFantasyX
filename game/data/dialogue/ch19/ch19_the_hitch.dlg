@@ -8,7 +8,7 @@ title: ch19_the_hitch
 location: ch19/iskarra
 ---
 @camera I03
-@music kerrid_hitch fade=2.0
+@music kerrid_last_night fade=2.0
 @mark kerrid plaza_edge walk
 @anim kerrid sit plaza_edge
 @mark rhen plaza_edge_b walk
