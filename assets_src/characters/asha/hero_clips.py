@@ -2832,7 +2832,7 @@ SKIRT_TRAIL_CLIPS = {"walk", "run"}
 # row 56 (big38, real GPU: the run's skirt still a bell, "no legs showing"): below the knee the outer skirt now rides the
 # legs' own weights (build_asha OUTER_LEG_SHARE), so in the locomotion clips (LOCO_CLIPS: the cycles and their starts,
 # stops and turns, so they still join) the knee and hem panels swing out only this share of the clearance solve
-SKIRT_LOCO_SWING = 0.6
+SKIRT_LOCO_SWING = 0.35
 SKIRT_TRAIL_FRONT = 0.3  # panels facing further forward than this (about 72 deg either side) keep the plain solve
 SKIRT_TRAIL_STAFF_X, SKIRT_TRAIL_STAFF_Z = -0.6, -0.4  # and the panels out on the staff hand's side, short of the back
 
