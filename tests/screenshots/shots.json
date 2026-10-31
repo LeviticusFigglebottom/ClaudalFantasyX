@@ -10478,6 +10478,15 @@
         540
       ],
       "settle_frames": 30
+    },
+    {
+      "id": "npc_held_shapes_reefball",
+      "scene": "res://game/levels/_tests/npc/held_shapes_reefball.tscn",
+      "settle_frames": 20,
+      "resolution": [
+        960,
+        540
+      ]
     }
   ]
 }

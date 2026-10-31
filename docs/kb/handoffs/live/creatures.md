@@ -1419,3 +1419,16 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
 - **BACKLOG EMPTY:** my Act III list is done. The Cage and the bosses are creatures-b's (handed over), and 1809 and
   1811 are blocked on Act III zones and flags. M3-HER-1133's remaining clips are characters' (heroes) or
   cinematics' (routing). Ready for the next assignment.
+- Lead 00:26 (continue the Act III bestiary):
+  - Every regular and wildlife item in the reconciled roster is built: 1800–1808 at review.
+  - The Cage and the other bosses are creatures-b's (handed over); they built the Act I/II bosses too.
+  - The roster's remaining item is the Ch20 held shapes. **M5-A3P-1809, the unblocked part** (doing):
+    - **CrowdFar** (game/world/npc/crowd_far.gd) for U04's 30+ Reefball crowd: each crowd body and clip is baked
+      at load into a few CPU-skinned poses, drawn as MultiMeshes in the held silhouette, and each person flips
+      through the poses at its own phase. One draw call per body and pose; no skeletons.
+    - The crowd clip **`cheer`** (the adult library, via `clip_libraries.adult.extra`).
+    - Review stage and shot `npc_held_shapes_reefball`: 32 held shapes cheering, viewed.
+    - Tests: test_crowd_far 3/0, crowd 24/0, tools test_npc OK. Blender: the library rebuilds identical. The
+      crowd_man_medium_b mesh, texture and brow drift is pre-existing (the same 6 diffs without this change).
+    - The per-layer rows still wait on the Ch20 zones.
+- **MERGE-READY @ 496055dff.**

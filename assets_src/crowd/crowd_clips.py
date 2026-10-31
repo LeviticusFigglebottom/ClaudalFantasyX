@@ -21,6 +21,7 @@ a (dx, dy, dz) offset in metres (z forward).
 | `vigil` | 8 s | Standing still, hands joined low in front, the head bowed a little, slow breath |
 | `play_stones` | 4 s | A child knelt back on the heels at a game of stones: the right hand tosses one up, the eyes follow it, the hand sweeps the ground and catches it as it falls (twice a loop); the left hand on the thigh |
 | `play_clap` | 3.2 s | A child standing at a clapping game with a partner facing it: a clap, then both palms pushed out to meet the partner's, on a small knee-bounce, eight beats a loop |
+| `cheer` | 2.4 s | A crowd's roar (M5-A3P-1809, Ch20 U04's remembered Reefball crowd): both arms up over the head and pumping, the head up, on a knee-bounce, four pumps a loop |
 """
 from __future__ import annotations
 
@@ -34,7 +35,7 @@ sys.path.insert(0, str(HERE.parents[1] / "assets_src" / "characters" / "asha"))
 import hero_clips as hc  # noqa: E402
 
 LENGTHS = {"mend": 6.0, "sweep": 3.2, "carry": 6.0, "fold": 4.0, "haul": 3.2, "kneel_mourn": 8.0, "vigil": 8.0,
-           "play_stones": 4.0, "play_clap": 3.2}
+           "play_stones": 4.0, "play_clap": 3.2, "cheer": 2.4}
 CLIPS = tuple(LENGTHS)
 KNEE_PAD = 0.11  # x thigh length: the kneecap's radius under the knee joint, resting on the floor
 FOOT_FLAT = 72.0  # degrees of plantar flexion that lay a kneeling figure's insteps along the floor
@@ -207,8 +208,25 @@ def play_clap(t: float, sk: hc.Skeleton, pers: dict) -> dict:
         "DEF-forearm.R": (-62.0 + 40.0 * out, 46.0 - 30.0 * out, 0.0), "DEF-hand.R": (-30.0 * out, 0.0, -14.0)})
 
 
+def cheer(t: float, sk: hc.Skeleton, pers: dict) -> dict:
+    a = pers["arms_down"]
+    pump = 0.5 - 0.5 * math.cos(2.0 * math.pi * t / 0.6)  # 0 the arms at their highest, 1 drawn in a little
+    b = 0.5 - 0.5 * math.cos(2.0 * math.pi * t / 0.6)  # the knees give with each pump
+    p = hc.add(_base(sk, pers), {"hips": (0.0, -0.015 * b, 0.0),
+                                 "DEF-thigh.L": (-7.0 * b, 0.0, 2.0), "DEF-thigh.R": (-7.0 * b, 0.0, -2.0),
+                                 "DEF-shin.L": (14.0 * b, 0.0, 0.0), "DEF-shin.R": (14.0 * b, 0.0, 0.0),
+                                 "DEF-foot.L": (-7.0 * b, 0.0, -2.0), "DEF-foot.R": (-7.0 * b, 0.0, 2.0)})
+    return hc.add(p, {
+        "DEF-spine.001": (-4.0, 0.0, 0.0), "DEF-spine.003": (-3.0, 0.0, 0.0), "DEF-spine.006": (-14.0 + 4.0 * pump, 0.0, 0.0),
+        # both arms up over the head, a little out, the elbows bending as they pump
+        "DEF-upper_arm.L": (-150.0 + 22.0 * pump, -8.0, a * 0.1 + 6.0), "DEF-forearm.L": (-14.0 - 30.0 * pump, 0.0, 0.0),
+        "DEF-hand.L": (0.0, 0.0, 6.0),
+        "DEF-upper_arm.R": (-150.0 + 22.0 * pump, 8.0, -a * 0.1 - 6.0), "DEF-forearm.R": (-14.0 - 30.0 * pump, 0.0, 0.0),
+        "DEF-hand.R": (0.0, 0.0, -6.0)})
+
+
 POSES = {"mend": mend, "sweep": sweep, "carry": carry, "fold": fold, "haul": haul, "kneel_mourn": kneel_mourn,
-         "vigil": vigil, "play_stones": play_stones, "play_clap": play_clap}
+         "vigil": vigil, "play_stones": play_stones, "play_clap": play_clap, "cheer": cheer}
 
 
 def pose_at(clip: str, t: float, length: float, sk: hc.Skeleton, pers: dict) -> dict:

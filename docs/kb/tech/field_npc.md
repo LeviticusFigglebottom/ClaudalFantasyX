@@ -299,3 +299,26 @@ does the same by hand. The validator accepts only `day` and `night`.
 - **Routes** need a villager beside its stand-in (it carries the body). An adopted villager rides inside its body,
   so its row's `route` and `follow` do not apply; Haluna's routes (Reed's sweep, the child's lane) wait until the
   zone owner places those two beside their bodies (or lets the layer place them).
+
+## Distant crowds: CrowdFar (M5-A3P-1809, 2026-10-31)
+For a crowd too big for skinned actors (Ch20 U04's remembered Reefball crowd, 30+ held shapes). `game/world/npc/crowd_far.gd`:
+- **Data** (JSON): `glow` "#RRGGBB", `frames` (poses per clip), `fps`, and `people` [{`id`, `body` (a crowd body),
+  `clip` (its crowd library's clip), `at` [x, y, z(, yaw_deg)]}].
+- **Bake:** at load, each body and clip in the data is posed at `frames` even points through the clip. Each pose is
+  skinned on the CPU (linear blend of the skin's binds) into one static mesh. The unskinned eyes are left out, inside
+  the head.
+  - It doesn't use `bake_mesh_from_current_skeleton_pose`, which needs the renderer's skin and fails headless.
+- **Draw:** one MultiMesh per body, clip and pose, all in one NpcSilhouette material in `glow`, no shadows.
+  - Each person shows in exactly one pose at a time: its phase (HeroIdleMicro.share of its id) plus the clock at
+    `fps`, so the crowd is out of step.
+  - Draw calls = bodies × poses (the review stage: 8 × 6 = 48 for 32 people; fewer bodies or poses for a real
+    layer).
+- **Deterministic:** ids and frame deltas only. No skeletons, no AnimationPlayers, no physics.
+- **The roar:** crowd clip `cheer` (crowd_clips.py; 2.4 s, both arms up and pumping on a knee-bounce). It's in the
+  adult library through `clip_libraries.adult.extra` in ranges.json, a library's clips that no member works at.
+- **Review:** `game/levels/_tests/npc/held_shapes_reefball.tscn`, 32 held shapes on four tiers, shot
+  `npc_held_shapes_reefball`. Tests: tests/unit/test_crowd_far.gd.
+- **Open:**
+  - The bake runs in `_ready`. A layer loaded under SceneRouter's fade should spread it, as VillagerLayer's
+    `_build_spread` does, against the ≤ 2 s hidden hitch bar. Not measured on a real layer yet.
+  - The U01–U03 layers' near held shapes stay VillagerLayer `silhouette` rows (skinned, close).
