@@ -17,3 +17,4 @@ GATE-BUILT @ 88b258b5
 
 ## Fast gate
 - Selected: 1 test files (plus test_hero_stage).
+- Lane A (mine): 1; lane B (GATE-HELPER): 0, in `gate-big45-lanes-b.txt` @ 3fc847a9.
