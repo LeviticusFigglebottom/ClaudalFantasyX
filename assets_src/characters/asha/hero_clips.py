@@ -2830,6 +2830,7 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
 SKIRT_TRAIL = 0.6  # the share of the previous frame's extra swing kept, per 15 fps frame
 SKIRT_TRAIL_CLIPS = {"walk", "run"}
 SKIRT_TRAIL_FRONT = 0.3  # panels facing further forward than this (about 72 deg either side) keep the plain solve
+SKIRT_TRAIL_STAFF_X, SKIRT_TRAIL_STAFF_Z = -0.6, -0.4  # and the panels out on the staff hand's side, short of the back
 
 
 def _skirt_trail(sk: "Skeleton", res: dict) -> dict:
@@ -2838,8 +2839,10 @@ def _skirt_trail(sk: "Skeleton", res: dict) -> dict:
     for h, (ax, angs, sc) in res.items():
         p = prev.get(h)
         a = list(angs)
-        front = -float(ax[0])  # how far the panel faces forward (its outward direction's +Z; ax = down x out)
-        if p is not None and front < SKIRT_TRAIL_FRONT:  # the front panels stay on the solve: the staff is carried there
+        out_x, out_z = float(ax[2]), -float(ax[0])  # the panel's outward direction (ax = down x out)
+        # the front and the staff side (her right, -X; the staff's pivot steers round those panels) stay on the solve
+        staff_side = out_x < SKIRT_TRAIL_STAFF_X and out_z > SKIRT_TRAIL_STAFF_Z
+        if p is not None and out_z < SKIRT_TRAIL_FRONT and not staff_side:
             for lv in range(1, len(a)):  # the knee and hem bones; the hip bone stays on the solve
                 if p[lv] > a[lv]:
                     a[lv] = a[lv] + SKIRT_TRAIL * (p[lv] - a[lv])

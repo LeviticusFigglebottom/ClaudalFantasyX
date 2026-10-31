@@ -663,3 +663,20 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   - The fix is a hem that trails: the bake carries a share of each lowest panel's previous swing (secondary motion),
     clamped by the leg clearance. That threads time through local_pose, so it is the next item.
 - MERGE-READY @ fd9b4879 (M3-CHR-1000 story clips; the PC pass 7 jog torso; rows 46, 54 and 55). Row 56 (Asha's hem momentum) is next.
+
+## 2026-10-31, row 56 (Asha's run skirt) and big37's reds
+- **big37's reds:**
+  - test_rig_integrity (Asha): the staff crossed the skirt in the run. The 9 deg chest turn swung her staff hand in, so
+    her chest is now 6 deg; then, with the hem trail below, the staff's pivot steered round the trailed right panels.
+  - test_hero_clips: big37 took a WIP head whose libraries lagged the code.
+  - Both pass at this head: TestRigIntegrityAsha and test_hero_clips, 30 tests OK.
+- **Row 56:** the skirt was solved frame by frame with no momentum, so it read as a rigid bell that slides. The walk
+  and run now bake the hem with momentum (hero_clips SKIRT_TRAIL 0.6):
+  - the knee and hem bones of each panel keep 60% of their last frame's extra swing as the solve lets them in, and
+    still kick out at once for the leg;
+  - the cycle is baked twice and the second pass kept, so the loop closes exactly;
+  - the front and the staff side (her right) stay on the plain solve, since the staff is carried there.
+  rig_probe now evaluates those cycles frame by frame, as the bake does, so it checks the shipped motion. Sheet
+  (viewed): docs/kb/qa/characters/jog_2026-10-31/asha_run_hem_momentum.jpg. Needs a real-GPU look in motion.
+- **Rows 55 and 46** were done at fd9b4879: Fenn's and Sabe's white crop, and Moll's soft face key.
+- MERGE-READY @ a480b2cb
