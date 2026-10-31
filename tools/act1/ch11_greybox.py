@@ -119,7 +119,11 @@ def sunken_vey() -> dict:
         + [{"id": "Court", "mode": "pan_follow", "at": [cx, 1.5, cz], "size": [2 * h, 4.0, 2 * h],
             "pos": [r3(cx + h - 1.0), 5.0, r3(cz + h - 1.0)], "look_at": [cx, 0.5, cz], "fov": 55, "priority": 2}],
         "triggers": [{"id": "to_lowlight", "activation": "touch", "at": [92.0, 0.0, -16.0], "size": [2.0, 0, WALK_W],
-                      "payload": {"beat": "to_lowlight"}, "yaw": 0.0}],
+                      "payload": {"beat": "to_lowlight"}, "yaw": 0.0},
+                     # M4-A2P-1003 D5: walking into the conduit court plays the housing-mark (B03, never cut)
+                     {"id": "conduit_mark", "activation": "touch", "at": [cx, 0.0, cz],
+                      "size": [2 * h - 4.0, 0, 2 * h - 4.0], "once": True, "requires_flag": "ch11_started",
+                      "blocked_by_flag": "ch11_rhen_admitted", "payload": {"beat": "housing_mark"}, "yaw": 0.0}],
         # M4-C11-03: the galleries' random fights (act2_roster.md Ch11); none in Lowlight
         "encounters": {"table": [{"encounter": "ch11_vey_rays", "weight": 1}, {"encounter": "ch11_vey_urchins", "weight": 1}],
                        "min_m": 95, "max_m": 145, "when": {"set": ["ch11_started"]}, "seed": 11},

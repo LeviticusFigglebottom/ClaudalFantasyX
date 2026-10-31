@@ -22,6 +22,7 @@
     "stormgull": {"scene": "res://game/creatures/stormgull/stormgull_battle.tscn", "vfx_anchors": {"core": "body", "wound": "neck"}, "contact": {"attack": 0.75}, "stand_in": {"yaw_deg": 60.0, "hover": 1.05}, "portrait": {"yaw_deg": 60.0, "pitch_deg": 20.0}},
     "wallcrab": {"scene": "res://game/creatures/wallcrab/wallcrab_battle.tscn", "vfx_anchors": {"core": "body", "wound": "body"}, "contact": {"attack": 0.5, "cast": 0.7}},
     "flue_moth": {"scene": "res://game/creatures/flue_moth/flue_moth_battle.tscn", "vfx_anchors": {"core": "thorax", "wound": "head"}, "contact": {"attack": 0.5, "cast": 0.6}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
+    "spire_moth": {"scene": "res://game/creatures/spire_moth/spire_moth_battle.tscn", "vfx_anchors": {"core": "thorax", "wound": "head"}, "contact": {"attack": 0.5, "cast": 0.6}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
     "undertows_reach": {
       "scene": "res://game/creatures/undertows_reach/undertows_reach_battle.tscn",
       "contact": {"attack": 1.2, "cast": 1.3, "attack_dark": 1.2, "cast_dark": 1.3, "attack_breach": 1.2, "cast_breach": 1.3,
@@ -216,6 +217,28 @@
       "contact": {"attack": 0.5, "cast": 0.95},
       "stand_in": {"yaw_deg": 90.0},
       "portrait": {"yaw_deg": 50.0, "pitch_deg": 18.0}
+    },
+    "chain_lamp": {
+      "scene": "res://game/creatures/chain_lamp/chain_lamp_battle.tscn",
+      "vfx_anchors": {"core": "beam", "wound": "shackle"},
+      "contact": {"attack": 0.45, "cast": 1.3},
+      "ko_fade_sec": 1.0,
+      "portrait": {"pitch_deg": 10.0}
+    },
+    "held_shoal": {
+      "scene": "res://game/creatures/held_shoal/held_shoal_battle.tscn",
+      "vfx_anchors": {"core": "float", "wound": "seam"},
+      "contact": {"attack": 0.55, "cast": 0.9},
+      "loop": ["idle", "idle_turned"],
+      "ko_fade_sec": 1.2,
+      "portrait": {"pitch_deg": 22.0}
+    },
+    "drowned_lantern": {
+      "scene": "res://game/creatures/drowned_lantern/drowned_lantern_battle.tscn",
+      "vfx_anchors": {"core": "heart", "wound": "globe"},
+      "contact": {"attack": 0.5, "cast": 0.8},
+      "ko_fade_sec": 1.0,
+      "portrait": {"pitch_deg": 12.0}
     },
     "ridge_lynx": {
       "scene": "res://game/creatures/ridge_lynx/ridge_lynx_battle.tscn",

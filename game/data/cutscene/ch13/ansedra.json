@@ -1,0 +1,223 @@
+{
+ "_doc": "M4-A2P-075 (Ch13, cinematics'): Ansedra's cutscene shots and marks, staged from docs/kb/story/beats/act2_ch13_direction.md (story's frames kept). A03-A06 replace the greybox's ids of other meaning (its A03 is Sefir's door, A04 by FromSanctum, A05 at pact_sefir, A06 Corran's house). The close singles (A04, A05, A13) look at the eye line, not the notes' 1.4 m (chest height at 85 mm). Corran's house is a solid greybox block, so A15's front room and its marks wait on a room inside it (request task M4-A2P-077).",
+ "replace": [
+  "A03",
+  "A04",
+  "A05",
+  "A06"
+ ],
+ "shots": {
+  "A03": {
+   "pos": [
+    -5.79,
+    1.6,
+    6.2
+   ],
+   "look_at": [
+    -3.5,
+    1.4,
+    12.5
+   ],
+   "fov": 38
+  },
+  "A04": {
+   "pos": [
+    5.0,
+    1.6,
+    -40.9
+   ],
+   "look_at": [
+    5.0,
+    1.48,
+    -42.4
+   ],
+   "fov": 27
+  },
+  "A05": {
+   "pos": [
+    4.25,
+    1.6,
+    -41.1
+   ],
+   "look_at": [
+    5.0,
+    1.58,
+    -42.4
+   ],
+   "fov": 16
+  },
+  "A06": {
+   "pos": [
+    0.81,
+    1.6,
+    -39.1
+   ],
+   "look_at": [
+    4.1,
+    1.4,
+    -41.0
+   ],
+   "fov": 27
+  },
+  "A07": {
+   "pos": [
+    6.99,
+    1.6,
+    8.79
+   ],
+   "look_at": [
+    7.5,
+    1.4,
+    10.2
+   ],
+   "fov": 38
+  },
+  "A08": {
+   "pos": [
+    5.82,
+    1.6,
+    6.05
+   ],
+   "look_at": [
+    7.5,
+    1.4,
+    10.65
+   ],
+   "fov": 27
+  },
+  "A11": {
+   "pos": [
+    -0.72,
+    1.7,
+    11.07
+   ],
+   "look_at": [
+    -4.2,
+    1.4,
+    12.33
+   ],
+   "fov": 38
+  },
+  "A12": {
+   "pos": [
+    -0.55,
+    1.6,
+    9.5
+   ],
+   "look_at": [
+    -2.8,
+    1.4,
+    10.8
+   ],
+   "fov": 27
+  },
+  "A13": {
+   "pos": [
+    -4.7,
+    1.75,
+    14.75
+   ],
+   "look_at": [
+    -6.0,
+    1.77,
+    14.0
+   ],
+   "fov": 16
+  },
+  "A14": {
+   "pos": [
+    -3.23,
+    3.0,
+    15.48
+   ],
+   "look_at": [
+    -4.5,
+    1.4,
+    12.0
+   ],
+   "fov": 75
+  },
+  "A15b": {
+   "pos": [
+    -40.02,
+    1.6,
+    -37.38
+   ],
+   "look_at": [
+    -42.33,
+    1.4,
+    -40.13
+   ],
+   "fov": 27
+  },
+  "A15": {
+   "pos": [
+    -43.09,
+    1.6,
+    -40.96
+   ],
+   "look_at": [
+    -44.25,
+    1.4,
+    -44.15
+   ],
+   "fov": 27
+  }
+ },
+ "marks": {
+  "guest_moorings": [
+   7.2,
+   0.0,
+   10.6,
+   10.0
+  ],
+  "guest_moorings_b": [
+   6.3,
+   0.0,
+   10.9,
+   0.0
+  ],
+  "outer_moorings": [
+   -3.4,
+   0.0,
+   11.2,
+   300.0
+  ],
+  "outer_moorings_rhen": [
+   -5.4,
+   0.0,
+   12.9,
+   90.0
+  ],
+  "street": [
+   -42.0,
+   0.0,
+   -39.5,
+   30.0
+  ],
+  "street_b": [
+   -41.35,
+   0.0,
+   -40.75,
+   330.0
+  ],
+  "door": [
+   -43.3,
+   0.0,
+   -42.5,
+   180.0
+  ],
+  "front_room": [
+   -44.6,
+   0.0,
+   -43.4,
+   330.0
+  ],
+  "front_room_b": [
+   -44.05,
+   0.0,
+   -44.6,
+   20.0
+  ]
+ }
+}

@@ -392,5 +392,8 @@ flags = {
 "ch20_cage_broken": "Ch20 U07: the Cage encounter's victory_flag (the four founders fought as one); read by H01.",
 "ch20_complete": "Ch20 U08 (ch20_thank_you): the founders' four thank-yous; the flow hands off to Ch21.",
 "ch21_unbound": "Ch21 H09 (M5-A3P-1014, ch21_great_unbinding): the Great Unbinding; every held mote rises. Read by the Ending's flow.",
-"credits_seen": "Credits (M5-A3P-1700): the closing credits have run to their end in this save; holding Cancel may skip them after that."
+"credits_seen": "Credits (M5-A3P-1700): the closing credits have run to their end in this save; holding Cancel may skip them after that.",
+"ch10_what_went_up_seen": "Ch10 B05: ch10_what_went_up (the Drowner's release) has played after its fight, once (M4-A2P-1003 D11).",
+"ch12_herd_cord_seen": "Ch12 B07: ch12_herd_cord (Pell ties the Ram's cord on the pass) has played after the fight, once (M4-A2P-1003 E6).",
+"ch13_guest_of_sefir": "Ch13 B02: after the still city and Tobin, the party are Sefir's guests; Kerrid sits out the nights at the moorings (ADR 0022 (c); the Ansedra layout's state row; M4-A2P-1003 E3)."
 }

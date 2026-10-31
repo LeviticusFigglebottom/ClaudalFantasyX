@@ -2,8 +2,8 @@
 id: M4-A2P-1980
 title: "Story clips: a per-clip finger curl for a free hand (a fist), and binary .res libraries for Asha and Rhen"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "creatures-b (claude/creatures-b), supplementing (ADR 0207)"
 depends_on: [M3-CHR-1000]
 reviewer: character
 milestone: M4
@@ -33,5 +33,22 @@ a good fit).
 - Filed by characters, 2026-10-30, in the shared 1980–1999 range.
 - characters keeps hero_clips.py's story-clip specs. Coordinate through characters.md (LEAD-ASK lines) for any
   change to the gesture vocabulary.
+
+## Progress (creatures-b)
+- **Part 1, the fist: built.** requested_clips.json gains an optional per-clip `fist` key (documented in its `_doc`):
+  `["R"]` (the whole clip, eased in and out over FIST_WINDOW) or `{"R": [a, b, c, d]}` (hook_hold's window). Rhen's
+  `knock` carries `{"R": [0.1, 0.25, 2.0, 3.0]}`: closed as the arm comes up, kept to the held last frame.
+  hero_clips.py: FIST_CLIPS from the specs; `fist_init` solves HAND_SHAPE's fist (FIST_CURL) with flat_init's solve,
+  now shared as `_hand_rots`; `fist_pose` blends the fingers over whatever the hand holds; `clip_grip_bones` keys a
+  fist side's fingers in that clip only. Regenerated: Rhen's library changes only the `knock` sub-resource (the other
+  96 byte-identical); Pell's and the officer's (the flat-hand heroes, whose solve was refactored) regenerate identical.
+  rhen_clip_knock rendered and viewed: a closed fist.
+- **Part 2, headroom: a choice for characters** (measured: Godot's binary save of today's libraries is 1.85 MB plain
+  or 0.65 MB compressed, against 4.02 / 3.99 MB text). (a) **.res:** hero_clips.py writes the text build to a
+  scratch path and a headless Godot step saves `<hero>_clips.res`; the import rule, about 30 stage scenes and
+  scene_loads.json point at .res; test_hero_clips compares the rebuilt text against the .res loaded back (a Godot
+  test). (b) **Split:** the story clips go in `<hero>_story_clips.tres`, merged into one library by the import rule
+  (clip names unchanged), with the stage scenes taking the merged library. creatures-b's default is (a), the test's
+  own note. It needs characters' yes, since it changes the pipeline.
 
 ## Review log

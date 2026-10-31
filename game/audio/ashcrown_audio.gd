@@ -49,8 +49,11 @@ func _connect(t: Object, sig: String) -> void:
 			fn = func(a: Variant) -> void: on_event(sig, [a])
 		2:
 			fn = func(a: Variant, b: Variant) -> void: on_event(sig, [a, b])
+		3:
+			fn = func(a: Variant, b: Variant, c: Variant) -> void: on_event(sig, [a, b, c])
 		_:
-			fn = (func(a: Variant, b: Variant, c: Variant) -> void: on_event(sig, [a, b, c])).unbind(maxi(argc - 3, 0))
+			# unbind(0) is an error: only a signal with more than three arguments drops its extras
+			fn = (func(a: Variant, b: Variant, c: Variant) -> void: on_event(sig, [a, b, c])).unbind(argc - 3)
 	t.connect(StringName(sig), fn)
 
 

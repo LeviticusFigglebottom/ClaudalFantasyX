@@ -1707,6 +1707,17 @@
         "market_stall-lod1": 192
       }
     },
+    "memory_gallery": {
+      "budget": [
+        7000,
+        500
+      ],
+      "bytes": 197164,
+      "lods": {
+        "memory_gallery": 3060,
+        "memory_gallery-lod1": 316
+      }
+    },
     "memory_island": {
       "budget": [
         12000,
@@ -1740,6 +1751,17 @@
         "memory_market-lod1": 276
       }
     },
+    "memory_square": {
+      "budget": [
+        7000,
+        500
+      ],
+      "bytes": 188940,
+      "lods": {
+        "memory_square": 2434,
+        "memory_square-lod1": 304
+      }
+    },
     "memory_stands": {
       "budget": [
         7000,
@@ -1749,6 +1771,17 @@
       "lods": {
         "memory_stands": 1648,
         "memory_stands-lod1": 268
+      }
+    },
+    "memory_terrace": {
+      "budget": [
+        7000,
+        500
+      ],
+      "bytes": 122352,
+      "lods": {
+        "memory_terrace": 2284,
+        "memory_terrace-lod1": 364
       }
     },
     "mooring_platform": {

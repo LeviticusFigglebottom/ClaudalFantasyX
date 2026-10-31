@@ -113,3 +113,16 @@ end) is at 0.35 m in every clip except the `ko`, which ends with everything on t
   literally lit by what they broke? That is the chapter designer's and environment art's.
 - **Oruvel and Corrow:** one row, or two palette rows (the cap's metal)?
 - **The drain's contact:** one target or all? The clip reaches toward one. A drain on all needs the arms to spread.
+
+## As built (M5-A3P-1804, 2026-10-30)
+`assets_src/creatures/drowned_lantern/build_drowned_lantern.py`, as the sheet:
+- **Shape:** 3,502 triangles, 25 bones, five slots. The weak point is the globe's crazed seam (`wound`), the vfx core is
+  the `heart`.
+- **The rise rule holds:** the `heart` is parented to the root, not the globe, so the glass tilts and the light
+  doesn't. `--report` measures the heart, the root and every light bead at 0.000 mm of upward step in every clip.
+- **KO:** the light slips down out of the skirt and settles on the floor; then the empty globe sinks (the `globe` bone,
+  keyed every baked frame; the root stays at the floor origin) and rolls 70° onto its side. The arms and globe lift
+  only as far as the floor needs (grounding.py).
+- **Hit:** knocked sideways and tilted, eased in over 0.14 s so the chain doesn't pop (the audit's worst pop is 5%
+  on `hit_b`).
+- Portrait, and review shot `creature_drowned_lantern`.

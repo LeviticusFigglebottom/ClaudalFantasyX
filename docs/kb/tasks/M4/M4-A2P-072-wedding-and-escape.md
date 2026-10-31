@@ -2,8 +2,8 @@
 id: M4-A2P-072
 title: "Stage the wedding trap and the escape across the water (Ch14)"
 role: cinematics
-status: todo
-owner_session: ""
+status: doing
+owner_session: "claude/m2-slice (cinematics)"
 depends_on: [M4-A2P-005, M4-A2P-047, M4-A2P-050]
 reviewer: narrative
 milestone: M4
@@ -19,5 +19,8 @@ The ceremony, the trap and the heresy, Tobin's death, the cut barge and the firs
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2 Ch14.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+
+- 2026-10-30 (cinematics): staged in game/data/cutscene/ch13/ansedra_lacquer_court.json (W03–W15, L01–L12; see the
+  M4-A2P-075 commit 59cfb82ae for the frames moved off the notes). Stills wait on the court's people (M4-CIN-1305).
 
 ## Review log

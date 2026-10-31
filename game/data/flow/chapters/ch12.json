@@ -30,6 +30,9 @@
        "chapter": 12
       },
       {
+       "play": "ch12_cold_road"
+      },
+      {
        "set": "ch12_started"
       }
      ]
@@ -40,7 +43,8 @@
        "ch12_ram_felled"
       ],
       "unset": [
-       "ch12_reached_quellan"
+       "ch12_reached_quellan",
+       "ch12_herd_cord_seen"
       ]
      },
      "steps": [
@@ -49,6 +53,9 @@
       },
       {
        "play": "ch12_herd_cord"
+      },
+      {
+       "set": "ch12_herd_cord_seen"
       }
      ]
     },
@@ -67,6 +74,12 @@
       },
       {
        "play": "ch12_down_the_other_side"
+      },
+      {
+       "go": {
+        "location": "ch13/ansedra",
+        "spawn": "Moorings"
+       }
       }
      ]
     }
@@ -99,6 +112,16 @@
        "battle": "ch12_avalanche_ram",
        "return_spawn": "RamArena",
        "victory_flag": "ch12_ram_felled"
+      }
+     ]
+    },
+    "cold_ledge": {
+     "steps": [
+      {
+       "play": "ch12_breath"
+      },
+      {
+       "set": "ch12_toma_saw_breath"
       }
      ]
     }
