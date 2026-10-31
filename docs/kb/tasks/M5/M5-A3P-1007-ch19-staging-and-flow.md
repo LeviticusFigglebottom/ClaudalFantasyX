@@ -37,7 +37,7 @@ The Ch19 scripts are in `game/data/dialogue/ch19/` (M5-A3P-1006). Beats: docs/kb
 - **Two zones on env-art's Iskarra kit**, with `Ch19Zone` (extends Ch05Zone, with the held input):
   - `ch19/iskarra` instances the Prologue's own `iskarra_city.tscn` and its water, so the vigil stands in the Prologue's frame. P01 and P02 are copied from `prologue.tscn`.
   - `ch19/iskarra_spire` instances `spire_crown_floor.glb` and `anchor_engine.glb`, with a greybox antechamber and the duty lectern.
-  - The layouts come from `tools/act3/ch19_iskarra_greybox.py` (new): collision-only greybox under the kit, the marks, shots I01–I09, the triggers, and night and morning variants.
+  - The layouts come from `tools/act1/ch19_greybox.py` (new): collision-only greybox under the kit, the marks, shots I01–I09, the triggers, and night and morning variants.
 - **Locations:** two `locations.json` rows; `LOCATION_CH19_*` and two prompts in `loc/ch19.csv`. The four plaza scenes now say `location: ch19/iskarra` (was `prologue`).
 - **Flow:** `game/data/flow/chapters/ch19.json`:
   - I01 on arrival from Ch18 (Ch18's Iskarra beat now goes here);

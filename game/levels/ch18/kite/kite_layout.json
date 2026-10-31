@@ -1,5 +1,5 @@
 {
- "doc": "M5-A3P-1004 greybox (tools/act3/ch18_kite_greybox.py; do not edit by hand): the Kite in flight, its deck the whole walkable world (act3_ch18.md \u00a72): the wheel, the chart table, the stern and bow rails, the lamps under the deck, the masts and the flare-kite sails. Day; the night aboard (K07) is a variant.",
+ "doc": "M5-A3P-1004 greybox (tools/act1/ch18_greybox.py; do not edit by hand): the Kite in flight, its deck the whole walkable world (act3_ch18.md \u00a72): the wheel, the chart table, the stern and bow rails, the lamps under the deck, the masts and the flare-kite sails. Day; the night aboard (K07) is a variant.",
  "sun": {
   "pitch_deg": -45.0,
   "yaw_deg": 150.0,

@@ -781,7 +781,7 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
   - `test_ch17_thread`: out of Ch16 Hollowmere is Ch17's, Ch15 keeps its own, and the chapter runs to boarding.
   - The Hollowmere dressing was regenerated (env-art-b's generator, unchanged) for the new jetty.
 - **M5-A3P-1004, Ch18 (doing):**
-  - New zone `ch18/kite` (`tools/act3/ch18_kite_greybox.py`, `Ch18Zone`, `kite.tscn`, location, zone map).
+  - New zone `ch18/kite` (`tools/act1/ch18_greybox.py`, `Ch18Zone`, `kite.tscn`, location, zone map).
   - Reedhollow's Act III block (`reedhollow_act3()` in `tools/act1/ch10_greybox.py`): marks, K05–K12, Owa and the name-carver cast as Kirru, the child cast, day light.
   - `ch18.json`: maiden flight → chart table (sets `kite_flying`, the world map) → Reedhollow (gate, farewell-tide) → night aboard → Iskarra, then the end card until Ch19's Iskarra exists.
   - Ch18 objectives and `test_ch18_thread`.

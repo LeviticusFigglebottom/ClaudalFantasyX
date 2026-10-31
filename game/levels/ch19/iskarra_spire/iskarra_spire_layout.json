@@ -1,5 +1,5 @@
 {
- "doc": "M5-A3P-1007 greybox (tools/act3/ch19_iskarra_greybox.py; do not edit by hand): the Lamp Spire's crown on env-art's spire_crown_floor (r 12) with the anchor_engine at its centre (collision only), and the antechamber south of it, a greybox room with the duty lectern (the signatures). The Wardens' fight is the encounter ch19_abiding_wardens (combat, M5-A3P-1009); the engine lever, where they lie, the crown's edge facing the sea.",
+ "doc": "M5-A3P-1007 greybox (tools/act1/ch19_greybox.py; do not edit by hand): the Lamp Spire's crown on env-art's spire_crown_floor (r 12) with the anchor_engine at its centre (collision only), and the antechamber south of it, a greybox room with the duty lectern (the signatures). The Wardens' fight is the encounter ch19_abiding_wardens (combat, M5-A3P-1009); the engine lever, where they lie, the crown's edge facing the sea.",
  "sun": {
   "pitch_deg": -25.0,
   "yaw_deg": 100.0,

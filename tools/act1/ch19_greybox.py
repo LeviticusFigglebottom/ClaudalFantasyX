@@ -12,7 +12,7 @@
 
 x is east, north is -Z. Shares Ch10's and Ch11's builders.
 
-    python3 tools/act3/ch19_iskarra_greybox.py
+    python3 tools/act1/ch19_greybox.py
 """
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "act1"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from ch10_greybox import box  # noqa: E402
 from ch11_greybox import floor, walls  # noqa: E402
 
@@ -46,7 +46,7 @@ def plaza() -> dict:
               _hidden(floor("Landing", 0.0, -14.0, 4.0, 2.0, 1.0))]
     blocks += [_hidden(b) for b in walls("Plaza", 0.0, 4.0, 16.0, 12.0, 0.0, 1.2, {"n": (-10.0, 4.0)})]
     return {
-        "doc": "M5-A3P-1007 greybox (tools/act3/ch19_iskarra_greybox.py; do not edit by hand): the Prologue's plaza on "
+        "doc": "M5-A3P-1007 greybox (tools/act1/ch19_greybox.py; do not edit by hand): the Prologue's plaza on "
         "env-art's Iskarra kit; collision only (the kit is the look). The Kite on the water (kite_lamps), the seven "
         "Prologue places (vigil_*), P01 and P02 (the Prologue's own shots), the plaza's edge (the hitch), the steps (the "
         "words), the spire's door (to_spire). Dusk; the night of the hitch and the morning after are variants.",
@@ -95,7 +95,7 @@ def spire() -> dict:
     blocks += walls("Antechamber", 0.0, 17.0, 4.0, 4.0, 0.0, 3.0, {"n": (-1.2, 1.2)})
     blocks.append(box("DutyLectern", 0.0, 0.55, 16.0, 1.0, 1.1, 0.6, color="#7a6a50"))
     return {
-        "doc": "M5-A3P-1007 greybox (tools/act3/ch19_iskarra_greybox.py; do not edit by hand): the Lamp Spire's crown on "
+        "doc": "M5-A3P-1007 greybox (tools/act1/ch19_greybox.py; do not edit by hand): the Lamp Spire's crown on "
         "env-art's spire_crown_floor (r 12) with the anchor_engine at its centre (collision only), and the antechamber "
         "south of it, a greybox room with the duty lectern (the signatures). The Wardens' fight is the encounter "
         "ch19_abiding_wardens (combat, M5-A3P-1009); the engine lever, where they lie, the crown's edge facing the sea.",

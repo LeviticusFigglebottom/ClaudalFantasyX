@@ -7,7 +7,7 @@ their flare-kite sails. Nothing under the hull but sky; the flotilla's song come
 
 x is east, north is -Z. Shares Ch10's and Ch11's builders.
 
-    python3 tools/act3/ch18_kite_greybox.py
+    python3 tools/act1/ch18_greybox.py
 """
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "act1"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from ch10_greybox import box  # noqa: E402
 from ch11_greybox import floor, walls  # noqa: E402
 
@@ -40,7 +40,7 @@ def kite() -> dict:
         blocks.append(box(f"Mast{k}", x, 4.5, 0.0, 0.3, 9.0, 0.3, color=COL_HULL))
         blocks.append(box(f"Sail{k}", x + 0.3, 6.0, 0.0, 0.1, 4.0, 7.0, color=COL_SAIL, solid=False))
     return {
-        "doc": "M5-A3P-1004 greybox (tools/act3/ch18_kite_greybox.py; do not edit by hand): the Kite in flight, its deck "
+        "doc": "M5-A3P-1004 greybox (tools/act1/ch18_greybox.py; do not edit by hand): the Kite in flight, its deck "
         "the whole walkable world (act3_ch18.md §2): the wheel, the chart table, the stern and bow rails, the lamps "
         "under the deck, the masts and the flare-kite sails. Day; the night aboard (K07) is a variant.",
         "sun": {"pitch_deg": -45.0, "yaw_deg": 150.0, "energy": 1.1, "color": "#f6f0e2"},

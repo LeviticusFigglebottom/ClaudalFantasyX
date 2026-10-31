@@ -1,5 +1,5 @@
 {
- "doc": "M5-A3P-1007 greybox (tools/act3/ch19_iskarra_greybox.py; do not edit by hand): the Prologue's plaza on env-art's Iskarra kit; collision only (the kit is the look). The Kite on the water (kite_lamps), the seven Prologue places (vigil_*), P01 and P02 (the Prologue's own shots), the plaza's edge (the hitch), the steps (the words), the spire's door (to_spire). Dusk; the night of the hitch and the morning after are variants.",
+ "doc": "M5-A3P-1007 greybox (tools/act1/ch19_greybox.py; do not edit by hand): the Prologue's plaza on env-art's Iskarra kit; collision only (the kit is the look). The Kite on the water (kite_lamps), the seven Prologue places (vigil_*), P01 and P02 (the Prologue's own shots), the plaza's edge (the hitch), the steps (the words), the spire's door (to_spire). Dusk; the night of the hitch and the morning after are variants.",
  "sun": {
   "pitch_deg": -12.0,
   "yaw_deg": 160.0,

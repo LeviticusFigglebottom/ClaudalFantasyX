@@ -43,7 +43,7 @@ revisits, Haluna's lifting), §5 (the heirlooms). File-to-beat map: drafts READM
 
 ## Done so far (act2-plan, supplementing): the critical path
 - **The Kite zone `ch18/kite`:**
-  - `tools/act3/ch18_kite_greybox.py` (new) builds the deck with the wheel, chart table, rails, engine hatch, masts and sails.
+  - `tools/act1/ch18_greybox.py` (new) builds the deck with the wheel, chart table, rails, engine hatch, masts and sails.
   - It adds the marks, shots K01–K04, K13, K14, K22 and K23, and 4 triggers: the chart, Iskarra, Ysolde's heirloom, and Ansedra from the air.
   - The night aboard is a light variant.
   - Also new: `Ch18Zone`, `kite.tscn`, the `locations.json` row and `LOCATION_CH18_KITE`.
