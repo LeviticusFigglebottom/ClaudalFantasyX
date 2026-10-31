@@ -1288,3 +1288,19 @@ SELF-RENDERED @ baf421df: the Lacquer Court from the Barge, Steps and CourtEntry
 - **81 Brine camp seam: traced, not fixed yet.** id-picks on the flats return nothing: the ground's material is re-set each frame (most likely by the Tide node's wet sand), so the picker can't see it. My hypothesis: the "lighter plane" is the tide water (y -0.15) showing where a mudflat piece dips below it, and its straight edge is a piece's edge. Next: probe the tide and mudflat pieces' heights at the seam.
 - **84 Coilspire laterite:** what's left is texture resolution, **M3-ENV-1331** (env-art).
 - **MERGE-READY @ 7ddf44d4** (row 78). The requests are 2c7287d3 and this commit.
+
+### big38 sign-off check (Lead 04:43): where each open row stands
+- **Merged in big38 (8b546285):** ca8ad639 (82, storm fill), db1ce910 (62 and 84 material tunes), baf421df (86).
+- **MERGE-READY, not yet merged: 7ddf44d4 (row 78, the Ashcrown court).** The loggia now shows fire-lit ash and the pillars are edged, so big38's still of the court can't show it yet. Please merge it.
+- **Rows flagged on env-art's kit previews, not on my zones** (the big38 stills L_00 and M_00 name the shots):
+  - **62:** `pemakar_p11_sea_cut_weir_day` (Pemakar kit preview, day).
+  - **80:** `pemakar_p04_harbour_day` (Pemakar kit preview).
+  - **79:** `ashcrown_a10_plume_from_the_rim` and `ashcrown_a01_approach` (Ashcrown kit preview).
+  - **Why my fixes don't reach them:** they are in my Ch5 zones (zone materials, zone plume). The previews use the kits' own materials and env-art's preview rigs. Requests are filed: M3-ENV-1332 (79) and M3-ENV-1333 (80, the shader's macro variation); 62's weir stone is the kit-folder `kit_weir_stone` I write, which the preview also takes.
+- **LEAD-ASK:** these block Act I sign-off. Give env-art-b leave, as for M4-A2P-114, to fix them directly, each in its own commit with a note in env-art.md:
+  1. the Ashcrown kit's `ac_plume_day` takes my zone plume's PLUME_LOOK;
+  2. A01's hands get a shaded material, and A10's mound a texture;
+  3. a distance-faded macro term in `env_weathering_body.gdshaderinc` (default off), turned on in `kit_volcanic_far`;
+  4. the Pemakar weir courses' look in the day preview.
+  Otherwise env-art takes M3-ENV-1331, 1332 and 1333 now.
+- **Mine, in progress now:** 81 (the Brine camp seam). 84's remaining blockiness is texture resolution (M3-ENV-1331, env-art's texture), unless the leave above covers it too.
