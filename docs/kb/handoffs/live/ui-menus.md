@@ -1566,3 +1566,4 @@ BACKLOG EMPTY: every open ui row waits on another track.
   - **Tests and checks:** memories 22/0, including `test_the_rest_of_act_one_replays_cleanly`, where each of the
     ten plays to its end on its stage, with lines, no event and the record unchanged. validate_data 0/0; taskboard ok.
   - **Next:** Act II's memories (Ch10 to Ch16), the same way.
+MERGE-READY @ 965126340: M5-A3P-1710, the Memories gallery Ch4-Ch9.
