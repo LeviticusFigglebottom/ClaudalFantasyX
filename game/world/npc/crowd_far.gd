@@ -38,6 +38,8 @@ var clock := 0.0
 ## "phases": PackedFloat32Array, "shown": PackedInt32Array (the pose each person is on)}
 var groups: Array[Dictionary] = []
 
+## The crowd's one material, held here as well as on the MultiMeshes so it frees after them (PC row 85).
+var _material: Material
 var _started := false
 var _ready_to_show := false
 ## The threaded build: its skinning jobs ({"arrays", "mats"}, per group, pose and surface) and its task id (-1: none).
@@ -179,7 +181,7 @@ func _run_job(i: int) -> void:
 
 ## The skinned poses into MultiMeshes, and the people shown.
 func _assemble() -> void:
-	var material := NpcSilhouette.material_for(Color(str(data["glow"])))
+	_material = NpcSilhouette.material_for(Color(str(data["glow"])))
 	for g in groups:
 		var meshes := _meshes(g["jobs"])
 		g.erase("jobs")
@@ -198,7 +200,7 @@ func _assemble() -> void:
 			var mmi := MultiMeshInstance3D.new()
 			mmi.name = "%s_%s_%d" % [g["body"], g["clip"], f]
 			mmi.multimesh = mm
-			mmi.material_override = material
+			mmi.material_override = _material
 			mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			add_child(mmi)
 			(g["poses"] as Array).append(mmi)
