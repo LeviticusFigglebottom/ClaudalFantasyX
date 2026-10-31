@@ -34,6 +34,10 @@ const UNDERTOW_AZIMUTH_DEG := 180.0
 const UNDERTOW_QUALITY := "high"
 const UNDERTOW_TIME_S := 205.0
 const UNDERTOW_AMBIENT := 0.6
+## PC pass 7 row 77: the sun stands behind the storm wall, so its glint path on the water is veiled too (at the day's
+## strength it drew straight bright streaks down the sea under the cloud's bright spot).
+const STORM_GLINT := 0.15
+const PARAM_GLINT := &"glint_strength"
 
 @export var phase: StringName = PHASE_DAY:
 	set(value):
@@ -99,6 +103,14 @@ func apply_phase() -> void:
 		world_environment.environment = storm_environment if storm else _day["environment"] as Environment
 	if water != null and storm_waves != null:
 		water.wave_set = storm_waves if storm else _day["waves"] as WaveSet
+	if water != null and _day.get("water_material") != null:
+		var day_mat := _day["water_material"] as ShaderMaterial
+		if storm:
+			var mat := day_mat.duplicate() as ShaderMaterial
+			mat.set_shader_parameter(PARAM_GLINT, STORM_GLINT)
+			water.material = mat
+		else:
+			water.material = day_mat
 	time_of_day_h = STORM_TIME_OF_DAY_H if storm else float(_day["time_of_day_h"])
 	wind_speed_m_s = STORM_WIND_SPEED_M_S if storm else float(_day["wind_speed"])
 	wind_gust = STORM_WIND_GUST if storm else float(_day["wind_gust"])
@@ -112,6 +124,7 @@ func _remember_day() -> void:
 		"sun_color": sun.light_color if sun != null else Color.WHITE,
 		"environment": world_environment.environment if world_environment != null else null,
 		"waves": water.wave_set if water != null else null,
+		"water_material": water.material as ShaderMaterial if water != null else null,
 		"time_of_day_h": time_of_day_h,
 		"wind_speed": wind_speed_m_s,
 		"wind_gust": wind_gust,
