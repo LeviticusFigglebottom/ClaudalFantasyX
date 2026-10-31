@@ -1251,3 +1251,16 @@ SELF-RENDERED @ 4cd6ed12: ch05_pemakar_harbour, _crown and _weir with the lamp f
   - **Request to the Act III chapters** (in the task file): the `environment_res` for each beat. B06 is env-art's ch17 dusk grade, B08 and B09 my night grade with a moon sun at about 0.3, and the rest the dawn grade.
   - **MERGE-READY @ 06fb966c.**
   - **Still waiting on M5-A3P-1001:** the walk collision (the path to the berths) and the engine bed's B10 light, which needs a block to follow. My claim has nothing else that isn't waiting on another track.
+
+### PC pass 7 (Lead 00:44): Act I rows 78–84 and 62
+- **82 Corrow storm, flood and lake crushed to black: fixed (ca8ad639).** ZoneKitDressing's new `fill_lights` (shadowless directional lights that can follow a block; tested) gives Corrow a cool fill from landward and a glimmer rim from the storm's bearing, on the Storm block. On lavapipe, pixels under 20/255: storm 51% → 3%, flood 26% → 12%, lake 30% → 10%. The figures now read in colour, not as silhouettes. The water shader adds a glint under the rim that it draws regardless of the light's specular; the rim is lowered to 0.55 to keep it soft. act1-chapters' corrow_lake camera is unchanged.
+- **62 Pemakar weir flat grey: tuned again.** A finer 0.45 m grain, more relief, a softer specular and less soak-darkening. The night weir shot barely moves on lavapipe. env-art's M3-ENV-1328 rebuild of the courses is at review with me; the PC's next pass is the judge.
+- **84 Coilspire gate blocky laterite: partly fixed (my zone copy).** Calmer pores and a finer detail grain over the base map. The square blots are the 512 px texture over 6 m, so I filed **M3-ENV-1331** for env-art to bake it at 2048 px.
+- **Still open, investigated next:**
+  - 78: the Ashcrown court doorway's grey void, and the brazier figure lost against black pillars.
+  - 79: the plume reading as clay, the A10 mound, and A01's hands. The plume material (d364a561) is newer than some PC passes; check that pass 7's build has it.
+  - 80: the Pemakar hillside.
+  - 81: Brine's camp seam. An id-pick finds no dressing mesh at the seam, so it's likely the zone's own ground or tide surface; tracing it.
+- **Checks:** Godot corrow 18, coilspire 11, pemakar 10, ambient_life 3 and zone_kit_dressing 10 pass; tools corrow, coilspire and pemakar kits OK; validate_data and taskboard OK.
+- **MERGE-READY @ db1ce910** (rows 82, 62 and 84).
+SELF-RENDERED @ db1ce910: ch08_corrow_storm, _flood and _lake before and after; ch05_pemakar_weir and ch08_coilspire_gate before and after; plus ch05_ashcrown_court, ch05_pemakar_harbour_day, ch06_brine_camp and Ashcrown's A01 and A10 before (scratch). All viewed.
