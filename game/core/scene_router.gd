@@ -635,7 +635,7 @@ func _instantiate(packed: PackedScene, stats: Dictionary) -> Node:
 	stats["instantiated_on_thread"] = instantiate_on_thread
 	if instantiate_on_thread:
 		ShaderGlobals.hold_writes()  # M3-HER-1151: no global write while the thread creates the zone's materials
-		var task := WorkerThreadPool.add_task(func() -> void: holder.append(packed.instantiate()))
+		var task := WorkerThreadPool.add_task(func() -> void: holder.append(built_scene(packed)))
 		while not WorkerThreadPool.is_task_completed(task):
 			await get_tree().process_frame
 		WorkerThreadPool.wait_for_task_completion(task)
@@ -644,6 +644,14 @@ func _instantiate(packed: PackedScene, stats: Dictionary) -> Node:
 		holder.append(packed.instantiate())
 	stats["instantiate_ms"] = _ms_since(t)
 	return holder[0] if not holder.is_empty() else null
+
+
+## On the worker thread: the scene instantiated, with its big meshes' occlusion triangles built (row 74: Haluna's
+## dresser meshes cost 0.5 s on the add frame otherwise; FieldCameraDirector.warm_triangles).
+static func built_scene(packed: PackedScene) -> Node:
+	var node := packed.instantiate()
+	FieldCameraDirector.warm_triangles(node)
+	return node
 
 
 func _record(stats: Dictionary, frames: Array[float]) -> void:

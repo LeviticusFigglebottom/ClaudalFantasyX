@@ -54,7 +54,7 @@ func start(scene_path: String, loads: ResidentLoads, request: BattleRequest, res
 		return
 	var holder: Array[Node] = []
 	ShaderGlobals.hold_writes()
-	var task := WorkerThreadPool.add_task(func() -> void: holder.append(packed.instantiate()))
+	var task := WorkerThreadPool.add_task(func() -> void: holder.append(SceneRouter.built_scene(packed)))
 	while not WorkerThreadPool.is_task_completed(task):
 		await _tree.process_frame
 	WorkerThreadPool.wait_for_task_completion(task)
