@@ -264,8 +264,40 @@ def build_lintel_gull_open(seed: int = 34) -> list[kc.MeshBuilder]:
         if not lod:
             oc.ring(mb, mouth + np.array([0.003, 0.0, 0.0]), (1.0, 0.18, 0.0), 0.018 * s, 0.0035 * s, carved, segs=10)
             oc.ring(mb, nape + np.array([-0.002, 0.0, 0.0]), (-1.0, 0.25, 0.0), 0.022 * s, 0.004 * s, carved, segs=10)
+        _paint_gull(mb, head_c, s)
         out.append(mb)
     return out
+
+
+# PC pass 7 row 59 (the Lead, 10-31): at O10's close-up from below the bare driftwood carving read as a crude wooden
+# duck. Oruvel limewashes its ridge gulls: chalk white over the grain (the wood shows where it has weathered off), the
+# bill picked out in ochre, the wingtips and tail in soot-grey, so it reads as a gull and as a carving at once. The
+# perch block stays bare wood. Painted by where each triangle sits on the carving (its own frame, +X the bill).
+GULL_PAINT = {"body": "ov_gull_limewash", "bill": "ov_gull_bill", "tips": "ov_gull_tips"}
+GULL_BILL_FROM = 0.045  # ahead of the head centre (x, carving metres before scale)
+GULL_TIPS_BEHIND = -0.3  # the wingtips and tail: x behind this (scaled)
+GULL_PERCH_TOP = 0.055  # the perch block's top (carving metres before scale)
+
+
+def _paint_gull(mb: kc.MeshBuilder, head_c: np.ndarray, s: float) -> None:
+    wood = mb.materials.index("kit_carved_wood") if "kit_carved_wood" in mb.materials else None
+    if wood is None:
+        return
+    body, bill, tips = (mb.material(GULL_PAINT[k]) for k in ("body", "bill", "tips"))
+    bare = mb.material(oc.M_CARVED)
+    p = np.asarray(mb.pos)
+    for k in range(len(mb.tris)):
+        if mb.tri_mat[k] != wood:
+            continue
+        c = p[list(mb.tris[k])].mean(axis=0)
+        if c[1] < GULL_PERCH_TOP * s:  # the perch block stays bare wood
+            mb.tri_mat[k] = bare
+        elif c[0] > head_c[0] + GULL_BILL_FROM * s and abs(c[1] - head_c[1]) < 0.06 * s:
+            mb.tri_mat[k] = bill
+        elif c[0] < GULL_TIPS_BEHIND * s:
+            mb.tri_mat[k] = tips
+        else:
+            mb.tri_mat[k] = body
 
 
 TARGETS = {
