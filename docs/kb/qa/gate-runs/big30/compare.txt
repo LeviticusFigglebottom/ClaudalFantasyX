@@ -1,4 +1,4 @@
-# big30: 588 shots: 174 PASS, 180 DRIFT (0 size mismatch), 230 NO-BASELINE, 4 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big30: 609 shots: 174 PASS, 180 DRIFT (0 size mismatch), 251 NO-BASELINE, 4 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 NO-BASELINE slice_end_card (pending_baseline)
 PASS glimmer_dusk rmse 0.00000 (limit 0.00800)
 PASS glimmer_night_held rmse 0.00000 (limit 0.00800)
@@ -586,4 +586,25 @@ NO-BASELINE ch12_hesk_c07 (pending_baseline)
 NO-BASELINE npc_haluna_vignette_causeway
 NO-BASELINE npc_haluna_vignette_lane_games
 NO-BASELINE npc_haluna_vignette_lane_mender
+NO-BASELINE npc_haluna_vignette_dock
 NO-BASELINE npc_haluna_vignette_night_market
+NO-BASELINE npc_haluna_vignette_night_lane
+NO-BASELINE crowd_vignette_oruvel_north
+NO-BASELINE crowd_vignette_oruvel_south
+NO-BASELINE crowd_vignette_pemakar_west
+NO-BASELINE crowd_vignette_pemakar_east
+NO-BASELINE liss_clip_press_wound (pending_baseline)
+NO-BASELINE liss_clip_fight_free (pending_baseline)
+NO-BASELINE toma_clip_lift (pending_baseline)
+NO-BASELINE stillguard_c_clip_withdraw_wounded (pending_baseline)
+NO-BASELINE villager_merel_pull_pin (pending_baseline)
+NO-BASELINE kerrid_clip_turn_palms (pending_baseline)
+NO-BASELINE pell_clip_kneel (pending_baseline)
+NO-BASELINE ysolde_clip_remove_pin (pending_baseline)
+NO-BASELINE sefir_clip_square_pages (pending_baseline)
+NO-BASELINE liss_clip_wash_hand (pending_baseline)
+NO-BASELINE rhen_clip_knock (pending_baseline)
+NO-BASELINE asha_clip_touch (pending_baseline)
+NO-BASELINE asha_clip_sleep_sitting (pending_baseline)
+NO-BASELINE toma_clip_bow (pending_baseline)
+NO-BASELINE villager_tobin_lift (pending_baseline)
