@@ -12,9 +12,6 @@ const ENCOUNTER := "ch03_causeway_shore"
 ## PC pass 7 row 74: a fight that returns to another zone (the Drownbell to Haluna) finds it built while it ran.
 const CROSS := "res://game/levels/ch02/haluna/haluna.tscn"
 const FRAME_USEC := 16667
-const GODOT_ENV := "GODOT"
-const GODOT_NAME_HINT := "godot"
-const GODOT_ON_PATH := "godot"
 
 
 func test_the_way_back_from_a_random_fight_is_the_resident_field() -> void:
@@ -63,8 +60,4 @@ func _probe(user_args: Array[String]) -> Dictionary:
 
 
 static func _godot() -> String:
-	var env := OS.get_environment(GODOT_ENV)
-	if env != "":
-		return env
-	var exe := OS.get_executable_path()
-	return exe if exe.get_file().to_lower().contains(GODOT_NAME_HINT) else GODOT_ON_PATH
+	return GodotBinary.path()

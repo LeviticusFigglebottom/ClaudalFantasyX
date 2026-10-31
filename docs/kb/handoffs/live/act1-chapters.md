@@ -1368,7 +1368,85 @@ done and in `status: review` (reviewer: narrative). Each task file's **Done** se
   and chapter-flow tests, qa_threads 1/0.
 - MERGE-READY @ e4445dc25
 
+
+### Act III Ch20, Ch21 and the Ending; the last Act III regulars (M5-A3P-1011, 1013, 1015, 1017, 1849; 10-31)
+- **M5-A3P-1013 (review), Ch20's seven fights:**
+  - The six held release fights `ch20_<v>` are each one armoured `<v>_held`, answered by vowbound.md's hero, with a
+    `release` phase at 20%. All are in the Act III regular band.
+  - The Cage, `ch20_the_cage`: four founders' seats round the well, each answered by a different hero, each
+    neighbour's seat `when_down` growing the next stronger. Toma is locked in. It is in the Act III boss band
+    (role 70.0).
+  - vowbound.json's six rows carry `released_flag`.
+  - The fight lines wait on M5-A3P-1009's mid-battle hook.
+- **M5-A3P-1011 (review), Ch20's zone and flow:** `ch20/undertow_layers` (`tools/act3/ch20_greybox.py`).
+  - A walled stair of floors down the well: the first floor with the Kite, the six memory layers, two rests and the
+    Cage's floor. Every flight is railed and veiled until the floor above is done.
+  - U01–U30 and every mark the scripts name.
+  - `chapters/ch20.json`: U00, each layer's scene, fight and release, R1, R2, the Cage and U08. Ch19's engine-stops
+    row goes to it, and U08 goes down to the heart.
+- **M5-A3P-1017 (review), Ch21's fights:**
+  - `ch21_kesh`: `kesh_held` with six element phases, then `release`.
+  - `ch21_sefir_warden`: Patience and Settle.
+  - `ch21_sefir_heart`: Draw and the storm's note.
+  - `ch21_sefir_letting`: a ward set piece. Asha's verse is the ward (quota 5), Toma is locked in covering it,
+    Sefir's Reach pushes it, the Stilled rise as a tide, and Sefir can't be felled.
+  - Act III boss band and set-piece band at 500 seeds. The Letting's naive floor is 0, with the reason written in
+    balance_targets.md "Act III".
+  - I took the three now-written ids off music.json `pending_encounters` (validate_data demanded it).
+    `ch21_sefir_warden` has no music row yet.
+- **M5-A3P-1015 (review), Ch21 and the Ending:** `ch21/heart` (`tools/act3/ch21_greybox.py`).
+  - The zone: the last layer, the two lamps as light in a ring, the Kite at rest, the Choir-stone save, the battle
+    floor.
+  - `chapters/ch21.json`: H01–H09, with each fight's return playing the next beat.
+  - `chapters/ending.json`: Ch18Zone reads it once `ch21_unbound` is set. E1–E4 play aboard the Kite (the held
+    `take_the_strain`, the courses closed), then it goes to `ch02/haluna` DockNight.
+  - **Requested M5-A3P-1203:** E5 at Haluna (slice-polish), the credits' beach-rite vignette scene (cinematics),
+    and the credits' `next_scene` into Oruvel for E7 (UI and slice-polish).
+- **M5-A3P-1849 (review), the last Act III regulars:**
+  - Ch20: `drowned_lantern`, and `held_shoal` (untargetable while it drifts; it turns when its lantern breaks).
+    Both are in the layers' table.
+  - Ch17: `deep_scuttler` ×3 and `hull_rasp` (its ribs break at 60%), optional fights at the outer moorings
+    (`a3_moorings_one`, `a3_moorings_two`).
+  - All in the regular band at 500 seeds.
+- Self-rendered views (Ch20 overview, Oruvel layer, the Cage; Ch21 overview, the lamps), viewed; no baselines.
+- **M5-A3P-1852/1853 (combat rows only):** `ch18_tide_matron` (the Cinder Matron as a coral kiln) is in the Act III boss
+  band. `ch18_old_leviathan` is the superboss with its own band (smart 50–90% over ≥ 60 turns; role report only). They
+  have no models yet (qa capsules), and their placement waits on Design's Kite world map and secret coordinates.
+- **Audits:**
+  - `battle_vfx_coverage` INTENDED rows explain my set-piece and Act III gaps.
+  - The Act I flow audit skips rows waiting on a Ch10+ flag (the Act III revisits in ch05, ch07 and ch08).
+  - The Act I audio audit counts a later-act encounter's entries as later users (audio's tool; a two-line, additive
+    edit).
+  - Two dead skills of mine (`court_wait`, `chain_lamp_gather`) are gone.
+- **Merged the integration branch** (d0046dc6). Conflicts: flags.tres (the integration's order, with my new flags
+  appended) and ownership.md (both sides' rows).
+- **Checks run:** validate_data 0/0; dlgc --check; taskboard --check; chapter_flow_check; gdlint and gdformat clean;
+  the touched tools tests (78 OK); the battle_vfx_coverage, act1_flow_audit and act1_audio_audit tests OK. Godot on
+  the merged tree: ch17, ch18, ch19, ch20, ch21, kesh, battle_sim, set_piece, vowbound and qa_threads (results on the
+  MERGE-READY line). The sim's 500-seed confirms are in balance_targets.md "Act III".
+- **Checks skipped or failing, not mine:**
+  - `test_audio_loudness` and `test_rig_integrity.TestRigIntegrityAsha` fail in the full tools run. They check audio
+    assets and rigs; this branch changed none of either.
+  - Coverage, Blender and the shot manifest were not run: no game/battle or game/progression code, no Blender
+    source, no manifest shot touched.
+
+
 ## Exact next step
+**BACKLOG EMPTY (2026-10-31):** every Act III row assigned to act1-chapters is built and in review (M5-A3P-1001, 1004,
+1007, 1009, 1011, 1013, 1015, 1017 and 1849; the combat rows for 1852 and 1853). What is left waits on other tracks:
+1. **M5-A3P-1009's mid-battle line hook** (battle-presentation): when it lands, wire the fight lines
+   (`ch19_bark_abiding_wardens`, `ch20_bark_vowbound_fights`, `ch21_bark_sefir`) to their triggers and play each in
+   its suite's fight.
+2. **M5-A3P-1203** (slice-polish, UI, cinematics): E5 at Haluna, the credits' beach-rite vignette, and E7 in Oruvel.
+   When it lands, extend `test_ch21_thread` through the credits.
+3. **Design's Kite world map and secret coordinates:** place `ch18_tide_matron` on an old wild route and
+   `ch18_old_leviathan` on the secret shoal, as Kite courses.
+4. **Models** (creatures-b and characters): Sefir's battle body and the Stilled (M5-A3P-1849's capsules), the founders,
+   the Tide Matron and the Old Leviathan. When each scene lands, set `model` on its enemies.json row and drop its
+   qa_known capsule.
+5. Re-merge the integration branch after each Lead batch, and run qa_threads plus the ch17–ch21 threads.
+
+### Earlier exact next step (superseded 10-31)
 **2026-10-30 ~23:50:** the FAST-TRACK and the Act II flows (M4-A2P-1003, 1012, 104, 105) are done and pushed.
 Next, in order:
 1. M4-A2P-019, Act II loadouts: a loadout per chapter (the Vowbound bound by then: Nhoa from Ch12, Hesk from Ch13,

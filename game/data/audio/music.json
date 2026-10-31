@@ -525,7 +525,7 @@
       "ch10_mangrove_drowner": "mangrove_drowner", "ch11_lamp_engine": "lamp_engine", "ch12_avalanche_ram": "avalanche_ram", "ch15_wakefin": "wakefin",
       "ch14_malcor_venn": "malcor_venn", "ch14_water_steps": "court_steps", "ch14_hold_the_steps": "court_steps", "ch16_abiding_guard": "abiding_guard"
     },
-    "pending_encounters": ["ch14_hold_the_steps", "ch21_kesh", "ch21_sefir_heart", "ch21_sefir_letting"],
+    "pending_encounters": ["ch14_hold_the_steps"],
     "_pending_note": "M4-A2P-1951 (the Act II mix pass as played): the people bosses' and the Ch14 set piece's cues, wired before combat writes their encounters (the scripts already start ch14_malcor_venn, ch14_water_steps and ch16_abiding_guard; the chapter plan calls the set piece ch14_hold_the_steps, so both ids name court_steps until combat settles it). An id here drops off once encounters.json has it.",
     "phases": {
       "flood": {

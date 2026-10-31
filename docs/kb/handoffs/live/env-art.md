@@ -589,6 +589,31 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **PC row 86 (the Lead, 02:22), Act II first look. MERGE-READY @ 2707ac2a**, with one cause routed (below).
+  - **Ossa Fen, white water-edge cut-outs: fixed.** The tannin_fen look (Ossa Fen, Reedhollow and the fen arena)
+    now has no shore foam, a soft weak sun glint (0.12, min roughness 0.2) and no SSR. On lavapipe the flakes on the
+    shallow sheets went from stark white to faint grey streaks. The overcast_lagoon look (Lowlight, the Vey and their
+    arenas) has the same change, which takes the white flakes off the engine hall's floor water.
+  - **Ossa Fen, flat dark mud plane: improved.** `kit_fen_mud` and `kit_fen_bank` now show their surface (normal
+    0.9) and dry in patches (value variation 0.2, a lighter mud tint).
+    - **GPU:** the mud should show ripples and lighter dried patches. It stays the frame's darkest value under the
+      fen's dusk grade, by design (the tannin water is darker).
+  - **Lowlight's jagged white floor patch: the cause is the sun, not a decal.**
+    - The zone's sun (GreyboxZone `_build_lighting`, from the chapters' layout `sun`: pitch −65, energy 1.4,
+      shadows always hard) shines through the engine hall's fallen vault bay (`HALL_FALLEN`, by design: light over
+      the Engine). The bay's ragged edge throws a hard-edged pool on the pale ceramic floor.
+    - Ruled out on lavapipe: removing the water film leaves it unchanged; turning off the floor's salt changes
+      nothing.
+    - **LEAD-ASK:** a sun softness key for the layout (light_angular_distance about 3–5°, which blurs a hole's
+      shadow edge into a shaft of light) is greybox_zone.gd's (architecture/chapters). Or lower Lowlight's layout
+      sun energy (it's overcast at noon, colour script ch11). Either is a one-line change outside env-art's files.
+      I can add rubble under the bay so the light lands on stones, if you'd rather keep it in my lane.
+  - **Checks:**
+    - Tools: test_arenas, test_lowlight and the fen/ch10/ch11 tests OK.
+    - Godot `--filter`: ch10 3/0, ch11 3/0, arena 18/0, water 49/0.
+    - validate_data clean.
+  - **Baselines that move (none written):** battle_arena_ossa_fen_roots, battle_arena_lowlight_engine_hall,
+    battle_arena_sunken_vey_gallery, and the wildlife_zone_ossa_fen shots.
 - **PC pass 7 (the Lead, 00:44) rows 59, 76, 77 and 83: MERGE-READY @ 7769d2ad.** Each was checked on lavapipe
   before and after; below is what I expect on the GPU.
   - **59, ch01_o10_gull:**

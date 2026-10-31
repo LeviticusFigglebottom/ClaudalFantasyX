@@ -17,7 +17,7 @@
   "kit_gold_leaf": "res://game/levels/ch13/ansedra/ansedra_gold_leaf_material.tres",
   "kit_lacquer_red": "res://game/levels/ch13/ansedra/ansedra_lacquer_red_material.tres",
   "kit_lacquer_black": "res://game/levels/ch13/ansedra/ansedra_lacquer_black_material.tres",
-  "kit_order_marble": "res://game/levels/ch13/ansedra/ansedra_order_marble_material.tres"
+  "kit_order_marble": "res://game/levels/ch13/lamp_archive/lamp_archive_marble_material.tres"
  },
  "pieces": [
   {

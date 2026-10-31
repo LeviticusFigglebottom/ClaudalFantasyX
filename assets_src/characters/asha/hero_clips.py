@@ -2822,6 +2822,32 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
     return derive_folds({h: (ax, tuple(an), sc) for h, ax, an, sc in zip(sk.skirt, axes, angs, gathers)})
 
 
+# PC pass 7, row 56 (Asha's run read as a rigid bell that slides): the skirt is solved frame by frame against the
+# legs, so the hem snapped to wherever the legs put it. In the walk and run cycles (SKIRT_TRAIL_CLIPS) the knee and
+# hem bones of each panel keep SKIRT_TRAIL of their last frame's swing while the solve lets them fall back in (they
+# still kick out at once, as far as the leg needs): the hem flicks out with the stride and drifts back. The cycle is
+# baked twice and the second pass kept, so the first frame carries the last frame's swing and the loop closes.
+SKIRT_TRAIL = 0.6  # the share of the previous frame's extra swing kept, per 15 fps frame
+SKIRT_TRAIL_CLIPS = {"walk", "run"}
+SKIRT_TRAIL_FRONT = 0.3  # panels facing further forward than this (about 72 deg either side) keep the plain solve
+
+
+def _skirt_trail(sk: "Skeleton", res: dict) -> dict:
+    prev = sk.skirt_trail
+    out = {}
+    for h, (ax, angs, sc) in res.items():
+        p = prev.get(h)
+        a = list(angs)
+        front = -float(ax[0])  # how far the panel faces forward (its outward direction's +Z; ax = down x out)
+        if p is not None and front < SKIRT_TRAIL_FRONT:  # the front panels stay on the solve: the staff is carried there
+            for lv in range(1, len(a)):  # the knee and hem bones; the hip bone stays on the solve
+                if p[lv] > a[lv]:
+                    a[lv] = a[lv] + SKIRT_TRAIL * (p[lv] - a[lv])
+        out[h] = (ax, tuple(a), sc)
+    sk.skirt_trail = {h: v[1] for h, v in out.items()}
+    return out
+
+
 def skirt_derived(name: str) -> bool:
     """ADR 0140: an even-numbered skirt panel's bones are derived at runtime (HeroSkirtFolds), so no clip bakes them."""
     return name.startswith(SKIRT_BONE) and int(name[len(SKIRT_BONE):].split(".")[0]) % 2 == 0
@@ -2869,6 +2895,8 @@ def helper_pose(sk: "Skeleton", g: dict, out: dict, hips=None) -> None:
     rq_h = sk.rest_q[HIPS]
     scales = out.setdefault(SCALE_KEY, {})
     sk.last_skirt = skirt_solve(sk, g, hips)  # prop_pivot poses the cloth from the same solve
+    if getattr(sk, "skirt_trail", None) is not None:  # row 56: the hem's momentum in the walk and run cycles
+        sk.last_skirt = _skirt_trail(sk, sk.last_skirt)
     for h, (axis, angs, sc) in sk.last_skirt.items():
         flare = 1.0 + SKIRT_FLARE * (1.0 - sc)  # pooled cloth spreads a little sideways
         scales[h + SKIRT_LEVELS[-1]] = (round(flare, 6), round(sc, 6), round(flare, 6))
@@ -5170,6 +5198,13 @@ def build(hero: str, names: list | None = None) -> str:
         keys_pr: list = []  # M2-CHR-515: the held prop's slide
         keys_pq: list = []  # and its pivot in the fist (prop_pivot)
         keys_g: dict = {}  # and the grip
+        sk.skirt_trail = None
+        if loop and clip in SKIRT_TRAIL_CLIPS and sk.skirt and hero in LOCO_GAIT:
+            sk.skirt_trail = {}  # row 56: a first pass round the cycle, discarded, so the loop starts in motion
+            for t in times[:-1]:
+                p0 = staff_hold(pose_at(clip, t % length, length, sk, persona), persona)
+                sk.local_pose({b: qeuler(v) for b, v in p0.items() if b != "hips"}, p0.get("hips"),
+                              hook_hold(hero, clip, (t % length) / length))
         for t in times:
             tt = (t % length) if loop else t
             pose = staff_hold(pose_at(clip, tt, length, sk, persona), persona)
@@ -5190,6 +5225,10 @@ def build(hero: str, names: list | None = None) -> str:
                 keys_h[b][0].append((t, local[POS_KEY][b]))
                 keys_h[b][1].append((t, local[b]))
             keys_p.append((t, sk.rest_t[HIPS] + np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)))
+        if sk.skirt_trail is not None:  # row 56: the trailed cycle closes on its own first frame exactly
+            for b in sk.helpers:
+                keys_q[b][-1] = (keys_q[b][-1][0], keys_q[b][0][1])
+            sk.skirt_trail = None
         lines = [f'[sub_resource type="Animation" id="clip_{ci}"]', f'resource_name = &"{clip}"',
                  f"length = {fmt(length)}", f"loop_mode = {1 if loop else 0}", f"step = {fmt(1.0 / FPS)}"]
         lines += battle_markers(clip, length)  # M2-CHR-07: the strike clips' `contact` marker
