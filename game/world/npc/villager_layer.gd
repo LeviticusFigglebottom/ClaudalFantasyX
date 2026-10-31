@@ -35,6 +35,9 @@ extends Node3D
 ## the villager only while the zone's `is_night` (HalunaZone.set_night: the dock at night) is false or true. Hidden, it
 ## is stopped and not ticked, as HalunaZone's night_hide stops its own villagers.
 ##
+## A zone file's `far` block (M5-A3P-1809: Ch20's Tidecup gallery) is a distant crowd: a CrowdFar child with that data,
+## built off the main thread once the rows are in.
+##
 ## Flags (M5-A3P-1810, the Act III revisits): a row's `flag` shows the villager only while that flag is set, and its
 ## `not_flag` only until that flag is set (Game.get_flag, checked each tick), so a zone can swap a crowd person's
 ## row for a changed one (Haluna's backs-to-the-water, Reedhollow's farewell-tide again). Together with `shown`, a
@@ -248,6 +251,18 @@ func _finish_build(rows: Array, by_id: Dictionary) -> void:
 			(by_id[StringName(str(row["npc_id"]))] as FieldNpc).partner = by_id[mate] as FieldNpc
 	_check_storm()
 	_apply_shown()
+	_add_far()
+
+
+## The zone's `far` crowd as a CrowdFar child (once).
+func _add_far() -> void:
+	var far: Variant = data.get("far", null)
+	if not far is Dictionary or get_node_or_null(^"CrowdFar") != null:
+		return
+	var crowd := CrowdFar.new()
+	crowd.name = "CrowdFar"
+	crowd.inline = far as Dictionary
+	add_child(crowd)
 
 
 ## Adds a layer for `zone_id` under `zone` (after the zone has placed any villagers of its own) and builds it; a zone

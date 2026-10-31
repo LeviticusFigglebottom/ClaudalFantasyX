@@ -75,9 +75,13 @@ MATERIALS: dict[str, dict] = {
                                   roughness_base=0.82, specular_base=0.4, cavity_darken=0.25, ao_strength=0.7,
                                   variation_value=0.12, variation_warmth=0.02, erosion_pit_darken=0.15),
     "kit_volcanic_far": stone("volcanic_stone_albedo.png", "volcanic_stone_normal.png", (8.0, 8.0),
-                              base_triplanar=True, normal_strength=0.5, roughness_base=0.92, cavity_darken=0.2,
+                              base_triplanar=True, normal_strength=0.5, cavity_darken=0.2,
                               ao_strength=0.5, variation_value=0.08, detail_scale_m=6.0, moss_coverage=0.85,
-                              moss_normal_y=0.35, moss_north_facing=0.2),
+                              moss_normal_y=0.35, moss_north_facing=0.2,
+                              # the PC's pass 7 row 80: the macro layer breaks the far slopes up (env_weathering)
+                              macro_strength=0.85, macro_scale_m=36.0,
+                              # ... and at the hill's grazing angle the sky's sheen washed the slope to one pale tone
+                              specular_base=0.12, roughness_base=1.0),
     "kit_laterite_brick": stone("laterite_brick_albedo.png", "laterite_brick_normal.png", (1.0, 1.0),
                                 base_triplanar=True, normal_strength=1.1, roughness_base=0.86, specular_base=0.35,
                                 cavity_darken=0.35, ao_strength=0.7, variation_value=0.1, use_moss=False,

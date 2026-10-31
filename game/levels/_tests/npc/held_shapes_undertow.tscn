@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/haluna_villagers.gd" id="stage"]
+
+[node name="HeldShapesUndertow" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch20/undertow_layers/undertow_layers.tscn"
+zone_id = &"ch20/undertow_layers"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Market" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.5783, -0.1003, 0.8096, 0, 0.9924, 0.123, -0.8158, -0.07112, 0.5739, 2.5, -1, -17)
+fov = 55.0
+
+[node name="Terrace" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.5145, -0.1166, 0.8495, 0, 0.9907, 0.1359, -0.8575, -0.06993, 0.5097, 1.5, -4, -35.5)
+fov = 55.0
+
+[node name="Gallery" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.606, -0.1192, 0.7865, 0, 0.9887, 0.1498, -0.7954, -0.09079, 0.5992, 2, -12.6, -95)
+fov = 55.0

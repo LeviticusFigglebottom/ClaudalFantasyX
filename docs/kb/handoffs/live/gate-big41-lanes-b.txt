@@ -1,0 +1,6 @@
+# sha 4eb49ffffca02979740bd0e3213649ce75917e3f
+res://tests/integration/test_haluna_town.gd
+res://tests/integration/test_qa_dock_edges.gd
+res://tests/unit/test_crowd_villagers.gd
+res://tests/unit/test_villager_routines.gd
+res://tests/unit/test_zone_cast.gd

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "doc": "Reedhollow's Kirru (the Lead, 2026-10-30: the creatures track builds the Kirru crowd bodies, assets_src/crowd/kirru; characters keep the named Pell, Owa and the Kirru child). The clutch: eight bodies on the greybox's clutch_0..7 stage actors on the Shore, so the farewell-tide (B09) shows Kirru, not capsules (the stage actors stay hidden until the story shows them); the bodies alternate so no two neighbours in either line match. The watchers (R01: the Kirru are already watching from the platforms, very tall, very still): one on each house platform, facing the lagoon, each row's `at` making its stand-in at CrowdSpots/<id>. Pell is never inside (rule 3); the gate and the causeway are clear. `body` rows: Kirru wear no tints. Each row's `tuning`: the Kirru's eye height (2.05 m, the youngster's 1.45 m) so their look-ats meet the party's eyes, and their stillness (bible section 8; pell.md section 1): a slower look-about, a longer and rarer glance, a narrow idle pace. The vignettes (the Lead, 2026-10-30: the Act II towns lived in; ground probed against the zone's collision, 2026-10-30), still as the Kirru are and on the clips they have (Pell's idle and talk): three fishers on the ring's inner edge with their staffs out over the lagoon's mangrove water, heron-still; two talking in bouts on the south ring (a chat pair); a youngster at the ring's inner edge watching the fishers. The lagoon's middle and the shore stay clear for the farewell-tide.",
+  "doc": "Reedhollow's Kirru (the Lead, 2026-10-30: the creatures track builds the Kirru crowd bodies, assets_src/crowd/kirru; characters keep the named Pell, Owa and the Kirru child). The clutch: eight bodies on the greybox's clutch_0..7 stage actors on the Shore, so the farewell-tide (B09) shows Kirru, not capsules (the stage actors stay hidden until the story shows them); the bodies alternate so no two neighbours in either line match. The watchers (R01: the Kirru are already watching from the platforms, very tall, very still): one on each house platform, facing the lagoon, each row's `at` making its stand-in at CrowdSpots/<id>. Pell is never inside (rule 3); the gate and the causeway are clear. `body` rows: Kirru wear no tints. Each row's `tuning`: the Kirru's eye height (2.05 m, the youngster's 1.45 m) so their look-ats meet the party's eyes, and their stillness (bible section 8; pell.md section 1): a slower look-about, a longer and rarer glance, a narrow idle pace. The vignettes (the Lead, 2026-10-30: the Act II towns lived in; ground probed against the zone's collision, 2026-10-30), still as the Kirru are and on the clips they have (Pell's idle and talk): three fishers on the ring's inner edge with their staffs out over the lagoon's mangrove water, heron-still; two talking in bouts on the south ring (a chat pair); a youngster at the ring's inner edge watching the fishers. The lagoon's middle and the shore stay clear for the farewell-tide. M5-A3P-1811 (act3_ch18.md K03 to K05, the farewell-tide again): from `ch17_complete` the platform watchers stand turned round, their backs to the lagoon (each `_tide` row is its watcher's own spot, turned 180 degrees); the watchers' own rows carry `not_flag` on the same flag.",
   "zone": "ch10/reedhollow",
   "storm_flag": "",
   "villagers": [
@@ -185,6 +185,7 @@
       "body": "kirru_man",
       "attach": "child",
       "stand_in": "CrowdSpots/watcher_1",
+      "not_flag": "ch17_complete",
       "at": [55.738, 0.0, -11.738, 135.0],
       "tuning": {
         "look_around": {
@@ -208,6 +209,7 @@
       "body": "kirru_woman",
       "attach": "child",
       "stand_in": "CrowdSpots/watcher_2",
+      "not_flag": "ch17_complete",
       "at": [48.297, 0.0, -16.034, 165.0],
       "tuning": {
         "look_around": {
@@ -231,6 +233,7 @@
       "body": "kirru_elder_woman",
       "attach": "child",
       "stand_in": "CrowdSpots/watcher_4",
+      "not_flag": "ch17_complete",
       "at": [32.262, 0.0, -11.738, 225.0],
       "tuning": {
         "look_around": {
@@ -254,6 +257,7 @@
       "body": "kirru_youngster",
       "attach": "child",
       "stand_in": "CrowdSpots/watcher_5",
+      "not_flag": "ch17_complete",
       "at": [27.966, 0.0, -4.297, 255.0],
       "tuning": {
         "look_around": {
@@ -277,6 +281,7 @@
       "body": "kirru_woman",
       "attach": "child",
       "stand_in": "CrowdSpots/watcher_7",
+      "not_flag": "ch17_complete",
       "at": [32.262, 0.0, 11.738, 315.0],
       "tuning": {
         "look_around": {
@@ -300,6 +305,7 @@
       "body": "kirru_man",
       "attach": "child",
       "stand_in": "CrowdSpots/watcher_8",
+      "not_flag": "ch17_complete",
       "at": [39.703, 0.0, 16.034, 345.0],
       "tuning": {
         "look_around": {
@@ -323,6 +329,7 @@
       "body": "kirru_youngster",
       "attach": "child",
       "stand_in": "CrowdSpots/watcher_10",
+      "not_flag": "ch17_complete",
       "at": [55.738, 0.0, 11.738, 45.0],
       "tuning": {
         "look_around": {
@@ -346,6 +353,7 @@
       "body": "kirru_elder_woman",
       "attach": "child",
       "stand_in": "CrowdSpots/watcher_11",
+      "not_flag": "ch17_complete",
       "at": [60.034, 0.0, 4.297, 75.0],
       "tuning": {
         "look_around": {
@@ -495,6 +503,198 @@
         "idle_playback": [0.92, 1.02],
         "look": {
           "head_height_m": 1.45
+        }
+      }
+    },
+    {
+      "npc_id": "watcher_1_tide",
+      "body": "kirru_man",
+      "attach": "child",
+      "stand_in": "CrowdSpots/watcher_1_tide",
+      "at": [55.738, 0.0, -11.738, 315.0],
+      "flag": "ch17_complete",
+      "tuning": {
+        "look_around": {
+          "every_sec": [10.0, 18.0],
+          "hold_sec": [2.0, 3.5],
+          "yaw_deg": 30.0
+        },
+        "glance": {
+          "radius_m": 8.0,
+          "hold_sec": [2.5, 4.0],
+          "rest_sec": [6.0, 10.0]
+        },
+        "idle_playback": [0.92, 1.02],
+        "look": {
+          "head_height_m": 2.05
+        }
+      }
+    },
+    {
+      "npc_id": "watcher_2_tide",
+      "body": "kirru_woman",
+      "attach": "child",
+      "stand_in": "CrowdSpots/watcher_2_tide",
+      "at": [48.297, 0.0, -16.034, 345.0],
+      "flag": "ch17_complete",
+      "tuning": {
+        "look_around": {
+          "every_sec": [10.0, 18.0],
+          "hold_sec": [2.0, 3.5],
+          "yaw_deg": 30.0
+        },
+        "glance": {
+          "radius_m": 8.0,
+          "hold_sec": [2.5, 4.0],
+          "rest_sec": [6.0, 10.0]
+        },
+        "idle_playback": [0.92, 1.02],
+        "look": {
+          "head_height_m": 2.05
+        }
+      }
+    },
+    {
+      "npc_id": "watcher_4_tide",
+      "body": "kirru_elder_woman",
+      "attach": "child",
+      "stand_in": "CrowdSpots/watcher_4_tide",
+      "at": [32.262, 0.0, -11.738, 45.0],
+      "flag": "ch17_complete",
+      "tuning": {
+        "look_around": {
+          "every_sec": [10.0, 18.0],
+          "hold_sec": [2.0, 3.5],
+          "yaw_deg": 30.0
+        },
+        "glance": {
+          "radius_m": 8.0,
+          "hold_sec": [2.5, 4.0],
+          "rest_sec": [6.0, 10.0]
+        },
+        "idle_playback": [0.92, 1.02],
+        "look": {
+          "head_height_m": 2.05
+        }
+      }
+    },
+    {
+      "npc_id": "watcher_5_tide",
+      "body": "kirru_youngster",
+      "attach": "child",
+      "stand_in": "CrowdSpots/watcher_5_tide",
+      "at": [27.966, 0.0, -4.297, 75.0],
+      "flag": "ch17_complete",
+      "tuning": {
+        "look_around": {
+          "every_sec": [10.0, 18.0],
+          "hold_sec": [2.0, 3.5],
+          "yaw_deg": 30.0
+        },
+        "glance": {
+          "radius_m": 8.0,
+          "hold_sec": [2.5, 4.0],
+          "rest_sec": [6.0, 10.0]
+        },
+        "idle_playback": [0.92, 1.02],
+        "look": {
+          "head_height_m": 1.45
+        }
+      }
+    },
+    {
+      "npc_id": "watcher_7_tide",
+      "body": "kirru_woman",
+      "attach": "child",
+      "stand_in": "CrowdSpots/watcher_7_tide",
+      "at": [32.262, 0.0, 11.738, 135.0],
+      "flag": "ch17_complete",
+      "tuning": {
+        "look_around": {
+          "every_sec": [10.0, 18.0],
+          "hold_sec": [2.0, 3.5],
+          "yaw_deg": 30.0
+        },
+        "glance": {
+          "radius_m": 8.0,
+          "hold_sec": [2.5, 4.0],
+          "rest_sec": [6.0, 10.0]
+        },
+        "idle_playback": [0.92, 1.02],
+        "look": {
+          "head_height_m": 2.05
+        }
+      }
+    },
+    {
+      "npc_id": "watcher_8_tide",
+      "body": "kirru_man",
+      "attach": "child",
+      "stand_in": "CrowdSpots/watcher_8_tide",
+      "at": [39.703, 0.0, 16.034, 165.0],
+      "flag": "ch17_complete",
+      "tuning": {
+        "look_around": {
+          "every_sec": [10.0, 18.0],
+          "hold_sec": [2.0, 3.5],
+          "yaw_deg": 30.0
+        },
+        "glance": {
+          "radius_m": 8.0,
+          "hold_sec": [2.5, 4.0],
+          "rest_sec": [6.0, 10.0]
+        },
+        "idle_playback": [0.92, 1.02],
+        "look": {
+          "head_height_m": 2.05
+        }
+      }
+    },
+    {
+      "npc_id": "watcher_10_tide",
+      "body": "kirru_youngster",
+      "attach": "child",
+      "stand_in": "CrowdSpots/watcher_10_tide",
+      "at": [55.738, 0.0, 11.738, 225.0],
+      "flag": "ch17_complete",
+      "tuning": {
+        "look_around": {
+          "every_sec": [10.0, 18.0],
+          "hold_sec": [2.0, 3.5],
+          "yaw_deg": 30.0
+        },
+        "glance": {
+          "radius_m": 8.0,
+          "hold_sec": [2.5, 4.0],
+          "rest_sec": [6.0, 10.0]
+        },
+        "idle_playback": [0.92, 1.02],
+        "look": {
+          "head_height_m": 1.45
+        }
+      }
+    },
+    {
+      "npc_id": "watcher_11_tide",
+      "body": "kirru_elder_woman",
+      "attach": "child",
+      "stand_in": "CrowdSpots/watcher_11_tide",
+      "at": [60.034, 0.0, 4.297, 255.0],
+      "flag": "ch17_complete",
+      "tuning": {
+        "look_around": {
+          "every_sec": [10.0, 18.0],
+          "hold_sec": [2.0, 3.5],
+          "yaw_deg": 30.0
+        },
+        "glance": {
+          "radius_m": 8.0,
+          "hold_sec": [2.5, 4.0],
+          "rest_sec": [6.0, 10.0]
+        },
+        "idle_playback": [0.92, 1.02],
+        "look": {
+          "head_height_m": 2.05
         }
       }
     }

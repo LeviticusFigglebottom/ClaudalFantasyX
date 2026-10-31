@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "doc": "Haluna's villagers alive (M3-CRE-613; docs/kb/tech/field_npc.md, VillagerLayer). Each row turns the zone's stand-in at `stand_in` (a path from the zone root) into the M2-CHR-03 villager `npc_id` driven by FieldNpc: `hide` lists the stand-in's placeholder children to hide (default StandIn and Facing), `talk` is the Interactable that starts the villager's talk, `follow` lists nodes that ride along when it walks (the stand-in body always does). Routines: `route` (zone-root points, or {at, pause_sec, activity}), `chat_with` (another row's npc_id), `work_at` (where the head looks while it works; default npc.json work.look_at), `shelter` ([x, y, z, yaw_deg] it hurries to in a storm; Haluna has no storm in the slice). Ground heights were probed against the zone's collision (2026-10-25). The Town's shopkeeper, smith and innkeeper keep their stand-ins until they have bodies (request M3-CRE-614). Since big11, HalunaVillagers (slice-polish, M2-FP-102) places Haluna's villagers inside their bodies in HalunaZone.prebuild(); HalunaZone then calls VillagerLayer.wire(self, &\"ch02/haluna\"), which adopts them and wires the chat pair, work and shelter points from these rows. The `route` rows (Reed, the child) apply only when the layer places those villagers itself (docs/kb/tech/field_npc.md, Who owns what). The shop rows (`actor`: another villager's model) sit inside their bodies (`attach: child`) as a FieldNpc named by `node_name` `Villager`, where HalunaVillagers.populate looks, so the layer builds at once in the zone's _ready and populate skips those bodies instead of doubling them (big14 gate). The vignettes (the Lead, 2026-10-30: the slice zones lived in): fifteen crowd people (crowd.json, community `haluna`) on `at` spots, each at work by something it would work on, ground heights probed against the zone's collision (2026-10-30). At the causeway head: a woman laying fish on the drying rack, a buyer with her basket at the stall, a man hauling a line at the water's edge, two children at a game of stones on the sand. In the tide-wall lane: an old woman mending at the net heap by her door, a woman back from the dock with her basket, two children at a clapping game, a man sweeping in front of his house between two stations. At the dock: a man mending at the net heap, an old woman turning fish on the rack, a man hauling a mooring line, a man with a basket of the catch. `shown`: the causeway head's, the dock's and the children are `day` (gone home on the dock at night, as night_hide hides the dock villagers); the lane's mender and sweeper work by lamplight too; one woman brings the last basket home past the market only at night.",
+  "doc": "Haluna's villagers alive (M3-CRE-613; docs/kb/tech/field_npc.md, VillagerLayer). Each row turns the zone's stand-in at `stand_in` (a path from the zone root) into the M2-CHR-03 villager `npc_id` driven by FieldNpc: `hide` lists the stand-in's placeholder children to hide (default StandIn and Facing), `talk` is the Interactable that starts the villager's talk, `follow` lists nodes that ride along when it walks (the stand-in body always does). Routines: `route` (zone-root points, or {at, pause_sec, activity}), `chat_with` (another row's npc_id), `work_at` (where the head looks while it works; default npc.json work.look_at), `shelter` ([x, y, z, yaw_deg] it hurries to in a storm; Haluna has no storm in the slice). Ground heights were probed against the zone's collision (2026-10-25). The Town's shopkeeper, smith and innkeeper keep their stand-ins until they have bodies (request M3-CRE-614). Since big11, HalunaVillagers (slice-polish, M2-FP-102) places Haluna's villagers inside their bodies in HalunaZone.prebuild(); HalunaZone then calls VillagerLayer.wire(self, &\"ch02/haluna\"), which adopts them and wires the chat pair, work and shelter points from these rows. The `route` rows (Reed, the child) apply only when the layer places those villagers itself (docs/kb/tech/field_npc.md, Who owns what). The shop rows (`actor`: another villager's model) sit inside their bodies (`attach: child`) as a FieldNpc named by `node_name` `Villager`, where HalunaVillagers.populate looks, so the layer builds at once in the zone's _ready and populate skips those bodies instead of doubling them (big14 gate). The vignettes (the Lead, 2026-10-30: the slice zones lived in): fifteen crowd people (crowd.json, community `haluna`) on `at` spots, each at work by something it would work on, ground heights probed against the zone's collision (2026-10-30). At the causeway head: a woman laying fish on the drying rack, a buyer with her basket at the stall, a man hauling a line at the water's edge, two children at a game of stones on the sand. In the tide-wall lane: an old woman mending at the net heap by her door, a woman back from the dock with her basket, two children at a clapping game, a man sweeping in front of his house between two stations. At the dock: a man mending at the net heap, an old woman turning fish on the rack, a man hauling a mooring line, a man with a basket of the catch. `shown`: the causeway head's, the dock's and the children are `day` (gone home on the dock at night, as night_hide hides the dock villagers); the lane's mender and sweeper work by lamplight too; one woman brings the last basket home past the market only at night. M5-A3P-1811 (act3_ch18.md §4, \"Backs to the Water\"): once `ch18_haluna_lifted` is set, four of the beach's people stand in a short line on the beach with their backs to the water (three in vigil, the elder knelt in mourning), the lifting's after-image; their own rows carry `not_flag` on the same flag, so each person shows once.",
   "zone": "ch02/haluna",
   "storm_flag": "",
   "villagers": [
@@ -142,7 +142,8 @@
         -104.6,
         -121.0
       ],
-      "shown": "day"
+      "shown": "day",
+      "not_flag": "ch18_haluna_lifted"
     },
     {
       "npc_id": "haluna_stall_buyer",
@@ -154,7 +155,8 @@
         -99.8,
         132.0
       ],
-      "shown": "day"
+      "shown": "day",
+      "not_flag": "ch18_haluna_lifted"
     },
     {
       "npc_id": "haluna_beach_hauler",
@@ -166,7 +168,8 @@
         -114.0,
         -90.0
       ],
-      "shown": "day"
+      "shown": "day",
+      "not_flag": "ch18_haluna_lifted"
     },
     {
       "npc_id": "haluna_stones_girl",
@@ -292,7 +295,8 @@
         45.4,
         35.5
       ],
-      "shown": "day"
+      "shown": "day",
+      "not_flag": "ch18_haluna_lifted"
     },
     {
       "npc_id": "haluna_dock_hauler",
@@ -329,6 +333,78 @@
         -70.7
       ],
       "shown": "night"
+    },
+    {
+      "npc_id": "haluna_beach_hauler_lifted",
+      "crowd": "haluna_beach_hauler",
+      "stand_in": "CrowdSpots/haluna_beach_hauler_lifted",
+      "at": [
+        7.0,
+        0.34,
+        -110.0,
+        90.0
+      ],
+      "shown": "day",
+      "flag": "ch18_haluna_lifted",
+      "tuning": {
+        "clips": {
+          "work": "vigil"
+        }
+      }
+    },
+    {
+      "npc_id": "haluna_rack_folder_lifted",
+      "crowd": "haluna_rack_folder",
+      "stand_in": "CrowdSpots/haluna_rack_folder_lifted",
+      "at": [
+        7.2,
+        0.35,
+        -111.3,
+        90.0
+      ],
+      "shown": "day",
+      "flag": "ch18_haluna_lifted",
+      "tuning": {
+        "clips": {
+          "work": "vigil"
+        }
+      }
+    },
+    {
+      "npc_id": "haluna_stall_buyer_lifted",
+      "crowd": "haluna_stall_buyer",
+      "stand_in": "CrowdSpots/haluna_stall_buyer_lifted",
+      "at": [
+        6.9,
+        0.39,
+        -112.6,
+        90.0
+      ],
+      "shown": "day",
+      "flag": "ch18_haluna_lifted",
+      "tuning": {
+        "clips": {
+          "work": "vigil"
+        }
+      }
+    },
+    {
+      "npc_id": "haluna_dock_folder_lifted",
+      "crowd": "haluna_dock_folder",
+      "stand_in": "CrowdSpots/haluna_dock_folder_lifted",
+      "at": [
+        7.1,
+        0.32,
+        -108.7,
+        90.0
+      ],
+      "shown": "day",
+      "flag": "ch18_haluna_lifted",
+      "tuning": {
+        "clips": {
+          "work": "kneel_mourn"
+        }
+      }
     }
   ]
 }

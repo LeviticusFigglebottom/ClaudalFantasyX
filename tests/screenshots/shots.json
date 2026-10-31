@@ -10536,6 +10536,36 @@
         960,
         540
       ]
+    },
+    {
+      "id": "npc_held_shapes_market",
+      "scene": "res://game/levels/_tests/npc/held_shapes_undertow.tscn",
+      "camera": "Cameras/Market",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240
+    },
+    {
+      "id": "npc_held_shapes_terrace",
+      "scene": "res://game/levels/_tests/npc/held_shapes_undertow.tscn",
+      "camera": "Cameras/Terrace",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240
+    },
+    {
+      "id": "npc_held_shapes_gallery",
+      "scene": "res://game/levels/_tests/npc/held_shapes_undertow.tscn",
+      "camera": "Cameras/Gallery",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240
     }
   ]
 }

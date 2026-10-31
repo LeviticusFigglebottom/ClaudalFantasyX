@@ -518,17 +518,11 @@ def clip_poses(rig: Rig, every: int, clips: list | None = None, max_samples: int
         if max_samples:
             stride = max(stride, math.ceil(n / max(1, max_samples - 1)))
         frames = sorted(set(range(0, n + 1, stride)) | {n})
-        # row 56: a walk or run whose skirt hem carries its momentum is baked frame by frame after a first pass round
-        # the cycle (hero_clips.build); probe it the same way, every frame in order, keeping the sampled ones
+        # row 56: a walk or run whose skirt hem carries its momentum is baked frame by frame (hero_clips.build);
+        # probe it the same way, every frame in order, keeping the sampled ones
         trail = loop and clip in getattr(hero_clips, "SKIRT_TRAIL_CLIPS", ()) and bool(getattr(sk, "skirt", None)) \
             and rig.hero in hero_clips.LOCO_GAIT
         sk.skirt_trail = {} if trail else None
-        if trail:
-            for f in range(n):
-                tt = (f / hero_clips.FPS) % length
-                p0 = hero_clips.staff_hold(pose_fn(clip, tt, length, sk, persona), persona)
-                sk.local_pose({b: hero_clips.qeuler(v) for b, v in p0.items() if b != "hips"}, p0.get("hips"),
-                              hero_clips.hook_hold(rig.hero, clip, tt / length))
         keep = set(frames)
         for f in (range(n + 1) if trail else frames):
             t = f / hero_clips.FPS

@@ -34,6 +34,7 @@ EMBER = "#E0702E"  # ember_orange
 SKY = "#C9D2DA"  # the ash-veiled noon sky (ch05_temple fill, lightened)
 BOUNCE = "#D9CBB8"  # sunlight off the ash-dusted court
 GATE_SCALE = 1.6
+GATE_FILL = "#E8D2B8"  # a warm sky-and-lamplight fill on the gate's hands (row 79)
 # The big pieces draw LOD0 out to this distance (their origin is the temple's, not their middle).
 FAR_LOD1_M = {"crest_ground": 3000.0, "ashcrown_tiers": 600.0, "flying_stair": 600.0, "forecourt": 600.0,
               "pilgrim_causeway": 600.0, "crown_pavilion": 600.0, "anvil_hall": 200.0, "anvil_altar": 200.0,
@@ -48,7 +49,8 @@ def r3(v) -> list[float]:
 
 def build_layout() -> dict:
     pieces = [{"piece": name, "at": [0.0, 0.0], "y": 0.0, "yaw_deg": 0.0, "lod1_from_m": FAR_LOD1_M[name]}
-              for name in sorted(build.targets())]
+              for name in sorted(build.targets()) if name in FAR_LOD1_M]  # a kit piece the preview doesn't stand
+                                                                                 # (ash_drift, M3-ENV-1310) is skipped
     borrowed = [
         # The plume where the Pemakar layout stands it (pemakar_layout: the vent's floor minus 10 m), with
         # this kit's noon material. The near plume (M3-ENV-11): ash_plume's own surface, dense, out to
@@ -71,6 +73,10 @@ def build_layout() -> dict:
                                  "at": r3((sx * (ac.CAUSEWAY_HALF_W - 0.95), ys[i], 0.5 * (zs[i] + zs[i + 1]))),
                                  "yaw_deg": 0.0})
     lights = [{"at": r3(p), "color": LAMP, "energy": 2.4, "range": 6.0} for p in ac_hall.lamp_points()]
+    # The PC's pass 7, row 79 (env-art-b with the Lead's leave): from the approach (A01, under the gate, looking up)
+    # the hands' undersides stand against the bright overcast and read as flat black cut-outs. A soft fill low between
+    # the forearms (the sun off the causeway's pale stone) models the palms and fingers from below.
+    lights.append({"at": r3((0.0, ac.FLOOR_Y + 1.2, ac.GATE_Z)), "color": GATE_FILL, "energy": 3.5, "range": 14.0})
     lights.append({"at": r3((0.0, ac.FLOOR_Y + 0.55, ac.PAVILION_Z + ac_hall.TROUGH_Z)), "color": EMBER,
                    "energy": 1.6, "range": 7.0})
     # Daylight stand-ins inside the hall until Rendering's GI (ashcrown.md §0): the sky down the shaft onto the
