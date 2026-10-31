@@ -909,3 +909,31 @@ func _free() -> void:
 
 func _host() -> Node:
 	return (Engine.get_main_loop() as SceneTree).current_scene
+
+
+## Row 74 (Haluna's add frame): warm_triangles builds a big mesh's triangles where it is called (the zone's worker
+## thread), and the director's own occlusion test then gets the same triangle mesh back, not a fresh build.
+func test_warm_triangles_builds_big_meshes_once_for_the_director() -> void:
+	var cfg := FieldInput.load_json(FieldCameraDirector.DATA_PATH).get("occlusion", {}) as Dictionary
+	var root := Node3D.new()
+	var big := MeshInstance3D.new()
+	var side := ceili(sqrt(float(cfg["warm_min_vertices"]) / 6.0)) + 1  # a cube of side*side quads a face
+	var box := BoxMesh.new()
+	box.subdivide_width = side
+	box.subdivide_height = side
+	box.subdivide_depth = side
+	var arrays := box.get_mesh_arrays()
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	big.mesh = mesh
+	root.add_child(big)
+	var small := MeshInstance3D.new()
+	small.mesh = BoxMesh.new()  # a primitive: left lazy
+	root.add_child(small)
+	assert_eq(FieldCameraDirector.warm_triangles(root), 1, "the big mesh is warmed, the primitive left")
+	assert_true(
+		is_same(director._triangles(mesh), mesh.generate_triangle_mesh()),
+		"the director's occlusion test reuses the warmed triangles"
+	)
+	root.free()
+	_free()

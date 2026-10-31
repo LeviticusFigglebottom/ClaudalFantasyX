@@ -31,6 +31,7 @@ back as islands, and nothing is quite where it was.
 | `memory_terrace` | A Pemakar terrace on lantern-night remembered (Ch5's Lanternfall; act3_ch20 U02): two stone steps behind, a channel of dark still water across the front with three small boats, a held light in each, held lamps along the step | r 6 | 7k / 500 |
 | `memory_gallery` | A Lit Age gallery remembered, like the Vey's (U05): flagged floor, four columns under an architrave, a back wall of ceramic panels with three niches of steady held light, silt drifted at its foot, silt-light falling in threads (no ice, ADR 0015) | r 6 | 7k / 500 |
 | `memory_square` | A square of Ansedra under the Level remembered (U06): white flags, a sunk pool of still water that has never moved, steps up to a doorway with a gilt band, a Tender's broom left on a step | r 6 | 7k / 500 |
+| `memory_landing` | A rest between the layers (act3_ch20 R1, R2): a small fragment of Iskarra's flags with its root, a curved stone bench round its back, one short post with a steady held lamp; quieter than the rooms. The well the Kite drops down (U00) is `heart_eyewall` scaled down, not a new piece | r 3.5 | 4k / 300 |
 | `held_pillar` | A broken Lit Age lamp column threaded with held glimmer, the light hanging off its top in drops | 7 m | 3k / 200 |
 
 **The rooms in the zone** (act1-chapters, or whoever stages Ch20):

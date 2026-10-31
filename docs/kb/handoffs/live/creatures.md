@@ -1419,3 +1419,28 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
 - **BACKLOG EMPTY:** my Act III list is done. The Cage and the bosses are creatures-b's (handed over), and 1809 and
   1811 are blocked on Act III zones and flags. M3-HER-1133's remaining clips are characters' (heroes) or
   cinematics' (routing). Ready for the next assignment.
+- Lead 00:26 (continue the Act III bestiary):
+  - Every regular and wildlife item in the reconciled roster is built: 1800–1808 at review.
+  - The Cage and the other bosses are creatures-b's (handed over); they built the Act I/II bosses too.
+  - The roster's remaining item is the Ch20 held shapes. **M5-A3P-1809, the unblocked part** (doing):
+    - **CrowdFar** (game/world/npc/crowd_far.gd) for U04's 30+ Reefball crowd: each crowd body and clip is baked
+      at load into a few CPU-skinned poses, drawn as MultiMeshes in the held silhouette, and each person flips
+      through the poses at its own phase. One draw call per body and pose; no skeletons.
+    - The crowd clip **`cheer`** (the adult library, via `clip_libraries.adult.extra`).
+    - Review stage and shot `npc_held_shapes_reefball`: 32 held shapes cheering, viewed.
+    - Tests: test_crowd_far 3/0, crowd 24/0, tools test_npc OK. Blender: the library rebuilds identical. The
+      crowd_man_medium_b mesh, texture and brow drift is pre-existing (the same 6 diffs without this change).
+    - The per-layer rows still wait on the Ch20 zones.
+- **MERGE-READY @ 496055dff.**
+- **M5-A3P-1809, CrowdFar off the main thread:**
+  - All at once, the build cost 5.3 s, and loading the actor scenes was almost all of it (about 0.6 s a body).
+  - Now the actor scenes load on ResourceLoader's threads, the posing is the main thread's, and the skinning runs on
+    the WorkerThreadPool.
+  - Review stage: the worst frame is 48 ms and the crowd is in after 1.05 s, well inside the ≤ 2 s hitch bar.
+  - `threaded = false` keeps the review shot independent of load timing.
+  - test_crowd_far 4/0 (the threaded build matches the one at once); crowd 25/0.
+- **MERGE-READY @ 16fbcf8d6.**
+- **BACKLOG:** the rest of my Act III list is waiting on others:
+  - 1809's per-layer rows and 1811 need the Ch20 zones and the Act III flags;
+  - 1849 needs Combat;
+  - the bosses are creatures-b's.

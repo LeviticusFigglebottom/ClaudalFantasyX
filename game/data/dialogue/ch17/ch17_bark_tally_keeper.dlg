@@ -4,7 +4,7 @@ title: ch17_bark_tally_keeper
 location: ch17/hollowmere
 ---
 <<if $ch15_toma_on_the_tally>>
-    @anim clerk nod toma
+    @anim clerk talk toma
     Clerk as "Record-keeper" [neutral]: Your name's where you asked. Under the camp. Nobody's crossed it out. #line:ch17_bark_002
 <<else>>
     Clerk as "Record-keeper" [neutral]: Every camp that burned, written down. Somebody has to keep the list. #line:ch17_bark_003

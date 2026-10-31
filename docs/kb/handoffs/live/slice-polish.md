@@ -1380,6 +1380,39 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     ~0.35 s). That's router/director code (Systems), already asked as a LEAD-ASK above. Taking it out safely means
     building the triangle cache on the instantiate thread, not deferring work into the next frames.
   - Tests after the revert: haluna 66/0; gdlint clean.
+- **Lead FAST-TRACK: Haluna's root `_ready` (388 ms) under the Drownbell return's fade. MERGE-READY @ this commit,
+  together with hero-integration's one-line ReturnPark call (request M4-A2P-078):**
+  - Nearly all of it was the camera director's first snap building its occluders' triangle meshes.
+  - `HalunaZone.park_prebuild()` builds those triangles off the tree, using the director's own filter
+    (`occlusion.min_size_m`, no transparent surface). A Mesh keeps the triangle mesh it builds, so the first snap
+    finds them made. This is the same worker-thread mesh-face work the zone's Collision.build() already does in
+    prebuild.
+  - Nothing is deferred into later frames, so the reverted beach-pose crash isn't reintroduced. Only ReturnPark's
+    parked build calls the hook; ordinary travels are unchanged.
+  - **Measured** with integration-qa's scene_swap_probe on hero-integration's head (causeway fight → Haluna,
+    `--cross-return --resident-loads --warm-resident --ready-profile`, headless), with the patch applied in a
+    scratch worktree:
+    - root `_ready` 217–361 ms → out of the profile (< 22 ms);
+    - readies total 355–495 → 140–211 ms;
+    - hidden frame 0 520–595 → 231–560 ms;
+    - entry 2.24–2.30 → 1.90–2.27 s;
+    - 0 crashes in 5 runs.
+  - Tests:
+    - test_haluna_zone gains a parked-build test; the haluna filter is 67/0;
+    - in the scratch worktree: return_park 3/0, battle_return 2/0, scene_router 17/0.
+  - **Seen, not mine:** VillagerLayer logs "Parent node is busy setting up children" and "!is_inside_tree" on a
+    prebuilt add (the existing prebuild test logs the same). Creatures' code, flagged before.
+- **PC pass 7 row 18 (slice_causeway_harrier_view: no harrier), MERGE-READY @ this commit:**
+  - Cause: the camera director's FIXED safety net turned C07 to the party, which stands behind it, so the camera
+    faced away from the flier (in-engine: forward (−0.90, 0, 0.43) against the authored (+0.91, 0, −0.42)).
+  - Fix: a layout camera volume takes `aim_node`/`aim_offset` (greybox_zone.gd, two lines). C07's subject is the
+    Harrier node, offset so its aim is the authored look_at. The frame is exactly as authored and is never turned.
+  - The shot also had the "The menu" tutorial tip over it. The 11 slice_* shots that set its trigger flags now set
+    the four tut_*_seen flags.
+  - Viewed on lavapipe: the harrier is back against the cumulus.
+  - Tests: test_causeway_harrier gains a live-camera test; causeway 17/0, camera 73/0.
+  - Tools suite: `test_cutscene_sfx_files` is red on Act III music cues (credits_suite, ending_*, dace_ledger) that
+    another track wired in. Not this change.
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan

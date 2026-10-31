@@ -30,10 +30,16 @@
       "note": "M4-A2P-114 plays the Act II scenes from the Ch10-Ch13 greybox flows so their flags are raised; their staging on these stages (the shots, cast, marks, lights and VFX anchors each scene names) is M4-A2P-070..075 (act1-chapters). Remove this row as each scene is staged."
     },
     {
-      "pattern": "^CutsceneSequencer\\(((ch1[7-9]|ch2[0-9])_[a-z0-9_]+|ending_[a-z0-9_]+)\\): (no (shot|actor|mark|light|look_at target) '|cannot place @vfx )",
+      "pattern": "^CutsceneSequencer\\((ch1[7-9]_[a-z0-9_]+|ch2[01]_[a-z0-9_]+)\\): (no (shot|actor|mark|light|look_at target) '|cannot place @vfx )",
       "task": "M5-A3P-1001",
+      "owner": "cinematics",
+      "note": "M5-A3P-1001 (and the Ch18-Ch21 staging-and-flow rows) plays the Act III scenes from their flows; their shots (the D- and K-ids), the cast on the greybox stages and the VFX anchors are the staging half of those rows. Remove this row as each scene is staged."
+    },
+    {
+      "pattern": "^CutsceneSequencer\\((ending_[a-z0-9_]+)\\): (no (shot|actor|mark|light|look_at target) '|cannot place @vfx )",
+      "task": "M5-A3P-1015",
       "owner": "act2-plan (supplementing cinematics; ADR 0207)",
-      "note": "Act III staging, as Act II's M4-A2P-075 row: headless, the party's heroes have no stage actor (their field bodies come with the field party), and the staging lands chapter by chapter (M5-A3P-1001, 1004, 1007, 1011, 1015). Remove this row as each chapter is staged."
+      "note": "The Ending's scenes (E01-E10 on the Kite), as the Act III row above: the heroes have no stage actor headless. Remove when the Ending is staged."
     },
     {
       "pattern": "^Ch05Zone ch(1[7-9]|2[0-9])/[a-z_]+: cannot place actor '",

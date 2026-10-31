@@ -406,7 +406,6 @@ flags = {
 "ch18_revisit_quellan": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Quellan side scene (ch18_revisit_quellan) has played; the Kite's log reads Seen.",
 "ch18_revisit_ansedra": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Ansedra (from the air) side scene (ch18_revisit_ansedra) has played; the Kite's log reads Seen.",
 "ch18_revisit_hollowmere": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Hollowmere side scene (ch18_revisit_hollowmere) has played; the Kite's log reads Seen.",
-"ch17_night": "Ch17 B08 (M5-A3P-1001, the flow): night falls on the hull before the choice (the layout's night light variant).",
 "ch20_ilun_fought": "Ch20 (M5-A3P-1011): the victory flag of Ilun's fight (the encounter ch20_ilun, combat's M5-A3P-1013); the flow plays ch20_ilun_release on the return.",
 "ch20_kahre_fought": "Ch20 (M5-A3P-1011): the victory flag of Kahre's fight (the encounter ch20_kahre, combat's M5-A3P-1013); the flow plays ch20_kahre_release on the return.",
 "ch20_virel_fought": "Ch20 (M5-A3P-1011): the victory flag of Virel's fight (the encounter ch20_virel, combat's M5-A3P-1013); the flow plays ch20_virel_release on the return.",
@@ -418,5 +417,6 @@ flags = {
 "ch21_warden_fought": "Ch21 H04 (M5-A3P-1015): the victory flag of Sefir's first phase (ch21_sefir_warden, M5-A3P-1017).",
 "ch21_heart_fought": "Ch21 H05-H06 (M5-A3P-1015): the victory flag of Sefir's heart phase (ch21_sefir_heart, M5-A3P-1017).",
 "ch21_letting_fought": "Ch21 H07 (M5-A3P-1015): the victory flag of the Letting's phase (ch21_sefir_letting, M5-A3P-1017); then H08 and H09.",
-"ending_landed": "The Ending (M5-A3P-1015, the flow): E1-E5 have played on the Kite after the Great Unbinding."
+"ending_landed": "The Ending (M5-A3P-1015, the flow): E1-E5 have played on the Kite after the Great Unbinding.",
+"tut_swell_mode_seen": "Tutorial tip (M4-A2P-1007 A20): the new-Swell-mode tip has shown, on the first field after play unlocked a fill mode."
 }

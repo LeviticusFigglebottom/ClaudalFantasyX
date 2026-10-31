@@ -17,7 +17,7 @@ in a mirror lagoon under a white-grey sky; gold that must feel cold).
 
 x is east, north is -Z. Shares Ch10's and Ch11's builders.
 
-    python3 tools/act1/ch13_greybox.py
+    python3 tools/act2/ch13_greybox.py
 """
 from __future__ import annotations
 
@@ -105,7 +105,7 @@ def ansedra() -> dict:
     blocks += causeway("CausewaySanctum", (0.0, -50.0), (0.0, -82.0))
     blocks += island("SanctumIsle", 0.0, -94.0, 12.0, True, {"s": (-2.2, 2.2)})
     return {
-        "doc": "M4-C13-02 greybox (tools/act1/ch13_greybox.py; do not edit by hand): Ansedra, the holy city on its "
+        "doc": "M4-C13-02 greybox (tools/act2/ch13_greybox.py; do not edit by hand): Ansedra, the holy city on its "
         "mirror lagoon at an overcast 16:30 (colour script ch13). The outer moorings (Moorings; kerrid_moorings: "
         "Kerrid sits out the nights there among the barge-polers, ADR 0022 (c)), a causeway north to the central "
         "island and Sefir's house (sefir_door), west to Corran's old house (corran_house: Ysolde's side scene), east "
@@ -199,7 +199,7 @@ def sanctum() -> dict:
     blocks.append(box("BasinBed", 0.0, -1.0, -30.0, 10.0, 0.2, 18.0, color=COL_MIRROR))
     blocks.append(box("Apse", 0.0, 5.0, -47.5, 24.0, 10.0, 1.0, color=COL_GOLD))
     return {
-        "doc": "M4-C13-02 greybox (tools/act1/ch13_greybox.py; do not edit by hand): the Sanctum of the Level, the "
+        "doc": "M4-C13-02 greybox (tools/act2/ch13_greybox.py; do not edit by hand): the Sanctum of the Level, the "
         "Glimmer temple. The vestibule (Gate), then the nave round the basin, a perfect mirror that has not stirred in "
         "four hundred years, lit from beneath by a light that never moves (Basin; a kneeling ledge rings it: nobody "
         "walks on it), Ethren's place at its head (ethren) and Corran's (corran). Kerrid never comes in. Back to the "
@@ -250,7 +250,7 @@ def lamp_archive() -> dict:
     blocks.append(box("LedgerTable", -1.5, 0.45, -12.0, 2.0, 0.9, 4.0, color=COL_TABLE))
     blocks.append(box("RollTable", 1.5, 0.45, -24.0, 2.0, 0.9, 4.0, color=COL_TABLE))
     return {
-        "doc": "M4-C13-02 greybox (tools/act1/ch13_greybox.py; do not edit by hand): the Lamp Archive, the Order's "
+        "doc": "M4-C13-02 greybox (tools/act2/ch13_greybox.py; do not edit by hand): the Lamp Archive, the Order's "
         "library of Lit Age records (ADR 0016): the reading room between long stacks, the table where Liss lays the "
         "founders' lamp-ledgers side by side (ledgers) and the one with the Cantor roll (cantor_roll). Back to the city "
         "at to_city. The story waits on the beat sheet (M4-C13-01).",

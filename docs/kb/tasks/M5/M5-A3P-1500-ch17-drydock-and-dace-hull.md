@@ -51,6 +51,13 @@ in the mud under the water.
 ## Requests out
 - **act1-chapters / Act III chapters:** the Ch17 marks: the cabin's reading seat, the hatch, the engine bed and the
   first berth's post. The layout is theirs; env-art-b will post the coordinates here when the piece is built.
+- **Act III chapters (M5-A3P-1001), the light by beat.** Each beat's `states` row loads its grade by
+  `environment_res` (Corrow's dawn row is the precedent):
+  - **B06 dusk:** env-art's `res://assets/environments/zones/ch17/ch17_hollowmere_dusk_environment.tres`, with its
+    sun row from `ch17_grades.json`.
+  - **B08 and B09 night:** env-art-b's `res://game/levels/ch17/hollowmere/hollowmere_night_environment.tres`, with a
+    moon for the sun: pitch about -35, colour #8FA6C8, energy 0.3. Viewed at energy 0.3.
+  - **B10 morning and B01–B05 day:** the zone's own dawn grade.
 
 ## Notes
 - 2026-10-30, env-art-b (7fd8e3e5): the hull is revised and rebuilt at 4,648 / 850 triangles (budget raised to 24k / 1.6k).
@@ -82,5 +89,15 @@ in the mud under the water.
   centre is world (27.55, y 0, -21.05), for the `fathers_table` mark, with a flickering oil-lamp light 1.6 m over the
   deck. Viewed from inside at the door. Tests: test_ch15_hollowmere_dressing (Ch17 rooms) and Godot
   test_hollowmere_dressing (the light count).
+
+- 2026-10-31, env-art-b (06fb966c): **Ch17's night and the cabin's light.**
+  - **The night grade:** `hollowmere_night_environment.tres` is the open sea's Ch15 night (its sky, stars and
+    unlamped LUT) with Hollowmere's fog and a little more ambient.
+  - **The cabin's light:** an oil-lamp light over Dace's desk, flickering, and its spill up through the open hatch
+    (both always on).
+  - **Viewed by night:** the cabin is warm on the ledger, the chart wall, the tool rack and the ladder. The deck reads
+    by the moonlit water and the hatch's glow.
+  - **Tests:** the lamp counts (+2) in test_ch15_hollowmere_dressing and the Godot test_hollowmere_dressing, and a
+    night-grade test.
 
 ## Review log

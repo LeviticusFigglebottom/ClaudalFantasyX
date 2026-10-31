@@ -65,6 +65,9 @@ extends HalunaDresser
 ##                  placed point in a `wander_m` eddy every `wander_s` (each piece's phase from its position).
 ##   fire_light_fade  [begin_m, length_m]: every fire light fades out with distance from the camera (a town of lamps
 ##                  whose far ones are "far_lights" quads: the omnis beyond leave the clustered light list).
+##   fill_lights  [{"pitch_deg", "yaw_deg", "color", "energy", "block"?}]: shadowless directional fill and rim lights
+##                  for a frame the key leaves black (Corrow under the storm's dimmed sun); a "block" one follows its
+##                  block, so it shows only while the story shows it.
 ##   fire_lights[].flicker  0..1: the share of the light's energy a flame's flicker takes away at its deepest.
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
@@ -111,6 +114,8 @@ const DRIFT_TURN_RATE := 0.25
 const PHASE_HASH := Vector3(12.9898, 78.233, 997.0)
 const KEY_FLICKER := "flicker"
 const KEY_FIRE_FADE := "fire_light_fade"
+const KEY_FILL := "fill_lights"
+const FILL_LIGHTS := &"FillLights"
 ## A flame's flicker: two incommensurate wavers (Hz) and a quick gutter, mixed so it never repeats in a shot.
 const FLICKER_HZ := Vector3(1.7, 4.3, 9.1)
 const FLICKER_MIX := Vector3(0.5, 0.3, 0.2)
@@ -187,6 +192,7 @@ func dress() -> void:
 			_drifters.append([piece, piece.transform, spec[KEY_DRIFT], _phase(piece.position)])
 	_snap_to_ground(snaps, grounds)
 	_place_fire_lights()
+	_place_fill_lights()
 	_place_multimeshes()
 	_place_far_lights()
 	_place_waters()
@@ -585,6 +591,26 @@ func _place_fire_lights() -> void:
 		root.add_child(light)
 		if row.has(KEY_FLICKER):
 			_flickers.append([light, light.light_energy, float(row[KEY_FLICKER]), _phase(light.position)])
+		_attach(light, str(row.get(KEY_BLOCK, "")))
+
+
+func _place_fill_lights() -> void:
+	var rows: Array = layout.get(KEY_FILL, [])
+	if rows.is_empty():
+		return
+	var root := Node3D.new()
+	root.name = FILL_LIGHTS
+	add_child(root)
+	for r: Variant in rows:
+		var row: Dictionary = r
+		var light := DirectionalLight3D.new()
+		light.rotation_degrees = Vector3(float(row.get("pitch_deg", 0.0)), float(row.get("yaw_deg", 0.0)), 0.0)
+		light.light_color = Color.html(str(row.get("color", "#FFFFFF")))
+		light.light_energy = float(row.get("energy", 1.0))
+		light.shadow_enabled = false
+		light.light_specular = float(row.get("specular", light.light_specular))
+		light.light_volumetric_fog_energy = 0.0  # the fog-lamp rule (test_fog_lamps)
+		root.add_child(light)
 		_attach(light, str(row.get(KEY_BLOCK, "")))
 
 

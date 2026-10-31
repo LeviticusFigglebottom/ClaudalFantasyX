@@ -272,15 +272,18 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 	await _fade_to(1.0)
 	if keep:
 		_detach_resident()
-		_prewarm_return()
+		if not park_return:
+			_prewarm_return()  # the park loads it once the battle is in, not beside the battle's own instantiate
 	var parked: Node = null
+	var warmed := return_park.prewarmed and return_park.holds(scene_path)
 	if not back:
 		parked = await return_park.take(scene_path)
 	if back:
 		await _swap_resident(scene_path, stats, spawn, entry_start)
 		await _wait_for_reveal(stats)
 	elif parked != null:
-		await _swap(null, scene_path, stats, spawn, entry_start, parked)
+		stats["park_prewarmed"] = warmed
+		await _swap(null, scene_path, stats, spawn, entry_start, parked, warmed)
 		await _wait_for_reveal(stats)
 	else:
 		while ResourceLoader.load_threaded_get_status(scene_path) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
@@ -387,7 +390,12 @@ func _park_return(fight: BattleRequest) -> void:
 	var loads := ResidentLoads.shared()
 	if DisplayServer.get_name() == "headless" and not ResidentLoads.run_headless:
 		loads = null  # as the victory panel's prepare_return: no zone loads in a headless run
-	return_park.start(dest, loads, fight, _resident_path)
+	await return_park.start(dest, loads, fight, _resident_path)
+	if return_park.path == dest and not is_busy():
+		# Row 74 on the PC: the swap-in still waited ~2.5 s on the prewarm compiling Haluna's pipelines. They compile
+		# now, during the fight (the stage holds the swap only if Return comes first).
+		return_park.prewarmed = true
+		prewarm_requested.emit(dest)
 
 
 ## Takes the current scene out of the tree, kept (not freed), with its zone shader globals.
@@ -527,20 +535,23 @@ func measure_reveal(scene_path: String, lifted: Callable, extra: Dictionary = {}
 
 ## With split_swap off this reproduces the M0 router (prewarm, instantiate, free and add in one
 ## frame), which the profiler uses as the "before" case.
-## `prebuilt`: the scene's root already instantiated (ReturnPark), in place of instantiating `packed`.
+## `prebuilt`: the scene's root already instantiated (ReturnPark), in place of instantiating `packed`; `prewarmed`:
+## its shader prewarm already ran (or runs) during the fight, so none is requested here.
 func _swap(
 	packed: PackedScene,
 	scene_path: String,
 	stats: Dictionary,
 	spawn: StringName = &"",
 	entry_start_usec: int = -1,
-	prebuilt: Node = null
+	prebuilt: Node = null,
+	prewarmed := false
 ) -> void:
 	while _font_warmer != null and not _font_warmer.done:
 		await get_tree().process_frame
 	var t := _now_usec()
 	var swap_frame_start := t
-	prewarm_requested.emit(scene_path)
+	if not prewarmed:  # a parked scene's prewarm ran during the fight (still running: its hold makes this wait)
+		prewarm_requested.emit(scene_path)
 	stats["prewarm_ms"] = _ms_since(t)
 	if split_swap:
 		await get_tree().process_frame
@@ -635,7 +646,7 @@ func _instantiate(packed: PackedScene, stats: Dictionary) -> Node:
 	stats["instantiated_on_thread"] = instantiate_on_thread
 	if instantiate_on_thread:
 		ShaderGlobals.hold_writes()  # M3-HER-1151: no global write while the thread creates the zone's materials
-		var task := WorkerThreadPool.add_task(func() -> void: holder.append(packed.instantiate()))
+		var task := WorkerThreadPool.add_task(func() -> void: holder.append(built_scene(packed)))
 		while not WorkerThreadPool.is_task_completed(task):
 			await get_tree().process_frame
 		WorkerThreadPool.wait_for_task_completion(task)
@@ -644,6 +655,14 @@ func _instantiate(packed: PackedScene, stats: Dictionary) -> Node:
 		holder.append(packed.instantiate())
 	stats["instantiate_ms"] = _ms_since(t)
 	return holder[0] if not holder.is_empty() else null
+
+
+## On the worker thread: the scene instantiated, with its big meshes' occlusion triangles built (row 74: Haluna's
+## dresser meshes cost 0.5 s on the add frame otherwise; FieldCameraDirector.warm_triangles).
+static func built_scene(packed: PackedScene) -> Node:
+	var node := packed.instantiate()
+	FieldCameraDirector.warm_triangles(node)
+	return node
 
 
 func _record(stats: Dictionary, frames: Array[float]) -> void:

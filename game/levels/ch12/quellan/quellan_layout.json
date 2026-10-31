@@ -1,5 +1,5 @@
 {
- "doc": "M4-C12-02 greybox (tools/act1/ch12_greybox.py; do not edit by hand): Quellan, the highland town (colour script ch12). The road in from Keth Pass (west, FromPass), a street of houses, the inn with its red banner (inn_door: Ysolde's confession to Asha that night), the well in the square, and the road up north to Cloudloom (a ramp; to_cloudloom). Back to the pass at to_pass. The story waits on the beat sheet (M4-C12-01).",
+ "doc": "M4-C12-02 greybox (tools/act2/ch12_greybox.py; do not edit by hand): Quellan, the highland town (colour script ch12). The road in from Keth Pass (west, FromPass), a street of houses, the inn with its red banner (inn_door: Ysolde's confession to Asha that night), the well in the square, and the road up north to Cloudloom (a ramp; to_cloudloom). Back to the pass at to_pass. The story waits on the beat sheet (M4-C12-01).",
  "sun": {
   "pitch_deg": -30.0,
   "yaw_deg": 40.0,

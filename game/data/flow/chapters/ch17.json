@@ -1,5 +1,5 @@
 {
- "doc": "M5-A3P-1001 (docs/kb/tech/chapter_flow.md; act3_ch17.md \u00a72): Ch17 'The Wright's Son' at Hollowmere, Act III's first chapter, on the Ch15 zone (ChapterRegistry gives this file the zone from chapter 16 on). B01 the sea and the ship (arrive, from the ShipDeck spawn: Ch16's swept-away must hand off here with {\"chapter\": 17} or straight to this zone), B03 the dock-master walks them to the dry-dock (a touch on the jetty), B04 the hull's three interactables (barks), B05-B06 the ledger and the rail at dusk, B07 the first berth (optional), B08 the choice at night (walking back onto the hull), then the night's rest and morning, B10 the first lamp, B11 Ysolde's table, B12 the barks, and boarding the hull ends the chapter (ch17_complete). B09 (Kesh's call bark) waits on a Vowbound-menu hook. Boarding goes to the Kite (ch18/kite, Deck: Ch18's maiden flight). Light by time of day: the layout's variants (tools/act1/ch15_16_greybox.py).",
+ "doc": "M5-A3P-1001 (act3_ch17.md §1-§2; docs/kb/tech/chapter_flow.md): Ch17 'Hollowmere' on Ch15's zone, read once Act II is over (Ch17Zone points the zone's chapter_path here when ch16_act_two_complete is set; chapters.json's first match stays Ch15's). Pulled from the sea on arrival (B01); on the gangway the dock-master points to the last berth (B03); the hull's sails from the walk's end, aboard by the ladder its tool rack and chart wall (B04); the hatch: the ledger in the cabin, then dusk on the deck (B05-B06); Tobin's post (B07, optional); night on the deck: the choice, next morning the first lamp in the engine bay, then Ysolde's table at the dock-master's house (B08, B10, B11); Hollowmere at work (B12) until the party boards the hull (ch17_complete; Ch18 opens on the maiden flight). B09 (Kesh's changed call bark) plays from the Vowbound menu, a Combat/UI hook.",
  "chapter": "ch17",
  "zones": {
   "ch17/hollowmere": {
@@ -24,81 +24,13 @@
      },
      "steps": [
       {
-       "place": "ShipDeck"
+       "place": "Dock"
       },
       {
        "chapter": 17
       },
       {
-       "zone": "place_actor",
-       "args": [
-        "hull_captain",
-        "ship_captain"
-       ]
-      },
-      {
        "play": "ch17_pulled_from_the_sea"
-      },
-      {
-       "place": "Dock"
-      },
-      {
-       "party": {
-        "party": [
-         "rhen",
-         "asha",
-         "toma"
-        ],
-        "reserve": [
-         "ysolde",
-         "kerrid",
-         "liss"
-        ]
-       }
-      },
-      {
-       "zone": "apply_variant"
-      }
-     ]
-    },
-    {
-     "when": {
-      "set": [
-       "ch17_read_the_ledger"
-      ],
-      "unset": [
-       "ch17_first_berth",
-       "ch17_chose_the_unbinding"
-      ]
-     },
-     "steps": [
-      {
-       "place": "Quay"
-      },
-      {
-       "zone": "place_actor",
-       "args": [
-        "aldous_varrow",
-        "first_berth"
-       ]
-      },
-      {
-       "zone": "apply_variant"
-      }
-     ]
-    },
-    {
-     "when": {
-      "set": [
-       "ch17_started"
-      ],
-      "unset": [
-       "ch17_complete"
-      ]
-     },
-     "steps": [
-      {
-       "place": "Dock"
       },
       {
        "zone": "apply_variant"
@@ -107,22 +39,37 @@
     }
    ],
    "beats": {
-    "ch17_dock_master": {
+    "berths": {
      "when": {
+      "set": [
+       "ch17_started"
+      ],
       "unset": [
        "ch17_saw_the_hull"
       ]
      },
      "steps": [
       {
-       "play": "ch17_dock_master_points"
+       "place": "Berths"
       },
       {
-       "place": "Quay"
+       "play": "ch17_dock_master_points"
       }
      ]
     },
-    "ch17_ledger": {
+    "board": {
+     "when": {
+      "set": [
+       "ch17_saw_the_hull"
+      ]
+     },
+     "steps": [
+      {
+       "place": "HullDeck"
+      }
+     ]
+    },
+    "ledger": {
      "when": {
       "set": [
        "ch17_saw_the_hull"
@@ -132,43 +79,21 @@
       ]
      },
      "steps": [
+      {
+       "place": "Cabin"
+      },
       {
        "play": "ch17_the_ledger"
       },
       {
-       "zone": "apply_variant"
+       "place": "HullDeck"
       },
       {
        "play": "ch17_after_the_blank_page"
-      },
-      {
-       "zone": "place_actor",
-       "args": [
-        "aldous_varrow",
-        "first_berth"
-       ]
-      },
-      {
-       "place": "Quay"
       }
      ]
     },
-    "ch17_first_berth": {
-     "when": {
-      "set": [
-       "ch17_read_the_ledger"
-      ],
-      "unset": [
-       "ch17_first_berth"
-      ]
-     },
-     "steps": [
-      {
-       "play": "ch17_first_berth"
-      }
-     ]
-    },
-    "ch17_choice": {
+    "night": {
      "when": {
       "set": [
        "ch17_read_the_ledger"
@@ -178,74 +103,42 @@
       ]
      },
      "steps": [
-      {
-       "set": "ch17_night"
-      },
-      {
-       "zone": "apply_variant"
-      },
       {
        "play": "ch17_the_choice"
       },
       {
-       "zone": "rest",
-       "args": [
-        "ch17_night"
-       ]
+       "place": "EngineBay"
       },
-      {
-       "zone": "apply_variant"
-      },
-      {
-       "place": "Quay"
-      }
-     ]
-    },
-    "ch17_first_lamp": {
-     "when": {
-      "set": [
-       "ch17_chose_the_unbinding"
-      ],
-      "unset": [
-       "ch17_first_lamp_lit"
-      ]
-     },
-     "steps": [
       {
        "play": "ch17_the_first_lamp"
-      }
-     ]
-    },
-    "ch17_table": {
-     "when": {
-      "set": [
-       "ch17_first_lamp_lit"
-      ],
-      "unset": [
-       "ch17_verse_begun"
-      ]
-     },
-     "steps": [
+      },
+      {
+       "place": "Fathers"
+      },
       {
        "play": "ch17_ysoldes_table"
       }
      ]
     },
-    "ch17_board": {
+    "aboard": {
      "when": {
       "set": [
        "ch17_verse_begun"
+      ],
+      "unset": [
+       "ch17_complete"
       ]
      },
      "steps": [
       {
        "set": "ch17_complete"
-      },
+      }
+     ]
+    },
+    "shrine": {
+     "steps": [
       {
-       "go": {
-        "location": "ch18/kite",
-        "spawn": "Deck"
-       }
+       "play": "ch15_shrine_hollowmere"
       }
      ]
     }

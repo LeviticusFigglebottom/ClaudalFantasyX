@@ -32,6 +32,22 @@ func test_past_every_file_it_falls_back_to_the_first() -> void:
 	assert_true(ChapterRegistry.zone_in(_paths(), &"nowhere", 17).is_empty())
 
 
+func test_a_pinned_file_gives_way_to_a_later_chapters() -> void:
+	_write("ch18.json", {"chapter": "ch18", "zones": {"ch17/hollowmere": {"doc": "ch18"}}})
+	var paths := _paths()
+	paths.append(DIR + "ch18.json")
+	var pin := DIR + "ch17.json"
+	assert_eq(
+		ChapterRegistry.zone_pinned(paths, &"ch17/hollowmere", pin, 16).get("doc"), "ch17", "out of Ch16: the pin"
+	)
+	assert_eq(ChapterRegistry.zone_pinned(paths, &"ch17/hollowmere", pin, 17).get("doc"), "ch17", "Ch17: the pin")
+	assert_eq(ChapterRegistry.zone_pinned(paths, &"ch17/hollowmere", pin, 18).get("doc"), "ch18", "Ch18 comes back")
+	assert_eq(
+		ChapterRegistry.zone_pinned(paths, &"ch17/hollowmere", pin, 19).get("doc"), "ch17", "no later file: the pin"
+	)
+	assert_eq(ChapterRegistry.zone_pinned(paths, &"ch17/hollowmere", "", 18).get("doc"), "ch18", "no pin: by chapter")
+
+
 func test_chapter_numbers() -> void:
 	assert_eq(ChapterRegistry.chapter_number("ch17"), 17)
 	assert_eq(ChapterRegistry.chapter_number("ch04"), 4)

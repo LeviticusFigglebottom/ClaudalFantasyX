@@ -66,6 +66,10 @@ class Audit:
                 continue
         self.chapters = {c: load(root / f"game/data/flow/chapters/{c}.json") for c in ACT1_CHAPTERS
                          if (root / f"game/data/flow/chapters/{c}.json").exists()}
+        # M5-A3P-1004: the later chapters' flows (Act III's revisits to Act I zones wait on their flags, e.g.
+        # ch18_world_open); what they set counts as available, since the story reaches them after Act I
+        self.later_chapters = [load(f) for f in sorted((root / "game/data/flow/chapters").glob("ch*.json"))
+                               if f.stem not in ACT1_CHAPTERS]
         self.layouts: dict[str, dict] = {}
         for data in self.chapters.values():
             for zid in data.get("zones", {}):
@@ -120,6 +124,10 @@ class Audit:
 
     def run(self) -> dict:
         have = set(self.code_sets) | set(self.data_sets)
+        for data in self.later_chapters:
+            for z in data.get("zones", {}).values():
+                for g in z.get("arrive", []) + list(z.get("beats", {}).values()):
+                    have |= self.step_effects(g["steps"])[0]
         zones = {next(iter(self.chapters[c]["zones"])) for c in self.chapters if self.chapters[c].get("zones")}
         played: set[str] = set()
         groups = []  # (label, zone, when.set, steps, kind)

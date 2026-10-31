@@ -65,7 +65,7 @@ class HollowmereTests(unittest.TestCase):
 
     def test_every_oil_lamp_carries_its_light(self) -> None:
         oil = [l for l in self.d["fire_lights"] if "color" not in l]
-        self.assertEqual(len(oil), len(GEN.OIL_LAMPS) + 2, "the lamps, the dock-master's table lamp and the supper's")
+        self.assertEqual(len(oil), len(GEN.OIL_LAMPS) + 4, "the lamps, the house, the cabin, its spill and the supper")
         for (x, z, yaw), light in zip(GEN.OIL_LAMPS, oil):
             self.assertEqual(light["at"], GEN._flame(x, z, yaw))
 
@@ -133,3 +133,10 @@ class Ch17RoomsTests(unittest.TestCase):
         rows = [p for p in d["pieces"] if p["piece"].startswith("hm_drydock_berth")]
         self.assertEqual([p["piece"] for p in rows][-1], "hm_drydock_berth_first", "the first berth is the row's far end")
         self.assertEqual(len(rows), 3)
+
+    def test_the_night_grade_is_the_open_seas_with_hollowmeres_fog(self) -> None:
+        text = GEN.night_environment()
+        self.assertIn('resource_name = "hollowmere_ch17_night"', text)
+        self.assertIn("fog_density = 0.006", text)
+        on_disk = (GEN.ZONE / GEN.NIGHT_ENV_NAME).read_text(encoding="utf-8")
+        self.assertEqual(on_disk, text, "the file is the generator's")

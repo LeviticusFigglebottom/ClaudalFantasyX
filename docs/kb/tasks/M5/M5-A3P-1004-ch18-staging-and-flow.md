@@ -69,6 +69,15 @@ revisits, Haluna's lifting), §5 (the heirlooms). File-to-beat map: drafts READM
 - `ch18.json` has a block for each of those zones (ChapterRegistry: chapter 18).
 - `test_ch18_thread` (5 cases) covers them. The Ch5, Ch7, Ch8, Ch10 and Ch12 threads are unchanged and green.
 
+## Rebased on act1-chapters' Ch17 (the Lead, 2026-10-31; ADR 0207)
+- My Ch17 (a2bc108d) is dropped: ch17.json, Ch17Zone, the Hollowmere layout and test_ch17_thread are act1-chapters'
+  (9a42a42a5, big36). Ch18 sits on it. Their Ch17Zone pins ch17.json once Act II is over; ChapterRegistry.zone_pinned
+  lets a pinned file give way to a later chapter's file for the same zone once the story is past the pin (Ch18 reads
+  its own Hollowmere block). Hollowmere's Ch18 triggers (the revisit, Rhen's and Liss's heirlooms) are
+  `act3_ch18_revisit()` in tools/act2/ch15_16_greybox.py, appended to their triggers, at the berths' head and the
+  dock-master's door and table. Their Ch17 ends at `a3_aboard` (ch17_complete); Ch18's K01 arrives on the Kite.
+- My Ch17 objective rows (hm_*) stay, now on their layout's points (spawn:Berths, spawn:HullDeck, mark:first_berth).
+
 ## Still to do here
 - **Oruvel:** M5-A3P-1018 (the post-storm look, no Kell, a Kite destination).
 - **Haluna:** M5-A3P-1019 (a HalunaStory hook).

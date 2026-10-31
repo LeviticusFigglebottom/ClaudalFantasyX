@@ -16,9 +16,9 @@ ice in the temple, ADR 0015).
                   stone, rows of keth hanging from the beams (thousands; Ama's among them), and Hesk's place at its
                   north end (`hesk`), where the noon light writes the keth's shadows on the floor.
 
-x is east, north is -Z. Shares Ch10's builders (tools/act1/ch10_greybox.py) and Ch11's rooms.
+x is east, north is -Z. Shares Ch10's builders (tools/act2/ch10_greybox.py) and Ch11's rooms.
 
-    python3 tools/act1/ch12_greybox.py
+    python3 tools/act2/ch12_greybox.py
 """
 from __future__ import annotations
 
@@ -159,7 +159,7 @@ def keth_pass() -> dict:
     blocks.append(box("ExitStep", 108.0, 18.0 - WALK_T * 0.5, -40.0, 4.0, WALK_T, 4.4, color=COL_PATH))
     blocks.append(box("ExitBound", 110.25, 19.0, -40.0, 0.5, 2.0, 4.4, color=COL_POST))
     return {
-        "doc": "M4-C12-02 greybox (tools/act1/ch12_greybox.py; do not edit by hand): Keth Pass on a 09:00 morning "
+        "doc": "M4-C12-02 greybox (tools/act2/ch12_greybox.py; do not edit by hand): Keth Pass on a 09:00 morning "
         "(colour script ch12). From the pass foot (PassFoot) up switchback flights (ramps) along the cliff, the "
         "pass-cords on the drop side, the first landing's knotted cord post (knot_post), the terrace shelf under the "
         "Lit Age wall seeping drowned glimmer (RamArena: the Avalanche Ram), and the saddle (cold_ledge: Kerrid's "
@@ -246,7 +246,7 @@ def quellan() -> dict:
     blocks.append(box("RoadTopBound", 56.0, north_y + 1.0, -44.25, 6.0, 2.0, 0.5, color=COL_POST))
     blocks.append(box("Snowfield", 30.0, -2.0, 0.0, 160.0, 1.0, 120.0, color=COL_SNOW, solid=False))
     return {
-        "doc": "M4-C12-02 greybox (tools/act1/ch12_greybox.py; do not edit by hand): Quellan, the highland town "
+        "doc": "M4-C12-02 greybox (tools/act2/ch12_greybox.py; do not edit by hand): Quellan, the highland town "
         "(colour script ch12). The road in from Keth Pass (west, FromPass), a street of houses, the inn with its "
         "red banner (inn_door: Ysolde's confession to Asha that night), the well in the square, and the road up north "
         "to Cloudloom (a ramp; to_cloudloom). Back to the pass at to_pass. The story waits on the beat sheet "
@@ -323,7 +323,7 @@ def cloudloom() -> dict:
             blocks.append(box(f"Keth{row}_{i}", x, HALL_Y + 3.6, z, 0.25, 3.6, 0.05, color=COL_CORD, solid=False))
     blocks.append(box("HeskDais", hx0, HALL_Y + 0.2, hz0 - hz + 3.0, 6.0, 0.4, 3.0, color=COL_WHITE))
     return {
-        "doc": "M4-C12-02 greybox (tools/act1/ch12_greybox.py; do not edit by hand): Cloudloom, the summit temple "
+        "doc": "M4-C12-02 greybox (tools/act2/ch12_greybox.py; do not edit by hand): Cloudloom, the summit temple "
         "(colour script ch12: white stone under open sky, no ice anywhere in it, ADR 0015). The stair up from the "
         "south (Approach; a ramp), the open-roofed weaving-hall on white stone, rows of keth hanging from its beams with "
         "an aisle up the middle, and Hesk's place on the dais at its north end (hesk). Back down to Quellan at "

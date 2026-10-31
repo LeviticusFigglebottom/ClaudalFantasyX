@@ -70,6 +70,21 @@ class UndertowLayersTests(unittest.TestCase):
         self.assertIn(ul.M_HELD, {ul.TARGETS["memory_terrace"]()[0].materials[m]
                                   for m in set(ul.TARGETS["memory_terrace"]()[0].tri_mat)})
 
+    def test_the_rest_landing_is_flat_and_quiet(self) -> None:
+        """M5-A3P-1402: the party stands on a flat floor round the landing's middle; one held lamp, no other light."""
+        mb = ul.build_landing()[0]
+        p, t = np.asarray(mb.pos), np.asarray(mb.tris)
+        tri = p[t]
+        n = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])
+        c = tri.mean(axis=1)
+        up = n[:, 1] > 0.9 * np.linalg.norm(n, axis=1)
+        mid = up & (np.hypot(c[:, 0], c[:, 2]) < 1.5) & (c[:, 1] < 0.2)
+        self.assertGreater(int(mid.sum()), 0)
+        self.assertLess(abs(float(tri[mid][..., 1].max())), 0.05)
+        used = {mb.materials[m] for m in set(mb.tri_mat)}
+        self.assertIn(ul.M_HELD, used)
+        self.assertFalse({m for m in used if "flame" in m or "lamp_glass_lit" in m})
+
 
 if __name__ == "__main__":
     unittest.main()

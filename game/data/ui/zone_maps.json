@@ -487,15 +487,15 @@
         "shapes": "res://game/levels/ch17/hollowmere/hollowmere_layout.json",
         "shape_kind": "greybox_layout",
         "shape_hints": {"sea": ["Water"], "skip": ["Bed", "DockBoundW", "DockBoundE"]},
-        "bounds": [-6.0, -32.0, 90.0, 46.0],
+        "bounds": [-6.0, -32.0, 110.0, 46.0],
         "pois": [
           {"id": "dock", "name_key": "MAP_POI_HOLL_DOCK", "kind": "dock", "at": [2.0, 0.0], "source": "spawn:Dock"},
           {"id": "house", "name_key": "MAP_POI_HOLL_HOUSE", "kind": "home", "at": [28.0, -16.6], "source": "mark:fathers_door"},
           {"id": "ship", "name_key": "MAP_POI_HOLL_SHIP", "kind": "dock", "at": [30.0, 1.6], "source": "trigger:ship"},
           {"id": "pyre_raft", "name_key": "MAP_POI_HOLL_PYRE", "kind": "path", "at": [60.5, 0.0], "source": "mark:pyre_raft"},
-          {"id": "drydock", "name_key": "MAP_POI_HOLL_DRYDOCK", "kind": "dock", "at": [64.0, -12.0], "source": "spawn:Quay"},
-          {"id": "dace_hull", "name_key": "MAP_POI_HOLL_DACE_HULL", "kind": "path", "at": [72.0, -22.0], "source": "mark:last_berth"},
-          {"id": "first_berth", "name_key": "MAP_POI_HOLL_FIRST_BERTH", "kind": "path", "at": [60.0, -15.5], "source": "mark:first_berth"}
+          {"id": "drydock", "name_key": "MAP_POI_HOLL_DRYDOCK", "kind": "dock", "at": [88.152, -0.42], "source": "spawn:Berths"},
+          {"id": "dace_hull", "name_key": "MAP_POI_HOLL_DACE_HULL", "kind": "path", "at": [74.536, -22.0], "source": "spawn:HullDeck"},
+          {"id": "first_berth", "name_key": "MAP_POI_HOLL_FIRST_BERTH", "kind": "path", "at": [97.661, -2.3], "source": "mark:first_berth"}
         ]
       },
       {

@@ -29,7 +29,8 @@ class Context:
     the location's scene is not a greybox zone, so its spawns can't be checked here)."""
 
     def __init__(self, flags: set[str], dialogue: set[str], encounters: set[str], heroes: set[str],
-                 locations: dict[str, str], layouts: dict[str, dict | None], scene_exists) -> None:
+                 locations: dict[str, str], layouts: dict[str, dict | None], scene_exists,
+                 zone_beats: dict[str, set[str]] | None = None) -> None:
         self.flags = flags
         self.dialogue = dialogue
         self.encounters = encounters
@@ -37,9 +38,9 @@ class Context:
         self.locations = locations
         self.layouts = layouts
         self.scene_exists = scene_exists
-        # M5-A3P-1001: a zone more than one chapter file plays (Act III returns to Ch15's Hollowmere): every file's beats
-        # for it, since its layout's triggers serve them all (ChapterRegistry picks the file by chapter)
-        self.zone_beats: dict[str, set[str]] = {}
+        # M5-A3P-1001: a zone two chapters share (Hollowmere: Ch15's, then Ch17's, picked by the zone's chapter_path)
+        # has one layout; a trigger's beat may be any of those chapter files' beats
+        self.zone_beats = zone_beats or {}
 
 
 def _when_errors(when: object, w: str, ctx: Context) -> list[str]:
@@ -165,7 +166,7 @@ def chapter_errors(doc: object, where: str, ctx: Context) -> list[str]:
         layout = ctx.layouts.get(loc)
         for t in (layout or {}).get("triggers", []):
             beat = (t.get("payload") or {}).get("beat")
-            if beat is not None and beat not in ctx.zone_beats.get(loc, set(zone.get("beats", {}))):
+            if beat is not None and beat not in zone.get("beats", {}) and beat not in ctx.zone_beats.get(loc, set()):
                 errs.append(f"{w}: its layout's trigger '{t.get('id')}' names no beat '{beat}'")
     return errs
 
@@ -394,18 +395,17 @@ def check(root: Path, files: dict[str, object], flags: set[str]) -> list[str]:
         scene_exists=lambda res: isinstance(res, str) and _res(root, res).is_file(),
     )
     named: set[str] = set()
-    docs: list[tuple[str, object]] = []
+    for f in listed:
+        rel = str(f).removeprefix("res://")
+        doc = files.get(rel) if rel in files else _load(root / rel)
+        for loc, zone in ((doc or {}).get("zones") or {}).items() if isinstance(doc, dict) else ():
+            ctx.zone_beats.setdefault(loc, set()).update((zone.get("beats") or {}) if isinstance(zone, dict) else ())
     for f in listed:
         rel = str(f).removeprefix("res://")
         doc = files.get(rel) if rel in files else _load(root / rel)
         if doc is None:
             errs.append(f"{CHAPTERS_FILE}: no chapter file {f}")
             continue
-        docs.append((rel, doc))
-        for lid, zone in ((doc.get("zones") or {}) if isinstance(doc, dict) else {}).items():
-            if isinstance(zone, dict):
-                ctx.zone_beats.setdefault(lid, set()).update(zone.get("beats", {}))
-    for rel, doc in docs:
         errs += chapter_errors(doc, rel, ctx)
         named |= set((doc.get("zones") or {}) if isinstance(doc, dict) else ())
     for lid in sorted(named):

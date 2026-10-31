@@ -25,9 +25,25 @@ static func files() -> PackedStringArray:
 ## and a zone reached on the way out of one chapter (still chapter 16 at Hollowmere) belongs to the next. With
 ## every zone in one file this is the first file that has it. {} when none does.
 static func zone(location_id: StringName, chapter_path: String = "", chapter: int = 0) -> Dictionary:
-	if chapter_path != "":
-		return zone_in(PackedStringArray([chapter_path]), location_id)
-	return zone_in(files(), location_id, chapter)
+	return zone_pinned(files(), location_id, chapter_path, chapter)
+
+
+## zone() over the given chapter files. A zone that pins its chapter file (Ch17Zone pins ch17.json once Act II is
+## over) keeps it until the story is past that file's chapter; then a later chapter's file with the zone wins
+## (Ch18 comes back to Hollowmere; M5-A3P-1004). Without one the pin holds.
+static func zone_pinned(
+	paths: PackedStringArray, location_id: StringName, chapter_path: String, chapter: int = 0
+) -> Dictionary:
+	if chapter_path == "":
+		return zone_in(paths, location_id, chapter)
+	var pinned := chapter_number(str(GreyboxZone.read_json(chapter_path).get(KEY_CHAPTER, "")))
+	if pinned > 0 and chapter > pinned:
+		for p in paths:
+			var data: Dictionary = GreyboxZone.read_json(p)
+			var zones: Dictionary = data.get(KEY_ZONES, {})
+			if zones.has(String(location_id)) and chapter_number(str(data.get(KEY_CHAPTER, ""))) >= chapter:
+				return zones[String(location_id)]
+	return zone_in(PackedStringArray([chapter_path]), location_id)
 
 
 ## zone() over the given chapter files, in order. A file's "chapter" key ("ch17") names its chapter.

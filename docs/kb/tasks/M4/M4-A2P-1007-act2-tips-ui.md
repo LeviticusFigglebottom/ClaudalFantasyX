@@ -2,8 +2,8 @@
 id: M4-A2P-1007
 title: "Request: Act II tips never raise; battle help hides Echo, cleansing, roots and cover (ui)"
 role: ui
-status: todo
-owner_session: ""
+status: review
+owner_session: claude/ui (ui-menus)
 depends_on: []
 reviewer: narrative
 milestone: M4
@@ -27,6 +27,19 @@ dead: nothing raises it.
 | A2 | low | `battle_boss_hud.gd:77-83`, `turn_timeline.gd:95` | Intent labels come only from charge skills, so a cycle's next Voice is never shown | Label `cycle` skills too (for Kesh, Act III) |
 
 ## Acceptance criteria
-- [ ] Each row done, or answered here with a reason.
+- [x] Each row done, or answered here with a reason.
+
+## Answer (ui-menus, 2026-10-31)
+| # | Answer |
+|---|---|
+| A18 | Row `records` on `ch13_archive_read` with `tut_records_seen`: the Lamp Archive is where records are first read side by side. |
+| A19 | Row `dark_shrine`: near the first shrine once `ch14_declared_heretics` is set. Marking the Order shrines `order` in the layouts is for chapters. |
+| A20 | **Done now.** Row `swell_mode` (`tut_swell_mode_seen`) on `field_ready`, with `requires_swell_unlock`: the save's swell `unlocked` holds only modes unlocked through play, so it comes on the first field after an unlock, once. Test: `test_the_swell_mode_tip_waits_for_an_unlock`. |
+| A1 | Pell joins at `ch09_pell_joined` (Ch9's Ebbing), so the party is seven when `ch10_started` raises the tip, and the body says "the rest wait". |
+| A8 | **Done now.** Echo's help names the copy ("echoes Attack"), reads as the copy's kind and target, and says "Nothing to echo yet" before any foe has acted. Greying a gather copy would need the engine to refuse it (combat). Test: test_battle_help_lines. |
+| A13 | **Done now.** A skill with `cleanses` adds "cures Poison, Darkness, …", so Cord Lift names all seven. Test: test_battle_help_lines. |
+| A5 | The rooted marker is M3-UI-1240, which waits on M4-A2P-020. Swap's help already says why ("Rooted"). |
+| A9 | The cover marker is M3-UI-1241, which waits on M4-A2P-021. |
+| A2 | Done before this task: a cycle's next voice shows on the timeline (test_battle_cycle `test_the_timeline_shows_each_coming_voice`). |
 
 ## Review log
