@@ -3,6 +3,15 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 626528274: the Lead's 01:21 item, the Act II cue placement in slice-polish's newest Ch13–Ch16 staging (m2-slice @ ff50ec33).**
+  - **Staged now:** Ch13's ansedra, ansedra_lacquer_court, lamp_archive (with the `archive_lamp` prop) and sanctum; Ch15's open_sea; Ch16's drowned_choir and pale_rim.
+  - **The check:** act1_playthrough `--act 2 --holds`, run in a scratch worktree of m2-slice with audio's current data and tools copied in. No missing cue and no cue ending inside a held shot, in any of them; only the 13 known notes (deliberate `fade=0.0` cuts and ansedra named twice).
+  - **The scripts the slice changed** (Ch13–Ch16): wording and marks only, plus `@memory on look=white … off` round ch16_kesh_memory. That scene already has its cue (`kesh_memory`), and the zone bed holds under a sequencer's music, so it needs nothing more.
+  - **One addition, Ch13 R10 (ch13_sefir_closes_the_book):** after `@music silence`, Sefir squares the pages, closes the ledger and puts out the Archive's one lamp (`@light archive_lamp off 1.0`). The lamp is staged warm, an oil flame ("the only warm notes are human", act2_ch13.md rule 5), and nothing else sounds in that silence. So:
+    - prop_sfx.json gives `archive_lamp.tscn` the `lamp_flame` loop, close (1.5 m), marked pending until the slice merges;
+    - PropAudio rows may name a `light`: the loop's level follows its energy every frame, so the lamp's breath goes out with the light (a 1 s fade, then stopped).
+  - **Test:** test_prop_audio +1 (lit at its level; half the energy about 6 dB down; out with the light).
+  - **Checks:** validate_data 0; gdlint and gdformat clean; Godot prop_audio 3/0, flame_audio 3/0. Skipped: screenshots, Blender.
 - **MERGE-READY @ 3e7910593: the Lead's 23:05 FAST-TRACK (the two ERRORs). It pre-empts the score (ADR 0207).**
   - **UiAudio "already connected" on every resident battle return (134 in Ch1–Ch6):**
     - Cause: the field leaves the tree for the battle and comes back with its connections intact. `step()` had dropped it from `watched`, so the director's `watch()` connected every hooked signal again.
