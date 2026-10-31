@@ -1402,6 +1402,17 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     - in the scratch worktree: return_park 3/0, battle_return 2/0, scene_router 17/0.
   - **Seen, not mine:** VillagerLayer logs "Parent node is busy setting up children" and "!is_inside_tree" on a
     prebuilt add (the existing prebuild test logs the same). Creatures' code, flagged before.
+- **PC pass 7 row 18 (slice_causeway_harrier_view: no harrier), MERGE-READY @ this commit:**
+  - Cause: the camera director's FIXED safety net turned C07 to the party, which stands behind it, so the camera
+    faced away from the flier (in-engine: forward (−0.90, 0, 0.43) against the authored (+0.91, 0, −0.42)).
+  - Fix: a layout camera volume takes `aim_node`/`aim_offset` (greybox_zone.gd, two lines). C07's subject is the
+    Harrier node, offset so its aim is the authored look_at. The frame is exactly as authored and is never turned.
+  - The shot also had the "The menu" tutorial tip over it. The 11 slice_* shots that set its trigger flags now set
+    the four tut_*_seen flags.
+  - Viewed on lavapipe: the harrier is back against the cumulus.
+  - Tests: test_causeway_harrier gains a live-camera test; causeway 17/0, camera 73/0.
+  - Tools suite: `test_cutscene_sfx_files` is red on Act III music cues (credits_suite, ending_*, dace_ledger) that
+    another track wired in. Not this change.
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
