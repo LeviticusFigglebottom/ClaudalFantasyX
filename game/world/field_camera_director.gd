@@ -611,6 +611,31 @@ static func _see_through(mi: MeshInstance3D) -> bool:
 	return false
 
 
+## Builds, on the calling thread, the triangles of every big mesh under `root` (occlusion.warm_min_vertices or
+## more, no transparent surface): the zone's worker thread calls it after instantiate (SceneRouter, ReturnPark), so
+## the first occlusion test finds them (Godot keeps a mesh's triangle mesh on it). Returns how many it built.
+static func warm_triangles(root: Node) -> int:
+	var cfg := FieldInput.load_json(DATA_PATH).get("occlusion", {}) as Dictionary
+	var min_vertices := int(cfg.get("warm_min_vertices", 0))
+	if root == null or min_vertices <= 0:
+		return 0
+	var built := 0
+	var seen := {}
+	for n in root.find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		var mesh := mi.mesh as ArrayMesh  # a built or imported mesh; primitives are small
+		if mesh == null or seen.has(mesh) or _see_through(mi):
+			continue
+		seen[mesh] = true
+		var vertices := 0
+		for k in mesh.get_surface_count():
+			vertices += mesh.surface_get_array_len(k)
+		if vertices >= min_vertices:
+			mesh.generate_triangle_mesh()
+			built += 1
+	return built
+
+
 ## The mesh's triangles for segment tests, built once per mesh resource.
 func _triangles(mesh: Mesh) -> TriangleMesh:
 	if not _tri_cache.has(mesh):

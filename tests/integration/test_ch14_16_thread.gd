@@ -51,6 +51,9 @@ func test_the_wedding_court_to_the_choir() -> void:
 	_fought(&"ch16_storm_wakes", &"ch16_line_held")  # B09: the storm wakes on the return
 	visit(CHOIR)
 	assert_true(bool(Game.get_flag(&"ch16_act_two_complete")), "B10-B11: swept away")
+	assert_eq(
+		hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch17/hollowmere", "spawn": "Dock"}], "on to Act III (Ch17)"
+	)
 	after_visits()
 
 

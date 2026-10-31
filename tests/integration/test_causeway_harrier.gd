@@ -66,6 +66,28 @@ func test_the_harrier_circles_in_c07_until_it_is_beaten() -> void:
 	_done(zone)
 
 
+func test_the_live_camera_keeps_c07_on_the_flier() -> void:
+	# GPU QA row 18 (PC pass 7): the director's FIXED safety net turned C07 to the party behind it, so no flier. C07's
+	# subject is the harrier (aim_node), which keeps the authored frame however the party stands.
+	var zone := _zone()
+	var director := zone.find_child("CameraDirector", true, false) as FieldCameraDirector
+	director.auto_update = false
+	assert_true(bool(zone.call("place_at", &"BeforeHarrier")))
+	director.snap()
+	for i in 30:
+		director.update(1.0 / 60.0)
+	assert_eq(director.active_shot.id, StringName(SHOT), "the spawn stands in C07")
+	var shot := _shot()
+	var pos := Vector3(shot["pos"][0], shot["pos"][1], shot["pos"][2])
+	var look := Vector3(shot["look_at"][0], shot["look_at"][1], shot["look_at"][2])
+	var forward := -director.camera.global_basis.z
+	assert_true(forward.dot((look - pos).normalized()) > 0.999, "the authored frame, not turned (%s)" % forward)
+	var harrier := zone.get_node(^"Harrier") as CausewayHarrier
+	var local := director.camera.global_transform.affine_inverse() * harrier.model.global_position
+	assert_true(local.z < 0.0, "the flier is in front of the live camera")
+	_done(zone)
+
+
 func test_it_is_gone_once_the_fight_is_won() -> void:
 	Game.set_flag(WON)
 	var zone := _zone()

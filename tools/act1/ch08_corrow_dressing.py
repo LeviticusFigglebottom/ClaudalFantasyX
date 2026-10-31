@@ -442,6 +442,15 @@ WATER_MATERIAL = RES_ZONE + "corrow_water_material.tres"
 # (corrow.md §0); it follows the layout's Storm block: from the beacon's opening until the hoist is cut down.
 STORM_AT = cf.arc(-20.0, cf.WALK_Y, 0.0)[:3]
 STORM = {"name": "Undertow", "at": [cf.r3(v) for v in STORM_AT], "preset": "ch08_seawall", "azimuth_deg": 135.0}
+# The PC's pass 7 (row 82): under the storm the zone's key and ambient dim (Undertow zone_shadow: sun x0.25, ambient
+# x0.55), and the storm, flood and lake frames were crushed to black with the party as silhouettes. While the Storm
+# block shows: a cool fill from landward on the faces the cameras see, and a glimmer rim from the storm's own bearing
+# that edges the figures against it. Shadowless (yaw = 180 - the bearing they come from, as the zones' sun rows).
+STORM_FILLS = [
+    {"pitch_deg": -25.0, "yaw_deg": 180.0 - 315.0, "color": "#9FB4C8", "energy": 0.6, "specular": 0.3, "block": "Storm"},
+    {"pitch_deg": -12.0, "yaw_deg": 180.0 - STORM["azimuth_deg"], "color": "#8FD0D8", "energy": 0.55, "specular": 0.0,
+     "block": "Storm"},
+]
 
 
 def storm_relayout() -> None:
@@ -513,6 +522,7 @@ def dressing() -> dict:
         "greybox": {"hide_all": True, "keep": []},
         "waters": story_waters(LAYOUT, ("Flood", "Lake")),
         "storms": [dict(STORM, block="Storm")],
+        "fill_lights": [dict(f) for f in STORM_FILLS],
         "fire_light_color": preview.get("fire_light_color", "#E0702E"),
         "fire_lights": [{"at": f[:3], "energy": f[3], "range": f[4]} for f in preview.get("fire_lights", [])],
         "kit_material_paths": kit_material_paths(),

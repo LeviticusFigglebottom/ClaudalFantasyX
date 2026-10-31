@@ -199,6 +199,7 @@ def library_spec(lib: str) -> tuple[str, dict, list[str]]:
     spec = libraries()[lib]
     params = [json.loads((PARAMS_DIR / f"{b}.json").read_text(encoding="utf-8")) for b in spec["bodies"]]
     want = {c for p in params for c in p.get("_work", []) if c}
+    want |= set(spec.get("extra", []))  # clips no member works at but the whole group can play (the U04 `cheer`)
     unknown = sorted(want - set(cc.CLIPS))
     if unknown:
         raise SystemExit(f"build_crowd: library {lib} names unknown work clips {unknown}")

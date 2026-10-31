@@ -47,6 +47,9 @@ GALLERY_BAYS = ("tower_bay", "tower_bay_solid")
 CROWN_BAYS = ("tower_bay_broken", "tower_bay_broken", "tower_bay")
 
 
+BELL_S_FACE_Z = 13.6  # the bell-room's south wall's inner face (BellWallS at z 14, its bays 0.25 m in)
+
+
 def put(piece: str, x: float, y: float, z: float, yaw: float = 0.0, **kw) -> dict:
     d = {"piece": piece, "at": [round(x, 3), round(z, 3)], "y": round(y, 3), "yaw_deg": round(yaw, 2)}
     d.update(kw)
@@ -168,6 +171,10 @@ def pieces() -> list[dict]:
             put("pipe_run", 34.6, 0.0, 9.0, 90.0), put("coral_head_a", 35.4, 0.0, 13.0, 75.0, scale=0.8),
             put("coral_head_b", 45.0, 0.0, 11.0, 210.0, scale=0.7), put("lamp_column_fallen", 42.5, 0.0, 9.0, 160.0),
             put("seagrass_patch", 37.0, 0.0, 12.6, 40.0)]
+    # PC pass 7 row 83 (the Lead, 10-31): U03 (the bell-room shot) looks south at a flat blind bay behind Rhen. The
+    # service pipe runs on along that wall too, and coral the current reached hangs from it.
+    out += [put("pipe_run", 40.0, 0.0, BELL_S_FACE_Z, 180.0),
+            put("coral_curtain", 41.6, 0.0, BELL_S_FACE_Z - 0.05, 180.0, scale=0.8)]
     # The galleries: window and blind bays; the tin's alcove off the west wall behind the coral curtain (the gap
     # between GalleryWallW1 and W2); open to the gauge room on the east (below GalleryWallE); the four lamp-columns.
     out += floor(74.0, 86.0, -34.0, 20.0)

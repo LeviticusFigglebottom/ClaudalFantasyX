@@ -574,6 +574,36 @@ def section_pose(name: str, amount: float, t: float = 0.0) -> tuple[np.ndarray, 
     return basis, origin
 
 
+# PC pass 7 row 77 (the Lead, 10-31): from O17 at 250-300 m each crown read as a plain grey box on the horizon
+# (greybox). A broken tower's top is ragged: the next floor's walls stand in stretches of different heights round the
+# edge, gaps where they fell, so the skyline is a row of broken towers. Deterministic by position (no rng draw, so the
+# rest of the piece is unchanged); the step is coarser at LOD1, which is what 300 m sees. The windows grow to read.
+CROWN_WINDOW_HALF = (0.5, 0.75, 0.03)
+PARAPET_STEP_M = (1.4, 3.0)  # LOD0, LOD1
+PARAPET_T = 0.35
+
+
+def _broken_parapet(mb, mat: int, cx: float, cz: float, hx: float, hz: float, h: float, stub: float,
+                    lod: bool) -> None:
+    step = PARAPET_STEP_M[1 if lod else 0]
+    for side, (ax, az, length) in enumerate(((1, 0, hx), (0, 1, hz), (-1, 0, hx), (0, -1, hz))):
+        # The side's outer face: along (ax, az) at the far edge of the other axis.
+        n_seg = max(1, int(round(2 * length / step)))
+        for k in range(n_seg):
+            t = -length + (k + 0.5) * 2 * length / n_seg
+            u = math.sin(cx * 0.37 + cz * 0.91 + side * 2.1 + k * 1.7)  # a fixed, irregular height pattern
+            if u < -0.55:
+                continue  # fallen here
+            hh = stub * (0.25 + 0.75 * (0.5 + 0.5 * u) ** 1.5)
+            if ax:
+                px, pz = cx + t, cz + (hz - PARAPET_T * 0.5) * (1 if side == 0 else -1)
+                half = (length / n_seg - 0.03, hh * 0.5, PARAPET_T * 0.5)
+            else:
+                px, pz = cx + (hx - PARAPET_T * 0.5) * (1 if side == 1 else -1), cz + t
+                half = (PARAPET_T * 0.5, hh * 0.5, length / n_seg - 0.03)
+            kc.rounded_block(mb, (px, h + hh * 0.5, pz), half, mat, radius=0.04, seg=1, weather=STORM)
+
+
 # ---------------------------------------------------------------------------------------------
 # reef_edge_far
 # ---------------------------------------------------------------------------------------------
@@ -613,6 +643,7 @@ def build_reef_edge_far(seed: int = 788) -> list[kc.MeshBuilder]:
             outline = np.array([[cx - hx, cz - hz], [cx + hx, cz - hz], [cx + hx, cz + hz], [cx - hx, cz + hz]])
             kc.polygon_prism(mb, outline, -1.0, h, crown, col=np.array([0.0, 0.2, 0.8, 0.6]),
                              uv2=np.array([0.8, float(rng.random())]))
+            _broken_parapet(mb, crown, cx, cz, hx, hz, h, stub, lod)
             if lod:
                 continue
             for sgn in (-1.0, 1.0):  # window rows on the long faces, one floor down from the top
@@ -620,7 +651,7 @@ def build_reef_edge_far(seed: int = 788) -> list[kc.MeshBuilder]:
                     wx = cx - hx + 0.9 + k * 1.6
                     if rng.random() < 0.2:
                         continue
-                    kc.rounded_block(mb, (wx, h - 1.3, cz + sgn * (hz + 0.02)), (0.42, 0.55, 0.03), dark, seg=1,
+                    kc.rounded_block(mb, (wx, h - 1.3, cz + sgn * (hz + 0.02)), CROWN_WINDOW_HALF, dark, seg=1,
                                      radius=0.01)
             ncol = 4 + int(rng.integers(0, 3))
             for k in range(ncol):

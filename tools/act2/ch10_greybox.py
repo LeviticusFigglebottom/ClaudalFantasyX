@@ -14,7 +14,7 @@ script's `ch10` (overcast dusk 18:20, a sun 2 deg up in the west, tannin water).
 Greybox collision is boxes and the controller has no step-up, so every walk is level at y 0 with root rails along its
 edges; the water is a surface at WATER_Y over a bed the rails keep everyone out of. x is east, north is -Z.
 
-    python3 tools/act1/ch10_greybox.py
+    python3 tools/act2/ch10_greybox.py
 """
 from __future__ import annotations
 
@@ -137,7 +137,7 @@ def ossa_fen() -> dict:
     blocks += walk("Exit", *FEN_EXIT, trim=WALK_W * 0.5)
     blocks.append(box("ExitBound", 141.5, 1.0, 0.0, 1.0, 2.0, WALK_W + 1.0, color=COL_RAIL))
     return {
-        "doc": "M4-C10-02 greybox (tools/act1/ch10_greybox.py; do not edit by hand): Ossa Fen at the overcast dusk "
+        "doc": "M4-C10-02 greybox (tools/act2/ch10_greybox.py; do not edit by hand): Ossa Fen at the overcast dusk "
         "(colour script ch10). The fen's edge is the dry bank at the west, where the coast road from Corrow ends and "
         "Pell stops (act1_ch09.md §10: the first image of Act II); the Kirru's root-walks run east over tannin water "
         "between mangrove trunks, a side pocket north, the Drowner's clearing (the boss's arena, DrownerArena) and "
@@ -213,7 +213,7 @@ def reedhollow() -> dict:
     blocks.append(box("ShoreBoundE", shore[0] + 4.5, 1.0, shore[1], 1.0, 2.0, 12.0, color=COL_RAIL))
     blocks.append(box("ClutchStone", shore[0] + 1.5, 0.4, shore[1], 1.2, 0.8, 1.2, color=COL_BANK))
     return {
-        "doc": "M4-C10-02 greybox (tools/act1/ch10_greybox.py; do not edit by hand): Reedhollow, the Kirru village, "
+        "doc": "M4-C10-02 greybox (tools/act2/ch10_greybox.py; do not edit by hand): Reedhollow, the Kirru village, "
         "at the overcast dusk (colour script ch10). A reed causeway from Ossa Fen (west, Gate) to a ring of platforms "
         "round the lagoon, reed houses off the ring, and the shore on its east side (Shore, ClutchStone) where the "
         "clutch stands for the farewell-tide and the motes lift. Pell is not let in (act_outline Ch10). The story waits "

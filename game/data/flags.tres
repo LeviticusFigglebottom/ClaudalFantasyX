@@ -405,5 +405,6 @@ flags = {
 "ch18_revisit_corrow": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Corrow side scene (ch18_revisit_corrow) has played; the Kite's log reads Seen.",
 "ch18_revisit_quellan": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Quellan side scene (ch18_revisit_quellan) has played; the Kite's log reads Seen.",
 "ch18_revisit_ansedra": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Ansedra (from the air) side scene (ch18_revisit_ansedra) has played; the Kite's log reads Seen.",
-"ch18_revisit_hollowmere": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Hollowmere side scene (ch18_revisit_hollowmere) has played; the Kite's log reads Seen."
+"ch18_revisit_hollowmere": "Ch18 \u00a74 revisit (M5-A3P-1704, a request to cinematics): the Hollowmere side scene (ch18_revisit_hollowmere) has played; the Kite's log reads Seen.",
+"tut_swell_mode_seen": "Tutorial tip (M4-A2P-1007 A20): the new-Swell-mode tip has shown, on the first field after play unlocked a fill mode."
 }

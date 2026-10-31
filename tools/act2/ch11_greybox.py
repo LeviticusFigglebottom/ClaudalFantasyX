@@ -12,9 +12,9 @@ turquoise lagoon under a grey sky, Lit Age light bleeding teal from every condui
                   (ramps; the controller has no step-up) past the waterline to the drowned sanctum at the shaft's foot
                   (Nhoa's binding), where the deep's cold wells up.
 
-Shares Ch10's builders (tools/act1/ch10_greybox.py). x is east, north is -Z.
+Shares Ch10's builders (tools/act2/ch10_greybox.py). x is east, north is -Z.
 
-    python3 tools/act1/ch11_greybox.py
+    python3 tools/act2/ch11_greybox.py
 """
 from __future__ import annotations
 
@@ -96,7 +96,7 @@ def sunken_vey() -> dict:
         blocks += gallery(f"GalleryOut{i}", a, b)
     blocks.append(box("GateBound", 94.5, 1.0, -16.0, 1.0, 2.0, WALK_W + 1.0, color=COL_PARAPET))
     return {
-        "doc": "M4-C11-02 greybox (tools/act1/ch11_greybox.py; do not edit by hand): Sunken Vey, the drowned galleries, "
+        "doc": "M4-C11-02 greybox (tools/act2/ch11_greybox.py; do not edit by hand): Sunken Vey, the drowned galleries, "
         "at an overcast midday (colour script ch11). A Lit Age city's arcades half under a still turquoise lagoon, "
         "their roofs the walks. From the landing (west) to the conduit court, where a conduit bleeds bound teal and "
         "Liss reads the Saltwright housing-mark (conduit_mark); a side gallery north to a fig-choked end; east to "
@@ -186,7 +186,7 @@ def lowlight() -> dict:
                           color=COL_PARAPET))
     blocks.append(box("Waterline", 52.0, WATERLINE_Y - 0.05, 4.0, 40.0, 0.1, 20.0, color=COL_LAGOON, solid=False))
     return {
-        "doc": "M4-C11-02 greybox (tools/act1/ch11_greybox.py; do not edit by hand): Lowlight, the temple half "
+        "doc": "M4-C11-02 greybox (tools/act2/ch11_greybox.py; do not edit by hand): Lowlight, the temple half "
         "underwater (colour script ch11). The atrium at the gate (Gate; the lamp bench for Rhen and Liss's side scene, "
         "lamp_bench), the Lamp Engine's hall north of it (EngineHall: the boss's arena, its conduits bleeding bound "
         "teal), and east the well-shaft: two flights down (ramps) past the waterline (y -2: the temple is drowned "

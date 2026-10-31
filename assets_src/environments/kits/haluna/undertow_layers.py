@@ -23,6 +23,9 @@ made of the kits those places were made of. Origins at each island's floor centr
   memory_square      a square of Ansedra under the Level remembered (U06): white flags, a sunk pool of still water that
                      has never moved, steps up to a doorway with a gilt band, a Tender's broom left leaning on a step
                      (r 6).
+  memory_landing     (M5-A3P-1402) a rest between the layers (act3_ch20 R1, R2): a small fragment of Iskarra's flags
+                     (r 3.5) with its hanging root, a curved stone bench for the party, one short post with a steady
+                     held lamp; quieter than the rooms.
   held_pillar        a broken Lit Age lamp column carrying held glimmer (`kit_glimmer_held`, cyan): the light the
                      storm keeps, threaded up the column and hanging off its broken top in drops. 7 m.
 """
@@ -56,7 +59,7 @@ M_SILT = "kit_vey_silt"
 
 TRI_BUDGET = {"memory_island": (12000, 900), "memory_kitchen": (7000, 500), "memory_market": (7000, 500),
               "memory_stands": (7000, 500), "held_pillar": (3000, 200), "memory_terrace": (7000, 500),
-              "memory_gallery": (7000, 500), "memory_square": (7000, 500)}
+              "memory_gallery": (7000, 500), "memory_square": (7000, 500), "memory_landing": (4000, 300)}
 
 ISLAND_R = 9.0
 SLOTS_XZ = ((2.1, 0.7), (3.0, -1.1), (1.4, 2.0), (-2.4, 0.9), (-3.4, -1.2), (-1.2, -0.6))
@@ -382,6 +385,46 @@ def build_square(seed: int = 2708) -> list[kc.MeshBuilder]:
     return out
 
 
+LANDING_R = 3.5
+LANDING_BENCH_R = 2.3  # the bench's arc round the landing's back (-Z)
+LANDING_BENCH_A = (math.radians(200.0), math.radians(340.0))
+LANDING_LAMP_AT = (1.6, -1.2)
+
+
+def build_landing(seed: int = 2709) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("memory_landing", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("memory_landing" + ("-lod1" if lod else ""))
+        _island(mb, rng, noise, LANDING_R, 4.0, lod, flags=True)
+        if not lod:  # the flags, as the Cage's floor, flat at y 0
+            for x in np.arange(-LANDING_R + 0.5, LANDING_R, 1.0):
+                for z in np.arange(-LANDING_R + 0.5, LANDING_R, 1.0):
+                    if math.hypot(x, z) < LANDING_R - 0.7:
+                        kc.rounded_block(mb, (x, -0.05, z), (0.47, 0.05, 0.47), mb.material(M_FLAG), radius=0.02,
+                                         seg=1, weather=isk.WORN, variation=float(rng.random()))
+        # The bench: a curved run of stone seats on low plinths round the back of the landing.
+        stone = mb.material(M_STONE)
+        n = 4 if lod else 9
+        for k in range(n):
+            a = LANDING_BENCH_A[0] + (LANDING_BENCH_A[1] - LANDING_BENCH_A[0]) * (k + 0.5) / n
+            c = (math.cos(a) * LANDING_BENCH_R, math.sin(a) * LANDING_BENCH_R)
+            half = LANDING_BENCH_R * (LANDING_BENCH_A[1] - LANDING_BENCH_A[0]) / n * 0.5 - 0.02
+            kc.rounded_block(mb, (c[0], 0.4, c[1]), (0.25, 0.05, half), stone, rot=kc.rot_y(-a), radius=0.02, seg=1)
+            if k % 2 == 0 or lod:
+                kc.rounded_block(mb, (c[0], 0.18, c[1]), (0.18, 0.18, min(half, 0.3)), stone, rot=kc.rot_y(-a),
+                                 radius=0.02, seg=1)
+        # The one lamp: a short ceramic post, its held light steady.
+        lx, lz = LANDING_LAMP_AT
+        kc.tube(mb, np.array([[lx, 0.0, lz], [lx, 1.3, lz]]), np.array([0.09, 0.07]), 6 if lod else 10,
+                mb.material(M_CER), cap_end=True)
+        if not lod:
+            _held_drop(mb, (lx, 1.42, lz), 0.11)
+        out.append(mb)
+    return out
+
+
 TARGETS = {"memory_island": build_island, "memory_kitchen": build_kitchen, "memory_market": build_market,
            "memory_stands": build_stands, "held_pillar": build_held_pillar, "memory_terrace": build_terrace,
-           "memory_gallery": build_gallery, "memory_square": build_square}
+           "memory_gallery": build_gallery, "memory_square": build_square, "memory_landing": build_landing}

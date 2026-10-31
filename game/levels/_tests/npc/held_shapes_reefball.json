@@ -1,0 +1,200 @@
+{
+  "_doc": "M5-A3P-1809 review stage (held_shapes_reefball.tscn): Ch20 U04's remembered Reefball crowd, 32 held shapes on four tiers of a stand, cheering, drawn far by CrowdFar (flipbook MultiMeshes in the held silhouette). Not a zone: the U04 layer adds its own CrowdFar with its rows when the layer exists.",
+  "glow": "#7FC6D9",
+  "frames": 6,
+  "fps": 10.0,
+  "people": [
+    {
+      "id": "u04_stand_0_0",
+      "body": "crowd_man_heavy",
+      "clip": "cheer",
+      "at": [-5.6, 0.0, -4.0, 0.0]
+    },
+    {
+      "id": "u04_stand_0_1",
+      "body": "crowd_man_lean_a",
+      "clip": "cheer",
+      "at": [-4.0, 0.0, -4.0, 0.0]
+    },
+    {
+      "id": "u04_stand_0_2",
+      "body": "crowd_woman_lean_a",
+      "clip": "cheer",
+      "at": [-2.4, 0.0, -4.0, 0.0]
+    },
+    {
+      "id": "u04_stand_0_3",
+      "body": "crowd_man_medium_a",
+      "clip": "cheer",
+      "at": [-0.8, 0.0, -4.0, 0.0]
+    },
+    {
+      "id": "u04_stand_0_4",
+      "body": "crowd_woman_medium",
+      "clip": "cheer",
+      "at": [0.8, 0.0, -4.0, 0.0]
+    },
+    {
+      "id": "u04_stand_0_5",
+      "body": "crowd_man_lean_b",
+      "clip": "cheer",
+      "at": [2.4, 0.0, -4.0, 0.0]
+    },
+    {
+      "id": "u04_stand_0_6",
+      "body": "crowd_woman_heavy",
+      "clip": "cheer",
+      "at": [4.0, 0.0, -4.0, 0.0]
+    },
+    {
+      "id": "u04_stand_0_7",
+      "body": "crowd_woman_lean_b",
+      "clip": "cheer",
+      "at": [5.6, 0.0, -4.0, 0.0]
+    },
+    {
+      "id": "u04_stand_1_0",
+      "body": "crowd_man_medium_a",
+      "clip": "cheer",
+      "at": [-4.8, 0.6, -5.4, 0.0]
+    },
+    {
+      "id": "u04_stand_1_1",
+      "body": "crowd_woman_medium",
+      "clip": "cheer",
+      "at": [-3.2, 0.6, -5.4, 0.0]
+    },
+    {
+      "id": "u04_stand_1_2",
+      "body": "crowd_man_lean_b",
+      "clip": "cheer",
+      "at": [-1.6, 0.6, -5.4, 0.0]
+    },
+    {
+      "id": "u04_stand_1_3",
+      "body": "crowd_woman_heavy",
+      "clip": "cheer",
+      "at": [0.0, 0.6, -5.4, 0.0]
+    },
+    {
+      "id": "u04_stand_1_4",
+      "body": "crowd_woman_lean_b",
+      "clip": "cheer",
+      "at": [1.6, 0.6, -5.4, 0.0]
+    },
+    {
+      "id": "u04_stand_1_5",
+      "body": "crowd_man_heavy",
+      "clip": "cheer",
+      "at": [3.2, 0.6, -5.4, 0.0]
+    },
+    {
+      "id": "u04_stand_1_6",
+      "body": "crowd_man_lean_a",
+      "clip": "cheer",
+      "at": [4.8, 0.6, -5.4, 0.0]
+    },
+    {
+      "id": "u04_stand_1_7",
+      "body": "crowd_woman_lean_a",
+      "clip": "cheer",
+      "at": [6.4, 0.6, -5.4, 0.0]
+    },
+    {
+      "id": "u04_stand_2_0",
+      "body": "crowd_woman_heavy",
+      "clip": "cheer",
+      "at": [-5.6, 1.2, -6.8, 0.0]
+    },
+    {
+      "id": "u04_stand_2_1",
+      "body": "crowd_woman_lean_b",
+      "clip": "cheer",
+      "at": [-4.0, 1.2, -6.8, 0.0]
+    },
+    {
+      "id": "u04_stand_2_2",
+      "body": "crowd_man_heavy",
+      "clip": "cheer",
+      "at": [-2.4, 1.2, -6.8, 0.0]
+    },
+    {
+      "id": "u04_stand_2_3",
+      "body": "crowd_man_lean_a",
+      "clip": "cheer",
+      "at": [-0.8, 1.2, -6.8, 0.0]
+    },
+    {
+      "id": "u04_stand_2_4",
+      "body": "crowd_woman_lean_a",
+      "clip": "cheer",
+      "at": [0.8, 1.2, -6.8, 0.0]
+    },
+    {
+      "id": "u04_stand_2_5",
+      "body": "crowd_man_medium_a",
+      "clip": "cheer",
+      "at": [2.4, 1.2, -6.8, 0.0]
+    },
+    {
+      "id": "u04_stand_2_6",
+      "body": "crowd_woman_medium",
+      "clip": "cheer",
+      "at": [4.0, 1.2, -6.8, 0.0]
+    },
+    {
+      "id": "u04_stand_2_7",
+      "body": "crowd_man_lean_b",
+      "clip": "cheer",
+      "at": [5.6, 1.2, -6.8, 0.0]
+    },
+    {
+      "id": "u04_stand_3_0",
+      "body": "crowd_man_lean_a",
+      "clip": "cheer",
+      "at": [-4.8, 1.8, -8.2, 0.0]
+    },
+    {
+      "id": "u04_stand_3_1",
+      "body": "crowd_woman_lean_a",
+      "clip": "cheer",
+      "at": [-3.2, 1.8, -8.2, 0.0]
+    },
+    {
+      "id": "u04_stand_3_2",
+      "body": "crowd_man_medium_a",
+      "clip": "cheer",
+      "at": [-1.6, 1.8, -8.2, 0.0]
+    },
+    {
+      "id": "u04_stand_3_3",
+      "body": "crowd_woman_medium",
+      "clip": "cheer",
+      "at": [0.0, 1.8, -8.2, 0.0]
+    },
+    {
+      "id": "u04_stand_3_4",
+      "body": "crowd_man_lean_b",
+      "clip": "cheer",
+      "at": [1.6, 1.8, -8.2, 0.0]
+    },
+    {
+      "id": "u04_stand_3_5",
+      "body": "crowd_woman_heavy",
+      "clip": "cheer",
+      "at": [3.2, 1.8, -8.2, 0.0]
+    },
+    {
+      "id": "u04_stand_3_6",
+      "body": "crowd_woman_lean_b",
+      "clip": "cheer",
+      "at": [4.8, 1.8, -8.2, 0.0]
+    },
+    {
+      "id": "u04_stand_3_7",
+      "body": "crowd_man_heavy",
+      "clip": "cheer",
+      "at": [6.4, 1.8, -8.2, 0.0]
+    }
+  ]
+}

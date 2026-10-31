@@ -815,11 +815,13 @@ func _advance_leaving(delta: float) -> void:
 		var spec: Dictionary = e["spec"]
 		var sec := maxf(float(spec.get("sec", 0.0)), 0.0001)
 		e["t"] = float(e["t"]) + delta * speed
-		var f := e["node"] as FighterStandIn
-		if not is_instance_valid(f) or float(e["t"]) >= sec:
+		if not is_instance_valid(e["node"]):  # freed under us (M3-HER-1153): check before the cast, drop the row
 			_leaving.erase(e)
-			if is_instance_valid(f):
-				f.queue_free()
+			continue
+		var f := e["node"] as FighterStandIn
+		if float(e["t"]) >= sec:
+			_leaving.erase(e)
+			f.queue_free()
 			continue
 		if float(e["t"]) < 0.0:
 			continue  # still on the field: the sequence (and an accent) pose it

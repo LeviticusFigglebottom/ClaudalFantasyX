@@ -1517,3 +1517,37 @@ MERGE-READY @ a27a38bc0: M5-A3P-1708, the Vowbound answers (Ch17 B09).
   - **Mounts in the cinematics lane:** M5-A3P-1704 (revisit flags) and M5-A3P-1707 (the ledger page).
   - **For combat (M5-A3P-1013):** `released_flag` in vowbound.json.
 MERGE-READY @ 9807c2d55: M4-A2P-1708 (KNOWN_EMPTY dropped) and M5-A3P-1709 (request), docs and tests only.
+
+- **Act I and II requests, which come before Act III (ADR 0207):**
+  - **M3-HER-1153:** BattleChoreo checks a leaving stand-in is valid before the cast. Its freed-cast lint row is
+    gone (freed_cast_lint: 0 new); choreo 58/0.
+  - **M3-UI-1242, answered:** the Act II objective rows were rewritten (M4-A2P-109). None ends on a later chapter's
+    start; qa_threads 1/0.
+  - **M4-A2P-1004, answered:** F1, F5 and F8 were already fixed in the first-hour pass; the task names the tests.
+  - **M4-A2P-1007:**
+    - A20: a new-Swell-mode tip on the first field after play unlocks a mode.
+    - A8: Echo's help names its copy and reads as it.
+    - A13: a cure names what it cures, so Cord Lift lists all seven.
+    - The other rows are answered: A5 and A9 wait on M3-UI-1240/1241; A1, A2, A18 and A19 are already met.
+    - Tests: tutorial_tips 10/0 and battle_help_lines 2/0.
+- **Full battle suite after these pushes:** 871 run, 1 failed. The failure is not this track's:
+  `test_battle_act2_ability_vfx::test_every_act_two_foe_skill_has_its_own_effect`. The flat-engine's `flat_pulse` and
+  `engine_churn` (combat, M4-A2P-1200, fa9ac41ff on the integration branch) have no ability effect yet. That is for
+  rendering or VFX, and nothing in this track touches skills.json or the effects.
+- **M3-HER-1167 (ca32fb142):** the title's first-zone warm-up, measured with the probe's `--warm-scene` on Haluna. The
+  swap holds 158 frames (was 477), the worst hidden frame is 760 ms (≤ 1 s), and the entry is 3.26 s (was 5.3 s).
+  integration-qa's re-measure is open.
+MERGE-READY @ ca32fb142: M3-HER-1153, M4-A2P-1007, and the answers on M3-UI-1242, M4-A2P-1004 and M3-HER-1167.
+
+BACKLOG EMPTY: every open ui row waits on another track.
+- The ending flow waits on E7's staging (M5-A3P-1015, cinematics, todo). Then set credits.json `next_scene` and the
+  beach-rite vignette's scene (M5-A3P-1701).
+- M3-UI-1240 (rooted marker) waits on M4-A2P-020.
+- M3-UI-1241 (cover marker) waits on M4-A2P-021.
+- M4-A2P-1014 (the Ullari woman's portrait) waits on M4-A2P-053.
+- M4-A2P-1953 (sound captions) waits on M4-A2P-1952.
+- The Drownbell re-measure waits on M3-HER-1168 (in review).
+- The Kite's secret places wait on progression (M5-A3P-1709).
+- The released flags wait on combat (M5-A3P-1013).
+- The revisit flags and the ledger mount wait on cinematics (M5-A3P-1704 and M5-A3P-1707).
+- The credits' content waits on the human (LEAD-ASK).

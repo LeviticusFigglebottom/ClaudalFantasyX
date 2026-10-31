@@ -2,8 +2,8 @@
 id: M3-HER-1153
 title: "BattleChoreo casts a leaving stand-in before its is_instance_valid check (a 'Trying to cast a freed object' in battle)"
 role: ui
-status: todo
-owner_session: ""
+status: review
+owner_session: claude/ui (ui-menus)
 reviewer: qa
 depends_on: []
 milestone: M3
@@ -15,8 +15,8 @@ In `game/battle/scene/battle_choreo.gd:801`, `var f := e["node"] as FighterStand
 one is still walking off) is a script error on the cast, which is the human's "Trying to cast a freed object".
 
 ## Acceptance criteria
-- [ ] Check `e["node"]` with `is_instance_valid` before the cast. The row is still dropped.
-- [ ] Remove this task's KNOWN row from `tools/freed_cast_lint.py`.
+- [x] Check `e["node"]` with `is_instance_valid` before the cast. The row is still dropped.
+- [x] Remove this task's KNOWN row from `tools/freed_cast_lint.py`.
 
 ## Notes
 Found by integration-qa's freed-cast lint. Filed rather than fixed because `game/battle/scene/**` belongs to

@@ -1740,6 +1740,17 @@
         "memory_kitchen-lod1": 208
       }
     },
+    "memory_landing": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 121080,
+      "lods": {
+        "memory_landing": 1754,
+        "memory_landing-lod1": 274
+      }
+    },
     "memory_market": {
       "budget": [
         7000,
