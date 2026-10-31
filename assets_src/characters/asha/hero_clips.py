@@ -1581,7 +1581,8 @@ LOCO_GAIT = {
     # asha.md §1: stillness (sway 0.4): a short, level, quiet walk, the staff carried upright in the right hand
     "asha": {"walk": dict(_WALK, S=1.0, c=-0.02, sway=0.014, yaw=3.5, tilt=0.5, chest=3.0, lean=1.5, arm=13.0,
                           bob=0.016, drop=0.035, abd=7.0, clear=0.04),  # abd: the verse sleeve's bag clears the thigh
-             "run": dict(_RUN, S=2.6, sway=0.008, lean=6.0, arm=16.0, abd=7.0)},  # abd: as the walk's
+             "run": dict(_RUN, S=2.6, sway=0.008, lean=6.0, arm=16.0, abd=7.0, chest=6.0)},  # abd: as the walk's;
+             # chest 6 (PC pass 7): at 9 the staff hand turned in and the staff crossed the skirt's front panel
     # rhen.md §1: light and quick (sway 1.3, the 4 degree lean): springier, leaning, a bigger arm swing, a shorter
     # stride for his legs, so the controller plays him at a quicker cadence for the same ground speed
     "rhen": {"walk": dict(_WALK, S=1.05, c=-0.02, sway=0.022, yaw=4.0, tilt=1.0, chest=1.5, lean=4.0, arm=17.0, abd=5.0, back_r=0.35, bob=0.026,
