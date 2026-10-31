@@ -8,6 +8,26 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 > `session_01Bg3iP7cPGyjbX4CyniBahc`; the integration branch is **`claude/new-session-mj8c3c`**.
 > **This copy, on `gpu/act1-qa-3`, is the newest.**
 
+## PASS 7 @ 2026-10-31 (big33 @ 5695a69c; the Lead's 23:30 brief) — in progress
+
+- **Row 74, ReturnPark (the Lead's ask):** on 9317c6b6 + claude/hero-integration (ADR 0209), the Drownbell → Haluna
+  return takes 2.87–3.03 s to the field (8.2–8.6 s before).
+  - The scene is parked (instantiate 0 ms), and a 10 s or 20 s fight changes nothing.
+  - The remaining ~2.5 s of black is the reveal waiting on the prewarm: prewarm_wait_frames 175.
+  - The 1.5 s target is not met yet.
+  - No `Parameter "t" is null` error in 4 runs. 1 of 4 runs segfaulted at the fight's start.
+- **The human's jog (Oruvel filmstrip, pass7/jog_oruvel_strips.jpg): brisk, yes. Organic, mostly.**
+  - The legs alternate with a full, quick stride, the feet plant, and the arms stay low and close: no flailing up, no
+    jaggedness at 0.1 s steps.
+  - The upper body reads slightly stiff (the torso barely counter-rotates).
+- **Oruvel's water guard:** the jog to the dock's edge stops Rhen at the edge. He doesn't walk off into the sea.
+- **Encounter spacing:** every Act I and Act II encounter zone allows 30.6–44.4 s of running between fights (a 95–145 m
+  gap plus a 15 m / 12 s grace; tools/act1/encounter_pacing.py). It's data-driven, the same on any machine.
+- **Pass 7 shots (all 769, no script errors, no material-null):** rows 17 (mine, partly), 18 (regressed: no harrier),
+  46, 54–56, 58 (fixed), 59, 61–63 (63 fixed), and new beauty rows 75–84.
+- **Still to run** (the chain was paused for row 74): the Act I walk, the budget walk, Act II, the swap sweep, and Haluna
+  cold ×3.
+
 ## PASS 5 @ 2026-10-30 (big20, integration @ 7dc3ab41)
 
 - **GPU-QA-DONE pass5 @ gpu/act1-qa-5.** act1_gpu_qa.md has the "Pass 5" summary and the row updates; stills are in

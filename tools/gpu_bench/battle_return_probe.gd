@@ -3,7 +3,7 @@ extends Node
 ## Battle victory -> field return timing (pc-gpu, the human's 10-30 playtest: "a multi-second black screen after
 ## every win"). Run windowed on the real GPU, one fight per process:
 ##   godot --path . --audio-driver Dummy res://tools/gpu_bench/battle_return_probe.tscn -- \
-##     --encounter=ch02_tideline --location=ch02/haluna [--return=<location>] [--spawn=BattleReturn]
+##     --encounter=ch02_tideline --location=ch02/haluna [--return=<location>] [--fight-s=10]
 ## It enters the field location, starts the fight as a field trigger does (BattleRequest.start), lets it settle,
 ## forces the win (the engine's own finish), picks Return on the result screen as the player would, and times from
 ## that choice to:
@@ -56,6 +56,10 @@ func _run() -> void:
 	await _until(func() -> bool: return bool(swapped[0]) and not bool(router.call(&"is_busy")))
 	EventBus.scene_changed.disconnect(on_swap)
 	await _frames(SETTLE_FRAMES)
+	# --fight-s: a realistic fight length before the win (a parked return build needs the fight's time; ADR 0209).
+	var fight_until := Time.get_ticks_msec() + int(float(_opts.get("fight-s", "0")) * 1000.0)
+	while Time.get_ticks_msec() < fight_until:
+		await get_tree().process_frame
 	print("RETURN_PROBE_STEP find %s" % get_tree().current_scene)
 	var fb := _find(get_tree().current_scene, "FieldBattle")
 	if fb == null:
