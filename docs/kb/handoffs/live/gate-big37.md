@@ -39,3 +39,13 @@ GATE-BUILT @ 8c1ab2d3
 ## Fast gate
 - Selected: 44 test files.
 - Lane A (mine): 22; lane B (GATE-HELPER): 22, in `gate-big37-lanes-b.txt` @ b76e6c32.
+
+## Mid-batch (the Lead, 02:41): row 85, the 59 GB shutdown log on the human's PC
+Merged after both lanes were green (lane A 22/22, lane B 22/22 @ b76e6c32, arrived 02:24):
+- claude/hero-integration @ 8cb73872: **row 85**, the off-tree resident zone and the parked return are freed as the tree quits
+  (clean shutdown).
+- claude/creatures @ 5a0a0df8: **f6c23ed1, M3-CRE-707 (row 85)**: override materials free after their meshes (the storm figure).
+- claude/characters @ aa4fa100 (≥ fd9b4879): the jog counter-turn and Asha's skirt; M3-CHR-1000 in review.
+All clean; checks clean (validate_data 0/0 · taskboard · dlgc · gdlint · gdformat 1096). Re-gate on a fresh import: the 19 files these
+merges touch plus every resident, return_park, scene_router and storm test. Each log's size and the boot run's quit (ERROR and leak lines)
+are recorded.
