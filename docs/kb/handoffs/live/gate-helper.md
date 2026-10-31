@@ -57,3 +57,5 @@ and reports; it never edits game or test files.
 - big36 @ df7ed3f9 (HEAD checked): lanes B 57 files, 01:06-01:35 UTC (29 min). 56 green, 1 red:
   test_qa_dock_edges (1 failed, 14 lines: in hollowmere.tscn the hero walks off the dock from HullDeck, Cabin, EngineBay and
   Berths and stands 0.7-1.0 m deep in the water, x 76-90, y -2). Result: gate-big36-lanes-b-result.md.
+- big37 @ b76e6c32 (HEAD checked): lanes B 22 files, 02:16-02:23 UTC (7 min). **All 22 green.**
+  Result: gate-big37-lanes-b-result.md.
