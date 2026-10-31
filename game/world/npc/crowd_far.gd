@@ -30,6 +30,8 @@ const PHASE_SALT := "crowd_far"
 ## how long the loads take).
 @export var threaded := true
 
+## The data itself, in place of `data_path` (a VillagerLayer zone file's `far` block).
+var inline: Dictionary = {}
 var data: Dictionary = {}
 var frame_count := 0
 var fps := 0.0
@@ -134,7 +136,7 @@ func wait_built() -> void:
 ## Reads the data and groups the people; false: no data.
 func _read() -> bool:
 	_started = true
-	data = VillagerLayer.load_data(data_path)
+	data = inline if not inline.is_empty() else VillagerLayer.load_data(data_path)
 	if data.is_empty():
 		return false
 	frame_count = int(data["frames"])

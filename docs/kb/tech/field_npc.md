@@ -336,3 +336,23 @@ For a crowd too big for skinned actors (Ch20 U04's remembered Reefball crowd, 30
       and the crowd is in after 1.05 s. All at once it was 5.3 s on the main thread.
     - `threaded = false` builds in `_ready` (the review stage's shot).
   - The U01–U03 layers' near held shapes stay VillagerLayer `silhouette` rows (skinned, close).
+
+## Act III flag rows in the towns (M5-A3P-1811, 2026-10-31)
+- **Haluna**, `ch18_haluna_lifted` ("Backs to the Water"): `haluna_{beach_hauler,rack_folder,stall_buyer,dock_folder}_lifted`
+  stand on the beach with their backs to the sea. Three are in `vigil`, and the elder kneels (`kneel_mourn`). Each
+  person's own row carries `not_flag`.
+- **Reedhollow**, `ch17_complete`: `watcher_<n>_tide` is each platform watcher's spot turned 180 degrees, its back to
+  the lagoon. The watchers' own rows carry `not_flag`.
+- A crowd person's `flag` row stands at its own `CrowdSpots/<name>` with an `at` (validate_npc). Rows set their pose
+  through `tuning.clips.work`.
+
+## Ch20's held shapes (M5-A3P-1809, 2026-10-31)
+`zones/ch20_undertow_layers.json`: the memory layers' remembered townsfolk as held light.
+- **Near shapes:** silhouette rows (`body` + `silhouette` `#7FC6D9`), still to the party (glance, face, stop and
+  release radii 0), each posed by `tuning.clips.work`, on the left of each floor:
+  - Oruvel's market (U01): 5;
+  - the Lanternfall terrace on lantern-night (U02): 4;
+  - a Corrow kitchen (U03): 3.
+- **A zone's `far` block** is CrowdFar data inline. VillagerLayer adds a `CrowdFar` child once its rows are in, and it
+  builds off the main thread. Used here for the Tidecup gallery's 30 cheering shapes (U04). validate_npc checks the
+  block: glow, frames, fps, unique ids, crowd bodies, clips, points.
