@@ -14,3 +14,4 @@ GATE-BUILT @ 06588c8d
 
 ## Fast gate
 - Selected: 3 test files (plus test_hero_stage for big42's routed red).
+- Lane A (mine): 2; lane B (GATE-HELPER): 1, in `gate-big44-lanes-b.txt` @ 2e9f94b8.
