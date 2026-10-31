@@ -192,11 +192,12 @@ def unwrap_faces(ob: bpy.types.Object, mats: set[str], seams: set | None = None,
 
 
 HAND_FOOT_RATIO = 0.3  # the donor's hands and feet are dense (~10.7k tris); cut for the LOD0 budget
-UNDER_LEG_SHARE = 0.3  # GPU QA row 56 (cloud pass 6: the underskirt split into two leg tubes and showed through the
-# back panel at 0.6): the underskirt hem's own share of the legs' weights, on top of the outer skirt's, halved at the centre
-OUTER_LEG_SHARE = 0.5  # GPU QA row 56 (cloud pass 6: at 1.0 it read as trousers below the knee): the outer skirt hem's
-# share of the legs' own weights, faded out toward the hem's centre (OUTER_LEG_CENTRE) so one drape spans the legs
-OUTER_LEG_CENTRE = 0.6  # the fade's width, in thigh-head spacings from the centre line: no leg share at x = 0
+# GPU QA row 56 (the Lead, cloud pass 6: weighting the skirt to each leg reads as trousers): the hems' share of the
+# legs' own weights, the underskirt's on top of the outer skirt's it copies; both 0 now, so the panels (driven by both
+# thighs in hero_clips) carry the cloth below the hip and the underskirt moves as one tube under the outer skirt
+UNDER_LEG_SHARE = 0.0
+OUTER_LEG_SHARE = 0.0
+OUTER_LEG_CENTRE = 0.6  # the share's fade, in thigh-head spacings from the centre line (no share at x = 0)
 UNDER_SKIRT_RATIO = 0.10  # M1-CHR-15: the legs and hips kept whole under the skirts, cut for the LOD0 budget (0.25 until the denser skirt of the big17 review)
 
 
@@ -769,7 +770,9 @@ def main() -> int:
         Wc[hang] = helper_bones.skirt_weights(Pc[hang], Wc[hang], wnames, centre, z_pivot,
                                               float(bone_head(skel, "DEF-shin.L")[2]),
                                               float(bone_head(skel, "DEF-foot.L")[2]), lm.S, W_legs,
-                                              nearest_distance(Pc[hang], V[legs]))
+                                              np.where(Pc[hang, 2] < float(bone_head(skel, "DEF-thigh.L")[2]), np.inf,
+                                                       nearest_distance(Pc[hang], V[legs])))
+        # row 56 (the Lead, cloud pass 6): below the hip the cloth rides the panel bones only, never a leg
         # GPU QA row 56 (big38, real GPU: "a rigid cone, no legs showing; she seems to slide"): the panels only swing
         # out to clear the legs, so the hem stayed one bell round both. Below the knee the outer skirt leans toward the
         # leg-following weights too (OUTER_LEG_SHARE at the hem; each side's cloth on its own leg), so the front and
