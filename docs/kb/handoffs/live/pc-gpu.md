@@ -10,6 +10,11 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 ## PASS 7 @ 2026-10-31 (big33 @ 5695a69c; the Lead's 23:30 brief)
 
+- **big38 @ 8b546285 sign-off check (2026-10-31): ACT I IS NOT READY.** See "big38 sign-off check" in act1_gpu_qa.md.
+  - 12 art rows are open and 4 are partly fixed.
+  - Timing can't be measured until the monitor is switched on: a 10 s fight renders ~410 frames instead of ~1450, even on
+    big36. **The human's hands are needed.**
+  - C: has 79 GB free.
 - **big37 @ f5305b15 re-measure (2026-10-31): Act I sign-off NOT YET.**
   - **CORRECTION: row 74's "regression" was environmental.** The bisect's big36 control is just as slow tonight
     (1.7–10.2 s), and the keep-display-on had expired, so the monitor was off. **Real-GPU timings from tonight are
