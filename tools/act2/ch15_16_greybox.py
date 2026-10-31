@@ -231,7 +231,11 @@ def act3_dry_dock() -> dict:
         {"id": "a3_aboard", "activation": "interact", "at": hull_point(-5.4, 3.8), "size": [1.4, 0, 1.4],
          "prompt_key": "FIELD_PROMPT_CH15_SHIP", "requires_flag": "ch17_verse_begun",
          "blocked_by_flag": "ch17_complete", "payload": {"beat": "aboard"}, "yaw": 0.0},
-        overheard("ch17_bark_lookout", (30.0, 0.0, 0.0), (2.0, 0, WALK_W), "ch17_started")]
+        overheard("ch17_bark_lookout", (30.0, 0.0, 0.0), (2.0, 0, WALK_W), "ch17_started"),
+        # M5-A3P-1004: back aboard the Kite, moored off the dock's head (Ch18)
+        {"id": "a3_to_kite", "activation": "interact", "at": [5.0, 0.0, -1.4], "size": [1.4, 0, 1.4],
+         "prompt_key": "FIELD_PROMPT_CH18_BACK_TO_KITE", "requires_flag": "ch18_world_open",
+         "payload": {"beat": "to_kite"}, "yaw": 0.0}]
     variants = [{"when": {"unset": ["ch17_started"]}, "hide": ids},
                 {"when": {"set": ["ch17_started"]}, "hide": ["DockBoundE"], "show": ids}]
     return {"blocks": blocks, "spawns": spawns, "marks": marks, "triggers": triggers, "variants": variants}

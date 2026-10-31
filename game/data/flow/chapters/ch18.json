@@ -1,0 +1,207 @@
+{
+ "doc": "M5-A3P-1004 (act3_ch18.md §1-§5; docs/kb/tech/chapter_flow.md): Ch18 'The Kite'. The maiden flight on boarding at Hollowmere (K01, its three held lifts); the chart table opens the world (K02); its courses go to Reedhollow (K03-K05, ch10.json's Act III rows), the revisited towns (each plays its revisit once: ch05, ch07, ch08, ch12, ch17) and over Ansedra (from the air). Back aboard after the farewell-tide, the night (K07); Iskarra from the chart table (K08, ch18_complete). Oruvel's and Haluna's revisits and the heirloom errands wait (the live log). Until the Kite world map exists (Design), the courses are the chart table's interactables.",
+ "chapter": "ch18",
+ "zones": {
+  "ch18/kite": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch18_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Deck"
+      },
+      {
+       "chapter": 18
+      },
+      {
+       "play": "ch18_maiden_flight"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch18_learned_farewell_tide"
+      ],
+      "unset": [
+       "ch18_night_aboard"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Deck"
+      },
+      {
+       "play": "ch18_night_aboard"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "chart": {
+     "when": {
+      "set": [
+       "ch18_started"
+      ],
+      "unset": [
+       "ch18_world_open"
+      ]
+     },
+     "steps": [
+      {
+       "place": "ChartTable"
+      },
+      {
+       "play": "ch18_the_chart_table"
+      }
+     ]
+    },
+    "course_reedhollow": {
+     "when": {
+      "set": [
+       "ch18_world_open"
+      ]
+     },
+     "steps": [
+      {
+       "go": {
+        "location": "ch10/reedhollow",
+        "spawn": "Gate"
+       }
+      }
+     ]
+    },
+    "course_hollowmere": {
+     "when": {
+      "set": [
+       "ch18_world_open"
+      ]
+     },
+     "steps": [
+      {
+       "go": {
+        "location": "ch17/hollowmere",
+        "spawn": "Dock"
+       }
+      }
+     ]
+    },
+    "course_pemakar": {
+     "when": {
+      "set": [
+       "ch18_world_open"
+      ]
+     },
+     "steps": [
+      {
+       "go": {
+        "location": "ch05/pemakar",
+        "spawn": "Harbour"
+       }
+      }
+     ]
+    },
+    "course_tamsule": {
+     "when": {
+      "set": [
+       "ch18_world_open"
+      ]
+     },
+     "steps": [
+      {
+       "go": {
+        "location": "ch07/tamsule",
+        "spawn": "Harbour"
+       }
+      }
+     ]
+    },
+    "course_corrow": {
+     "when": {
+      "set": [
+       "ch18_world_open"
+      ]
+     },
+     "steps": [
+      {
+       "go": {
+        "location": "ch08/corrow",
+        "spawn": "Mole"
+       }
+      }
+     ]
+    },
+    "course_quellan": {
+     "when": {
+      "set": [
+       "ch18_world_open"
+      ]
+     },
+     "steps": [
+      {
+       "go": {
+        "location": "ch12/quellan",
+        "spawn": "FromPass"
+       }
+      }
+     ]
+    },
+    "course_ansedra": {
+     "when": {
+      "set": [
+       "ch18_world_open"
+      ],
+      "unset": [
+       "ch18_revisit_ansedra_seen"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch18_revisit_ansedra"
+      },
+      {
+       "set": "ch18_revisit_ansedra_seen"
+      }
+     ]
+    },
+    "course_iskarra": {
+     "when": {
+      "set": [
+       "ch18_night_aboard"
+      ],
+      "unset": [
+       "ch18_complete"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch18_iskarra"
+      },
+      {
+       "go": {
+        "location": "ch19/iskarra_spire",
+        "spawn": "Plaza"
+       }
+      }
+     ]
+    }
+   }
+  }
+ }
+}

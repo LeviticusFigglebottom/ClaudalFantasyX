@@ -5,7 +5,7 @@ extends RefCounted
 ## `col_albedo`, and its hair by the `hair` material's `col_root` and `col_tip` (assets_src/characters/villagers/
 ## write_materials.py). apply() gives each such surface of an actor a per-instance override: a copy of the material
 ## it wears with the person's colour, so two people on one body dress apart. Copies are shared between people with
-## the same colour on the same material (one resource per colour, not per person).
+## the same colour on the same material (one resource per colour, not per person) while any of them lives.
 
 ## Material slot (its glTF name, the material's resource_name) -> the shader parameters its colour sets.
 const SLOT_PARAMS := {
@@ -15,6 +15,9 @@ const SLOT_PARAMS := {
 	&"hair": [&"col_root", &"col_tip"],
 }
 
+## key -> WeakRef to the shared copy. Weak (PC row 85): the people's meshes own the copies and free them with
+## themselves, so no tinted material outlives the bodies it was set on (a static cache holding them till the script
+## unloads frees them after the scene, at shutdown).
 static var _cache: Dictionary = {}
 
 
@@ -55,12 +58,13 @@ static func tinted_material(base: Material, slot: StringName, colour: Color) -> 
 	if sm == null:
 		return null
 	var key := "%s|%s|%d|%s" % [slot, base.resource_path, base.get_instance_id(), colour.to_html(false)]
-	if _cache.has(key):
-		return _cache[key] as Material
+	var held: Material = (_cache[key] as WeakRef).get_ref() if _cache.has(key) else null
+	if held != null:
+		return held
 	var copy := sm.duplicate() as ShaderMaterial
 	for param: StringName in SLOT_PARAMS[slot]:
 		copy.set_shader_parameter(param, colour)
-	_cache[key] = copy
+	_cache[key] = weakref(copy)
 	return copy
 
 

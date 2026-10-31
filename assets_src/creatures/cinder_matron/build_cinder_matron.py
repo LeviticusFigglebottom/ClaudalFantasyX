@@ -1419,11 +1419,211 @@ def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
     return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
 
 
+# ---------------------------------------------------------------------------------------------
+# The Tide Matron (M5-A3P-1852, act3/tide_matron.md): `--tide` builds her sister the sea took from the same rig and
+# mesh. The frame goes to verdigris, every fire goes out (no ember emission anywhere), the slag `Crust` becomes a
+# coral `Reef`, kelp ribbons hang from the lowest plates and the ladle's rim, and her clips play 1.25x slower.
+# ---------------------------------------------------------------------------------------------
+TIDE_PAL = {k: ck.hexrgb(v) for k, v in {
+    "coral_stone": "#E8DCC4", "coral_stone_weathered": "#B9AE98", "saltgrass": "#B9B26A",
+}.items()}
+TIDE_SLOW = 1.25         # every clip's length, under water and older
+KELP_BELLY = 9           # ribbons round the lowest belly course (clear of the shut firebox)
+KELP_LADLE = 3           # short ribbons off the ladle's rim
+KELP_SWAY = (5.0, 3.0)   # the idle's sway (deg): about x, about z
+BANK_SEC = 2.8           # `bank` (her KO): the Ch5 ending made a clip
+TIDE_CLIPS = {"bank_the_fire": "bank_the_tide", "slag_pour": "tide_pour", "recrust_gather": "regrow_gather",
+              "recrust": "regrow"}
+
+
+def tide_metal(P: np.ndarray, C: np.ndarray) -> np.ndarray:
+    """A copper-and-brass colour under a thousand years of sea: patina over brass, keeping each plate's value (so
+    the iron hoops stay darker than the plates) and patchy where the brass still shows."""
+    lum = C @ np.array([0.299, 0.587, 0.114])
+    green = ck.smoothstep(-0.3, 0.4, ck.fbm(P * 3.1, SEED + 201))
+    base = ck.mix(PAL["brass"] * 0.6, PAL["bronze_patina"] * 0.78, (0.35 + 0.65 * green)[:, None])
+    return base * np.clip(lum / 0.5, 0.45, 1.0)[:, None]
+
+
+def tide_dead(P: np.ndarray) -> np.ndarray:
+    """What was lit (the firebox, the mouth grille, the ladle's slag, the seams) is dark stone grown over."""
+    grow = ck.smoothstep(-0.2, 0.5, ck.fbm(P * 6.0, SEED + 202))
+    return ck.mix(PAL["volcanic_stone"], TIDE_PAL["coral_stone_weathered"] * 0.8, (0.6 * grow)[:, None])
+
+
+def tide_coral(P: np.ndarray, N: np.ndarray) -> np.ndarray:
+    """Coral over weathered coral: the tops the tide leaves bare fade toward fresh coral_stone."""
+    sun = ck.smoothstep(0.2, 0.9, N[:, 1]) * ck.smoothstep(-0.4, 0.3, ck.fbm(P * 4.0, SEED + 203))
+    col = ck.mix(TIDE_PAL["coral_stone_weathered"] * 0.82, TIDE_PAL["coral_stone"], (0.7 * sun)[:, None])
+    return col * (0.85 + 0.15 * ck.fbm(P * 11.0, SEED + 204))[:, None]
+
+
+def tide_recolour(mesh: ck.Mesh, slots: dict[str, str]) -> None:
+    """Rewrites every part in place: metal to verdigris, leather to sodden kelp-dark, every lit vertex to dead
+    stone, the slag to coral. `slots` renames materials (crust -> reef). The heart and the wound keep their light."""
+    for i, T in enumerate(mesh.tris):
+        if len(T) == 0:
+            continue
+        mat = mesh.materials[int(mesh.tri_mat[i][0])]
+        if mat in ("heart", "wound"):
+            continue
+        P, N, C, UV2 = mesh.pos[i], mesh.nrm[i], mesh.col[i].copy(), mesh.uv2[i].copy()
+        lit = UV2[:, 1] > 0.0
+        if mat == "metal":
+            C[:, :3] = tide_metal(P, C[:, :3])
+        elif mat == "leather":
+            C[:, :3] = ck.mix(C[:, :3], TIDE_PAL["saltgrass"] * 0.42, 0.65)
+            C[:, 3] = np.maximum(C[:, 3], 0.8)
+        elif mat == "crust":
+            C[:, :3] = tide_coral(P, N)
+            C[:, 3] = np.maximum(C[:, 3], 0.35)
+        C[lit, :3] = tide_dead(P[lit])
+        C[:, :3] = np.maximum(C[:, :3], FLOOR)
+        UV2[:, 1] = 0.0  # the fire is out
+        mesh.col[i], mesh.uv2[i] = C, UV2
+    mesh.materials = [slots.get(m, m) for m in mesh.materials]
+
+
+def kelp_paths() -> list[tuple[str, np.ndarray, float]]:
+    """(parent bone, path, width) per ribbon: round the lowest belly course, draped down over the skirt (clear of
+    the firebox's front), and short ones off the ladle's rim."""
+    rng = np.random.default_rng(SEED + 210)
+    out = []
+    for k in range(KELP_BELLY):
+        a = -math.pi + (k + rng.uniform(0.2, 0.8)) * 2.0 * math.pi / KELP_BELLY
+        if abs(a) < DOOR[0] + 0.25:
+            a += math.copysign(0.45, a if a != 0 else 1.0)
+        length = rng.uniform(0.38, 0.62)
+        ys = np.linspace(BELLY_COURSES[0] + 0.02, BELLY_COURSES[0] - length, 8)
+        wob = 0.05 * np.sin(ys * 9.0 + k)
+        out.append(("torso", np.array([at(a + wob[i] / R(y), y, R(y) + 0.05) for i, y in enumerate(ys)]),
+                    rng.uniform(0.05, 0.075)))
+    x, bz = -FIST[0], 0.8
+    for k in range(KELP_LADLE):
+        a = math.radians(-40.0 + 40.0 * k)
+        top = np.array([x + 0.28 * math.sin(a), 0.45, bz + 0.28 * math.cos(a)])
+        length = rng.uniform(0.14, 0.22)
+        path = top + np.outer(np.linspace(0.0, 1.0, 5), [0.04 * math.sin(a), -length, 0.04 * math.cos(a)])
+        out.append(("hand_r", path, rng.uniform(0.035, 0.05)))
+    return out
+
+
+def kelp_rig(rig: ck.Rig) -> list[tuple[list[str], np.ndarray, float]]:
+    """Two bones per belly ribbon (so the idle can sway it), chained to the torso; the ladle's stay rigid."""
+    out = []
+    for k, (parent, path, w) in enumerate(kelp_paths()):
+        if parent != "torso":
+            out.append(([parent], path, w))
+            continue
+        mid = path[len(path) // 2]
+        a, b = f"kelp_{k}_a", f"kelp_{k}_b"
+        rig.add(a, path[0], mid, parent)
+        rig.add(b, mid, path[-1], a)
+        out.append(([a, b], path, w))
+    return out
+
+
+def kelp(rig: ck.Rig, ribbons) -> ck.Mesh:
+    """`Kelp`: flat ribbons, both faces, narrowing to the tip: saltgrass, dark and wet."""
+    mesh = ck.Mesh("Kelp")
+    for k, (bones, path, w) in enumerate(ribbons):
+        n = len(path)
+        d = path[:, :] * np.array([1.0, 0.0, 1.0])
+        if bones[0] == "hand_r":
+            d = path - np.array([-FIST[0], path[0][1], 0.8])
+            d[:, 1] = 0.0
+        d /= np.maximum(np.linalg.norm(d, axis=1, keepdims=True), 1e-6)
+        side = np.cross(np.array([0.0, 1.0, 0.0]), d)
+        half = (w * (1.0 - 0.6 * np.linspace(0.0, 1.0, n)) * 0.5)[:, None]
+        front = np.concatenate([path - side * half, path + side * half])
+        back = front - np.concatenate([d, d]) * 0.008
+        P = np.concatenate([front, back])
+        T = []
+        for i in range(n - 1):
+            a, b, c, e = i, i + 1, n + i, n + i + 1
+            T += [(a, c, b), (b, c, e)]
+            T += [(2 * n + a, 2 * n + b, 2 * n + c), (2 * n + b, 2 * n + e, 2 * n + c)]
+        T = np.array(T)
+        tone = 0.42 + 0.12 * ck.fbm(P * 5.0, SEED + 220 + k)
+        col = TIDE_PAL["saltgrass"] * tone[:, None]
+        skin = rig.rigid(bones[0]) if len(bones) == 1 else rig.chain(bones, [path[0], path[n // 2], path[-1]])
+        ck.finish(mesh, P, T, "kelp", np.maximum(col, FLOOR), skin, wet=1.0, cavity=0.1)
+    return mesh
+
+
+def bank_clip() -> ck.Clip:
+    """Bank (her KO, act3/tide_matron.md): she settles onto the reef-stone, the body first (rocking forward onto her
+    hem), the arms lowering the tools to rest, and the head bowing last (1.4-2.5 s); it ends at rest, held."""
+    c = ck.Clip("bank", BANK_SEC)
+    keyrows(c, "torso", ((0.0, (0, 0, 0)), (0.9, (9, 0, 0), (0, -0.04, 0)), (1.6, (14, 0, 0), (0, -0.08, 0.03)),
+                         (2.2, (15, 0, 0), (0, -0.09, 0.04)), (BANK_SEC, (15, 0, 0), (0, -0.09, 0.04))))
+    keyrows(c, "head", ((0.0, (0, 0, 0)), (1.0, (4, 0, 0)), (1.4, (6, 0, 0)), (2.5, (30, 0, 0)),
+                        (BANK_SEC, (30, 0, 0))))
+    for tag in ("l", "r"):
+        keyrows(c, f"arm_{tag}", ((0.0, (0, 0, 0)), (0.6, (-4, 0, 0)), (1.8, (-10, 0, 0)), (BANK_SEC, (-10, 0, 0))))
+        keyrows(c, f"hand_{tag}", ((0.0, (0, 0, 0)), (1.2, (8, 0, 0)), (2.0, (22, 0, 0)), (BANK_SEC, (22, 0, 0))))
+    rock_rows(c, ((0.0, 0, 0), (0.9, 1.0, 0), (1.6, 1.6, 0), (BANK_SEC, 1.6, 0)))
+    return c
+
+
+def calm_clip() -> ck.Clip:
+    """Into the Calm (phase 2, contact 1.1 s): no burst. She draws her arms in over the shut firebox and bows, the
+    reef closing over her (the growth is VFX at vfx_phase); she holds there, still; she lifts a little."""
+    c = ck.Clip("phase_change", 2.4)
+    keyrows(c, "torso", ((0.0, (0, 0, 0)), (0.6, (8, 0, 0), (0, -0.03, 0)), (1.1, (12, 0, 0), (0, -0.05, 0)),
+                         (1.8, (12, 0, 0), (0, -0.05, 0)), (2.4, (4, 0, 0), (0, -0.02, 0))))
+    keyrows(c, "head", ((0.0, (0, 0, 0)), (0.7, (10, 0, 0)), (1.2, (20, 0, 0)), (1.8, (20, 0, 0)), (2.4, (8, 0, 0))))
+    for tag, s in (("l", 1.0), ("r", -1.0)):
+        keyrows(c, f"arm_{tag}", ((0.0, (0, 0, 0)), (0.6, (-10, 0, -10 * s)), (1.1, (-16, 0, -18 * s)),
+                                  (1.8, (-16, 0, -18 * s)), (2.4, (-5, 0, -6 * s))))
+        keyrows(c, f"fore_{tag}", ((0.0, (0, 0, 0)), (1.1, (-34, 0, 0)), (1.8, (-34, 0, 0)), (2.4, (-10, 0, 0))))
+    rock_rows(c, ((0.0, 0, 0), (1.1, 1.2, 0), (1.8, 1.2, 0), (2.4, 0.4, 0)))
+    return c
+
+
+def tide_clips(ribbons) -> list[ck.Clip]:
+    """Her sister's clips, renamed where the fire became the tide, played 1.25x slower; `ko` becomes `bank` and
+    `phase_change` the Calm; the belly kelp sways through the idles."""
+    idle0 = {b: tuple(np.asarray(v, float) for v in idle_clip().sample(b, 0.0)) for b in idle_clip().keys}
+    out = []
+    for c in build_clips():
+        if c.name in ("ko", "phase_change"):
+            continue
+        out.append(ck.varied(c, TIDE_CLIPS.get(c.name, c.name), speed=1.0 / TIDE_SLOW))
+    out += [ck.in_pose(bank_clip(), "bank", idle0), ck.in_pose(calm_clip(), "phase_change", idle0)]
+    swayed = [b for bones, _, _ in ribbons if len(bones) == 2 for b in bones]
+    for c in out:
+        if c.name in ("idle", "ready"):
+            for k, b in enumerate(swayed):
+                c.wave(b, amp_rot=(KELP_SWAY[0], 0.0, KELP_SWAY[1]), cycles=1, phase=0.7 * k)
+    return out
+
+
+def build_tide(out: str) -> None:
+    rig = build_rig()
+    ribbons = kelp_rig(rig)
+    mesh = ck.Mesh("tide_matron")
+    body(mesh, rig)
+    tide_recolour(mesh, {})
+    reef = crust(rig)
+    reef.name = "Reef"
+    tide_recolour(reef, {"crust": "reef"})
+    weed = kelp(rig, ribbons)
+    clips = gr.grounded(rig, mesh, tide_clips(ribbons), GROUNDED_LIMBS)
+    info = ck.export_creature(mesh, rig, clips, out, extra_meshes=[reef, weed], extras={"hymn_creature": "tide_matron"})
+    print(f"tide_matron: {info} body_tris={mesh.triangle_count} reef_tris={reef.triangle_count} "
+          f"kelp_tris={weed.triangle_count}")
+
+
 def main() -> None:
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True)
+    ap.add_argument("--tide", action="store_true", help="the Tide Matron (M5-A3P-1852), her sister the sea took")
     args = ap.parse_args(argv)
+    if args.tide:
+        build_tide(args.out)
+        return
     rig = build_rig()
     mesh = ck.Mesh("cinder_matron")
     body(mesh, rig)

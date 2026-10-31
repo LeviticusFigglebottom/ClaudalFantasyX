@@ -722,6 +722,26 @@
       "id": "kesh_held",
       "scene": "res://game/creatures/kesh/kesh_held_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "tide_matron",
+      "scene": "res://game/creatures/tide_matron/tide_matron_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "old_shoal",
+      "scene": "res://game/creatures/old_shoal/old_shoal_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "the_cage",
+      "scene": "res://game/creatures/the_cage/the_cage_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "sefir_heart",
+      "scene": "res://game/creatures/sefir_heart/sefir_heart_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
     }
   ],
   "creature_stage": {

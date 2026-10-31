@@ -88,6 +88,8 @@ def tables(npc: str, extra: dict) -> tuple[dict, dict, dict]:
     if hp.get("tufts"):  # M3-CHR-592: Toma's short-hair atlas and his matte crop (strands along +V: no flow map)
         hair_tex = {"tex_hair": SHORT_HAIR}
         hair_params = {**hair_params, **TUFT_HAIR}
+    if "alpha_boost" in hp:  # PC pass 7 (row 55): a white crop needs denser cards over the skin than the shared 0.85
+        hair_params = {**hair_params, "alpha_boost": str(hp["alpha_boost"])}
     shader = {
         "skin_head": ("character_skin", 0, {
             "painterly": "0.2", "detail_tiling": "64.0", "detail_strength": "0.8", "normal_strength": "1.0",

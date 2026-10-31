@@ -41,4 +41,5 @@ func test_ch17_plays_hollowmere_in_order() -> void:
 		assert_true(bool(Game.get_flag(f)), "B08-B11: %s" % f)
 	assert_true(trigger_named(&"a3_aboard").try_interact())
 	assert_true(bool(Game.get_flag(&"ch17_complete")), "B12: aboard the hull")
+	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch18/kite", "spawn": "Deck"}], "on to Ch18")
 	after_visits()

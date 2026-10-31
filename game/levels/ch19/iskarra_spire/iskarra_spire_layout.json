@@ -1,0 +1,675 @@
+{
+ "doc": "M5-A3P-1007 greybox (tools/act3/ch19_greybox.py; do not edit by hand): drowned Iskarra at dusk, the Prologue's broken plaza (Plaza; by_asha, the plaza's edge and steps: I01-I04), the Lamp Spire's foot (its gate open after the hitch), four tiers by switchback ramps (I06, the spire's fights), the antechamber (I07) and the crown with the anchor-engine (I08-I10).",
+ "sun": {
+  "pitch_deg": -8.0,
+  "yaw_deg": 250.0,
+  "energy": 0.7,
+  "color": "#ffc89a"
+ },
+ "environment": {
+  "background": "#5a6070",
+  "ambient_color": "#7a8090",
+  "ambient_energy": 0.55
+ },
+ "block_color": "#9a948a",
+ "blocks": [
+  {
+   "id": "Plaza",
+   "pos": [
+    0.0,
+    -0.25,
+    22.0
+   ],
+   "size": [
+    24.0,
+    0.5,
+    14.0
+   ],
+   "color": "#6e7c80"
+  },
+  {
+   "id": "SpireFoot",
+   "pos": [
+    0.0,
+    -0.25,
+    7.5
+   ],
+   "size": [
+    8.0,
+    0.5,
+    15.0
+   ],
+   "color": "#9a948a"
+  },
+  {
+   "id": "Ground",
+   "pos": [
+    8.0,
+    -0.25,
+    -15.5
+   ],
+   "size": [
+    30.0,
+    0.5,
+    33.0
+   ],
+   "color": "#9a948a"
+  },
+  {
+   "id": "PlazaWallN0",
+   "pos": [
+    -8.0,
+    0.5,
+    15.0
+   ],
+   "size": [
+    8.0,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "PlazaWallN1",
+   "pos": [
+    8.0,
+    0.5,
+    15.0
+   ],
+   "size": [
+    8.0,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "PlazaWallS0",
+   "pos": [
+    0.0,
+    0.5,
+    29.0
+   ],
+   "size": [
+    24.0,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "PlazaWallW0",
+   "pos": [
+    -12.0,
+    0.5,
+    22.0
+   ],
+   "size": [
+    0.5,
+    1.0,
+    14.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "PlazaWallE0",
+   "pos": [
+    12.0,
+    0.5,
+    22.0
+   ],
+   "size": [
+    0.5,
+    1.0,
+    14.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "GroundWallN0",
+   "pos": [
+    8.0,
+    0.6,
+    -32.0
+   ],
+   "size": [
+    30.0,
+    1.2,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "GroundWallS0",
+   "pos": [
+    -5.0,
+    0.6,
+    1.0
+   ],
+   "size": [
+    4.0,
+    1.2,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "GroundWallS1",
+   "pos": [
+    14.0,
+    0.6,
+    1.0
+   ],
+   "size": [
+    18.0,
+    1.2,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "GroundWallW0",
+   "pos": [
+    -7.0,
+    0.6,
+    -15.5
+   ],
+   "size": [
+    0.5,
+    1.2,
+    33.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "GroundWallE0",
+   "pos": [
+    23.0,
+    0.6,
+    -15.5
+   ],
+   "size": [
+    0.5,
+    1.2,
+    33.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SpireGate",
+   "pos": [
+    0.0,
+    1.5,
+    3.0
+   ],
+   "size": [
+    8.0,
+    3.0,
+    0.5
+   ],
+   "color": "#4a4440"
+  },
+  {
+   "id": "Tier2",
+   "pos": [
+    0.0,
+    5.75,
+    -26.0
+   ],
+   "size": [
+    12.0,
+    0.5,
+    10.0
+   ],
+   "color": "#9a948a"
+  },
+  {
+   "id": "Tier3",
+   "pos": [
+    0.0,
+    11.75,
+    -4.0
+   ],
+   "size": [
+    12.0,
+    0.5,
+    10.0
+   ],
+   "color": "#9a948a"
+  },
+  {
+   "id": "Tier4",
+   "pos": [
+    0.0,
+    17.75,
+    -26.0
+   ],
+   "size": [
+    12.0,
+    0.5,
+    10.0
+   ],
+   "color": "#9a948a"
+  },
+  {
+   "id": "Antechamber",
+   "pos": [
+    0.0,
+    23.75,
+    -4.0
+   ],
+   "size": [
+    12.0,
+    0.5,
+    10.0
+   ],
+   "color": "#9a948a"
+  },
+  {
+   "id": "Crown",
+   "pos": [
+    14.0,
+    23.75,
+    -4.0
+   ],
+   "size": [
+    16.0,
+    0.5,
+    10.0
+   ],
+   "color": "#9a948a"
+  },
+  {
+   "id": "AnchorEngine",
+   "pos": [
+    21.0,
+    25.5,
+    -4.0
+   ],
+   "size": [
+    1.6,
+    3.0,
+    4.0
+   ],
+   "color": "#a8884a"
+  }
+ ],
+ "ramps": [
+  {
+   "id": "Flight1",
+   "from": [
+    4.5,
+    0.0,
+    -9.0
+   ],
+   "to": [
+    4.5,
+    6.0,
+    -21.0
+   ],
+   "width": 3.0,
+   "color": "#9a948a"
+  },
+  {
+   "id": "Flight2",
+   "from": [
+    -4.5,
+    6.0,
+    -21.0
+   ],
+   "to": [
+    -4.5,
+    12.0,
+    -9.0
+   ],
+   "width": 3.0,
+   "color": "#9a948a"
+  },
+  {
+   "id": "Flight3",
+   "from": [
+    4.5,
+    12.0,
+    -9.0
+   ],
+   "to": [
+    4.5,
+    18.0,
+    -21.0
+   ],
+   "width": 3.0,
+   "color": "#9a948a"
+  },
+  {
+   "id": "Flight4",
+   "from": [
+    -4.5,
+    18.0,
+    -21.0
+   ],
+   "to": [
+    -4.5,
+    24.0,
+    -9.0
+   ],
+   "width": 3.0,
+   "color": "#9a948a"
+  }
+ ],
+ "spawns": {
+  "Plaza": [
+   0.0,
+   0.0,
+   26.0,
+   0.0
+  ],
+  "SpireFoot": [
+   0.0,
+   0.0,
+   6.0,
+   0.0
+  ],
+  "Antechamber": [
+   -2.0,
+   24.0,
+   -4.0,
+   270.0
+  ],
+  "Crown": [
+   10.0,
+   24.0,
+   -4.0,
+   270.0
+  ]
+ },
+ "marks": {
+  "by_asha": [
+   2.0,
+   0.0,
+   21.0,
+   0.0
+  ],
+  "plaza_edge": [
+   -10.0,
+   0.0,
+   18.0,
+   90.0
+  ],
+  "plaza_edge_b": [
+   -9.0,
+   0.0,
+   19.5,
+   90.0
+  ],
+  "plaza_steps_b": [
+   3.0,
+   0.0,
+   16.0,
+   0.0
+  ],
+  "duty_lectern": [
+   -3.0,
+   24.0,
+   -6.0,
+   90.0
+  ],
+  "hesper_oan": [
+   16.0,
+   24.0,
+   -4.0,
+   90.0
+  ],
+  "engine_lever": [
+   19.5,
+   24.0,
+   -4.0,
+   270.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "I01": {
+   "pos": [
+    6.0,
+    3.0,
+    30.0
+   ],
+   "look_at": [
+    0.0,
+    6.0,
+    -10.0
+   ],
+   "fov": 50
+  }
+ },
+ "camera_volumes": [
+  {
+   "id": "Plaza",
+   "mode": "pan_follow",
+   "at": [
+    0.0,
+    1.5,
+    22.0
+   ],
+   "size": [
+    24.0,
+    4.0,
+    14.0
+   ],
+   "pos": [
+    0.0,
+    7.0,
+    32.0
+   ],
+   "look_at": [
+    0.0,
+    0.5,
+    18.0
+   ],
+   "fov": 55,
+   "priority": 1
+  },
+  {
+   "id": "Crown",
+   "mode": "pan_follow",
+   "at": [
+    14.0,
+    25.5,
+    -4.0
+   ],
+   "size": [
+    16.0,
+    4.0,
+    10.0
+   ],
+   "pos": [
+    8.0,
+    30.0,
+    4.0
+   ],
+   "look_at": [
+    16.0,
+    24.5,
+    -4.0
+   ],
+   "fov": 55,
+   "priority": 2
+  }
+ ],
+ "triggers": [
+  {
+   "id": "hitch",
+   "activation": "interact",
+   "at": [
+    -9.0,
+    0.0,
+    18.5
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch19_vigil",
+   "blocked_by_flag": "ch19_learned_the_hitch",
+   "payload": {
+    "beat": "hitch"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "words",
+   "activation": "interact",
+   "at": [
+    3.0,
+    0.0,
+    16.5
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch19_learned_the_hitch",
+   "blocked_by_flag": "ch19_words_whole",
+   "payload": {
+    "beat": "words"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "tier_1",
+   "activation": "touch",
+   "at": [
+    -2.0,
+    0.0,
+    -4.0
+   ],
+   "size": [
+    6.0,
+    0,
+    6.0
+   ],
+   "once": true,
+   "sets_flag": "ch19_spire_tier_1",
+   "requires_flag": "ch19_learned_the_hitch",
+   "payload": {},
+   "yaw": 0.0
+  },
+  {
+   "id": "tier_2",
+   "activation": "touch",
+   "at": [
+    -2.0,
+    6.0,
+    -26.0
+   ],
+   "size": [
+    6.0,
+    0,
+    6.0
+   ],
+   "once": true,
+   "sets_flag": "ch19_spire_tier_2",
+   "requires_flag": "ch19_learned_the_hitch",
+   "payload": {},
+   "yaw": 0.0
+  },
+  {
+   "id": "tier_3",
+   "activation": "touch",
+   "at": [
+    -2.0,
+    12.0,
+    -4.0
+   ],
+   "size": [
+    6.0,
+    0,
+    6.0
+   ],
+   "once": true,
+   "sets_flag": "ch19_spire_tier_3",
+   "requires_flag": "ch19_learned_the_hitch",
+   "payload": {},
+   "yaw": 0.0
+  },
+  {
+   "id": "tier_4",
+   "activation": "touch",
+   "at": [
+    -2.0,
+    18.0,
+    -26.0
+   ],
+   "size": [
+    6.0,
+    0,
+    6.0
+   ],
+   "once": true,
+   "sets_flag": "ch19_spire_tier_4",
+   "requires_flag": "ch19_learned_the_hitch",
+   "payload": {},
+   "yaw": 0.0
+  },
+  {
+   "id": "signatures",
+   "activation": "touch",
+   "at": [
+    3.0,
+    24.0,
+    -4.0
+   ],
+   "size": [
+    2.0,
+    0,
+    8.0
+   ],
+   "requires_flag": "ch19_spire_tier_4",
+   "blocked_by_flag": "ch19_abiding_beaten",
+   "payload": {
+    "beat": "signatures"
+   },
+   "yaw": 0.0
+  }
+ ],
+ "variants": [
+  {
+   "when": {
+    "set": [
+     "ch19_learned_the_hitch"
+    ]
+   },
+   "hide": [
+    "SpireGate"
+   ]
+  }
+ ],
+ "encounters": {
+  "table": [
+   {
+    "encounter": "ch19_spire_wicks",
+    "weight": 1
+   },
+   {
+    "encounter": "ch19_spire_lamps",
+    "weight": 1
+   },
+   {
+    "encounter": "ch19_spire_moths",
+    "weight": 1
+   }
+  ],
+  "min_m": 95,
+  "max_m": 145,
+  "when": {
+   "set": [
+    "ch19_learned_the_hitch"
+   ]
+  },
+  "seed": 19
+ }
+}

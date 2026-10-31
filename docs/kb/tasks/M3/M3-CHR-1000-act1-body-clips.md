@@ -2,9 +2,10 @@
 id: M3-CHR-1000
 title: Act I body clips the chapter dialogue stages (Rhen, Asha, Toma, Ysolde, Kerrid, Liss)
 role: character
-status: doing
+status: review
 owner_session: "claude/characters"
 depends_on: []
+reviewer: cinematics
 milestone: M3
 request-from: cinematics
 ---
@@ -37,5 +38,10 @@ Until a clip exists, its call is skipped at runtime (`CutsceneSequencer` checks 
   Tobin, one-armed; ch15_let_me_carry_him reuses it) is built with the Ch14 Character Art clips (Liss press_wound,
   fight_free; the Stillguard's withdraw_wounded; Merel's pull_pin and pole_push; the Tender's paint_gilt_line).
   Next: the rest of the list, hero by hero. Asha's and Rhen's libraries are near test_hero_clips' 4 MB text bound.
+
+- 2026-10-31 (characters): every queued clip is built and the queue in `requested_clips.json` is empty. The hand
+  heights were measured by FK. test_rig_integrity passes (492 tests). One allowance has a written reason: Ysolde's Body
+  limit is 47.5 for remove_pin, the Level-pin taken from her hair. The 15 new shots were viewed. Follow-ups are filed
+  as M4-A2P-1980: a fist on a free hand, and binary libraries for Asha and Rhen. Ready for review (cinematics).
 
 ## Review log
