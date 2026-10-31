@@ -1538,3 +1538,16 @@ MERGE-READY @ 9807c2d55: M4-A2P-1708 (KNOWN_EMPTY dropped) and M5-A3P-1709 (requ
   swap holds 158 frames (was 477), the worst hidden frame is 760 ms (≤ 1 s), and the entry is 3.26 s (was 5.3 s).
   integration-qa's re-measure is open.
 MERGE-READY @ ca32fb142: M3-HER-1153, M4-A2P-1007, and the answers on M3-UI-1242, M4-A2P-1004 and M3-HER-1167.
+
+BACKLOG EMPTY: every open ui row waits on another track.
+- The ending flow waits on E7's staging (M5-A3P-1015, cinematics, todo). Then set credits.json `next_scene` and the
+  beach-rite vignette's scene (M5-A3P-1701).
+- M3-UI-1240 (rooted marker) waits on M4-A2P-020.
+- M3-UI-1241 (cover marker) waits on M4-A2P-021.
+- M4-A2P-1014 (the Ullari woman's portrait) waits on M4-A2P-053.
+- M4-A2P-1953 (sound captions) waits on M4-A2P-1952.
+- The Drownbell re-measure waits on M3-HER-1168 (in review).
+- The Kite's secret places wait on progression (M5-A3P-1709).
+- The released flags wait on combat (M5-A3P-1013).
+- The revisit flags and the ledger mount wait on cinematics (M5-A3P-1704 and M5-A3P-1707).
+- The credits' content waits on the human (LEAD-ASK).
