@@ -25,6 +25,7 @@ const HOP_M := 0.25
 const NEAR_M := 1.0
 const INTERACT_S := 1.0
 const STUCK_S := 90.0
+const BATTLE_LOG_S := 60.0
 const SKIP_REHOLD_S := 10.0
 const CANCEL_AFTER_S := 30.0
 const SOFTLOCK_S := 180.0
@@ -88,6 +89,8 @@ func _run() -> void:
 		for start: Dictionary in DebugReadouts.chapter_starts(CHAPTER_SELECT):
 			if str(start["id"]) == chapter:
 				DebugReadouts.apply_chapter_start(start)
+				for f in str(_opts.get("flags", "")).split(",", false):
+					Game.set_flag(StringName(f))  # --flags=a,b: later in the chapter (a probe start, not the game's)
 				FlowRouting.go_to(StringName(str(start["location"])), StringName(str(start["spawn"])))
 				print("PLAY_CHAPTER_START %s" % chapter)
 	var router := get_tree().root.get_node(^"SceneRouter")
@@ -287,6 +290,17 @@ func _run() -> void:
 func _battle_step(ctl: FieldBattle, result_at: float, t: float) -> float:
 	if ctl.engine == null:
 		return result_at
+	if int(t / BATTLE_LOG_S) != int((t - 0.02) / BATTLE_LOG_S):
+		var foes: Array[String] = []
+		for foe in ctl.engine.enemies:
+			foes.append("%s:%d" % [foe.id, foe.hp])
+		var cur := ctl.engine.current
+		print(
+			(
+				"PLAY_BATTLE %.1f state %s party_turn %s current %s foes %s"
+				% [t, ctl.state, ctl.engine.is_party_turn(), cur.id if cur != null else &"-", foes]
+			)
+		)
 	for foe in ctl.engine.enemies:
 		foe.hp = mini(foe.hp, 1)
 	if ctl.state == BattleController.STATE_COMMAND and ctl.engine.is_party_turn():

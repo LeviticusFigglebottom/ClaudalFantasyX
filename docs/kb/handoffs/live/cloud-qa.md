@@ -122,6 +122,25 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## STATUS (04:25): big36 (1983de0a2) F8 Ch6 → end card
+| commit | piece | reached | ERROR lines while playing | at exit |
+|---|---|---|---|---|
+| 1983de0a2 (big36) | F8 Ch6 → end card | Ch8 `ch08_stair_hold_1`, 1063 s (TIMEOUT 7200 s) | **6** | 18 leak reports from the timeout quit |
+
+- **The 6 ERROR lines while playing** all come from one call, `character_shader_tiers.gd:147 apply_to_tree`, via
+  `graphics_runtime.gd:167 apply_system_tiers`, as Corrow loads after the beacon (952 s). They are 2 × `material` is
+  null, 2 × uninitialized RID, 1 × wrong RID and 1 × `mem` is null. The owner is whoever owns the character shader
+  tiers (characters or tech-art). This may be headless only, since the dummy renderer has no real material RIDs; it
+  needs a check on the PC.
+- **The rest of the path:**
+  - The binding still holds the player (M3-C08-1400); the skip gets past it.
+  - The beacon opens at 948 s, and the Coilspire → Corrow door after the beacon fires (958 s).
+  - The probe holds skip through Corrow's `ch08_run_back` and `ch08_first_down`.
+  - Then `ch08_stair_hold_1` (party Toma, Ysolde, Liss) never ends.
+  - It isn't yet known whether the battle or the probe is at fault. Its battle step now logs PLAY_BATTLE (state,
+    current actor, foe HP) every 60 s. Once the fresh run is done, F8 Ch8 → end card runs to find out.
+- **Fresh New Game → Ch6 on big36:** running, with 0 ERROR lines through the Ch3 Shell Shrine.
+
 ## STATUS (02:15): big35 result; big36 (1983de0a2) pieces started
 ERROR counts by commit:
 | commit | piece | reached | ERROR lines |
