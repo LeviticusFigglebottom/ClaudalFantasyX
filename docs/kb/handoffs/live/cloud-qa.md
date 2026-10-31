@@ -122,6 +122,26 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## STATUS (09:20): Asha's run on claude/characters a35fe5286 (panel-bone skirt) vs a86c366ff: two of three gone
+Lavapipe, 12 phases, side and front. Sheets: `docs/kb/qa/cloud/pass6/asha_run_{profile,front}_{0,1}_a86c366ff_vs_a35fe5286.jpg`
+(row 1 is a86c366ff, row 2 is a35fe5286) and the zoom `asha_run_issues_zoom_a86c366ff_vs_a35fe5286.jpg`. Every frame
+changed: 36k–66k px in profile and 20k–50k px front, so the rebuild is in this head.
+- **The trousers look: gone.** From the front, the outer skirt now hangs as an A-line with a flared hem through the
+  whole cycle (no ballooning round each leg, no gathering at the ankle; front 9–11 were the worst before). The
+  underskirt is one tube in every frame (no two-leg split in profile 0, 6 or 11).
+- **The phase-8 pinch: gone.** In profile 8 the outer hem flares out evenly over the underskirt and no longer tucks in
+  between the knees.
+- **The white notch: not gone.**
+  - Profile 0 still shows a white slash on the outer skirt's back panel, now longer, running down to the hem.
+  - Profile 11 shows a smaller white triangle in the same place.
+  - A new small white triangle appears near the hem in profile 1.
+  The underskirt still shows through a gap between neighbouring back panels.
+- **New in profile 1:** a bright white glint, a soft disc with a dark dot at its centre, sits on the hem's back edge
+  near the knee. It's in this one frame and wasn't there on a86c366ff. It may be a specular spike on a flipped normal
+  at a panel seam. For characters to check.
+- Otherwise the motion reads well. In profile the back panels swing behind the trailing leg with a visible lag (0, 1,
+  9–11), and the hem never cuts through a leg.
+
 ## STATUS (08:40): Asha's run on big43 (a86c366ff) vs fccc3a1bf: none of the three issues is gone
 Lavapipe, 12 phases, side and front. Sheets: `docs/kb/qa/cloud/pass6/asha_run_{profile,front}_{0,1}_fccc3a1bf_vs_a86c366ff.jpg`
 (row 1 is fccc3a1bf, row 2 is a86c366ff) and the zoom `asha_run_issues_zoom_fccc3a1bf_vs_a86c366ff.jpg`.
