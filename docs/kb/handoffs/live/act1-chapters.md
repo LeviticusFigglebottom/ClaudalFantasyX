@@ -1352,6 +1352,22 @@ done and in `status: review` (reviewer: narrative). Each task file's **Done** se
   for the older threads.
 - MERGE-READY @ b9ba89ca7
 
+### Act III Ch19 (M5-A3P-1007 flow, M5-A3P-1009 the Wardens; 10-31)
+- **M5-A3P-1009 (review):** `ch19_abiding_wardens`, Warden Hesper Oan and her scribe Ilsabet Rue. The watch-roll
+  as the engine can play it: Ilsabet is the roll and only Ysolde breaks it; Hesper answers blows while it stands. On
+  a new `ch19_iskarra` loadout (Ch16's plus Kesh), 500 seeds: naive 0.0%, role_answer 69.8%, smart 100% (report
+  only, ease floor 30: 40.7), p90 44. Their bodies are M5-A3P-1202 (character). The fight barks need a battle-bark
+  hook (battle-presentation).
+- **The spire's regulars:** `wick_crawler`, `chain_lamp`, `spire_moth`, `spire_conduit_crawler`, with three
+  encounters, all in band at 500 seeds. The report-only naive_swell p90 is the M4-A2P-1202 call-rule artifact.
+- **M5-A3P-1007 (the flow half, doing):** the new `ch19/iskarra_spire` zone (`tools/act3/ch19_greybox.py`: the
+  plaza, the gate, four tiers by switchback ramps over one ground, the antechamber, the crown), Ch19Zone's held
+  input, and `chapters/ch19.json` I01–I10 in order. The Kite's Iskarra course hands on to it. I01–I04 play at this
+  zone's plaza, because the scripts' `prologue` location is slice-polish's Prologue scene (noted in the task).
+- Tests: ch19 2/0 (the thread and the walk to the crown), ch18 1/0, capsule 3/0, the tools' zone-map, locations
+  and chapter-flow tests, qa_threads 1/0.
+- MERGE-READY @ e4445dc25
+
 ## Exact next step
 **2026-10-30 ~23:50:** the FAST-TRACK and the Act II flows (M4-A2P-1003, 1012, 104, 105) are done and pushed.
 Next, in order:

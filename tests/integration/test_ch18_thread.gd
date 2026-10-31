@@ -59,4 +59,5 @@ func test_the_kite_opens_the_world() -> void:
 	visit(KITE)
 	assert_true(trigger_named(&"course_iskarra").try_interact())
 	assert_true(bool(Game.get_flag(&"ch18_complete")), "K08: Iskarra")
+	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch19/iskarra_spire", "spawn": "Plaza"}], "on to Ch19")
 	after_visits()

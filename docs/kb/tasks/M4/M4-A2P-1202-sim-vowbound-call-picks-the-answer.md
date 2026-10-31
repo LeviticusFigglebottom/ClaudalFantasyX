@@ -21,6 +21,10 @@ power) when no field calls for one. Then re-run every suite whose loadout lists 
 ch05 onward and all of Act II) and retune anything the change moves. It changes report-only `naive_swell` numbers
 across Act I, which is why it isn't folded into M4-A2P-019.
 
+**Also seen in Act III (M5-A3P-1007, 500 seeds on `ch19_iskarra`, four Vowbound):** `naive_swell` (report only)
+runs p90 55 on `ch19_spire_wicks` and p90 52 on `ch19_spire_moths` against the regular cap of 45. It wins 90% of those
+fights slowly, re-calling Ilun.
+
 ## Acceptance criteria
 - [ ] The call rule picks by strength; `sim.py --check` is clean on every Act I and Act II suite.
 
