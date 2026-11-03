@@ -4,6 +4,25 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+### 2026-11-03 ~18:10: the Lead's storm-overlap decision (big47): ONE Undertow per fight
+**MERGE-READY @ 6231069dc** (FAST-TRACK, for big48).
+- **BattleStorm:** when the arena has its own Undertow (an UndertowStorm in the battle scene: the seawall arenas,
+  env-art's oruvel_raft_storm), that arena owns the sky, the wet surfaces and the vortex.
+  - BattleStorm then adds only wind and spray, plus rain only when the arena's storm has none (row 72).
+  - Its own sky, sun and Undertow remain only as the fallback for an interim arena (storm.pending).
+- **storm_fights.json now matches act1-chapters' storm table:** ch01_scuttlers, ch01_hullgnaw, the three stair
+  holds, undertows_reach and ch16_storm_wakes (new). The headland fights and the flue moths are out: they come
+  before the storm (B05 < B07).
+- **Tests** (test_battle_storm 6/0):
+  - test_no_storm_fight_draws_two_undertows: all seven fights, each drawing exactly one.
+  - test_an_arena_undertow_is_never_doubled: an arena Undertow means none of ours and no doubled rain.
+- **Trial merge with act1-chapters, env-art-b and env-art:** running (the result follows).
+  - The arenas.json conflict: env-art-b repoints oruvel_raft_storm at env-art's new scene, while act1-chapters
+    keeps it pending on oruvel_raft_morning. Lead, pick one at big48. If the scene lands, move the id from
+    storm.pending to storm.arenas.
+- **The Ch1 tilt** (camera.rest_by_encounter, 8 deg) was viewed on the interim arena. Re-view it once
+  oruvel_raft_storm's own Undertow stands at its own azimuth.
+
 ### 2026-11-03 (later): FAST-TRACKS 1 and 2 viewed and tuned
 **MERGE-READY @ a361f17c1** (FAST-TRACK; checks: gdlint, gdformat, validate_data, taskboard --check, tools test_status_icons, Godot battle_storm 4/0, camera 74/0, battle_status 8/0; skipped: the full suite, Blender (none touched) and baselines (self-rendered instead)).
 - **Status looks:** contact-sheet pass 2 VIEWED (13 statuses re-rendered, plus a stack). Every status now reads on
