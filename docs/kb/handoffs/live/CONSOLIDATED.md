@@ -1,3 +1,19 @@
+## STATE 2026-11-03 21:50 UTC: STOPPED by the human ("finish, commit everything, and stop")
+- **Every session was told to finish its current item, push and stop.** All ten tracks have pushed their FINAL MERGE-READY heads and stopped.
+- **The Lead folded every track head into the integration branch** (-ze8rrn; `main` = the same commit):
+  - hero-integration, combat-systems, battle-presentation, characters, env-art, env-art-b, audio, ui, act1-chapters and m2-slice;
+  - also merged: the PC's QA branches gpu/act1-qa-7 (passes 3–7) and m1-qa-09-heroes.
+- **Conflicts resolved:**
+  - PROVENANCE and flags: union.
+  - credits.json: ui's facts-only roll, plus m2-slice's ending vignette (ending_beach_rite.tscn) and post_credits.tscn.
+- **Checks on the final tree:** validate_data 0/0, taskboard --check, dlgc --check, gdlint and gdformat all clean.
+- **Not run (ADR 0205 non-blocking):** the full Godot suite, the full shot manifest and Blender verify. Run them first on resume. Any red is a FAST-TRACK for its owner.
+- **To resume:**
+  1. Create sessions from SESSION-BRIEFS.md (the roster is in lead-cloud.md, 11-03).
+  2. Each track reads its FINAL log entry and handoff for its exact next step.
+  3. Brief the PC when it's back: Act I real-GPU sign-off (ADR 0205 §3) on this tree.
+- The gate session's big48 and big49 shot captures may still be landing on lead/gate-big48-shots and lead/gate-big49-shots. Their content is already inside this fold-in. View their shots on resume.
+
 ## STATE 2026-11-03 21:00 UTC
 - **big48 merged** (2a3d172c), which completes the human's 11-03 FAST-TRACKs:
   - the storm cutscenes show the Undertow's vortex (Ch1's Rising and Ch8's W20, M3-CIN-1252);
