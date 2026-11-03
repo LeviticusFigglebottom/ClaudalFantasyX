@@ -1372,3 +1372,30 @@ SELF-RENDERED @ baf421df: the Lacquer Court from the Barge, Steps and CourtEntry
   - creatures-b's half of 71 (the Spar-Wraith's body);
   - battle-presentation's half of 72 (the camera).
 - **Exact next step for env-art-b:** when M3-C01-1335 lands, self-render `battle_boss_intro_hullgnaw`. Then, by ADR 0205, go back to the Act II and Act III lane (M5-A3P-1500, Ch17's dry-dock) unless a new Act I row appears.
+
+### Act II per ADR 0205 §4 (Lead 17:16): the requests chapters answered (M4-A2P-104, 105, 106)
+- **Act I rows (the Lead's ask):** 62, 71, 72, 78, 79, 80 and 81 are all fixed and merged. They are listed with their shas under `### PC-QUEUE` for the GPU's re-check; big38 predates every fix. None is open for a cloud track.
+- **Ch14, the court after the trap (M4-A2P-044/104), 7d30625f:**
+  - The eight lit lamp-stands and their lights follow chapters' `CeremonyLamps`.
+  - A fallen set follows `CeremonyLampsFallen`: five stands knocked onto their sides and three standing, all out. A dark flame read as a black teardrop, so the flame slot takes the stand's gilt instead.
+  - The step-hold arena keeps the lit set and is byte-identical.
+  - New shot `ch14_court_after`, viewed. Tools test_ch14 7/0, Godot lacquer 2/0.
+- **Ch15, the dawn at the bow (M4-A2P-105), ad225d60:** the `ch15_dawn` variant's `environment_res` is now `open_sea_dawn_environment.tres`.
+  - The grade: grey-rose, fog 0.03, with height fog so the bank lies on the water.
+  - I made a one-line edit in chapters' `ch15_16_greybox.py`; re-running it changes only the open sea layout.
+  - New shot `ch15_open_sea_dawn`, viewed. New test test_ch15_open_sea_dressing; Godot open_sea 2/0, ch14_16 6/0.
+- **Ch16, the Drowned Choir (M4-A2P-046/106), 74cdf970:** dressed over chapters' relayout.
+  - **Found:** the kit's amphitheatre had no gap or aisle, so the approach walked through a solid ceramic wall that only the greybox collision allowed.
+  - **Fix:** a new kit target, `choir_amphitheatre_walked`, with the aisles cut, a flagged causeway at sea level, the north ramp and both bridges. The Haluna kit was rebuilt `--all` in Blender 5.0.1 and every older glb is byte-identical; the manifest takes the one new row.
+  - **Dressing:** fifteen singers on the Mouth blocks facing the dais, the flats, the night water and the moonrise grade.
+  - **Shots:** `ch16_choir_approach` (now through the gap), `_ring` and `_mouth`, viewed.
+  - **Checks:** tools test_ch16_drowned_choir_dressing (new), test_drowned_choir and test_haluna_kit; Godot test_drowned_choir_dressing (new: the walk through the gap and up the aisle to Kesh), dressing 31/0, party_spawns 3/0, placeholder 8/0, ch14_16 6/0.
+- SELF-RENDERED @ 74cdf970: ch14_court_after, ch14_court_ceremony, ch15_open_sea_dawn, ch16_choir_approach, ch16_choir_ring, ch16_choir_mouth (all new or changed, all viewed).
+- **MERGE-READY @ 74cdf970** (everything since 211d8bd7).
+  - **Checks run:** as listed above, plus validate_data, taskboard --check, gdlint and gdformat.
+  - **Checks skipped:** coverage (no battle or progression code); the full tools suite (only the court, open sea, Choir and Haluna kit generators changed, and their tests ran).
+- **Next:**
+  - the Choir's votive rings (spec);
+  - the storm waking over the Choir, once chapters gives it a block or flag;
+  - the Ch14 barge's `wake_target`, once the barge moves (M4-C14-01);
+  - then M5-A3P-1500 (Ch17's dry-dock).
