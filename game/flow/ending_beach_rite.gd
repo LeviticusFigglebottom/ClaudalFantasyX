@@ -25,6 +25,7 @@ func _ready() -> void:
 	var spawn := StringName(str(rite.get("spawn", "")))
 	zone.place_at(spawn, zone.spawn_yaw_deg(spawn))
 	zone.set_beach_cast_visible(false)
+	zone.player.visible = false  # Rhen is the voice, not in the rite (the field body would stand on the spawn)
 	zone.place_cast(rite.get("cast", {}), {})
 	story.sequencer.restore_fade = false
 	story.sequencer.play(StringName(str(rite.get("scene_id", ""))), zone.stage)

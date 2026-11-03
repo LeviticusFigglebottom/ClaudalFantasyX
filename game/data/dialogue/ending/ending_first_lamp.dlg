@@ -4,6 +4,7 @@
 // `post_credits_lamp`: one low metallophone phrase from `haluna_dawn` and one struck match.
 title: ending_first_lamp
 location: ch01/oruvel
+grade: post_credits
 ---
 @letterbox on
 @fade in 3.0

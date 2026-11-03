@@ -19,8 +19,8 @@ rings = 6
 [node name="OilLamp" type="OmniLight3D" parent="."]
 visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
-light_color = Color(1, 0.72, 0.42, 1)
-light_energy = 2.2
+light_color = Color(1, 0.682, 0.404, 1)
+light_energy = 1.4
 omni_range = 6.0
 omni_attenuation = 1.4
 shadow_enabled = true
