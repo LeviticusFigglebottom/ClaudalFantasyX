@@ -546,6 +546,9 @@ element (voice_glimmer, level_hand, still_water).
     After Ilun's return, the sweep's sim policy swapped her in through BattleEngine.swap, which seats no one on the
     stage. In play the game swaps through swap_members, which does. She fought, was hit by Glass Flare and fell with
     no body on the stage. The sweep now syncs the stage after a policy swap. Re-run queued with batch 5.
+  - **Ch6 ridge (10-31):** ch06_ridge_skippers, ch06_ridge_crab and ch06_ridge_gulls are clean (checks clean,
+    stills viewed). Skippers and Gulls ended in defeat: the sweep's sim party lost them at its Act I loadout, not a
+    presentation issue (the Defeat panel reads). ch06_flats_crabs, ch06_inquisitor and the seven Ch8 fights are next.
   - ch04_spar_wraith: clean (checks clean, stills viewed). At rest the Wraith is small and dark against the night
     sky; that is the arena's light.
 

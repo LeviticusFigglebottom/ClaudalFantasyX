@@ -149,3 +149,18 @@
 ## HANDOVER 2026-10-28 ~18:40 UTC (usage limit; a new account takes over)
 - Read CONSOLIDATED.md §0. big16 @ ff82858c is the next merge (it contains big15). Gate results go to lead/gate-big16-shots if the cloud gate finished; otherwise have the PC gate it.
 - Fold in creatures f6846325 and hero-integration a6e9d548 before merging. The Lead tools are in tools/dev/lead/.
+
+## 2026-11-03: Lead session_018aiGwGLGkxsnMnu8VfCu1m is back (this account). The integration branch is -ze8rrn again (= big45 @ c972ea42)
+Sessions created 11-03 (fresh; the old ones on this account are stale with full contexts, and the other account's are unreachable):
+- integration-qa `session_01F3vrULXsvBAZasKK3TdUZQ` (claude/hero-integration): FT1, the walk animation stops.
+- combat-systems `session_01F3vrUN933kFk8vhen4Tm2X` (claude/combat-systems, NEW): FT2 the solo boss balance; FT5 the revive item, KO→1 HP after a won fight, field spells.
+- battle-presentation `session_01F3vrUPeaLYtdSEVJ1de2wf`: FT3 on-body status visuals; FT4 the storm fight VFX and sky.
+- ui-menus `session_01F3vrUMk5AsY8FMR6bL35TW` (claude/ui): FT3 status explanations; FT5 the field magic and revive menus.
+- slice-polish `session_01F3vrUKBvqtCZn8zAJJiSpj` (claude/m2-slice): FT4 the cutscene vortex.
+- act1-chapters `session_01F3vrUMuHokgtCV29LZRy4J`: FT4 the storm fights' arena and music wiring.
+- audio `session_01F3vrUNzLwTirfULihiXMv6`: FT4 the storm battle theme.
+- env-art `session_01F3vrUMQgc1qaKVaSvEJfNq`: Act I rows 24, 47, 77, 86, 90.
+- env-art-b `session_01F3vrULtXeM3Ac9bJGCgE8q`: FT4 storm arenas; Act I rows 62, 65, 71, 72, 78–82, 84.
+- characters `session_01F3vrUMnQpiFoR2hVoqFaRS`: row 56's rebuilt outputs; rows 54 and 55.
+- gate `session_01F3vrUMr65cnHpQGapahFnx`: rolling fast batches big46+ (gate-bigN.md, LEAD-REVIEW lines). The Lead merges.
+- Not started (no Act I rows): creatures, creatures-b, act2-plan. The PC is offline.

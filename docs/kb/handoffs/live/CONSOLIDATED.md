@@ -1,3 +1,10 @@
+## STATE 2026-11-03 (Lead `session_018aiGwGLGkxsnMnu8VfCu1m`, back after the other account's run)
+- **Integration branch: `claude/undertow-lead-handoff-ze8rrn`**, fast-forwarded to `claude/new-session-mj8c3c` @ c972ea42 (big45). `-mj8c3c` is frozen.
+- The other Lead (`session_01Bg3iP7cPGyjbX4CyniBahc`, another account) ran big17 → big45 under ADR 0205 (fast gates: scoped checks block; shots and the full suite run after the merge). It started Act II per track (ADR 0205 §4) and Act III per track (ADR 0207).
+- **Act I is not signed off.** The PC's big38 check (`gpu/act1-qa-7`) found 12 art rows open and 4 partly fixed. The PC's timing is invalid while its monitor is off. The PC is offline now.
+- **The human's playtest FAST-TRACKs (11-03):** see the top section of TRACK-RULES. They come ahead of all Act II and III work.
+- Sessions on this account (11-03): the tracks were recreated fresh, plus a gate session. Ids are in lead-cloud.md.
+
 # CONSOLIDATED HANDOFF: the new Lead starts here
 
 ## STATE 2026-10-30 03:25 UTC (ADR 0205: fast batches)
