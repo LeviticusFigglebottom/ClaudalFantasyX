@@ -167,7 +167,8 @@ field_heal_amount(power, magic, level) = heal_amount(power, magic, level, FIELD_
 ```
 - **No RNG out of battle**, so the preview is the result. Mend (power 10) cast by a base Asha (magic 18, level 5): `10 × 23 × 100 ÷ 100 = 230`.
 - **Cost:** the skill's `mp_cost` from the caster, paid once per cast (an all-allies spell reaches everyone it helps for one cost).
-- **The caster** must be standing (HP above 0, not stone) and have the MP. Silence ends with a battle, so it never blocks a field cast.
+- **The caster** must be standing (HP above 0, not stone), have the MP, and not be Silenced for a magic skill (as in battle; Silence ends with a battle, so in play it never blocks a field cast).
+- **The result** (M3-CMB-1252, ui-menus' Magic page): `{ok, error, mp_cost, mp_spent, mp_before, mp_after, changes, healed: {id: HP}, cured: {id: [statuses]}, revived: [ids]}`. A field Mend heals exactly what a battle Mend heals at variance 100 (test_field_spell).
 - **Targets:** like the field items: a heal reaches the living, not the KO'd or stone; a heal on a Zombie would harm and is refused; a target it would change nothing on (full HP, nothing to clear) is refused. An all-allies spell is refused only when it helps nobody. `cleanses` lift those statuses; a heal and a cleanse run in that order.
 
 ## Equipment in battle (M1-CMB-06)

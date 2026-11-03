@@ -14,6 +14,8 @@ extends RefCounted
 ##   reach(caster, party, t)    who a cast chosen on `t` reaches (all_allies: everyone it helps)
 ##   preview(caster, party, t)  the cast on copies: {ok, error, mp_cost, changes}, nothing changes
 ##   cast(caster, party, t)     the cast itself: the caster pays mp_cost once; returns the same
+## The result also carries M3-CMB-1252's shape (ui-menus' Magic page): mp_spent (0 when refused),
+## healed {id: HP gained}, cured {id: [status ids]} and revived [ids] (no field spell revives yet).
 ## A change is {id, hp_before, hp_after, removed: [status ids]}. The caller writes the vitals back
 ## (GameStateData.record_vitals, as ItemsMenuModel._save does) for the caster and every target.
 ## Deterministic: heals use Formulas.field_heal_amount (no RNG out of battle).
@@ -22,6 +24,8 @@ const RESULT_OK := &"ok"
 const ERR_UNKNOWN := &"unknown"
 const ERR_CASTER_DOWN := &"caster_down"
 const ERR_NO_MP := &"no_mp"
+const ERR_SILENCED := &"silenced"
+const STATUS_SILENCE := &"silence"
 const ERR_NOT_KNOWN := &"not_known"
 const ERR_FALLEN := &"fallen"
 const ERR_PETRIFIED := &"petrified"
@@ -89,6 +93,8 @@ func caster_error(caster: BattleCombatant) -> StringName:
 		return ERR_NOT_KNOWN
 	if not caster.is_alive():
 		return ERR_CASTER_DOWN
+	if bool(row.get("magic", false)) and caster.has_status(STATUS_SILENCE):
+		return ERR_SILENCED  # as in battle; Silence never outlasts a battle, so only a hand-made state hits this
 	if caster.mp < mp_cost():
 		return ERR_NO_MP
 	return RESULT_OK
@@ -153,7 +159,16 @@ func cast(caster: BattleCombatant, party: Array[BattleCombatant], chosen: Battle
 
 
 func _run(caster: BattleCombatant, party: Array[BattleCombatant], chosen: BattleCombatant, commit: bool) -> Dictionary:
-	var out := {"ok": false, "error": RESULT_OK, "mp_cost": mp_cost(), "changes": [] as Array[Dictionary]}
+	var out := {
+		"ok": false,
+		"error": RESULT_OK,
+		"mp_cost": mp_cost(),
+		"mp_spent": 0,
+		"changes": [] as Array[Dictionary],
+		"healed": {},
+		"cured": {},
+		"revived": [] as Array[StringName],
+	}
 	var err := cast_error(caster, party, chosen)
 	out["error"] = err
 	if err != RESULT_OK:
@@ -162,10 +177,16 @@ func _run(caster: BattleCombatant, party: Array[BattleCombatant], chosen: Battle
 	out["mp_after"] = caster.mp - mp_cost()
 	var changes: Array[Dictionary] = []
 	for t in reach(caster, party, chosen):
-		changes.append(_apply(caster, t if commit else t.sim_copy()))
+		var ch := _apply(caster, t if commit else t.sim_copy())
+		changes.append(ch)
+		if int(ch["hp_after"]) != int(ch["hp_before"]):
+			(out["healed"] as Dictionary)[ch["id"]] = int(ch["hp_after"]) - int(ch["hp_before"])
+		if not (ch["removed"] as Array).is_empty():
+			(out["cured"] as Dictionary)[ch["id"]] = ch["removed"]
 	if commit:
 		caster.mp -= mp_cost()
 	out["changes"] = changes
+	out["mp_spent"] = mp_cost()
 	out["ok"] = true
 	return out
 
