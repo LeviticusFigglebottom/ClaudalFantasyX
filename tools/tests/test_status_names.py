@@ -13,8 +13,9 @@ LOC_DIR = ROOT / "game/data/loc"
 CAPITALIZED = {"Shell": "Tide Ward", "Protect": "Bulwark", "Reflect": "Mirrorwater", "Doom": "Last Tide"}
 ANY_CASE = {"regen": "Mending", "zombie": "Hollowed", "armor break": "Sundered", "mental break": "Unmoored",
             "power break": "Weakened", "magic break": "Dimmed"}
-# Proper nouns with an old word in them: places, skills and gear.
-ALLOWED = ("Shell Shrine", "Shell Breaker", "Shell Ram", "Shell Wall", "Bell-Shell")
+# Proper nouns with an old word in them: places, skills, gear, and Ch4's beat "The Shell Is Set" (Asha's memorial
+# shell set on the wall; its Memories title), which names the shell, not the status.
+ALLOWED = ("Shell Shrine", "Shell Breaker", "Shell Ram", "Shell Wall", "Bell-Shell", "The Shell Is Set")
 
 
 def old_names_in(text: str) -> list[str]:
@@ -43,6 +44,7 @@ class StatusNamesTest(unittest.TestCase):
         self.assertEqual(old_names_in("Shell for the whole battle."), ["Shell"])
         self.assertEqual(old_names_in("{name} is a Zombie"), ["zombie"])
         self.assertEqual(old_names_in("Kerrid's Armor Break"), ["armor break"])
+        self.assertEqual(old_names_in("The Shell Is Set"), [], "Ch4's beat names Asha's shell")
         self.assertEqual(old_names_in("A crab's shell. The Shell Shrine. Shell Breaker."), [])
         self.assertEqual(old_names_in("Every vista looks doomed; protect them."), [])
 

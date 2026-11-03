@@ -1685,3 +1685,27 @@ MERGE-READY @ 6b6ffef70: everything above, plus M4-A2P-081's new portraits.
    it; the Magic page is bound to that.
 4. **Row 70:** with battle-presentation.
 MERGE-READY @ 1e18ff21d: the credits answer, on top of everything above.
+
+### big47's routed reds (the Lead, 11-03 19:28)
+- Merged origin/claude/undertow-lead-handoff-ze8rrn (big47); PROVENANCE.md resolved with merge_union.
+- **test_act1_audio_audit (M3-UI-1250):** ui_sfx.json hooks for StatusHelpPanel (open/close: ui_page; the list
+  cursor: ui_cursor) and StatusTipCard (comes in: ui_tip), on existing rows. The audit notes BattleStatusTips (the
+  controller; its views are hooked) and StatusGlyph (a hover tooltip and long-press callout, silent like every
+  tooltip; a per-frame watch on every chip would cost for nothing), as for BattlePause. data_check ok;
+  screen_audio 11/0, audio_reconnect 3/0, test_status_help 13/0.
+- **test_status_names:** its one red was my Memories title "The Shell Is Set" (Ch4's beat: Asha's memorial shell,
+  not the status). It is now on the test's ALLOWED proper nouns, with a case in the self-check.
+- **Tools suite (-j 4):** both are green. What stays red is the gate's routed and known list: test_audio_data (storm
+  beds, audio), test_b_arenas (env-art-b's big48 head), test_cutscene_sfx_files and test_freed_cast_lint (audio),
+  test_creatures (creatures-b), test_dialogue_clarity and test_direction_holds (LFS pointers here), test_palette_check
+  and test_screenshots (known).
+MERGE-READY @ c71894a7b (big48): the two routed reds fixed, on top of the credits answer.
+
+### FINAL (11-03, the human: finish, commit everything, stop)
+FINAL MERGE-READY @ f136fa1f8: everything in this log since the 11-03 heading (FAST-TRACK 3 status help, FAST-TRACK 5 Magic
+page and field revive, Act I rows 68/69/73, the Kirru and Ullari portraits, the facts-only credits, big47's two routed
+reds). Nothing unfinished, nothing uncommitted. Checks at the end: validate_data 0/0, taskboard ok.
+**Exact next step for whoever resumes:** after the Lead's next merge, render `magic_menu` on the integration branch
+(it needs claude/combat-systems' FieldSpell to show the picker) and check that the field menu lists Magic after Items.
+Then: row 70 once battle-presentation has a GPU still; M4-A2P-082 once Pell has a characters.json row; M4-A2P-083's
+answered-by line once Venn's row has answered_key. Handoff: docs/kb/handoffs/2026-11-03-ui-ui-menus-2.md.
