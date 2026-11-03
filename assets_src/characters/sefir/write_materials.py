@@ -91,7 +91,8 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
                                    "spec_shift_jitter": "0.25", "col_spec_secondary": HAIR_SPEC2,
                                    "spec_secondary_intensity": "0.3", "col_transmission": HAIR_TT,
                                    "transmission_strength": "0.12", "indirect_specular": "0.1",
-                                   "root_occlusion": "0.45", "depth_occlusion": "0.5", "strand_value_jitter": "0.1",
+                                   "root_occlusion": "0.7", "depth_occlusion": "0.8", "strand_value_jitter": "0.35",
+                                   # row 54 (11-03): occlusion and per-strand value break the flat ribbons up
                                    # GPU QA row 54: the cap read translucent at 1.15; PC pass 7: the long front and
                                    # back falls still read as see-through strands at 1.5 (the dither leaves a
                                    # mid-alpha card part-covered), and lit through at 0.6 transmission; big38 (still
