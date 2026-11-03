@@ -1,0 +1,47 @@
+[gd_resource type="Environment" load_steps=5 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_night.gdshader" id="1_sky"]
+[ext_resource type="Texture3D" path="res://assets/environments/arenas/drowned_choir_ring/lut_ch16_choir.png" id="2_lut"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("1_sky")
+shader_parameter/col_zenith = Color(0.0549, 0.0863, 0.149, 1)
+shader_parameter/col_horizon = Color(0.2275, 0.2902, 0.3765, 1)
+shader_parameter/col_ground = Color(0.1804, 0.298, 0.3137, 1)
+shader_parameter/col_moon = Color(0.8235, 0.8745, 1, 1)
+shader_parameter/moon_disc_energy = 10.0
+shader_parameter/star_density = 0.1
+shader_parameter/star_energy = 2.0
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+radiance_size = 1
+
+[resource]
+resource_name = "drowned_choir_ch16"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.1647, 0.2275, 0.3059, 1)
+ambient_light_energy = 0.25
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.1
+tonemap_agx_white = 12.0
+ssr_enabled = true
+ssr_max_steps = 48
+ssr_fade_in = 0.2
+ssr_fade_out = 2.0
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.0
+glow_enabled = true
+glow_intensity = 0.5
+glow_bloom = 0.06
+glow_hdr_threshold = 1.0
+fog_enabled = true
+fog_light_color = Color(0.2275, 0.2902, 0.3529, 1)
+fog_density = 0.003
+fog_sky_affect = 0.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("2_lut")

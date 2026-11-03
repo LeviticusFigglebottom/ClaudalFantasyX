@@ -442,6 +442,17 @@
         "choir_amphitheatre-lod1": 304
       }
     },
+    "choir_amphitheatre_walked": {
+      "budget": [
+        20000,
+        1700
+      ],
+      "bytes": 508052,
+      "lods": {
+        "choir_amphitheatre_walked": 4908,
+        "choir_amphitheatre_walked-lod1": 336
+      }
+    },
     "choir_singer": {
       "budget": [
         5000,

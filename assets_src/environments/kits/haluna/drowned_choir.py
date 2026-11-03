@@ -10,6 +10,11 @@ Built in the Haluna kit (its import kind and materials), as the other Act II zon
                       the flooded ring channel round it (floor -0.8, the sea at -0.25 over it), six seat-tiers rising
                       to r 21.5 and +2.15 (the lowest just under the water), broken in places, the outer face battered
                       down to the sand. Origin at the dais's centre.
+  choir_amphitheatre_walked  the same amphitheatre as the zone walks it (chapters' M4-A2P-106 relayout, env-art-b):
+                      the tiers cut for two 4 m aisles on the Z axis, the south gap at sea level (a flagged causeway from
+                      the channel out past the outer face, z 9.5 to 24.5) and the north aisle a flagged ramp from the
+                      channel up to the rim (y 0 at z -9.5 to 2.15 at z -21.5), with flagged bridges over the channel
+                      on both. Origin at the dais's centre. (`choir_amphitheatre` itself is unchanged: the arena's.)
   pale_rim_flats      the white sand shallows from r 25 to the horizon (600 m), just under the water, sandbars
                       breaking toward the surface; origin the Choir's centre.
 
@@ -34,7 +39,8 @@ M_PAVING = "kit_iskarra_paving"
 M_DARK = "kit_interior_dark"
 M_SAND = "kit_rim_sand"
 
-TRI_BUDGET = {"choir_singer": (5000, 300), "choir_amphitheatre": (18000, 1400), "pale_rim_flats": (6000, 800),
+TRI_BUDGET = {"choir_singer": (5000, 300), "choir_amphitheatre": (18000, 1400),
+              "choir_amphitheatre_walked": (20000, 1700), "pale_rim_flats": (6000, 800),
               "pale_rim_strand": (10000, 1000), "rim_marker_pole": (500, 60)}
 
 SINGER_H = 24.0
@@ -46,6 +52,11 @@ TIER_TOPS = (-0.1, 0.35, 0.8, 1.25, 1.7, 2.15)
 WATER_Y = -0.25
 SAND_Y = -0.6
 STONE = kc.Weathering(moss=0.1, salt=0.5, wet=0.3, erosion=0.8, noise_scale_m=2.0)
+# The walked amphitheatre's aisles (chapters' greybox: BridgeS/N, SouthGap, HeadAisle)
+AISLE_HALF_W = 2.0
+BRIDGE_Z = (7.0, 10.0)  # the bridges over the channel, both sides (|z|)
+SOUTH_GAP_Z = (9.5, 24.5)  # the causeway's run, sea level (top y 0)
+HEAD_RAMP = ((0.0, -9.5), (2.15, -21.5))  # (y, z) from the channel's edge up to the rim
 
 
 def kc_smooth(ctrl: np.ndarray, n: int) -> np.ndarray:
@@ -122,12 +133,37 @@ def build_singer(seed: int = 2201) -> list[kc.MeshBuilder]:
     return out
 
 
-def build_amphitheatre(seed: int = 2202) -> list[kc.MeshBuilder]:
+def _arcs(a_full: np.ndarray, r: float, walked: bool) -> list[np.ndarray]:
+    """The angles of a ring at radius r: the full ring, or (walked) its two halves either side of the Z-axis aisles."""
+    if not walked:
+        return [a_full]
+    h = math.asin(min(1.0, AISLE_HALF_W / r))
+    n = max(4, len(a_full) // 2)
+    return [np.linspace(math.pi * 0.5 + h, math.pi * 1.5 - h, n), np.linspace(math.pi * 1.5 + h, math.pi * 2.5 - h, n)]
+
+
+def _ring_strips(mb, mat, rings, a_full, walked: bool, **kw) -> None:
+    """Quad strips between rings [(r, y)], cut for the aisles when walked (the cut follows each ring's own radius)."""
+    for half in range(2 if walked else 1):
+        rows = []
+        for r, y in rings:
+            a = _arcs(a_full, r, walked)[half]
+            rows.append(np.stack([np.cos(a) * r, np.full_like(a, y), np.sin(a) * r], -1))
+        strip = np.stack(rows, 1)
+        kc.quad_strip(mb, strip, mat, uv=kw.get("uv_fn")(strip), col=kw["col"], uv2=(0.8, 0.5), flip=True)
+
+
+def _in_aisle(x: float, half_w: float) -> bool:
+    return abs(x) < AISLE_HALF_W + half_w
+
+
+def build_amphitheatre(seed: int = 2202, walked: bool = False) -> list[kc.MeshBuilder]:
     out = []
+    name = "choir_amphitheatre_walked" if walked else "choir_amphitheatre"
     for lod in (False, True):
         rng = kc.rng_for("choir_amphitheatre", seed)
         noise = kc.Noise3(rng)
-        mb = kc.MeshBuilder("choir_amphitheatre" + ("-lod1" if lod else ""))
+        mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
         paving, ceramic = mb.material(M_PAVING), mb.material(M_CERAMIC)
         # The dais: rings of laid flags (one drum at LOD1), the rim's drop into the channel.
         if lod:
@@ -160,7 +196,10 @@ def build_amphitheatre(seed: int = 2202) -> list[kc.MeshBuilder]:
         r_in = CHANNEL[1]
         for t, top in enumerate(TIER_TOPS):
             r_out = r_in + TIER_W
-            if lod:
+            if lod and walked:
+                _ring_strips(mb, ceramic, ((r_in, top), (r_out, top)), a, True, uv_fn=lambda s: s[..., [0, 2]] / 2.0,
+                             col=(0, 0.3, 0.3, 0.5))
+            elif lod:
                 tier = np.stack([np.stack([np.cos(a) * r, np.full_like(a, top), np.sin(a) * r], -1)
                                  for r in (r_in, r_out)], 1)
                 kc.quad_strip(mb, tier, ceramic, uv=tier[..., [0, 2]] / 2.0, col=(0, 0.3, 0.3, 0.5), uv2=(0.8, 0.5),
@@ -174,6 +213,9 @@ def build_amphitheatre(seed: int = 2202) -> list[kc.MeshBuilder]:
                     w = rm * math.pi / n - 0.03
                     h = top - CHANNEL[2] if t == 0 else top - TIER_TOPS[t - 1] + 0.4
                     fallen = rng.random() < 0.07 + 0.02 * t
+                    if walked and _in_aisle(math.cos(am) * rm, w):  # the aisles are cut clean through the tiers
+                        rng.random()
+                        continue
                     if fallen:  # the block lies tumbled into the tier below, tilted
                         kc.rounded_block(mb, (math.cos(am) * (rm - 1.4), top - h - 0.1, math.sin(am) * (rm - 1.4)),
                                          (w * 0.9, h * 0.45, TIER_W * 0.4), ceramic,
@@ -187,10 +229,15 @@ def build_amphitheatre(seed: int = 2202) -> list[kc.MeshBuilder]:
                                      variation=float(rng.random()))
             r_in = r_out
         # The battered outer face, down from the top tier to the sand.
-        outer = np.stack([np.stack([np.cos(a) * r, np.full_like(a, y), np.sin(a) * r], -1)
-                          for r, y in ((r_in, TIER_TOPS[-1]), (r_in + 3.0, SAND_Y - 0.2))], 1)
-        kc.quad_strip(mb, outer, ceramic, uv=outer[..., [0, 1]] / 2.0, col=(0.1, 0.5, 0.4, 0.5), uv2=(0.8, 0.5),
-                      flip=True)
+        if walked:
+            _ring_strips(mb, ceramic, ((r_in, TIER_TOPS[-1]), (r_in + 3.0, SAND_Y - 0.2)), a, True,
+                         uv_fn=lambda s: s[..., [0, 1]] / 2.0, col=(0.1, 0.5, 0.4, 0.5))
+            _aisles(mb, paving, rng, noise, lod)
+        else:
+            outer = np.stack([np.stack([np.cos(a) * r, np.full_like(a, y), np.sin(a) * r], -1)
+                              for r, y in ((r_in, TIER_TOPS[-1]), (r_in + 3.0, SAND_Y - 0.2))], 1)
+            kc.quad_strip(mb, outer, ceramic, uv=outer[..., [0, 1]] / 2.0, col=(0.1, 0.5, 0.4, 0.5), uv2=(0.8, 0.5),
+                          flip=True)
         out.append(mb)
     return out
 
@@ -265,5 +312,39 @@ def build_marker_pole(seed: int = 2205) -> list[kc.MeshBuilder]:
     return out
 
 
-TARGETS = {"choir_singer": build_singer, "choir_amphitheatre": build_amphitheatre, "pale_rim_flats": build_flats,
+def _aisles(mb, paving, rng, noise, lod: bool) -> None:
+    """The walked amphitheatre's flagged ways: both bridges, the south causeway at sea level, the north ramp."""
+    hw = AISLE_HALF_W
+    kw = {} if lod else {"noise": noise, "disp_m": 0.006, "weather": STONE}
+    depth = 0.3
+
+    def slab(cx, cy, cz, half_z, rot=None):
+        flags = 1 if lod else max(1, int(round(half_z * 2.0 / 1.5)))
+        for k in range(flags):
+            z0 = cz - half_z + (k + 0.5) * (2.0 * half_z / flags)
+            off = np.array([0.0, 0.0, z0 - cz])
+            c = np.array([cx, cy, cz]) + (rot @ off if rot is not None else off)
+            kc.rounded_block(mb, tuple(c), (hw - 0.02, depth * 0.5, half_z / flags - 0.015), paving, rot=rot,
+                             radius=0.02, seg=1, variation=float(rng.random()), **kw)
+
+    for sign in (1.0, -1.0):  # the bridges over the channel
+        z0, z1 = BRIDGE_Z
+        slab(0.0, -depth * 0.5, sign * (z0 + z1) * 0.5, (z1 - z0) * 0.5)
+    z0, z1 = SOUTH_GAP_Z  # the causeway, its foot down to the sand
+    slab(0.0, -depth * 0.5, (z0 + z1) * 0.5, (z1 - z0) * 0.5)
+    kc.rounded_block(mb, (0.0, (SAND_Y - depth) * 0.5, (z0 + z1) * 0.5), (hw, (-SAND_Y - depth) * 0.5 + 0.02,
+                     (z1 - z0) * 0.5), paving, radius=0.02, seg=1, variation=0.5)
+    (ya, za), (yb, zb) = HEAD_RAMP  # the ramp up the north aisle
+    run = math.hypot(yb - ya, zb - za)
+    rot = kc.rot_x(math.atan2(yb - ya, -(zb - za)))
+    centre = np.array([0.0, (ya + yb) * 0.5, (za + zb) * 0.5]) + rot @ np.array([0.0, -depth * 0.5, 0.0])
+    slab(float(centre[0]), float(centre[1]), float(centre[2]), run * 0.5, rot=rot)
+
+
+def build_amphitheatre_walked(seed: int = 2202) -> list[kc.MeshBuilder]:
+    return build_amphitheatre(seed, walked=True)
+
+
+TARGETS = {"choir_singer": build_singer, "choir_amphitheatre": build_amphitheatre,
+           "choir_amphitheatre_walked": build_amphitheatre_walked, "pale_rim_flats": build_flats,
            "pale_rim_strand": build_strand, "rim_marker_pole": build_marker_pole}
