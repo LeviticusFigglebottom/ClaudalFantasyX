@@ -1565,6 +1565,27 @@ The six relays from 23:06 to 03:02 reached this session only at 03:35, after the
         (FYI env-art-b and battle-presentation, M3-BPR-1255).
   - **Next:** when the Lead merges env-art-b and audio into the integration branch, merge it here, apply the
     resolution above, re-run `--filter=storm_` and push. Meanwhile Act II (ADR 0205 §4) goes on from my M4 rows.
+- **Lead DECISION (18:04), the storm table is the single source of truth.** Confirmed from the data (ch08.json,
+  coilspire_layout.json, act1_ch08.md):
+  - **Ch8 storm fights: exactly four, `ch08_stair_hold_1`, `_2`, `_3` and `undertows_reach`** (B10–B16, 16:00–16:42,
+    after `ch08_beacon_opened`).
+  - **Not storm fights:**
+    - `ch08_headland_gulls` and `ch08_headland_crabs`: B04 at 13:00. The random table is gated
+      `unset: ch08_entered_coilspire`. The forced `path_fight` trigger sits at PathMid on the way out, before the door.
+      `to_headland` needs `unset: ch08_beacon_opened`, so the party can't walk the path again in the storm.
+    - `ch08_flue_moths`: Coilspire's tiers 2 and 4 during the trial (B05, 13:30).
+    - The storm comes at B07 (15:40, the crown), and `open_beacon` then goes straight to ch08/corrow WallGate (B08's
+      run back is that hand-off).
+  - **For battle-presentation:** `storm_fights.json` should drop `ch08_headland_gulls`, `ch08_headland_crabs` and
+    `ch08_flue_moths`. It should add `ch16_storm_wakes` (Ch16 B09, the storm waking at the Choir; its arena is
+    still pending). So the full storm list is the seven `storm: true` rows in encounters.json, which
+    `test_storm_encounters` enforces.
+  - **Headland arena:** env-art-b's overcast `ch08_brewing` look on `coilspire_headland_path` is a mood call. The
+    beat sheet has B04 as a bright noon with kites still up and a storm that "always breaks" out there. It is not a
+    storm fight, so it keeps no vortex requirement.
+  - **`drowned_choir_storm` stays in `storm.pending`** (Act II): env-art-b built no Choir variant, and
+    M3-ENV-1253 keeps that half. `oruvel_raft_storm` moves to `storm.arenas` when env-art-b's 6b8e416d reaches the
+    integration branch (the resolution is above).
 - **Act II sweep (ADR 0205 §4, 11-03):**
   - **Thread and walkable tests on this branch (big45 merged):** `ch10_` 3/0, `ch11_` 3/0, `ch12_` 5/0, `ch13_` 7/0,
     and `ch14_16_` 6/0, which runs through the act break to Ch17's hand-off. Ch16's flow, act break included, is in
