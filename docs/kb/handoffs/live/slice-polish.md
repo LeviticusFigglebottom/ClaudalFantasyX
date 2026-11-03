@@ -1448,7 +1448,64 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **Lead:** please merge claude/m2-slice @ 1086628b1 (plus this log commit). It lifts the hull further: 47% under
     20/255 inside the letterbox on lavapipe, against about 61% before.
   - **PC:** please re-check row 75 on that head with the u10 frame, and close it if the hull reads.
+
+## 2026-11-03 (Lead session_018aiGwG again; integration branch `claude/undertow-lead-handoff-ze8rrn`)
+- **Merged** `origin/claude/undertow-lead-handoff-ze8rrn` (big45). Clean.
+- **FAST-TRACK 4, the cutscene vortex (M3-CIN-1252), MERGE-READY @ e65fb0d22:**
+  - **What the human saw:** the Rising's O11 showed the Undertow only as a dark tower on the horizon; B07 held its
+    silent beat on the people (F08), with the storm out of frame. Neither showed the vortex.
+  - **Ch1 `ch01_the_rising`:** O11 (the wall stands up, the roar, `undertow_rising`), then **O11E**, a cut to the
+    storm's eye from 16 km up (the spiral arms, the eye, the held light sinking down the throat), then back to O11
+    for "The reef's showing." The cut comes before the line, so no dialogue box sits over the reveal.
+  - **Ch8 `ch08_storm_against_wind`:** the long beat opens on **F08W** (the wall from the gallery, over the sea,
+    with the rain and its cyan rents), then **F08E** (straight down the eye: the maelstrom, foam rings, rents, a
+    bolt), and only then finds the people (F08). The beat is 8.5 s of silence instead of 4 s.
+  - **`@storm view|off [look=]` (CutsceneStorm; sequencer.json `storm`; cues.json):**
+    - during a storm shot the zone's real Undertow runs its clock (the vortex turns; Oruvel holds it still);
+    - the zone fog thins: Oruvel's storm fog (0.0012) greyed the throat into a flat pale disc at 20 km;
+    - the sun lights the storm's top (2.2; the zone sun is the dimmed light under it);
+    - a bolt strikes on the side facing the camera;
+    - `off`, or the scene's end, restores all of it. The zone's Environment is swapped for a duplicate, never edited.
+  - **Music:** checked, and no audio request is needed. The Rising plays `undertow_rising` (G octatonic, low brass, a
+    limping pulse, "never a heroic one") and keeps it under the run. B07 holds silence and the second half plays
+    `undertow_rising` stem 0. The uplifting music the human heard is in the storm FIGHTS (the scuttlers and the
+    Hullgnaw on `oruvel_raft_morning`), which audio, act1-chapters and battle-presentation are changing.
+  - **Coordination with act1-chapters:** Coilspire's layout (F08W and F08E rows only) and B07's opening cues are
+    theirs; I touched them under this FAST-TRACK. Nothing else in Ch8 changed.
+  - **SELF-RENDERED @ e65fb0d22 (lavapipe), VIEWED:** ch01_rising_eye, ch08_storm_wall_f08w and ch08_storm_eye_f08e
+    are new and `pending_baseline`. ch01_oruvel_storm (O11) and ch01_o10_gull are unchanged.
+    - Rising eye: a vortex of spiral bands around the eye, with cyan streaks down the throat.
+    - F08W: the dark wall over the sea, with large cyan rents and rain.
+    - F08E: the strongest frame. It looks into the throat: the maelstrom disc, its foam rings, the rents and a bolt.
+    - Tried and dropped: a 37° oblique (the canopy hid the eye) and a 24 km wide (a blob; the spiral was lost).
+  - **For Rendering (not blocking):** looking steeply down the eye, the maelstrom disc's near rim shows dark ribbed
+    arcs either side of the throat (F08E).
+  - **Checks run:**
+    - validate_data 0/0, taskboard, dlgc, gdlint and gdformat clean;
+    - Godot: ch01 20, ch08 25, storm 30 (test_cutscene_storm included) and sequencer 24, all 0 failed;
+    - cutscene: 110 passed and 0 failed before my 1500 s cap stopped it inside test_hero_cutscene_snaps, which plays
+      every cutscene. That test is re-running alone; its result follows.
+  - **Checks skipped:** coverage (no battle or progression code); Blender (no source); the tools suite (no tools/
+    change).
+- **M3-CIN-1252, the seawall side (Corrow B17 "The wall falls"), MERGE-READY @ b3264a223** (FAST-TRACK; it includes
+  e65fb0d22, so the Lead can take everything up to b3264a223):
+  - W20 (the Breach, "unlit except by the storm") aimed 32° off the Undertow, which only peeked into the top-right
+    corner. It is re-aimed toward the storm (the same camera position, levelled, fov 58), so the wall-head and the
+    drowned low town are the foreground and the storm with its big cyan rents fills the upper right.
+  - New pending shot ch08_wall_falls_w20, SELF-RENDERED and VIEWED. Needs `HYMN_SHOT_TIMEOUT=1500` on lavapipe
+    (536 s).
+  - **For act1-chapters and env-art (not mine to change):** in W20 a bright sun glint lies on the sea under the
+    storm, and the festival kites still fly over the wall. B17's direction says the frame is unlit except by the
+    storm.
+  - The cutscene suite's long test (test_hero_cutscene_snaps, which plays every cutscene) passed alone: 1 run,
+    0 failed. With the 110 passed before the cap, the cutscene filter is green.
+- **Act I rows (act1_gpu_qa.md @ gpu/act1-qa-7):**
+  - 31 and 32 are fixed.
+  - 75's hull key and rim (1086628b1) is on integration now; it only needs the PC's GPU re-check (PC-QUEUE).
+  - No other slice-polish row is open.
+
 ### PC-QUEUE
+- M3-CIN-1252: ch01_rising_eye, ch08_storm_wall_f08w and ch08_storm_eye_f08e on the GPU. Does the eye read as a turning vortex in motion (play the Rising and B07)? Are F08E's rim arcs a lavapipe artefact?
 - Row 75: ch01_going_under_u10/_u11 with the new hull key and rim (dive_hull_lights): does the hull read on the GPU?
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan

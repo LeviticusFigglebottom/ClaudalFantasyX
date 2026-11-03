@@ -7,7 +7,8 @@
   "vfx_motion": ["spiral_up"],
   "vfx_rate": ["slow", "normal", "fast", "hang"],
   "camera_eases": ["linear", "in_out_sine", "in_out_cubic", "out_quart"],
-  "memory_looks": ["white", "held"]
+  "memory_looks": ["white", "held"],
+  "storm_looks": ["eye"]
  },
  "reserved": {
   "music": {"silence": "Not a track: fade the music bed out to nothing (fade= sets the time)."},
@@ -101,6 +102,11 @@
    "doc": "M5-A3P-1600: a remembered scene (CutsceneMemory): eases a screen layer on or off over sec (0 or none = at once) that drains the colour, washes toward the look's colour and softens the edges to it (sequencer.json memory looks: white is Kesh's memory, held the Undertow's). The scene's end takes it off.",
    "args": [{"name": "state", "type": "enum", "values": ["on", "off"]}, {"name": "sec", "type": "number", "min": 0, "optional": true}],
    "kwargs": {"look": {"type": "enum", "set": "memory_looks"}}
+  },
+  "storm": {
+   "doc": "FAST-TRACK (11-03 playtest): a storm shot (CutsceneStorm). view runs the scene's Undertow clock so the vortex turns, gives the zone fog the look's density so the maelstrom's throat reads from a shot standing off it, and strikes a bolt facing the camera (sequencer.json storm looks). off, or the scene's end, restores it.",
+   "args": [{"name": "state", "type": "enum", "values": ["view", "off"]}],
+   "kwargs": {"look": {"type": "enum", "set": "storm_looks"}}
   }
  }
 }

@@ -8,18 +8,27 @@
 // (ch08_fed_the_beacon; he has climbed after them), else by the Tender. THE PLAYER OPENS IT: the scene
 // ends, and the field's interact on the great key plays the second half (ch08_beacon_opened).
 // Nothing bound or machine-made is turned against the storm (rule 1): a beacon is a warning.
+// FAST-TRACK (the 11-03 playtest: show the vortex itself): the long beat opens on the wall from the gallery
+// (F08W), cuts to the storm's eye from high above, the maelstrom turning and a bolt striking (F08E, @storm
+// view), and only then finds the people (F08).
 title: ch08_storm_against_wind
 location: ch08/coilspire
 ---
 @letterbox on
-@camera F08
+@camera F08W
 @music silence fade=1.0
 @sfx wind_landward
 @mark asha gallery_asha walk
 @mark toma gallery_toma walk
 @mark ysolde gallery_ysolde walk
 @mark liss gallery_liss walk
+@wait 3.0
+@camera F08E
+@storm view
 @wait 4.0
+@camera F08
+@storm off
+@wait 1.5
 @anim tender palms_level
 Tender [afraid]: Be level, be still, the Hush is over the water and the water— the water is— #line:ch08_storm_001
 @wait 0.8
