@@ -93,3 +93,14 @@ MERGE-READY @ f096de6b: M4-A2P-1202.
 - Checks: battle_sim tests 56/0; tools test_balance_sim and test_balance_naive_swell OK; taskboard --check.
 - LEAD-ASK: the p90 cap no longer gates report-only rows (my lane, tools/balance). Overrule if you want the cap back on naive_swell. Assumed OK.
 - **Next:** no open combat-rules task on the board. Battle-presentation owns the open BPR and A2P VFX requests. I'm waiting for the Lead's next combat item, or the cure/revive-spell content call above.
+
+### 2026-11-03 ~19:20: the Lead's 18:45: M3-CMB-1252 (ui-menus' field cast request) DONE
+MERGE-READY @ 2acd3abc, for big48: M3-CMB-1252.
+- The API is `FieldSpell` (game/progression/field_spell.gd), the equivalent the task allows. ui-menus' `FieldMagicRules.live` already binds it by name (origin/claude/ui), and their task file was marked "withdrawn, superseded" there.
+- To close it fully, this branch adds what the original ask named and FieldSpell lacked:
+  - the result shape `{ok, mp_spent, healed: {id: HP}, cured: {id: [statuses]}, revived: []}` (alongside `changes`);
+  - a Silenced-caster refusal (`ERR_SILENCED`) for magic skills;
+  - a test that a field Mend heals exactly what a battle Mend heals at variance 100. Over 120 seeds the battle's heals bracket the field amount, and the field amount appears among them.
+- Data: `field_usable` is on Mend and Chorus Mend. No cure or revive spell exists in skills.json yet; FieldSpell already handles `cleanses`.
+- I didn't copy the task file here. It lives on claude/ui as done, and a second copy would be an add/add conflict at merge.
+- Checks: test_field_spell 8/0; gdlint and gdformat clean.
