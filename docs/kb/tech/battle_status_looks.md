@@ -68,15 +68,30 @@ The human's playtest: the seagull/storm scene's fights used the normal sunny bac
 its storm variant at spawn. The arena scenes are untouched: the Environment, Sky and sky material are duplicated.
 
 `game/data/vfx/battle/storm_fights.json`:
-- `fights`: encounter -> look. Ch1 after the Rising (`ch01_scuttlers`, `ch01_hullgnaw`); Ch8's headland path
-  (`ch08_headland_gulls`, `ch08_headland_crabs`), the tier landing (`ch08_flue_moths`), the three stair holds and the
-  Reach. `ch06_ridge_gulls` is a calm afternoon and is left out.
-- `looks`: `preset` (an `undertow.json` preset for the Undertow), `yaw_offset_deg` (where it stands relative to the
-  rest frame's look), `environment_res` (a whole storm Environment, e.g. Oruvel's after the Rising) and/or
-  `sky_params` (the arena sky shader's uniforms: overcast, no sun disc), `sun` (energy scale, colour), `rain`, `wind`.
+- `fights`: encounter -> look, matching act1-chapters' storm table (encounters.json `storm: true`, arenas.json
+  `storm`). The storm fights are Ch1 C1-13/C1-14 (`ch01_scuttlers`, `ch01_hullgnaw`), Ch8 B10-B16 (the three stair
+  holds, `undertows_reach`) and Ch16 B09 (`ch16_storm_wakes`). Ch8's headland fights and the flue moths come before
+  the storm, so they are not storm fights.
+- `looks`: `preset` (an `undertow.json` preset), `yaw_offset_deg`, `environment_res` and/or `sky_params`, `sun`,
+  `rain`, `wind`.
 
-The Undertow in battle: its own rain curtains are off (the battle has its rain), its lightning never flashes the
+**One Undertow per fight** (the Lead, 11-03, big47):
+- A storm arena with its own `Undertow` (arenas.json `storm.arenas`: the seawall arenas; env-art's
+  `oruvel_raft_storm` once built) owns the static set: the sky, the wet surfaces and the vortex.
+  - BattleStorm then adds only the dynamic layer: wind and spray, plus rain only when the arena's storm brings
+    none (row 72: doubled rain hid the party).
+- On an arena without one (`storm.pending`'s interims), BattleStorm draws the full look: the sky, the sun and its
+  own Undertow.
+- `test_no_storm_fight_draws_two_undertows` holds this.
+
+The fallback Undertow: its own rain curtains are off (the battle has its rain), its lightning never flashes the
 screen (`exposure_flash` off: the battle flash safety contract), and it never takes the sun back (`zone_shadow` off).
-`StormFarPlane` raises the battle camera's far plane past it.
+`StormFarPlane` raises the battle camera's far plane past it. It keeps its preset's distance: its bound is about
+16 km, and a battle nearer than that stands inside it.
+
+**Framing:** choreo.json `camera.rest_by_encounter` tilts a storm fight's rest frame up (`tilt_up_deg`), so the
+sky behind the foes is in the frame (Ch1: 8 deg).
+- Ch8's stair holds have no tilt: the wall's merlons fill the sky there. M3-ENV-1340 asks env-art-b for a
+  sightline.
 
 PC-QUEUE: the Undertow's cost in a battle on the GPU (it stands in the field zones at the same moments already).

@@ -20,7 +20,10 @@ static var _data_cache: Dictionary = {}
 
 var look_id := &""
 var look: Dictionary = {}
+## Our own Undertow: the fallback for a storm fight whose arena has none (else null).
 var undertow: UndertowStorm
+## The arena's own Undertow when it has one (it then owns the sky and the vortex).
+var arena_storm: UndertowStorm
 var rain: GPUParticles3D
 var wind: GPUParticles3D
 var reduced_motion := false
@@ -63,19 +66,37 @@ static func attached_if_storm(controller: BattleController, engine: BattleEngine
 
 
 func apply(controller: BattleController, engine: BattleEngine) -> void:
-	_sky(controller)
-	_sun(controller)
+	# The Lead (11-03, big47): ONE Undertow per fight. A storm arena (arenas.json storm.arenas) owns the static set:
+	# its sky, wet surfaces and Undertow. Then this adds only the dynamic layer (wind and spray, and rain when the
+	# arena's storm brings none); the full look is the fallback for a storm fight on an arena without one.
+	arena_storm = arena_undertow(controller)
+	if arena_storm == null:
+		_sky(controller)
+		_sun(controller)
 	var centre := _field_centre(controller, engine)
 	var wd: Array = look.get("wind_dir", [1.0, 0.0, 0.0])
 	var wind_dir := Vector3(float(wd[0]), float(wd[1]), float(wd[2])).normalized()
-	if look.has("rain"):
+	if look.has("rain") and (arena_storm == null or arena_storm.rain_amount == 0.0):
 		rain = _rain(look["rain"] as Dictionary, centre, wind_dir)
 		add_child(rain)
 	if look.has("wind"):
 		wind = _wind(look["wind"] as Dictionary, centre, wind_dir)
 		add_child(wind)
-	if str(look.get("preset", "")) != "":
+	if str(look.get("preset", "")) != "" and arena_storm == null:
 		undertow = _undertow(controller, centre)
+
+
+## The arena's own Undertow (an UndertowStorm in the battle scene that is not this view's), or null.
+static func arena_undertow(controller: BattleController) -> UndertowStorm:
+	for n in controller.find_children("*", "UndertowStorm", true, false):
+		if not String(controller.get_path_to(n)).contains(String(STORM_NODE)):
+			return n as UndertowStorm
+	return null
+
+
+## Every Undertow the battle scene draws (tests: one per storm fight).
+static func undertows_in(controller: BattleController) -> int:
+	return controller.find_children("*", "UndertowStorm", true, false).size()
 
 
 ## Where the fight stands: the midpoint of every fighter on the stage (the stage's origin when there are none).
