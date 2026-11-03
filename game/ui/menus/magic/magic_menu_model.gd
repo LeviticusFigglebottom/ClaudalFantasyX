@@ -1,10 +1,10 @@
 class_name MagicMenuModel
 extends RefCounted
 ## The words and steps of the field Magic page (M3-UI-1251; the human's playtest FAST-TRACK 5, 2026-11-03), Node-free,
-## over a PartySheet. A hero casts a field-usable spell (Mend and the like) on the party outside battle and pays its
-## MP. What a spell does, who it may reach and what it costs are combat-systems' rules (FieldMagicRules over FieldSpell, combat-systems' M3-CMB-05):
-## this page only asks them, shows the answer in words, and writes the result to the save as the Items page does
-## (GameStateData.record_vitals, keeping each hero's Swell and only the carried statuses). The view is MagicMenu;
+## over a PartySheet. A hero casts a field-usable spell (Mend and the like) on the party outside battle and pays its MP.
+## What a spell does, who it may reach and what it costs are combat-systems' rules (FieldMagicRules over FieldSpell,
+## M3-CMB-05): this page only asks them, shows the answer in words, and writes the result to the save as the Items page
+## does (GameStateData.record_vitals, keeping each hero's Swell and only the carried statuses). The view is MagicMenu;
 ## words are loc keys (menus.csv MAGIC_MENU_*, plus the Items page's preview keys and the skill and hero names).
 ##
 ## Steps: a caster (every hero; one with no field spell is listed but says so), a spell (its MP cost on the right),
