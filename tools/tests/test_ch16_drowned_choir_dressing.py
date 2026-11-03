@@ -79,6 +79,14 @@ class DrownedChoirTests(unittest.TestCase):
         tiers = (r > dc.CHANNEL[1] + 0.3) & (r < dc.CHANNEL[1] + 6 * dc.TIER_W + 3.0)
         self.assertFalse(np.any(tiers & (np.abs(v[:, 0]) < dc.AISLE_HALF_W - 0.05)), "ceramic stands in an aisle")
 
+    def test_offerings_at_every_other_singer(self) -> None:
+        mouths = [k for k in self.b if k.startswith("Mouth")]
+        rings = [p for p in self.d["pieces"] if p["piece"] == "choir_votive_rings"]
+        self.assertEqual(len(rings), (len(mouths) + 1) // GEN.VOTIVE_EVERY)
+        for p in rings:
+            self.assertAlmostEqual(math.hypot(*p["at"]), 44.0 - GEN.VOTIVE_IN_M, delta=0.05)
+            self.assertGreater(math.hypot(*p["at"]), dc.CHANNEL[1] + 6 * dc.TIER_W + 3.0, "on the sand, past the face")
+
     def test_the_files_are_the_generators(self) -> None:
         on_disk = json.loads((GEN.ZONE / "drowned_choir_dressing.json").read_text(encoding="utf-8"))
         self.assertEqual(on_disk, self.d)

@@ -15,6 +15,8 @@ Built in the Haluna kit (its import kind and materials), as the other Act II zon
                       the channel out past the outer face, z 9.5 to 24.5) and the north aisle a flagged ramp from the
                       channel up to the rim (y 0 at z -9.5 to 2.15 at z -21.5), with flagged bridges over the channel
                       on both. Origin at the dais's centre. (`choir_amphitheatre` itself is unchanged: the arena's.)
+  choir_votive_rings  the Cantors' offerings at a singer's foot: a scatter of salt-white ceramic rings (0.2-0.45 m),
+                      half buried in the sand at odd tilts, a few stacked. Origin at the scatter's centre on the sand.
   pale_rim_flats      the white sand shallows from r 25 to the horizon (600 m), just under the water, sandbars
                       breaking toward the surface; origin the Choir's centre.
 
@@ -40,7 +42,7 @@ M_DARK = "kit_interior_dark"
 M_SAND = "kit_rim_sand"
 
 TRI_BUDGET = {"choir_singer": (5000, 300), "choir_amphitheatre": (18000, 1400),
-              "choir_amphitheatre_walked": (20000, 1700), "pale_rim_flats": (6000, 800),
+              "choir_amphitheatre_walked": (20000, 1700), "choir_votive_rings": (3000, 300), "pale_rim_flats": (6000, 800),
               "pale_rim_strand": (10000, 1000), "rim_marker_pole": (500, 60)}
 
 SINGER_H = 24.0
@@ -341,10 +343,46 @@ def _aisles(mb, paving, rng, noise, lod: bool) -> None:
     slab(float(centre[0]), float(centre[1]), float(centre[2]), run * 0.5, rot=rot)
 
 
+VOTIVE_COUNT = 9
+VOTIVE_SPREAD_M = 1.6
+
+
+def _ring_path(r: float, n: int) -> np.ndarray:
+    a = np.linspace(0.0, 2 * math.pi, n + 1)
+    return np.stack([np.cos(a) * r, np.zeros_like(a), np.sin(a) * r], -1)
+
+
+def build_votive_rings(seed: int = 2206) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("choir_votive_rings", seed)
+        mb = kc.MeshBuilder("choir_votive_rings" + ("-lod1" if lod else ""))
+        ceramic = mb.material(M_CERAMIC)
+        salt = kc.Weathering(moss=0.0, salt=0.8, wet=0.2, erosion=0.6, noise_scale_m=0.3)
+        for k in range(VOTIVE_COUNT):
+            r = float(rng.uniform(0.2, 0.45))
+            thick = r * float(rng.uniform(0.12, 0.18))
+            tilt = float(rng.uniform(0.2, 1.2))  # half buried: tipped toward the sand, its lower arc under it
+            yaw = float(rng.uniform(0, 2 * math.pi))
+            ang = float(rng.uniform(0, 2 * math.pi))
+            d = VOTIVE_SPREAD_M * math.sqrt(float(rng.random()))
+            centre = np.array([math.cos(ang) * d, -r * 0.35 * math.sin(tilt), math.sin(ang) * d])
+            if k % 4 == 3:  # one stacked on the one before
+                centre = prev + np.array([0.02, thick * 1.6, -0.01])
+                tilt = 0.08
+            rot = kc.rot_y(yaw) @ kc.rot_x(tilt)
+            pts = _ring_path(r, 5 if lod else 16) @ rot.T + centre
+            kc.tube(mb, pts, thick, 3 if lod else 6, ceramic, weather=salt)
+            prev = centre
+        out.append(mb)
+    return out
+
+
 def build_amphitheatre_walked(seed: int = 2202) -> list[kc.MeshBuilder]:
     return build_amphitheatre(seed, walked=True)
 
 
 TARGETS = {"choir_singer": build_singer, "choir_amphitheatre": build_amphitheatre,
-           "choir_amphitheatre_walked": build_amphitheatre_walked, "pale_rim_flats": build_flats,
+           "choir_amphitheatre_walked": build_amphitheatre_walked, "choir_votive_rings": build_votive_rings,
+           "pale_rim_flats": build_flats,
            "pale_rim_strand": build_strand, "rim_marker_pole": build_marker_pole}

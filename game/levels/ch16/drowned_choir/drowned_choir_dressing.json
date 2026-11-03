@@ -182,6 +182,78 @@
    ],
    "y": -0.6,
    "yaw_deg": 157.5
+  },
+  {
+   "piece": "choir_votive_rings",
+   "at": [
+    0.0,
+    -38.4
+   ],
+   "y": -0.6,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "choir_votive_rings",
+   "at": [
+    27.153,
+    -27.153
+   ],
+   "y": -0.6,
+   "yaw_deg": 94.0
+  },
+  {
+   "piece": "choir_votive_rings",
+   "at": [
+    38.4,
+    -0.0
+   ],
+   "y": -0.6,
+   "yaw_deg": 188.0
+  },
+  {
+   "piece": "choir_votive_rings",
+   "at": [
+    27.153,
+    27.153
+   ],
+   "y": -0.6,
+   "yaw_deg": 282.0
+  },
+  {
+   "piece": "choir_votive_rings",
+   "at": [
+    -14.695,
+    35.477
+   ],
+   "y": -0.6,
+   "yaw_deg": 376.0
+  },
+  {
+   "piece": "choir_votive_rings",
+   "at": [
+    -35.477,
+    14.695
+   ],
+   "y": -0.6,
+   "yaw_deg": 470.0
+  },
+  {
+   "piece": "choir_votive_rings",
+   "at": [
+    -35.477,
+    -14.695
+   ],
+   "y": -0.6,
+   "yaw_deg": 564.0
+  },
+  {
+   "piece": "choir_votive_rings",
+   "at": [
+    -14.695,
+    -35.477
+   ],
+   "y": -0.6,
+   "yaw_deg": 658.0
   }
  ]
 }
