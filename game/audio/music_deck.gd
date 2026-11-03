@@ -92,10 +92,12 @@ func _start(cue_id: StringName, stream: AudioStream, sec: float) -> void:
 	slot.base_db = float(row.get("volume_db", 0.0))
 	slot.gain = 0.0 if sec > 0.0 else 1.0
 	slot.fade_to(1.0, sec)
-	var from := float(positions.get(cue_id, 0.0)) if bool(row.get("resume", false)) else 0.0
+	var first := loop_start_of(row) if bool(row.get("from_loop", false)) else 0.0
+	var resumed := bool(row.get("resume", false)) and positions.has(cue_id)
+	var from := float(positions[cue_id]) if resumed else first
 	positions.erase(cue_id)
 	var grid := beat_grid(cue_id)
-	if from > 0.0 and not grid.is_empty():  # pick up on a beat of its own
+	if resumed and from > 0.0 and not grid.is_empty():  # pick up on a beat of its own (a loop start is one)
 		var off := float(grid["offset"])
 		from = maxf(0.0, off + floorf((from - off) / float(grid["beat"])) * float(grid["beat"]))
 	started_from = from
@@ -146,6 +148,20 @@ static func grid_of(row: Dictionary) -> Dictionary:
 		var m := meta as Dictionary
 		return {"beat": 60.0 / float(m["bpm"]), "offset": float(m.get("downbeat_offset_s", 0.0))}
 	return {}
+
+
+## Where a `from_loop` cue starts (the storm's field bed after a fight, M3-AUD-865): its first file's loop start,
+## seconds (its .loop.json loop_offset_seconds), so the cue's intro plays only where its own scene starts it; 0 when
+## the file has no sidecar.
+static func loop_start_of(row: Dictionary) -> float:
+	var files := AudioData.cue_files(row)
+	if files.is_empty():
+		return 0.0
+	var path := files[0].get_basename() + ".loop.json"
+	if not FileAccess.file_exists(path):
+		return 0.0
+	var meta: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	return float((meta as Dictionary).get("loop_offset_seconds", 0.0)) if meta is Dictionary else 0.0
 
 
 ## A change waiting for its beat: the cue (&"" for a stop), else &"" when none waits.
