@@ -241,6 +241,7 @@ func _build_engine(
 	boss = BattleBossHud.attached(self, engine)
 	set_piece = BattleSetPieceHud.attached(self, engine)
 	BattleBarks.attached(self, engine)  # M3-C08-100: listen-only battle barks (skills/vowbound bark keys)
+	BattleStatusTips.attached(self, engine)  # status help key and first-time status cards (playtest 11-03)
 	BattleVfx.attached(self, engine)  # M2-RND-03: listen-only battle VFX (docs/kb/tech/battle_vfx.md)
 	stage.spawn(engine)
 	stage.refresh_ko(engine)

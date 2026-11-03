@@ -43,6 +43,10 @@ const CONFUSE_ALLY_PCT := 50
 
 ## Items (M1-CMB-06): revive HP is a percent of max HP, never below 1.
 const REVIVE_MIN_HP := 1
+## M3-CMB-04: after a won fight a KO'd party member gets up with this much HP.
+const VICTORY_RISE_HP := 1
+## M3-CMB-05: a spell cast from the field rolls no variance; it heals at the middle of the range.
+const FIELD_VARIANCE_PCT := 100
 ## Delay diminishing returns: each earlier delay since the target's last turn divides the next.
 const DELAY_STACK_DIVISOR := 2
 const DELAY_STACK_MAX_STEPS := 16
@@ -121,6 +125,12 @@ static func heal_amount(power: int, magic: int, level: int, variance_pct: int, b
 	return mini(cap, power * (magic + level) * variance_pct / 100)
 
 
+## M3-CMB-05: a heal cast from the field menu: heal_amount at FIELD_VARIANCE_PCT (no RNG out of
+## battle, so the preview is exact).
+static func field_heal_amount(power: int, magic: int, level: int, break_cap: bool) -> int:
+	return heal_amount(power, magic, level, FIELD_VARIANCE_PCT, break_cap)
+
+
 ## M4-CMB-1001: the HP a drain skill gives back, a share of the HP its hit took. Exact in integers.
 static func drain_heal(hp_lost: int, drain_pct: int) -> int:
 	return maxi(0, hp_lost) * drain_pct / 100
@@ -159,6 +169,12 @@ static func delay_push(agility: int, ranks: int, prior: int, immune: bool = fals
 ## HP a revive item restores: max(1, floor(max_hp × hp_pct / 100)).
 static func revive_hp(max_hp: int, hp_pct: int) -> int:
 	return maxi(REVIVE_MIN_HP, max_hp * hp_pct / PCT)
+
+
+## M3-CMB-04: a party member's HP as they leave a won fight. The KO'd (HP 0) get up with
+## VICTORY_RISE_HP; everyone else keeps what they have.
+static func victory_rise_hp(hp: int) -> int:
+	return hp if hp > 0 else VICTORY_RISE_HP
 
 
 ## Fixed item damage: ignores stats, defense and barriers; takes the element ratio of the

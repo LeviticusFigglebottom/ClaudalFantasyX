@@ -9,7 +9,8 @@ extends RefCounted
 ##                then lines up the party (line_up) so a fallen member does not hold an active slot
 ##                while a living reserve waits.
 ##   send_back()  emits EventBus.battle_party_returned after a victory or an escape; Game records
-##                HP, MP and carried statuses. A defeat records nothing: the run goes back to the
+##                HP, MP and carried statuses; after a won fight the KO'd come back at 1 HP
+##                (BattleSpoils.returning_party, M3-CMB-04). A defeat records nothing: the run goes back to the
 ##                last save (or Retry replays the same start), so it never saves an all-KO party.
 ##                M2-ARC-01: the combatants also carry their Swell gauge and mode, and with the
 ##                battle's BattleSwell it emits EventBus.battle_swell_returned (unlocks) too.
@@ -134,7 +135,7 @@ static func send_back(engine: BattleEngine, swell: BattleSwell = null) -> bool:
 	if not engine.outcome in kept:
 		return false
 	var party: Array = []
-	for c in engine.party_active + engine.party_reserve:
+	for c in BattleSpoils.returning_party(engine):  # M3-CMB-04: after a win the fallen get up at 1 HP
 		party.append(c)
 	EventBus.battle_party_returned.emit(engine.encounter_id, engine.outcome, party)
 	if swell != null:

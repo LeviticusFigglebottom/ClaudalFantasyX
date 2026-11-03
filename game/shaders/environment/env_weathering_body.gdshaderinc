@@ -134,6 +134,11 @@ uniform float wet_flatten : hint_range(0.0, 1.0) = 0.6; // puddle normal flatten
 // on Iskarra's towers. 0 (the default) leaves every other material as it was.
 uniform float grime_from_wet : hint_range(0.0, 1.0) = 0.0;
 uniform vec4 col_grime : source_color = vec4(0.369, 0.353, 0.298, 1.0); // #5E5A4C
+// The storm arenas (the human's FAST-TRACK 11-03; env-art-b): surfaces soaked by rain from above, set per arena
+// by ArenaRainWet on its own copies of the materials. Up-facing faces soak fully (sheets and puddles), walls take
+// streaks at rain_wall. 0 (the default) leaves every material as it was.
+uniform float rain_wet : hint_range(0.0, 1.0) = 0.0;
+uniform float rain_wall : hint_range(0.0, 1.0) = 0.55;
 group_uniforms;
 
 // The Ch1 Underway dressing pass (env-art): a zone walked under the surface sees no caustics (the water shader projects
@@ -348,6 +353,11 @@ void fragment() {
 	float grime = vc.b * grime_from_wet * (1.0 - tide_wet);
 	albedo *= mix(vec3(1.0), col_grime.rgb, grime);
 	float wet = clamp(max(vc.b * (1.0 - grime_from_wet), tide_wet), 0.0, 1.0);
+	if (rain_wet > 0.0) {
+		float up = smoothstep(0.25, 0.85, wn_geo.y);
+		float streak = mix(rain_wall * (0.6 + 0.8 * det.g), 1.0, up);
+		wet = max(wet, clamp(rain_wet * streak, 0.0, 1.0));
+	}
 	// Porous stone darkens most where it is rough and open (cavities soak first).
 	albedo *= mix(1.0, wet_darken * (1.0 - 0.25 * cavity), wet * (1.0 - salt * 0.5));
 	rough = mix(rough, wet_roughness, wet * (1.0 - cavity * 0.5));

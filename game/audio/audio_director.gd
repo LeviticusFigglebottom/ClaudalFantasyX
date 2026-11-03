@@ -73,6 +73,10 @@ var arena_owner: Object = null
 ## The zone row applied last ({} for none) and its scene.
 var zone: Dictionary = {}
 var zone_path: String = ""
+## The battle cue of the last field zone (its row's `battle` key, from a flag variant such as the storm's; &"" for
+## none), M3-AUD-865. A row with a `music` key sets it; the battle scene's row has none, so the fight it hosts
+## still knows the field it was started from.
+var field_battle_cue: StringName = &""
 ## Active duck reasons (reason -> true), and each bus's duck offset now (dB).
 var ducks: Dictionary = {}
 var bus_duck_db: Dictionary = {}
@@ -339,6 +343,8 @@ func apply_zone(scene_path: String) -> void:
 	zone = AudioData.merge_zone_beds(
 		AudioData.zone_for(music_data, scene_path, _flag_reader()), ambience_data, scene_path, _flag_reader()
 	)
+	if zone.has("music"):
+		field_battle_cue = StringName(str(zone.get("battle", "")))
 	var w := WeatherClock.zone_wind(scene_path)
 	wind_db = AudioData.wind_db(ambience_data, Vector3(w.x, w.y, w.z).length())
 	var room := verb.preset_for(zone)

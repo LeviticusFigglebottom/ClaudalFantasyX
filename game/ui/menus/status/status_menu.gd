@@ -27,6 +27,8 @@ var _portrait: HeroPortraitFrame
 ## Built per hero and freed on the next one (labels and gauges of the detail).
 var _detail: Array[Control] = []
 var _shown: Dictionary = {}
+## The status help (the human's playtest FAST-TRACK, 2026-11-03): the help key opens it on the hero's statuses.
+var _status_help: StatusHelpPanel
 
 
 static func create(with_sheet: PartySheet = null) -> StatusMenu:
@@ -85,6 +87,11 @@ func detail_gauges() -> Array[HudGauge]:
 func handle_input(event: InputEvent) -> bool:
 	if not is_open():
 		return false
+	if _status_help != null and _status_help.is_open():
+		return _status_help.handle_input(event)
+	if InputMap.has_action(StatusHelpPanel.ACTION) and event.is_action_pressed(StatusHelpPanel.ACTION):
+		open_status_help()
+		return true
 	var step := 0
 	if event.is_action_pressed(&"ui_up", true) or event.is_action_pressed(&"ui_left", true):
 		step = -1
@@ -105,6 +112,25 @@ func handle_input(event: InputEvent) -> bool:
 	return super.handle_input(event)
 
 
+## The status help panel on the shown hero's statuses (built on first use).
+func open_status_help() -> StatusHelpPanel:
+	if _status_help == null:
+		_status_help = StatusHelpPanel.new()
+		_status_help.name = &"StatusHelp"
+		add_child(_status_help)
+	var ids: Array[StringName] = []
+	var c := sheet.combatant(hero) if hero != &"" else null
+	if c != null:
+		for sid: Variant in c.statuses:
+			ids.append(StringName(str(sid)))
+	_status_help.open(ids, sheet.hero_name(hero) if c != null else "", &"", not motion().is_instant())
+	return _status_help
+
+
+func status_help() -> StatusHelpPanel:
+	return _status_help
+
+
 ## Shows `cid` (the list cursor follows).
 func show_hero(cid: StringName) -> void:
 	for i in _list.row_count():
@@ -120,7 +146,8 @@ func _build_page() -> void:
 	if model == null:
 		model = StatusMenuModel.new(sheet)
 	_help = _framed_panel(_d.get("panel", {}), tr("FIELD_MENU_STATUS"))
-	_help.text = tr("STATUS_MENU_HELP")
+	StatusHelpModel.ensure_action()
+	_help.text = tr("STATUS_MENU_HELP_FMT").format({"key": InputNames.first_name(StatusHelpPanel.ACTION)})
 	var lm: Dictionary = _d.get("list", {})
 	var rows := model.hero_rows()
 	_list = _menu_page(lm, LIST_ID, "", rows.size())

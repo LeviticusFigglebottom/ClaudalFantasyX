@@ -51,6 +51,7 @@ func from_reveal(reveal: Dictionary, statuses: Dictionary = {}) -> Dictionary:
 	for sid: Variant in reveal.get("statuses", []):
 		names.append(status_name(StringName(str(sid)), statuses))
 	page["statuses"] = LIST_SEPARATOR.join(names) if not names.is_empty() else tr("HUD_READ_NONE")
+	page["target_id"] = str(reveal.get("target_id", ""))  # the status help key explains this foe's statuses
 	var parts: PackedStringArray = []
 	for key: Variant in reveal.get("broken_parts", []):
 		parts.append(tr(str(key)))

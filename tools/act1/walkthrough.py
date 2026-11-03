@@ -58,7 +58,9 @@ ZONES: dict[str, tuple[str, str, list[str], list[list[tuple[float, ...]]]]] = {
     "ch04_ferry": ("res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn", "Landing", [], [
         [(13.0, 7.9), (1.5, 7.9), (2.8, 10.4), (0.0, 16.6), (0.0, 4.0), (0.0, -1.5)],
         [(-7.8, 18.3), (-8.1, 15.1), (-9.24, 12.3), (-9.24, 8.6), (-9.24, 3.5)]]),
-    "ch04_wake": ("res://game/levels/ch04/haluna_wake/haluna_wake.tscn", "DockShore", [], [
+    # The wake night as played: Ch4 opens once Rhen is sworn in (its story sets show on that flag, PC row 24).
+    "ch04_wake": ("res://game/levels/ch04/haluna_wake/haluna_wake.tscn", "DockShore",
+                  ["ch03_rhen_sworn_guardian", "ch04_started"], [
         [(23.5, 39.35), (10.0, 50.0), (-2.7, 57.7), (-30.0, 57.5)],
         [(-30.0, 57.5), (-50.0, 20.0), (-58.0, -3.6)],
         [(-58.0, -3.6), (-40.0, -50.0), (-4.0, -100.0), (5.0, -110.0), (-12.5, -118.0)]]),

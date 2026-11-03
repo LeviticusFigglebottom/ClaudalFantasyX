@@ -110,6 +110,24 @@ class BattleTests(unittest.TestCase):
         self.assertTrue(any("asha has no battle actor" in w for w in whats))
         self.assertFalse(any("rhen has no battle actor" in w for w in whats))
 
+    def test_only_act1_summons_are_act1_foes(self) -> None:
+        r = self.repo.root
+        enc = json.loads((r / "game/data/battle/encounters.json").read_text())
+        enc["encounters"][1]["set_piece"] = {"turn_skill": "surge_wing"}  # Ch8's set piece summons a gull
+        enc["encounters"].append({"id": "ch14_court", "enemies": ["eel"], "set_piece": {"skill": "court_call"}})
+        _write(r, "game/data/battle/encounters.json", enc)
+        _write(r, "game/data/flow/chapters/ch14.json", {"zones": {"ch14/court": {"beats": {"a": {"battle": "ch14_court"}}}}})
+        en = json.loads((r / "game/data/battle/enemies.json").read_text())
+        en["enemies"] += [{"id": "squall"}, {"id": "stillguard"}]
+        _write(r, "game/data/battle/enemies.json", en)
+        _write(r, "game/data/battle/skills.json", {"skills": [
+            {"id": "surge_wing", "effects": [{"summon": "squall"}]},
+            {"id": "court_call", "effects": [{"summon": "stillguard"}]},
+        ]})
+        whats = [i.what for i in pa.check_battle(r)]
+        self.assertTrue(any("foe squall" in w for w in whats), "an Act I set piece's summon is an Act I foe")
+        self.assertFalse(any("foe stillguard" in w for w in whats), "a summon only Act II casts is not")
+
     def test_a_battle_wrapper_waiting_for_its_model_is_reported(self) -> None:
         _write(self.repo.root, "game/data/ui/battle_sandbox.json",
                {"sandbox": {"stand_ins": {"liss": {"scene": "res://w.tscn"}}}})

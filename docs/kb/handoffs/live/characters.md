@@ -680,3 +680,37 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   (viewed): docs/kb/qa/characters/jog_2026-10-31/asha_run_hem_momentum.jpg. Needs a real-GPU look in motion.
 - **Rows 55 and 46** were done at fd9b4879: Fenn's and Sabe's white crop, and Moll's soft face key.
 - MERGE-READY @ a480b2cb
+
+## 2026-11-03 (Lead session_018aiGwGLGkxsnMnu8VfCu1m; integration claude/undertow-lead-handoff-ze8rrn)
+- Merged -ze8rrn @ e2411fb0 into claude/characters.
+- **Row 56, big45's reds, at this head:** test_hero_clips + test_hero_battle_clips 34 OK (the committed libraries rebuild
+  byte for byte from hero_clips.py; 979a5482 committed Asha's rebuilt library); test_hero_stage 11/11 (5e9cb380 samples
+  offer_hand, so the attack's battle-stance armpit corrective no longer trips the 38.8° check). test_rig_integrity: running.
+- **FAST-TRACK 1 (walk randomly stops), the clip side is clean.** For integration-qa:
+  - rhen/asha/toma `walk`, `run` and the idle loops all have loop_mode 1; locomotion.json lengths match the libraries;
+  - every walk/run start/stop `root_travel_m` curve is monotonic and ends at its `distance_m`.
+  - So a clip can't freeze by itself. My suspect is engine-side, in HeroGaitClips (not my code): a slow walk under
+    `stop_unknown_ratio` (0.5) x the walk clip speed enters walk_stop, which plays by distance; if the body keeps
+    creeping it holds the stop's last pose and slides. An early START that never covers its travel (blocked by a wall)
+    would freeze the same way. Worth a probe with a partial stick or a slope.
+- **Row 56:** TestRigIntegrityAsha 11 OK (my first run only timed out, at 25 min, under load). With test_hero_clips and
+  test_hero_stage above, every big45 red is green, and the outputs are committed and rebuild byte for byte.
+  SELF-RENDERED asha_clip_run and asha_clip_walk (viewed; they drift from the old baselines, as expected). The run
+  skirt now swings with the stride: it trails at the back and shows the underskirt and the feet. No notch is visible.
+  **Follow-up (not row 56):** in the run, her gauze verse-sleeve swings forward as a boxy dithered grey bag by her
+  hip. That's next on my list after rows 54 and 55.
+- **Row 55 (625302051):** big38 still saw Fenn's and Sabe's white hair as a cap. They now have a mid-grey underpaint
+  under brighter, finer, denser cards with more lift (rise 0.8), and Fenn recedes a touch.
+  SELF-RENDERED villager_{fenn,sabe}_{face,front} (viewed). Fenn reads as a cropped head of strands with a broken
+  edge. Sabe is better but still mostly a grey cap with white streaks. Both rebuild identically.
+- **Row 54:** Sefir's front falls are denser (34 cards per group, was 26; LOD0 61,822 tris, under the 62k target),
+  and the hair is solid through its body (alpha_boost 4.0, transmission 0.12). SELF-RENDERED
+  sefir_{face,front,back,three_quarter} (viewed). The backdrop no longer shows through the falls, but they still read
+  as pale flat ribbons. **Not closed.** Next: shading (clumped strand value variation and darker root/inner
+  occlusion), not more cards.
+- Checks: test_sefir 18 OK, test_villagers plus the Sefir, Fenn and Sabe rig probes 78 OK, Blender verify for sefir,
+  villager_fenn and villager_sabe (identical), test_hero_clips plus test_hero_battle_clips 34 OK, test_hero_stage
+  11/11. Skipped: gdlint (no .gd touched) and the full manifest.
+- MERGE-READY @ 4db4436a: row 56 (the rebuilt outputs are verified), row 55 (Fenn and Sabe), the row 54 step. Rows 54 and
+  55 need a real-GPU re-look (PC-QUEUE).
+- Row 54 shading (6e3cd47a): root_occlusion 0.7, depth_occlusion 0.8, strand_value_jitter 0.35. SELF-RENDERED sefir_face and sefir_back (viewed): the back reads as clumped locks, and the face falls are slightly less flat. Blender verify sefir: identical. MERGE-READY @ 6e3cd47a. Row 54 still wants a real-GPU look (PC-QUEUE). Next for me: Asha's verse-sleeve in the run.

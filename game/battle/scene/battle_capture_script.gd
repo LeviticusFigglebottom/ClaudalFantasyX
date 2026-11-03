@@ -11,6 +11,10 @@ const RING_SHOT_BEFORE_PEAK_SEC := 0.2
 const SCRIPT_READ_PANEL := &"read_panel"
 const SCRIPT_OPENING_BANNER := &"opening_banner"
 const SCRIPT_SWELL_MODES := &"swell_modes"
+## The human's playtest FAST-TRACK (2026-11-03): the status help panel on Rhen (Last Tide, Hollowed, Mending turned
+## to harm) and the first-time card for Last Tide, both over the statuses fixture at Ysolde's turn.
+const SCRIPT_STATUS_HELP := &"status_help"
+const SCRIPT_STATUS_TIP := &"status_tip"
 ## M2-UI-05: Asha's Call row highlighted (the call's preview), and Ilun out with Dismiss highlighted.
 const SCRIPT_VOWBOUND_CALL := &"vowbound_call"
 const SCRIPT_VOWBOUND_OUT := &"vowbound_out"
@@ -105,6 +109,15 @@ static func play(ctl: BattleController, sid: StringName) -> void:
 			_press(ctl, &"ui_accept")
 			ctl.aim_at(&"lantern_eel")
 			_press(ctl, &"ui_accept")
+		SCRIPT_STATUS_HELP, SCRIPT_STATUS_TIP:
+			_to_turn_of(ctl, &"ysolde")
+			var tips := ctl.hud.get_node(NodePath(BattleStatusTips.NODE_NAME)) as BattleStatusTips
+			tips.panel.motion_scale = 0.0
+			tips.card.motion_scale = 0.0
+			if BattleFixture.script_of(sid) == SCRIPT_STATUS_HELP:
+				tips.open_help(ctl.engine.find(&"rhen"))
+			else:
+				tips.card.show_tip(&"doom", ctl.menus.display_name(ctl.engine.find(&"rhen")))
 		SCRIPT_OPENING_BANNER:
 			pass  # the fixture's ambush plays the foes' turns and shows the banner by itself
 		SCRIPT_SWELL_MODES:

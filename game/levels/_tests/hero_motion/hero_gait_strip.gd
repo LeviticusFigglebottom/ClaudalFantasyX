@@ -8,11 +8,14 @@ extends "res://game/levels/_tests/hero_motion/hero_field_shot.gd"
 
 const STRIP_PATH := "res://game/levels/_tests/hero_motion/hero_gait_strip.json"
 
+## The strip's numbers (field_hero_walk_release sets its own).
+@export_file("*.json") var strip_path := STRIP_PATH
+
 
 func _ready() -> void:
 	var all: Variant = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
 	var common := (all as Dictionary).get("common", {}) as Dictionary
-	var d: Variant = JSON.parse_string(FileAccess.get_file_as_string(STRIP_PATH))
+	var d: Variant = JSON.parse_string(FileAccess.get_file_as_string(strip_path))
 	var strip := d as Dictionary
 	_build_world(common)
 	Game.state.party_ids = [&"rhen"] as Array[StringName]
@@ -46,11 +49,16 @@ func _ready() -> void:
 
 
 ## Rest, then the row's move for `n` frames: `run_frames` of `stick` first for a stop row, `turn_deg` of
-## facing change for a turn row.
+## facing change for a turn row. A row's `clip` (held when `hold`) plays at the rest's end, as a scene or a
+## bark leaves it on the body (FAST-TRACK 2026-11-03, field_hero_walk_release).
 func _play_row(c: FieldController, body: HeroFieldActor, row: Dictionary, n: int, dt: float, rest: int) -> void:
 	var stick := _v2(row.get("stick", [0.0, 0.0]))
 	for i in rest:
 		_frame(c, body, Vector2.ZERO, dt)
+	if row.has("clip"):
+		body.play_clip(StringName(str(row["clip"])), -1.0, bool(row.get("hold", false)))
+		for i in rest:
+			_frame(c, body, Vector2.ZERO, dt)
 	for i in int(row.get("run_frames", 0)):
 		_frame(c, body, stick, dt)
 	if row.has("turn_deg"):

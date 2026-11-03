@@ -1,3 +1,18 @@
+## STATE 2026-11-03 19:30 UTC
+- **big47 merged** (b06e963a): all five of the human's 11-03 playtest FAST-TRACKs.
+  - The walk fix.
+  - The Hullgnaw eased.
+  - Statuses on the body, plus the help panel, first-time cards and the Codex Afflictions entries.
+  - The storm fights on storm arenas with storm music.
+  - The Relighting Wick (revive), the fallen up at 1 HP after a win, and field spells (the Magic page).
+- Lead decision on the storm overlap: the storm ARENA owns the Undertow vortex; BattleStorm adds rain, wind and lightning only; act1-chapters' storm table decides which fights are storm fights. oruvel_raft_storm is env-art's.
+- Reds routed for big48:
+  - env-art-b: the storm arena tests (cleared by its head 8b92b3c3);
+  - audio: the storm beds have loop=false;
+  - ui: StatusTipCard;
+  - battle-presentation: one Undertow per fight, and storm_fights.json aligned.
+- Still in progress: slice-polish's Ch1 storm cutscene vortex.
+
 ## STATE 2026-11-03 17:30 UTC
 - **big46 merged** into -ze8rrn (151b23c3): row 56's notch fix with Asha's rebuilt library, and big45's characters reds now green. Its shots are capturing in the gate session.
 - The FAST-TRACKs pushed MERGE-READY on track branches (they go into big47):

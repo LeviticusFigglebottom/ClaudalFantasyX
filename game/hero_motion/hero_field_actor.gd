@@ -74,6 +74,10 @@ var _has_travel := false
 var _slot: StringName = SLOT_B
 var _action_left := 0.0
 var _action_hold := false
+## True when the clip's caller asked to hold it (play_clip's `hold`), not just because it loops.
+var _action_pinned := false
+## How long the body has travelled at walking pace under an unheld loop (field.clip_release).
+var _loop_travel_sec := 0.0
 var _transition: AnimationNodeTransition
 
 
@@ -432,6 +436,7 @@ func advance(delta: float) -> void:
 			_travel_yaw = HeroLocomotion.yaw_of(flat)
 			_has_travel = true
 		var moving := _has_travel and loco.is_moving(loco.speed)
+		_release_clip(delta)
 		if gait != null:
 			_step_gait(flat.length(), delta)
 		if gait != null and gait.phase == HeroGaitClips.Phase.TURN:
@@ -451,6 +456,31 @@ func advance(delta: float) -> void:
 				_to_locomotion(float(_field.get("clip_blend_sec", 0.0)))
 		tree.advance(delta)
 		_emit_contacts()
+
+
+## FAST-TRACK 2026-11-03: a cutscene clip left on the body gives way to the locomotion (field.clip_release).
+## The player steering the body takes any clip; a loop nobody held gives way once the body travels at a walk.
+func _release_clip(delta: float) -> void:
+	if action == &"" or tree == null:
+		_loop_travel_sec = 0.0
+		return
+	if _player_steers():
+		_to_locomotion(float(_field.get("clip_blend_sec", 0.0)))
+		return
+	var cfg := _field.get("clip_release", {}) as Dictionary
+	var pace := loco.walk_clip_mps * float(cfg.get("walk_ratio", 0.0))
+	if _action_pinned or not _action_hold or not _has_travel or loco.speed <= pace:
+		_loop_travel_sec = 0.0
+		return
+	_loop_travel_sec += delta
+	if _loop_travel_sec >= float(cfg.get("after_sec", 0.0)):
+		_to_locomotion(float(_field.get("clip_blend_sec", 0.0)))
+
+
+## True when the source is the player's FieldController, taking input, with the stick pushed.
+func _player_steers() -> bool:
+	var c := source as FieldController
+	return c != null and c.accepts_input and _intent_mps() > 0.0
 
 
 ## Steps the gait clips from this frame's travel and shows what they pick (a cutscene clip holds them).
@@ -533,6 +563,8 @@ func play_clip(clip_name: StringName, blend: float = -1.0, hold: bool = false) -
 	tree.set(_scale_param(_slot), 1.0)
 	action = clip_name
 	_action_hold = hold or an.loop_mode != Animation.LOOP_NONE
+	_action_pinned = hold
+	_loop_travel_sec = 0.0
 	_action_left = an.length
 	return true
 
@@ -552,6 +584,8 @@ static func _scale_param(slot: StringName) -> StringName:
 func _to_locomotion(fade: float) -> void:
 	action = &""
 	_action_left = 0.0
+	_action_pinned = false
+	_loop_travel_sec = 0.0
 	if _transition != null:
 		_transition.xfade_time = fade
 		tree.set(P_MODE, String(LOCO))

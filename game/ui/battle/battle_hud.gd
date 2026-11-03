@@ -165,6 +165,11 @@ func read_panel() -> ReadPanel:
 	return _read_panel
 
 
+## The Read panel while it is open, else null (BattleStatusTips: the help key then explains the foe's statuses).
+func read_panel_if_open() -> ReadPanel:
+	return _read_panel if _read_panel != null and _read_panel.is_open() else null
+
+
 ## The preemptive / ambush banner (M2-UI-02), built the first time an opening needs it.
 func opening_banner() -> OpeningBanner:
 	if _banner == null:

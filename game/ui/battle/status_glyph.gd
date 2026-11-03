@@ -39,12 +39,109 @@ const DRAWN: Array[StringName] = [
 var status: StringName = &""
 ## Regen on a Zombie harms instead of healing: drawn as a falling bar with ailment polarity.
 var inverted := false
+## The chip's one line (StatusHelpModel.one_line; the human's playtest FAST-TRACK, 2026-11-03): its
+## tooltip on hover, and a callout above it while a finger or the mouse holds it (long press). "" = a
+## plain icon that takes no input.
+var help_line := ""
+
+var _press := 0
+var _callout: PanelContainer
 
 
 func _init(sid: StringName = &"", is_inverted: bool = false) -> void:
 	status = sid
 	inverted = is_inverted
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
+## A chip that explains itself: `sid`'s glyph with its one line (StatusHelpModel.shared()).
+static func with_help(sid: StringName, is_inverted: bool = false) -> StatusGlyph:
+	var g := StatusGlyph.new(sid, is_inverted)
+	g.set_help(StatusHelpModel.shared().one_line(sid))
+	return g
+
+
+## Sets the one line (hover and long press); "" makes it a plain icon again.
+func set_help(line: String) -> void:
+	help_line = line
+	tooltip_text = line
+	mouse_filter = Control.MOUSE_FILTER_PASS if line != "" else Control.MOUSE_FILTER_IGNORE
+	if line == "":
+		hide_callout()
+
+
+## True while the long-press callout shows.
+func callout_shown() -> bool:
+	return _callout != null and _callout.visible
+
+
+## The callout's text ("" when none is built).
+func callout_text() -> String:
+	return (_callout.get_child(0) as Label).text if _callout != null else ""
+
+
+## Shows the one line above the chip, kept on screen (a long press calls it).
+func show_callout() -> void:
+	if help_line == "" or not is_inside_tree():
+		return
+	var cm := StatusHelpModel.load_data().get("chip", {}) as Dictionary
+	if _callout == null:
+		_callout = PanelContainer.new()
+		_callout.theme_type_variation = &"TooltipPanel"
+		_callout.top_level = true
+		_callout.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var l := Label.new()
+		l.theme_type_variation = &"TooltipLabel"
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		l.custom_minimum_size.x = float(cm.get("callout_width", 0.0))
+		_callout.add_child(l)
+		add_child(_callout)
+	(_callout.get_child(0) as Label).text = help_line
+	_callout.size = Vector2.ZERO
+	_callout.reset_size()
+	var lift := float(cm.get("callout_lift_px", 0.0))
+	var at := global_position - Vector2(0.0, _callout.get_combined_minimum_size().y + lift)
+	var room := get_viewport_rect().size - _callout.get_combined_minimum_size()
+	_callout.global_position = Vector2(clampf(at.x, 0.0, maxf(room.x, 0.0)), clampf(at.y, 0.0, maxf(room.y, 0.0)))
+	_callout.visible = true
+
+
+func hide_callout() -> void:
+	_press += 1
+	if _callout != null:
+		_callout.visible = false
+
+
+## A press starts the long-press clock; a release (or a drag away) ends it and hides the callout.
+func _gui_input(event: InputEvent) -> void:
+	if help_line == "":
+		return
+	var pressed := false
+	var released := false
+	var touch := event as InputEventScreenTouch
+	var mb := event as InputEventMouseButton
+	if touch != null:
+		pressed = touch.pressed
+		released = not touch.pressed
+	elif mb != null and mb.button_index == MOUSE_BUTTON_LEFT:
+		pressed = mb.pressed
+		released = not mb.pressed
+	if released:
+		hide_callout()
+	elif pressed:
+		hide_callout()
+		var sec := float((StatusHelpModel.load_data().get("chip", {}) as Dictionary).get("long_press_sec", 0.0))
+		get_tree().create_timer(sec).timeout.connect(_on_long_press.bind(_press))
+
+
+func _on_long_press(press: int) -> void:
+	if press == _press:
+		show_callout()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_MOUSE_EXIT:
+		hide_callout()
 
 
 func set_status(sid: StringName, is_inverted: bool = false) -> void:

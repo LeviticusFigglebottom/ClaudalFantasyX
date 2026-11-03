@@ -145,7 +145,7 @@ Anchors from the M1 sandbox: an early three-enemy fight credits 105 XP. **Propos
 | Drag Net / Quiet Tea | 80–110 | about 1½ | Tactical items cost a fight or two, so using one is a decision. Drag Net is rank 3 since M1-CMB-06: at rank 2 it out-tempoed Rhen's Undertow Cut and could hold any slower foe. Repeated delays also diminish (formulas.md § Time). |
 | Ember Pot | 220 | about 3½ | Fixed 150 fire damage at rank 2 ignores defence, so at 110 it would undercut the role-answer lesson. At 220 it is a deliberate emergency buy, and it is in no slice shop: its text points to the Pemakar kilns, so it belongs in Pemakar's shop (M1-PRG-03). |
 | Reef Draught, Tidewash Salve | 120–150 | 2–2½ | Post-boss stock for the next chapter. |
-| Relighting Wick | 300 | 5 | Revives are precious, but one is affordable before the first real boss of Act I. |
+| Relighting Wick | 240 | 4 | Revives are precious, but one is affordable before the first real boss of Act I. M3-CMB-03 (the human's playtest, 2026-11-03): was 300 and sold only after the Drownbell; now on Haluna Market's shelf from the first visit, and the Hullgnaw (Ch1) and Spar-Wraith (Ch4) each drop one (Gull Harrier 4%). |
 | Tier-1 weapon / armor (2 slots, one ability pre-filled) | 380 / 340 | about 6 | A player finishing the slice (about 6–8 fights plus the boss, about 700 lume) can afford **one or two** upgrades, not all of them. The choice is the point. |
 | Tier-2 weapon (3 slots, empty) | 620 | about 10 (at slice income) | Post-Drownbell stock, priced for Ch4 income. Each tier costs about 1.6× the last. |
 | 4-slot piece | 1200 | about 20 | The first 4-slot piece (Toma's Reach Tide-Shield) is a goal, not a purchase. |
@@ -157,7 +157,7 @@ Customize costs follow the same idea: an element edge costs 4 of its element mat
 
 ## The vertical slice (Ch2–3, Haluna)
 
-**Haluna Market** (`haluna_market`, opens on `ch02_met_asha`): Salt Tonic, Bitterleaf, Brine Eyewash, Smelling Salts, Quiet Tea, Drag Net, and the Power, Mind and Speed Facets. After `ch03_drownbell_defeated` (the night barks variant), it adds Reef Draught, Throat Honey, Tidewash Salve, and Relighting Wick.
+**Haluna Market** (`haluna_market`, opens on `ch02_met_asha`): Salt Tonic, Bitterleaf, Brine Eyewash, Smelling Salts, Quiet Tea, Drag Net, the Power, Mind and Speed Facets, and Relighting Wick (from the first visit since M3-CMB-03). After `ch03_drownbell_defeated` (the night barks variant), it adds Reef Draught, Throat Honey and Tidewash Salve.
 
 **The Net-Rack Forge** (`haluna_forge`, opens on `ch02_met_asha`, the slice's "equipment shop"): Coral-Bitten Hooks (Ember Edge), Reefline Harness (Bitterward), Bell-Shell Staff (Clear Mind), Tide-Pearl Bangle (Wakeward), Net-Rack Spear (Steady Arm), and Chiselled Shield (Ember Guard). After the Drownbell: Tidewalker Hooks, Dawnwick Staff, Saltgrass Pike, and the 4-slot Reach Tide-Shield.
 

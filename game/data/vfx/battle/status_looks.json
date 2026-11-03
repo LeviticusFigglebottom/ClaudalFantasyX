@@ -1,0 +1,492 @@
+{
+  "version": 1,
+  "doc": "FAST-TRACK 11-03 (the human's playtest: statuses must be OBVIOUS on the character). BattleStatusLooks (game/vfx/battle/battle_status_looks.gd) shows each status a fighter holds: an on-body overlay (status_overlay.gdshader; one at a time, the highest priority), a looping aura (particles by motion), a prop (a shell, rings, panes, a ground mark), and its icon over the head (assets/vfx/battle/status_icons, tools/vfx/status_icons.py) for as long as it lasts. Colour-blind safe by shape: each status differs in pattern, motion or prop as well as colour, and its icon has its own glyph on a circle (beneficial) or a rounded square (harmful). Colours are palette.json swatches. docs/kb/tech/battle_status_looks.md.",
+  "icons": {
+    "dir": "res://assets/vfx/battle/status_icons",
+    "pixel_size": 0.00028,
+    "gap_px": 10,
+    "lift_m": 0.32,
+    "max_shown": 5,
+    "feet_over_height_m": 3.2,
+    "render_priority": 20,
+    "count_font_px": 64,
+    "count_outline_px": 14
+  },
+  "reduced_motion": {
+    "doc": "UiSettings.reduced_motion(): fewer aura particles, slower patterns and props.",
+    "particle_scale": 0.5,
+    "speed_scale": 0.35
+  },
+  "looks": {
+    "poison": {
+      "icon_swatch": "saltgrass",
+      "icon_color": "#B9B26A",
+      "reads_as": "A green pulse through the body; yellow-green bubbles rise off the chest. Icon: a drop.",
+      "overlay": {
+        "swatch": "palm_green",
+        "color": "#3E7A3A",
+        "pattern": "pulse",
+        "strength": 0.55,
+        "speed": 0.8,
+        "priority": 60
+      },
+      "aura": {
+        "swatch": "saltgrass",
+        "color": "#B9B26A",
+        "motion": "rise",
+        "at": "chest",
+        "amount": 10,
+        "lifetime_s": 1.4,
+        "size_m": [
+          0.05,
+          0.11
+        ],
+        "speed_m_s": 0.35,
+        "radius_m": 0.22,
+        "energy": 1.3
+      }
+    },
+    "sleep": {
+      "icon_swatch": "moon_blue",
+      "icon_color": "#9DB4D9",
+      "reads_as": "An indigo edge-glow; a few big pale motes drift slowly up from the head. Icon: a crescent.",
+      "overlay": {
+        "swatch": "indigo_dye",
+        "color": "#2B3A6B",
+        "pattern": "rim",
+        "strength": 0.75,
+        "speed": 1.0,
+        "priority": 65
+      },
+      "aura": {
+        "swatch": "moon_blue",
+        "color": "#9DB4D9",
+        "motion": "drift_up",
+        "at": "head",
+        "amount": 4,
+        "lifetime_s": 2.6,
+        "size_m": [
+          0.1,
+          0.16
+        ],
+        "speed_m_s": 0.18,
+        "radius_m": 0.15,
+        "energy": 1.3
+      }
+    },
+    "silence": {
+      "icon_swatch": "cumulus_shadow",
+      "icon_color": "#8FA7C4",
+      "reads_as": "A still grey band rings the head at the mouth (a muffle). Icon: a slashed speech bubble.",
+      "prop": {
+        "swatch": "cumulus_shadow",
+        "color": "#8FA7C4",
+        "kind": "ring",
+        "at": "hood",
+        "alpha": 0.8,
+        "radius_m": 0.32,
+        "tube_m": 0.035,
+        "spin_deg_s": 0.0
+      }
+    },
+    "darkness": {
+      "icon_swatch": "ui_text_dim",
+      "icon_color": "#A9B8CC",
+      "reads_as": "A dark veil sinks down the body; dark motes fall around the head. Icon: a slashed eye.",
+      "overlay": {
+        "swatch": "storm_slate",
+        "color": "#3E4A57",
+        "pattern": "bands_down",
+        "strength": 0.7,
+        "speed": 0.35,
+        "priority": 70
+      },
+      "aura": {
+        "swatch": "tattoo_ink",
+        "color": "#24323A",
+        "motion": "fall",
+        "at": "head",
+        "amount": 12,
+        "lifetime_s": 1.3,
+        "size_m": [
+          0.06,
+          0.12
+        ],
+        "speed_m_s": 0.25,
+        "radius_m": 0.3,
+        "energy": 1.0
+      }
+    },
+    "petrify": {
+      "icon_swatch": "coral_stone_weathered",
+      "icon_color": "#B9AE98",
+      "reads_as": "Matte stone (the stage's stone material); grit trickles at the feet. Icon: a cairn.",
+      "aura": {
+        "swatch": "coral_stone_weathered",
+        "color": "#B9AE98",
+        "motion": "fall",
+        "at": "chest",
+        "amount": 8,
+        "lifetime_s": 1.1,
+        "size_m": [
+          0.03,
+          0.06
+        ],
+        "speed_m_s": 0.2,
+        "radius_m": 0.25,
+        "energy": 1.0
+      }
+    },
+    "slow": {
+      "icon_swatch": "sky_horizon_noon",
+      "icon_color": "#A9DCF2",
+      "reads_as": "Slow blue bands sink down the body; heavy motes sag at the feet. Icon: an hourglass.",
+      "overlay": {
+        "swatch": "reef_blue",
+        "color": "#1569A0",
+        "pattern": "bands_down",
+        "strength": 0.5,
+        "speed": 0.25,
+        "priority": 44
+      },
+      "aura": {
+        "swatch": "sky_horizon_noon",
+        "color": "#A9DCF2",
+        "motion": "sag",
+        "at": "feet",
+        "amount": 6,
+        "lifetime_s": 2.2,
+        "size_m": [
+          0.08,
+          0.12
+        ],
+        "speed_m_s": 0.08,
+        "radius_m": 0.35,
+        "energy": 1.3
+      }
+    },
+    "haste": {
+      "icon_swatch": "sun_gold",
+      "icon_color": "#FFD27A",
+      "reads_as": "Gold bands race up the body; quick gold streaks rise. Icon: double chevrons.",
+      "overlay": {
+        "swatch": "sun_gold",
+        "color": "#FFD27A",
+        "pattern": "bands_up",
+        "strength": 0.5,
+        "speed": 2.2,
+        "priority": 45
+      },
+      "aura": {
+        "swatch": "dusk_gold",
+        "color": "#F2A64A",
+        "motion": "rise_fast",
+        "at": "feet",
+        "amount": 14,
+        "lifetime_s": 0.6,
+        "size_m": [
+          0.03,
+          0.06
+        ],
+        "speed_m_s": 2.4,
+        "radius_m": 0.3,
+        "energy": 1.3
+      }
+    },
+    "stop": {
+      "icon_swatch": "starlight",
+      "icon_color": "#DCE6FF",
+      "reads_as": "A still pale glaze, no motion at all; sparkles hang frozen around the body. Icon: two bars.",
+      "overlay": {
+        "swatch": "starlight",
+        "color": "#DCE6FF",
+        "pattern": "frost",
+        "strength": 0.55,
+        "speed": 0.0,
+        "priority": 100
+      },
+      "aura": {
+        "swatch": "salt_glass",
+        "color": "#BFE6E0",
+        "motion": "hang",
+        "at": "chest",
+        "amount": 10,
+        "lifetime_s": 3.0,
+        "size_m": [
+          0.04,
+          0.07
+        ],
+        "speed_m_s": 0.0,
+        "radius_m": 0.45,
+        "energy": 1.3
+      }
+    },
+    "berserk": {
+      "icon_swatch": "ember_orange",
+      "icon_color": "#E0702E",
+      "reads_as": "A fast red pulse; embers burst up off the shoulders. Icon: a jagged burst.",
+      "overlay": {
+        "swatch": "lacquer_red",
+        "color": "#B3261E",
+        "pattern": "pulse",
+        "strength": 0.6,
+        "speed": 2.6,
+        "priority": 80
+      },
+      "aura": {
+        "swatch": "ember_orange",
+        "color": "#E0702E",
+        "motion": "burst",
+        "at": "hood",
+        "amount": 12,
+        "lifetime_s": 0.7,
+        "size_m": [
+          0.04,
+          0.08
+        ],
+        "speed_m_s": 1.2,
+        "radius_m": 0.25,
+        "energy": 1.3
+      }
+    },
+    "confuse": {
+      "icon_swatch": "gold_leaf_hi",
+      "icon_color": "#F1D27A",
+      "reads_as": "The body flickers gold in patches; gold motes circle over the head. Icon: a spiral.",
+      "overlay": {
+        "swatch": "gold_leaf",
+        "color": "#D4A437",
+        "pattern": "flicker",
+        "strength": 0.4,
+        "speed": 1.0,
+        "priority": 50
+      },
+      "aura": {
+        "swatch": "gold_leaf_hi",
+        "color": "#F1D27A",
+        "motion": "orbit",
+        "at": "head",
+        "amount": 6,
+        "lifetime_s": 1.6,
+        "size_m": [
+          0.06,
+          0.1
+        ],
+        "speed_m_s": 1.0,
+        "radius_m": 0.32,
+        "energy": 1.3
+      }
+    },
+    "doom": {
+      "icon_swatch": "bone",
+      "icon_color": "#E6DAC0",
+      "reads_as": "A dark tide climbs the body from the feet; the count shows by the icon. Icon: a bell.",
+      "overlay": {
+        "swatch": "deep_teal_shadow",
+        "color": "#0E4A55",
+        "pattern": "bands_up",
+        "strength": 0.75,
+        "speed": 0.3,
+        "priority": 90
+      },
+      "count": true
+    },
+    "zombie": {
+      "icon_swatch": "bronze_patina",
+      "icon_color": "#5F8A78",
+      "reads_as": "Patina-green hatching over the body; dark drops fall from it. Icon: a cracked heart.",
+      "overlay": {
+        "swatch": "bronze_patina",
+        "color": "#5F8A78",
+        "pattern": "hatch",
+        "strength": 0.55,
+        "speed": 1.0,
+        "priority": 55
+      },
+      "aura": {
+        "swatch": "foliage_shadow",
+        "color": "#1E4A3A",
+        "motion": "fall",
+        "at": "chest",
+        "amount": 8,
+        "lifetime_s": 1.2,
+        "size_m": [
+          0.05,
+          0.09
+        ],
+        "speed_m_s": 0.3,
+        "radius_m": 0.25,
+        "energy": 1.0
+      }
+    },
+    "shell": {
+      "icon_swatch": "ui_mp",
+      "icon_color": "#6FA8F0",
+      "reads_as": "A clear blue bubble around the whole body, brightest at its edge. Icon: three rings.",
+      "prop": {
+        "swatch": "moon_blue",
+        "color": "#9DB4D9",
+        "kind": "sphere",
+        "at": "chest",
+        "alpha": 0.5,
+        "radius_scale": 1.15
+      }
+    },
+    "protect": {
+      "icon_swatch": "gold_leaf",
+      "icon_color": "#D4A437",
+      "reads_as": "Three thin gold rings circle the body at knee, waist and chest. Icon: a shield.",
+      "prop": {
+        "swatch": "gold_leaf",
+        "color": "#D4A437",
+        "kind": "rings",
+        "at": "chest",
+        "alpha": 0.85,
+        "radius_m": 0.5,
+        "tube_m": 0.02,
+        "spin_deg_s": 40.0
+      }
+    },
+    "reflect": {
+      "icon_swatch": "salt_glass",
+      "icon_color": "#BFE6E0",
+      "reads_as": "Three salt-glass panes circle the body, catching the light. Icon: a mirror and a rebound.",
+      "prop": {
+        "swatch": "salt_glass",
+        "color": "#BFE6E0",
+        "kind": "panes",
+        "at": "chest",
+        "alpha": 0.6,
+        "radius_m": 0.62,
+        "pane_m": [
+          0.28,
+          0.42
+        ],
+        "spin_deg_s": 55.0
+      }
+    },
+    "regen": {
+      "icon_swatch": "ui_hp",
+      "icon_color": "#7FD38A",
+      "reads_as": "A slow turquoise breath through the body; small motes rise from the feet. Icon: a plus.",
+      "overlay": {
+        "swatch": "turquoise_shallow",
+        "color": "#3FD0C9",
+        "pattern": "pulse",
+        "strength": 0.35,
+        "speed": 0.5,
+        "priority": 30
+      },
+      "aura": {
+        "swatch": "turquoise_shallow",
+        "color": "#3FD0C9",
+        "motion": "drift_up",
+        "at": "feet",
+        "amount": 6,
+        "lifetime_s": 1.8,
+        "size_m": [
+          0.04,
+          0.07
+        ],
+        "speed_m_s": 0.5,
+        "radius_m": 0.3,
+        "energy": 1.3
+      }
+    },
+    "armor_break": {
+      "icon_swatch": "brass",
+      "icon_color": "#B08D57",
+      "reads_as": "Brass shards fall off the chest. Icon: a cracked shield with a down arrow.",
+      "aura": {
+        "swatch": "brass",
+        "color": "#B08D57",
+        "motion": "shards",
+        "at": "chest",
+        "amount": 8,
+        "lifetime_s": 1.0,
+        "size_m": [
+          0.04,
+          0.07
+        ],
+        "speed_m_s": 0.5,
+        "radius_m": 0.2,
+        "energy": 1.3
+      }
+    },
+    "mental_break": {
+      "icon_swatch": "glimmer_held",
+      "icon_color": "#7FC6D9",
+      "reads_as": "Cyan shards fall off the head. Icon: cracked rings with a down arrow.",
+      "aura": {
+        "swatch": "glimmer_held",
+        "color": "#7FC6D9",
+        "motion": "shards",
+        "at": "head",
+        "amount": 8,
+        "lifetime_s": 1.0,
+        "size_m": [
+          0.04,
+          0.07
+        ],
+        "speed_m_s": 0.5,
+        "radius_m": 0.18,
+        "energy": 1.3
+      }
+    },
+    "power_break": {
+      "icon_swatch": "roof_clay",
+      "icon_color": "#B5523A",
+      "reads_as": "Clay-red shards fall from the arms. Icon: a cracked blade with a down arrow.",
+      "aura": {
+        "swatch": "roof_clay",
+        "color": "#B5523A",
+        "motion": "shards_wide",
+        "at": "chest",
+        "amount": 8,
+        "lifetime_s": 1.0,
+        "size_m": [
+          0.04,
+          0.07
+        ],
+        "speed_m_s": 0.5,
+        "radius_m": 0.42,
+        "energy": 1.3
+      }
+    },
+    "magic_break": {
+      "icon_swatch": "sky_zenith_noon",
+      "icon_color": "#2E7FD6",
+      "reads_as": "Blue shards fall from just over the head. Icon: a cracked star with a down arrow.",
+      "aura": {
+        "swatch": "sky_zenith_noon",
+        "color": "#2E7FD6",
+        "motion": "shards",
+        "at": "crest",
+        "amount": 8,
+        "lifetime_s": 1.0,
+        "size_m": [
+          0.04,
+          0.07
+        ],
+        "speed_m_s": 0.5,
+        "radius_m": 0.2,
+        "energy": 1.3
+      }
+    },
+    "provoke": {
+      "icon_swatch": "ui_danger",
+      "icon_color": "#E85A44",
+      "reads_as": "A red mark turns on the ground under the fighter. Icon: a crosshair.",
+      "prop": {
+        "swatch": "lacquer_red",
+        "color": "#B3261E",
+        "kind": "ground_mark",
+        "at": "ground",
+        "alpha": 0.85,
+        "radius_m": 0.55,
+        "tube_m": 0.03,
+        "spin_deg_s": -60.0
+      }
+    }
+  }
+}

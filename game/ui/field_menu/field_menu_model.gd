@@ -31,6 +31,9 @@ const ROW_CODEX := &"codex"
 const ROW_SWELL := &"swell"
 const ROW_MAP := &"map"
 const ROW_KITE := &"kite"
+## M3-UI-1251 (the human's playtest FAST-TRACK 5): after Items, Magic (MagicMenu), only once combat-systems' field cast
+## rules exist (FieldMagicRules.live): no row for a page that could cast nothing.
+const ROW_MAGIC := &"magic"
 const ROW_SETTINGS := &"settings"
 const ROW_QUIT := &"quit"
 const ROW_CLOSE := &"close"
@@ -61,6 +64,7 @@ const ROOT_LABEL_KEYS := {
 	ROW_SWELL: "FIELD_MENU_SWELL",
 	ROW_MAP: "FIELD_MENU_MAP",
 	ROW_KITE: "FIELD_MENU_KITE",
+	ROW_MAGIC: "FIELD_MENU_MAGIC",
 	ROW_SETTINGS: "FIELD_MENU_SETTINGS",
 	ROW_QUIT: "FIELD_MENU_QUIT",
 	ROW_CLOSE: "FIELD_MENU_CLOSE",
@@ -76,6 +80,7 @@ const ROOT_DESC_KEYS := {
 	ROW_SWELL: "FIELD_MENU_SWELL_DESC",
 	ROW_MAP: "FIELD_MENU_MAP_DESC",
 	ROW_KITE: "FIELD_MENU_KITE_DESC",
+	ROW_MAGIC: "FIELD_MENU_MAGIC_DESC",
 	ROW_SETTINGS: "FIELD_MENU_SETTINGS_DESC",
 	ROW_QUIT: "FIELD_MENU_QUIT_DESC",
 	ROW_CLOSE: "FIELD_MENU_CLOSE_DESC",
@@ -117,6 +122,8 @@ var live_map := false
 var codex: CodexModel
 ## The Kite's world map the Kite row opens (null: no row; from_game sets the game's).
 var kite: KiteMapModel
+## True when the field cast rules exist, so the root lists Magic (from_game asks FieldMagicRules.live).
+var has_magic := false
 ## M2-MNU-300: the save system the root's Last saved block reads (null: the block is hidden). from_game
 ## sets the SaveSystem autoload. There is no save row: saving stays at shrines and chapter autosaves.
 var save_system: Node
@@ -135,6 +142,7 @@ static func from_game() -> FieldMenuModel:
 	var m := FieldMenuModel.new(Game.state, field_heroes(), name_keys_from(BattleDB.load_default().characters))
 	m.live_map = true
 	m.kite = KiteMapModel.from_game()
+	m.has_magic = FieldMagicRules.live() != null
 	m.save_system = (Engine.get_main_loop() as SceneTree).root.get_node_or_null(^"SaveSystem")
 	m.time_bias_min = int(Time.get_time_zone_from_system().get("bias", 0))
 	return m
@@ -180,6 +188,8 @@ func has_map() -> bool:
 ## every other row keeps its place there).
 func root_ids() -> Array[StringName]:
 	var out: Array[StringName] = ROOT_IDS.duplicate()
+	if has_magic:
+		out.insert(out.find(ROW_ITEMS) + 1, ROW_MAGIC)
 	if has_kite():
 		out.insert(out.find(ROW_MAP) + 1, ROW_KITE)
 	return out
@@ -195,7 +205,7 @@ func root_enabled(id: StringName) -> bool:
 		return has_map()
 	if id == ROW_SWELL:
 		return not swell_heroes().is_empty()
-	if PARTY_ROWS.has(id):
+	if PARTY_ROWS.has(id) or id == ROW_MAGIC:
 		return not heroes.is_empty()
 	return true
 

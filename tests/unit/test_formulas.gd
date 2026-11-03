@@ -103,6 +103,19 @@ func test_revive_hp() -> void:
 	assert_eq(Formulas.revive_hp(3, 25), 1, "never below 1")
 
 
+func test_field_heal_amount_is_the_mean_roll() -> void:
+	assert_eq(Formulas.FIELD_VARIANCE_PCT, 100)
+	assert_eq(Formulas.field_heal_amount(10, 18, 5, false), 230, "Mend by a base Asha: 10 x 23")
+	assert_eq(Formulas.field_heal_amount(10, 18, 5, false), Formulas.heal_amount(10, 18, 5, 100, false))
+	assert_eq(Formulas.field_heal_amount(6, 20, 10, false), 180)
+
+
+func test_victory_rise_hp() -> void:
+	assert_eq(Formulas.victory_rise_hp(0), Formulas.VICTORY_RISE_HP, "the KO'd get up")
+	assert_eq(Formulas.victory_rise_hp(0), 1)
+	assert_eq(Formulas.victory_rise_hp(37), 37, "the standing keep their HP")
+
+
 func test_item_damage_is_fixed() -> void:
 	assert_eq(Formulas.item_damage(150, &"normal"), 150)
 	assert_eq(Formulas.item_damage(150, &"weak"), 225)

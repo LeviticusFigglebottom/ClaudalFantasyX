@@ -32,14 +32,13 @@
       "undertow_heart_letting": "res://assets/environments/arenas/undertow_heart_letting/undertow_heart_letting.tscn",
       "lacquer_court_steps": "res://assets/environments/arenas/lacquer_court_steps/lacquer_court_steps.tscn",
       "pale_rim_shallows": "res://assets/environments/arenas/pale_rim_shallows/pale_rim_shallows.tscn",
-      "oruvel_raft_storm": "res://assets/environments/arenas/oruvel_raft_morning/oruvel_raft_morning.tscn",
+      "oruvel_raft_storm": "res://assets/environments/arenas/oruvel_raft_storm/oruvel_raft_storm.tscn",
       "drowned_choir_storm": "res://assets/environments/arenas/drowned_choir_ring/drowned_choir_ring.tscn"
     },
     "storm": {
       "doc": "M3-C01-1252 (the human's playtest FAST-TRACK, 11-03: the storm's fights used the normal backdrop and uplifting music). An encounters.json row with `storm: true` is fought while the Undertow is up (Ch1 C1-13/C1-14, Ch8 B10-B16, Ch16 B09). Its arena must be one of `arenas`: a scene that shows the storm sky, the rain and the vortex (an `Undertow` UndertowStorm node), and its battle cue must be one of music.json battle.storm_cues (tests/unit/test_storm_encounters.gd). `pending` lists storm arena ids whose own scene is not built yet: their `scenes` row points at the base arena (`interim`) until the request (`task`) lands, then the row points at assets/environments/arenas/<id>/<id>.tscn and the id moves to `arenas`. Ch8's headland fights (ch08_headland_*) are not storm fights: the path's table stops once the party enters Coilspire (B05), before the storm (B07), and the run back (B08) is a cutscene to the wall-gate.",
-      "arenas": ["seawall_stairhead_storm", "seawall_stairhead_hoist", "seawall_stairhead_surge", "wall_head_storm"],
+      "arenas": ["seawall_stairhead_storm", "seawall_stairhead_hoist", "seawall_stairhead_surge", "wall_head_storm", "oruvel_raft_storm"],
       "pending": {
-        "oruvel_raft_storm": {"interim": "oruvel_raft_morning", "task": "M3-ENV-1253", "undertow_preset": "ch01_arrival", "_note": "Ch1 C1-13 (the Scuttlers) and C1-14 (Hullgnaw): the raft-town in the storm (M3-ENV-07B's broken-raft pieces and lut_ch01_storm), the wall over the town under a still-blue sky (act1_ch01.md §9 Art 2: Ch1's storm keeps a blue sky above the wall), rain and spray"},
         "drowned_choir_storm": {"interim": "drowned_choir_ring", "task": "M3-ENV-1253", "undertow_preset": "ch08_landfall", "_note": "Ch16 B09 (ch16_storm_wakes): the Choir's ring with the storm waking early over the singers: the moon gone, rain, the wall rising"}
       }
     },

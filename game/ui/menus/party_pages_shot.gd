@@ -7,6 +7,8 @@ extends Control
 ##   - &"items_use": a Salt Tonic's hero picker, Rhen wounded, Asha fallen, Toma low on MP and
 ##     poisoned, the cursor on Rhen with "Rhen: HP a → b" under it;
 ##   - &"items_key": the Key Items view (M3-MNU-03), the cursor on the second key item;
+##   - &"magic" (M3-UI-1251): the Magic page, Asha casting Mend, the hero picker on wounded Rhen with "Asha: MP a → b ·
+##     Rhen: HP a → b" under it (the live FieldSpell rules; before they are merged it shows the casters only);
 ##   - &"status": Rhen with Coral-Bitten Hooks (two abilities) and a Reefline Harness, five Lattice
 ##     nodes woken, a part-filled Swell gauge on Wake and a carried Poison.
 
@@ -32,6 +34,8 @@ const VITALS := {
 	"asha": {"hp": 0},
 	"toma": {"hp": 388, "mp": 4, "statuses": ["poison"]},
 }
+## The Magic shot: Rhen wounded and Toma poisoned, Asha standing with her MP.
+const MAGIC_VITALS := {"rhen": {"hp": 151}, "toma": {"hp": 388, "mp": 4, "statuses": ["poison"]}}
 const STATUS_VITALS := {"rhen": {"hp": 377, "mp": 15, "swell": 46, "swell_mode": "wake", "statuses": ["poison"]}}
 const SAVED_SWELL := {"unlocked": ["ballast", "wake", "tether"]}
 const WEAPON := &"rhen_coral_hooks"
@@ -43,7 +47,7 @@ const ARMOR_ABILITIES: Array[StringName] = [&"hard_carapace", &"deep_lungs"]
 const WOKEN := 5
 const MOVEMENT := 3
 
-## Which page to stage: &"items", &"items_use", &"items_key" or &"status".
+## Which page to stage: &"items", &"items_use", &"items_key", &"magic" or &"status".
 @export var view: StringName = &"items"
 
 var page: FieldSubmenu
@@ -59,7 +63,8 @@ func _ready() -> void:
 	state.party_ids = HEROES.duplicate()
 	state.swell = SAVED_SWELL.duplicate(true)
 	state.inventory = BAG.duplicate(true)
-	state.party_vitals = (STATUS_VITALS if view == &"status" else VITALS).duplicate(true)
+	var vitals: Dictionary = STATUS_VITALS if view == &"status" else (MAGIC_VITALS if view == &"magic" else VITALS)
+	state.party_vitals = vitals.duplicate(true)
 	var sheet := PartySheet.new(state, HEROES)
 	if view == &"status":
 		_dress_rhen(sheet)
@@ -67,6 +72,15 @@ func _ready() -> void:
 		status.pause_tree = false
 		add_child(status)
 		page = status
+		return
+	if view == &"magic":
+		var magic := MagicMenu.create(sheet)
+		magic.pause_tree = false
+		add_child(magic)
+		page = magic
+		magic.handle_input(_ev(&"ui_down"))  # Asha
+		magic.accept()  # her spells, Mend first
+		magic.accept()  # the hero picker, Rhen first
 		return
 	var items := ItemsMenu.create(sheet)
 	items.pause_tree = false

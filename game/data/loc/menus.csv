@@ -96,3 +96,71 @@ HUD_HELP_ECHO_FMT,echoes {skill}
 HUD_HELP_ECHO_NONE,Nothing to echo yet: no foe has acted
 HUD_HELP_CURES_FMT,cures {statuses}
 HUD_HELP_LIST_SEP,", "
+STATUS_HELP_TITLE,Statuses
+STATUS_HELP_HINT,Up and Down: status · Confirm or Cancel: close
+STATUS_HELP_OPEN_HINT_FMT,{key}: what statuses do
+STATUS_HELP_KIND_BUFF,A blessing
+STATUS_HELP_KIND_AILMENT,An affliction
+STATUS_HELP_ON_FMT,On {name} now
+STATUS_HELP_LASTS_TURNS_FMT,"Lasts about {turns} of their turns, then wears off."
+STATUS_HELP_LASTS_CURED,Lasts until it is cured.
+STATUS_HELP_ENDS_WITH_BATTLE,Ends when the battle ends.
+STATUS_HELP_CARRIED,Stays after the battle until it is cured.
+STATUS_HELP_ITEMS_FMT,Cured by: {items}.
+STATUS_HELP_ABILITIES_FMT,Lifted by: {abilities}.
+STATUS_HELP_IN_BATTLE_FMT,{item} (in battle)
+STATUS_HELP_BY_FMT,{skill} ({by})
+STATUS_HELP_JOIN,", "
+STATUS_HELP_SHRINE,Resting at a save shrine cures it.
+STATUS_HELP_NO_CURE,Nothing lifts it but the battle's end.
+STATUS_HELP_ONE_LINE_FMT,{name}: {desc}
+STATUS_HELP_NOTE_SLEEP,Any blow wakes them.
+STATUS_HELP_NOTE_CONFUSE,A physical blow brings them back to themselves.
+STATUS_HELP_NOTE_DOOM,"Nothing turns it back. Win before the count runs out, or raise them once they fall."
+STATUS_HELP_NOTE_ZOMBIE,"While it holds, do not heal them: healing hurts them, and a revival fells them."
+STATUS_HELP_NOTE_PETRIFY,"While turned, they cannot act or be struck. If the whole party is stone, the battle is lost."
+STATUS_HELP_NOTE_PROVOKE,It ends at once if the one who provoked them falls or leaves the field.
+STATUS_HELP_NOTE_BERSERK,Nothing you command reaches them while it holds.
+STATUS_TIP_TITLE_FMT,{name} has taken hold of {hero}
+STATUS_TIP_BUFF_TITLE_FMT,{hero} is under {name}
+STATUS_TIP_HINT_FMT,Confirm: continue · {key}: every status
+HUD_READ_HINTS_FMT,{close} · {help}
+STATUS_MENU_HELP_FMT,Up and Down or Left and Right: hero · {key}: what statuses do · Cancel: back
+CTRL_ACT_STATUS_HELP,What statuses do
+HUD_HELP_NEXT_SINGLE_FMT,{name} acts again after one turn
+HUD_HELP_RANK_WAIT_FMT,{rank}: {next}
+FIELD_MENU_MAGIC,Magic
+FIELD_MENU_MAGIC_DESC,Cast healing and mending on the party between battles.
+MAGIC_MENU_CASTERS,Caster
+MAGIC_MENU_SPELLS_FMT,{name}'s spells
+MAGIC_MENU_COUNT_FMT,{count} spells
+MAGIC_MENU_COST_FMT,{mp} MP
+MAGIC_MENU_COST_LINE_FMT,{mp} MP · {reach}
+MAGIC_MENU_REACH_ONE,One ally
+MAGIC_MENU_REACH_ALL,The whole party
+MAGIC_MENU_CASTER_HINT,Confirm: choose a spell
+MAGIC_MENU_CAST_HINT,Confirm: choose who it reaches
+MAGIC_MENU_NO_SPELLS_FMT,{name} knows no spell to cast outside battle.
+MAGIC_MENU_PICK_TITLE_FMT,{spell} from {caster}: on whom?
+MAGIC_MENU_PICK_ALL_TITLE_FMT,{spell} from {caster}: the whole party
+MAGIC_MENU_CAST_FMT,{caster} cast {spell}. {effects}
+MAGIC_MENU_SPENT_FMT," · "
+MAGIC_MENU_REVIVED,raised
+MAGIC_MENU_HELP_CASTER,Up and Down: caster · Confirm: spells · Cancel: back
+MAGIC_MENU_HELP_SPELL,Up and Down: spell · Confirm: choose · Cancel: caster
+MAGIC_MENU_HELP_PICK,Up and Down: hero · Confirm: cast · Cancel: spell
+MAGIC_MENU_ERR_NO_MP_FMT,{caster} needs {mp} MP for {spell}.
+MAGIC_MENU_ERR_SILENCED_FMT,{caster} is silenced and cannot cast.
+MAGIC_MENU_ERR_CASTER_FALLEN_FMT,{caster} has fallen and cannot cast.
+MAGIC_MENU_ERR_FALLEN_FMT,{name} has fallen. {spell} cannot reach them.
+MAGIC_MENU_ERR_NOT_FALLEN_FMT,{name} is still standing. {spell} raises only the fallen.
+MAGIC_MENU_ERR_FULL_HP_FMT,{name}'s HP is already full.
+MAGIC_MENU_ERR_NOTHING_TO_CURE_FMT,{name} has nothing {spell} would lift.
+MAGIC_MENU_ERR_NO_EFFECT_FMT,{spell} would do nothing for {name}.
+MAGIC_MENU_ERR_NO_ONE_FMT,{spell} would help no one now.
+MAGIC_MENU_ERR_GENERIC_FMT,{spell} cannot be cast now.
+MAGIC_MENU_COUNT_ONE,1 spell
+MAGIC_MENU_COUNT_NONE,None
+STATUS_HELP_LASTS_DOOM_FMT,"Counts down from {turns}, one for each of their turns. It does not wear off."
+MAGIC_MENU_ERR_PETRIFIED_FMT,{name} is stone. {spell} cannot reach them.
+MAGIC_MENU_ERR_WOULD_HURT_FMT,"{name} is Hollowed: {spell} would hurt them, not heal them."

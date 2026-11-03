@@ -14,7 +14,7 @@ Outputs (8-bit PNG; all tile seamlessly; the Haluna kit's channel layout):
 
 | Texture         | Size      | Covers (m) | Notes                                                                  |
 |-----------------|-----------|------------|------------------------------------------------------------------------|
-| laterite_blocks | 960 x 160 | 6.0 x 1.0  | the wall's coursed laterite: 2 courses of 0.5 m, big dry-laid blocks of varied length (0.6-1.65 m), thin dark joints, rounded arrises, salt bloom and run-off, vesicles, nodules |
+| laterite_blocks | 2880 x 480 | 6.0 x 1.0  | the wall's coursed laterite: 2 courses of 0.5 m, big dry-laid blocks of varied length (0.6-1.65 m), thin dark joints, rounded arrises, salt bloom and run-off, vesicles, nodules |
 | laterite        | 512 x 512 | 1.0 x 1.0  | the same stone without joints, for the carved Watchers, the rubble and the house walls |
 
 The wall pieces map `laterite_blocks` by mesh UV in metres (u along the wall, v = height), so its courses
@@ -102,7 +102,7 @@ def build_laterite_blocks(out: Path, n: int) -> list[Path]:
     block has its own tone and a slightly proud or sunken face; some carry a pale salt bloom, some a dark
     run-off stain from the course above; vesicles and nodules run through everything."""
     rng = kc.rng_for("cw_laterite_blocks_tex", SEED)
-    h, w = n // 6, n  # 6 : 1 (n = 960: 160 px per metre)
+    h, w = n // 6, n  # 6 : 1 (n = 2880: 480 px per metre)
     shape = (h, w)
     tw, th = BLOCKS_TILE_M
     u = (np.arange(w) + 0.5) / w * tw  # metres
@@ -156,7 +156,9 @@ def build_laterite(out: Path, n: int) -> list[Path]:
     return save_pair(out, "laterite", col, hgt, nx, ny, cav)
 
 
-BUILDERS = {"laterite_blocks": (build_laterite_blocks, 960), "laterite": (build_laterite, 512)}
+# laterite_blocks at 480 px a metre (the PC's pass 7 row 84; env-art-b with the Lead's 11-03 brief): at 160 the pores
+# were a few texels each and read as square blots in the Coilspire gate's close views. The pattern is the same.
+BUILDERS = {"laterite_blocks": (build_laterite_blocks, 2880), "laterite": (build_laterite, 512)}
 
 
 def main(argv: list[str] | None = None) -> int:
