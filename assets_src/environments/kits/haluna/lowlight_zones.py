@@ -58,7 +58,7 @@ SHAFT_TOP = 6.0  # the greybox's WellShaft: the shaft's mouth to the light above
 FLOOD_Y = 0.03  # the hall's water film over its flags
 POOL_SHARDS = 46  # PC row 86: the fallen bay's shards where its sunlight lands
 POOL_SPILL_M = 0.9  # they spill this far past the pool's edge, so its outline lands on the broken edge of the heap
-POOL_TOP_M = 0.14  # no shard stands taller (walked over, no collision)
+POOL_TOP_M = 0.24  # no block stands taller (stepped over, no collision)
 
 
 def layout() -> dict:
@@ -471,11 +471,11 @@ def _pool_rubble(mb, seed: int, bl: dict, floor_y: float) -> None:
             continue
         big = rng.random() < 0.25
         s = rng.uniform(0.35, 0.8) if big else rng.uniform(0.12, 0.4)
-        h = min(s * 0.3, POOL_TOP_M)
-        stone = rng.random() < 0.55  # the vault's grey core more than its white skin: the pool reads broken
-        kc.rounded_block(mb, (x, floor_y + h * 0.45, z), (s, h * 0.5, s * rng.uniform(0.5, 0.9)),
+        stone = rng.random() < 0.7  # the vault's grey core more than its white skin: the pool reads broken
+        h = min(s * (0.75 if stone else 0.3), POOL_TOP_M * 1.4)  # core blocks chunky, skin shards thin
+        kc.rounded_block(mb, (x, floor_y + h * 0.3, z), (s, h * 0.5, s * rng.uniform(0.5, 0.9)),
                          mb.material(ll.M_STONE if stone else ll.M_CERAMIC),
-                         rot=kc.rot_y(rng.uniform(0, 3.14)) @ kc.rot_x(rng.normal(0, 0.04)), radius=0.03, seg=1,
+                         rot=kc.rot_y(rng.uniform(0, 3.14)) @ kc.rot_x(rng.normal(0, 0.04)), radius=0.05, seg=1,
                          noise=noise, disp_m=0.03, weather=ll.STONE if stone else ll.CERAMIC,
                          variation=float(rng.random()))
         placed += 1
