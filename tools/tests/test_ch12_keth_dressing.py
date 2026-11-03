@@ -54,6 +54,29 @@ class Ch12DressingTests(unittest.TestCase):
                 self.assertLess(g, p[1] + 0.05, f"{zone} {name}: no ground over it")
                 self.assertGreater(g, p[1] - 0.3, f"{zone} {name}: ground under it")
 
+    def test_quellan_falls_to_the_valley_and_its_road_top_looks_out(self) -> None:
+        """M4-A2P-115: the road-up walls' crag stops 10 m behind them (it was a 19-21 m mesa over everything west of the
+        road: a sheer face beside the gate, the FromCloudloom spawn in a pit); the road is cut into a hillside, so from
+        its top the eye clears the ground beside it; the yards are flagged and every house stands on a footing."""
+        h = kz.zone_height("quellan", kc.Noise3(kc.rng_for("quellan_ground", 1)))
+        lay = kz.layout("quellan")
+        west = float(h(np.array([-8.0]), np.array([0.0]))[0])
+        self.assertLess(west, 0.5, "west of the gate: scree to the valley, not a wall")
+        sx, sy, sz = lay["spawns"]["FromCloudloom"][:3]
+        eye = sy + 1.6
+        for dx in (-5.0, -8.0, 5.0, 8.0):
+            g = float(h(np.array([sx + dx]), np.array([sz]))[0])
+            self.assertLess(g, eye, f"the road top's eye clears the ground {dx} m off")
+        yards = kz.build_quellan_yards()[0]
+        self.assertGreater(yards.triangle_count, 5000, "the yards are flagged")
+        houses = kz.build_quellan_houses("N", 1)[0]
+        pos = np.asarray(houses.pos)
+        house = next(b for b in lay["blocks"] if b["id"] == "House0N")
+        x0, x1, y0, _y1, z0, z1 = kz._box(house)
+        foot = pos[(pos[:, 1] < y0 + kz.FOOTING_H_M) & (pos[:, 0] < x0 - 0.05) & (pos[:, 0] > x0 - 0.3)
+                   & (pos[:, 2] > z0) & (pos[:, 2] < z1)]
+        self.assertGreater(len(foot), 0, "House0N stands on a footing proud of its west wall")
+
     def test_cloudloom_hangs_its_keth_over_the_rows_and_keeps_the_aisle(self) -> None:
         lay = gen._layout("cloudloom")
         rows = {round(b["pos"][2], 3) for b in lay["blocks"] if b["id"].startswith("Keth")}
