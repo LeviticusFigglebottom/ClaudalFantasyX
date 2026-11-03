@@ -5,7 +5,7 @@ role: ui
 status: review
 reviewer: combat
 owner_session: claude/ui (ui-menus, session_01F3vrUMk5AsY8FMR6bL35TW)
-depends_on: [M3-CMB-05]
+depends_on: []
 milestone: M3
 request-from: lead
 ---

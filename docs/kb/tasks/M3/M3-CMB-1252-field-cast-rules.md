@@ -32,3 +32,4 @@ ui-menus writes the page, the target picker, the words and the save write-back a
   which the Magic page now binds by name (FieldMagicRules.live). Nothing more is asked here.
 
 ## Review log
+- 2026-11-03 ui (the requester): withdrawn, superseded by combat-systems' M3-CMB-05 FieldSpell; nothing to review.
