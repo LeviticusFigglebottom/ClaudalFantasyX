@@ -1133,6 +1133,16 @@ that test at this branch's zones.
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
 - Carried: M3-RND-26's drop cost, M3-RND-21's four columns under 0.3 ms at High 1440p.
+- **Act I rows to re-check on the GPU (11-03, the Lead's ask).** Each is fixed, merged into -ze8rrn and viewed on lavapipe. big38 (8b546285) predates every fix, so only the PC's next pass can close them:
+  - 62, the day weir's courses: 982d4842. Lavapipe shows little difference, so this is the one most in need of the GPU's eye.
+  - 71, the Spar-Wraith on the derelict: 3bc6e867 is the arena's half; the body is creatures-b's.
+  - 72, the Reach's light and rain: 6b8e416d; the camera is battle-presentation's.
+  - 78, the Ashcrown court's doorway and brazier: 7ddf44d4.
+  - 79, the Ashcrown preview's plume, mound and hands: 07300860, d73f0c89 and 9f8a36f1.
+  - 80, Pemakar's hillside: 6b437b0c, d250de79, 5a6e4596 and 4a82f498.
+  - 81, the Brine camp's seam: 7e7a4d38.
+  - 82, Corrow's storm, flood and lake: ca8ad639 and 9e66085b.
+  - 84, the Coilspire laterite: 211d8bd7.
 
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
