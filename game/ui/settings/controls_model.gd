@@ -214,6 +214,7 @@ static func _capture_defaults(d: Dictionary) -> void:
 	ObjectiveHud.ensure_action()  # M2-UI-17: show the objective
 	DialogueAssist.ensure_action()  # M2-UI-25: the dialogue backlog
 	LatticeMenu.ensure_action()  # M3-MNU-04: the Lattice overview
+	StatusHelpModel.ensure_action()  # the status help (playtest 11-03)
 	# M2-MNU-04: the battle pause (BattlePause adds it in battle; it must exist to be remapped)
 	var pause := FieldInput.load_json(BattlePauseMenu.DATA_PATH).get("battle_pause", {}) as Dictionary
 	FieldInput.add_actions(pause.get("action", {}) as Dictionary, 0.0)

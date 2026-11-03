@@ -59,10 +59,19 @@ func _ready() -> void:
 ## Shows `page` (EnemyPage.from_reveal). `animate` plays the 180 ms panel open (off in captures).
 func open(page: Dictionary, animate: bool = true) -> void:
 	_view.show_page(page)
+	_hint.text = tr("HUD_READ_HINTS_FMT").format(
+		{"close": tr("HUD_READ_CLOSE_HINT"), "help": tr("STATUS_HELP_OPEN_HINT_FMT").format({"key": _help_key()})}
+	)
 	visible = true
 	_panel.size = Vector2(_panel.size.x, 0.0)  # fit the page (a Control never shrinks by itself)
 	if animate:
 		_animate_open()
+
+
+## The status help key's name (status_help.json action; added if missing).
+static func _help_key() -> String:
+	StatusHelpModel.ensure_action()
+	return InputNames.first_name(StatusHelpPanel.ACTION)
 
 
 func close() -> void:

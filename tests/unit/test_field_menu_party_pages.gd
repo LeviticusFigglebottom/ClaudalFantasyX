@@ -39,6 +39,8 @@ func test_party_rows_are_off_with_nobody_in_the_party_and_say_why() -> void:
 func test_each_party_row_opens_its_page_and_cancel_hands_back() -> void:
 	_open()
 	for id: StringName in FieldMenu.CHILD_PAGES:
+		if id == FieldMenuModel.ROW_MAGIC and not menu.model.root_ids().has(id):
+			continue  # no Magic row until combat-systems' field cast rules exist (test_magic_menu covers the page)
 		_go_to(id)
 		menu.accept()
 		var page := menu.child

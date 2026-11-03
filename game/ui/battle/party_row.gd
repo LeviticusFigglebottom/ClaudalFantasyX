@@ -200,7 +200,7 @@ func _sync_statuses() -> void:
 		ch.queue_free()
 	var px := HudLayout.num(_m, "status_icon_px")
 	for sid in ids:
-		var g := StatusGlyph.new(sid, StatusGlyph.inverted_for(combatant, sid))
+		var g := StatusGlyph.with_help(sid, StatusGlyph.inverted_for(combatant, sid))  # hover or hold: its one line
 		g.custom_minimum_size = Vector2(px, px)
 		g.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		_status_strip.add_child(g)
