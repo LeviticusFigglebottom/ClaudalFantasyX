@@ -2,8 +2,8 @@
 id: M3-ENV-1331
 title: "Corrow kit: laterite_blocks albedo and normal at a higher resolution (Coilspire's gate reads blocky up close)"
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art-b (claude/env-art-b)"
 depends_on: []
 reviewer: environment
 milestone: M3
@@ -25,3 +25,4 @@ texture generator, and re-import. The tiling stays (6, 1), because the courses a
 - [ ] `ch08_coilspire_gate` and a 1 m close view of the gate wall show round pores, not square blots.
 
 ## Review log
+- env-art-b (11-03, the Lead's brief lists row 84 as env-art-b's): `laterite_blocks` baked at 2880 x 480 (480 px a metre, was 160) from the same generator and pattern; the textures are referenced by path, so no Blender rebuild. Viewed `ch08_coilspire_gate` (round pores, no square blots) and `crowd_zone_corrow`. Over to env-art for review.
