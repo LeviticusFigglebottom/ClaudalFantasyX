@@ -1,3 +1,32 @@
+## STATE 2026-11-03 19:30 UTC
+- **big47 merged** (b06e963a): all five of the human's 11-03 playtest FAST-TRACKs.
+  - The walk fix.
+  - The Hullgnaw eased.
+  - Statuses on the body, plus the help panel, first-time cards and the Codex Afflictions entries.
+  - The storm fights on storm arenas with storm music.
+  - The Relighting Wick (revive), the fallen up at 1 HP after a win, and field spells (the Magic page).
+- Lead decision on the storm overlap: the storm ARENA owns the Undertow vortex; BattleStorm adds rain, wind and lightning only; act1-chapters' storm table decides which fights are storm fights. oruvel_raft_storm is env-art's.
+- Reds routed for big48:
+  - env-art-b: the storm arena tests (cleared by its head 8b92b3c3);
+  - audio: the storm beds have loop=false;
+  - ui: StatusTipCard;
+  - battle-presentation: one Undertow per fight, and storm_fights.json aligned.
+- Still in progress: slice-polish's Ch1 storm cutscene vortex.
+
+## STATE 2026-11-03 17:30 UTC
+- **big46 merged** into -ze8rrn (151b23c3): row 56's notch fix with Asha's rebuilt library, and big45's characters reds now green. Its shots are capturing in the gate session.
+- The FAST-TRACKs pushed MERGE-READY on track branches (they go into big47):
+  - walk fix (integration-qa, M3-HER-1231);
+  - Hullgnaw balance, the revive item, 1 HP after a win and field spells (combat-systems);
+  - status on-body visuals and the storm VFX (battle-presentation, M3-BPR-450/451);
+  - status help and the FieldSpell UI (ui @ 73699ed9);
+  - storm music cues, status sounds and the revive sound (audio);
+  - storm fights wired (act1-chapters);
+  - storm arenas plus rows 82, 84 and 65 (env-art-b @ 211d8bd7);
+  - row 54 (characters);
+  - the Ch1 storm vortex cut (slice-polish, in progress).
+- **There is no `main` branch on the remote.** The repo's HEAD points at big45 on -mj8c3c, so the "fast-forward main" step has no target. Ask the human whether to create `main` or to set the default branch to -ze8rrn.
+
 ## STATE 2026-11-03 (Lead `session_018aiGwGLGkxsnMnu8VfCu1m`, back after the other account's run)
 - **Integration branch: `claude/undertow-lead-handoff-ze8rrn`**, fast-forwarded to `claude/new-session-mj8c3c` @ c972ea42 (big45). `-mj8c3c` is frozen.
 - The other Lead (`session_01Bg3iP7cPGyjbX4CyniBahc`, another account) ran big17 → big45 under ADR 0205 (fast gates: scoped checks block; shots and the full suite run after the merge). It started Act II per track (ADR 0205 §4) and Act III per track (ADR 0207).
