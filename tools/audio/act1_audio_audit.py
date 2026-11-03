@@ -82,6 +82,10 @@ BY_DESIGN = {
         "not a zone: the Ch1 dive's stage-actor model (Rhen's lantern light); nobody walks in it",
     "ui class `BattlePause` (game/ui/menus/battle_pause/battle_pause.gd) takes input and has no hook on it or a base class":
         "the pause controller (a Node); what the player sees and moves is BattlePauseMenu, which has its hook",
+    "ui class `BattleStatusTips` (game/ui/status_help/battle_status_tips.gd) takes input and has no hook on it or a base class":
+        "the battle's status-help controller (M3-UI-1250); what the player sees is StatusHelpPanel and StatusTipCard, both hooked",
+    "ui class `StatusGlyph` (game/ui/battle/status_glyph.gd) takes input and has no hook on it or a base class":
+        "a status chip whose only input is its hover tooltip and long-press callout (M3-UI-1250): silent like every tooltip",
     "ui class `DialogueAssist` (game/ui/dialogue_assist/dialogue_assist.gd) takes input and has no hook on it or a base class":
         "the dialogue assist overlay; its Backlog page is a FieldSubmenu (hooked), and its lines are VoiceAudio's",
     "ui class `DialogueBox` (game/ui/dialogue/dialogue_box.gd) takes input and has no hook on it or a base class":
