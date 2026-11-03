@@ -865,7 +865,7 @@ Skipped:
     `DocumentReader.open_in(host, DocumentReaderModel.new(DocumentReaderModel.row_of(&"<id>")))`.
   - **Shots:** the scenes document_reader_three and document_reader_one (a fixture record under
     `game/levels/_tests/document_reader/`) are viewed. They are **not in the manifest**, because test_screenshots
-    wants a baseline for every row. **LEAD-ASK:** please add both rows with their baselines.
+    wants a baseline for every row. **LEAD-ANSWERED (11-03) LEAD-ASK:** please add both rows with their baselines.
   - **Sounds:** a DocumentReader hook in ui_sfx.json on existing rows (the act1 audio audit asks every input-taking UI
     class for one). Request M4-AUD-1080 asks Audio for the found hand's own row.
   - **Next:** the Act II items still waiting on other tracks (the seven-hero formation check, Pell's Listen, the rooted
@@ -1433,7 +1433,7 @@ MERGE-READY @ 5f317889c: M4-A2P-1708, the objective coverage guard.
     - At the end `credits_seen` is set, and `next_scene` or the title opens.
     - **Tests and checks:** test_credits_roll 4/0; shot `credits_roll` (pending_baseline), viewed; a ui_sfx.json row
       (the end turns the page), audio audit clean; validate_data 0/0; taskboard ok.
-  - **LEAD-ASK:** who and what should the credits name? Today they hold facts only: the title, "Original score,
+  - **LEAD-ANSWERED (11-03) LEAD-ASK:** who and what should the credits name? Today they hold facts only: the title, "Original score,
     composed for this game.", the Godot engine (MIT), the fonts (OFL), and the MakeHuman / MPFB2 data (CC0). The
     human's own credit, the tracks' roles, and any wording about how the game was made are the human's call; nothing
     is invented. Until then a 7-minute roll is sparse.
@@ -1611,7 +1611,7 @@ Merged origin/claude/undertow-lead-handoff-ze8rrn @ e2411fb04 (clean). The human
   hero, preview, MP spent, save write-back as the Items page) over `FieldMagicRules`, which binds combat-systems'
   static `FieldCast.usable/refusal/cast` (request **M3-CMB-1252**, role combat, todo). Until that class exists the
   field menu shows no Magic row. test_magic_menu 6/0 with stand-in rules.
-  LEAD-ASK: please point combat-systems at M3-CMB-1252 (the API shape is in the task; any equivalent is fine if
+  LEAD-ANSWERED (11-03) LEAD-ASK: please point combat-systems at M3-CMB-1252 (the API shape is in the task; any equivalent is fine if
   they name it there). Once it lands I wire the names and add a shot.
 - **FAST-TRACK 5, M3-UI-1253 (revive in the field Items page): review (combat).** It already worked with the
   Relighting Wick; a new data-driven test runs every `field` item with a `revive` effect, so combat-systems' new
@@ -1641,7 +1641,7 @@ Blender source touched).
 - **Row 73:** the legend now reads "R3: Rhen acts again in 2 turns" (the longer "R3 wait:" wrapped a one-line help).
 - **Row 70 (faint party damage numbers on bright arenas):** battle-presentation's first. The numbers already draw
   ui_line_white with a 4 px night_sky outline (theme.json), so I can't see from here why the GPU stills read them
-  as a translucent grey (mid-fade stills?). LEAD-ASK: battle-presentation to take it with a GPU still; I'll change
+  as a translucent grey (mid-fade stills?). LEAD-ANSWERED (11-03) LEAD-ASK: battle-presentation to take it with a GPU still; I'll change
   the fill or outline on their word.
 - **Full battle suite:** 874 run, 3 failed. Mine: test_the_help_line_wraps (fixed above; test_battle_controller
   33/0). Not mine: test_battle_stings and test_battle_audio's fire sound read LFS audio that is a pointer in this
@@ -1668,3 +1668,20 @@ command-menu battle shots (help line).
 - **Still blocked:** M4-A2P-082 (Pell has no characters.json battle row), M4-A2P-083's answered-by line (Venn's row
   has no answered_key), row 70 (battle-presentation, GPU still).
 MERGE-READY @ 6b6ffef70: everything above, plus M4-A2P-081's new portraits.
+
+### The Lead's answers (11-03 18:45), all marked LEAD-ANSWERED above
+1. **Baselines:** the new shots are in shots.json (battle_status_help, battle_status_tip, magic_menu: pending_baseline).
+   Nothing more to do here.
+2. **Credits (1e18ff21d):** facts only, as asked. The title; "Made for This Game" (original score; original art, models,
+   textures, animation and sound effects; original code; the MPFB2 CC0 base topology); "Made with Godot Engine" and
+   Godot's MIT licence notice in full (both copyright lines, the grant, the notice and the warranty), plus FreeType's
+   credit; the fonts (EB Garamond, Source Sans 3: their copyright lines and SIL OFL 1.1). No person on the project is
+   named. A "Made by" section is in credits.json, marked optional and left out while it has no lines: the human adds
+   a name line there and it shows. Rows now wrap and take their own height (the licence paragraphs), licence text
+   is set small, and a black band keeps the hint clear of the climbing lines. test_credits_roll 8/0 (two new);
+   credits_roll rendered and viewed. For release packaging (not the roll): Godot's other third-party licences
+   (ENet, mbed TLS and the rest in its COPYRIGHT.txt) belong in a shipped licence file.
+3. **M3-CMB-1252:** noted. It is withdrawn on my side because combat-systems' own FieldSpell (M3-CMB-05) answers
+   it; the Magic page is bound to that.
+4. **Row 70:** with battle-presentation.
+MERGE-READY @ 1e18ff21d: the credits answer, on top of everything above.
