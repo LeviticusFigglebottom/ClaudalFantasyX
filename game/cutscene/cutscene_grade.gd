@@ -97,7 +97,13 @@ func restore() -> void:
 func _find(stage: Node) -> bool:
 	if _world_env != null and is_instance_valid(_world_env):
 		return true
-	var level: Node = stage.owner if stage != null and stage.owner != null else stage
+	# A scene-authored stage's owner is its level; a GreyboxZone builds its stage in code (no owner), so its level is
+	# the stage's parent (M5-A3P-1203: Oruvel's post_credits never applied).
+	var level: Node = stage
+	if stage != null and stage.owner != null:
+		level = stage.owner
+	elif stage != null and stage.get_parent() != null:
+		level = stage.get_parent()
 	if level == null:
 		return false
 	var envs := level.find_children("*", "WorldEnvironment", true, false)

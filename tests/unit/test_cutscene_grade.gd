@@ -30,6 +30,15 @@ func after_each() -> void:
 	level.free()
 
 
+func test_a_stage_built_in_code_grades_its_zone() -> void:
+	stage.owner = null  # a GreyboxZone builds its stage in code: no owner, the zone is its parent (M5-A3P-1203)
+	var g := CutsceneGrade.new()
+	assert_true(g.apply(stage, GRADE), "the zone's WorldEnvironment is found through the stage's parent")
+	assert_true(world_env.environment != base_env)
+	g.restore()
+	assert_eq(world_env.environment, base_env)
+
+
 func test_a_grade_row_swaps_the_look_and_restore_puts_it_back() -> void:
 	assert_true(CutsceneGrade.has_grade(GRADE), "the zones' grade tables are read")
 	var g := CutsceneGrade.new()
