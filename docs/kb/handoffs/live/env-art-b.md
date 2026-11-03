@@ -1324,3 +1324,25 @@ SELF-RENDERED @ baf421df: the Lacquer Court from the Barge, Steps and CourtEntry
 - **Viewed** (lavapipe): a01 (the hands modelled), a10 (smoke and a grained mound), a02, p04 (the hillside patched, less haze), p11, ch05_pemakar_harbour_day and ch05_pemakar_weir.
 - **Checks:** test_pemakar_kit and test_ashcrown_kit OK; Godot pemakar 10 and ashcrown 22 pass; validate_data OK.
 - **MERGE-READY @ 982d4842,** covering every commit above, together with 7ddf44d4 (78) and 7e7a4d38 (81), which aren't merged yet. 84 waits on M3-ENV-1331 (the laterite texture), which the leave covers only if the Lead says so.
+
+### 2026-11-03 (Lead session_018aiGwGLGkxsnMnu8VfCu1m again; integration `claude/undertow-lead-handoff-ze8rrn`, merged @ e2411fb0)
+- **FAST-TRACK, the storm fights (M3-ENV-1334): done.**
+  - **Which fights:** the human's "seagull/storm scene" is Ch1's lintel-gulls (C1-11). After it come the Rising and the two raft fights, `ch01_scuttlers` and `ch01_hullgnaw`, which stood on `oruvel_raft_morning`, a clear noon. Ch8's storm fights (the stair holds, the Reach, the headland) stood under a warm low sun with a sun disc.
+  - **New arena `oruvel_raft_storm`** (Ch1): env-art's raft table under a storm look, with the Undertow (`ch01_arrival`) over the raft-town in the battle camera's view, rain 0.35, a storm-grey sea and a soaked deck.
+    - **Request M3-C01-1335 to act1-chapters:** point both Ch1 encounters at it. Audio's storm music can key on the arena ids: `oruvel_raft_storm`, `seawall_stairhead_storm`/`_hoist`/`_surge` and `coilspire_headland_path` (all unchanged except the new one).
+  - **In place:** the three wall-head arenas (`ch08_storm`; `ch08_reach` for the surge, with the rain eased and a stronger rim so the party's turns read, which is my half of row 72), and the headland (`ch08_brewing`: overcast, the first rain, the Undertow beside the spire).
+  - **How:** `tools/act1/storm_arenas.py` holds the looks and the scene additions, which are the Undertow with its far plane, a shadowless `StormRim` from the storm's bearing, and `RainWet`. The wrappers b_seawall_storm.py and b_headland_arena.py apply them.
+    - New `ArenaRainWet` gives an arena wet copies of its own materials: the weathering shader's new `rain_wet` (default 0, so no zone changes; note in env-art.md) or a darker, glossier StandardMaterial3D.
+  - **Found on the way:** a sky darker than the storm hid the vortex, because the Undertow reads as a dark mass against a lighter sky. The skies are slate overcast, not black. The rim's specular made a hot spot on the wet walk, so it now has specular 0.
+  - **The arena contract** (test_battle_arenas, battle_arenas.md): "one sun" now counts shadow-casting directional lights only.
+- **Row 71, the derelict at night: fixed @ 3bc6e867.** A new wrapper `brine_shoals/b_derelict_arena.py` adds a moon rim off the sea and a cool fill from behind the battle camera, and lifts the ambient. The Spar-Wraith now stands against a moonlit sea, not a black one. Its own body is still near-black, which is creatures-b's half (rim or emissive). New shot `battle_arena_derelict_spar_wraith`.
+- **`ashcrown_anvil_court` re-written** from its source (d524b099). The committed scene lagged b_arenas.py by one lamp, which made test_b_arenas red.
+- **Checks run:** Godot `--filter=battle_arena` 18/0 and `--filter=storm_arenas` 2/0; tools test_b_arenas and test_arenas OK (22); gdlint and gdformat; validate_data 0/0; taskboard --check.
+- **Checks skipped:** coverage (no battle or progression code). Blender (no Blender source touched: the arenas come from Python scene writers). The full tools suite: only the arena writers changed, and their two tests ran.
+- SELF-RENDERED @ d524b099: battle_arena_oruvel_raft_storm, _seawall_stairhead_storm, _hoist, _surge, _coilspire_headland_path, _derelict_deck_night, _derelict_spar_wraith, _ashcrown_anvil_court, battle_boss_intro_reach, battle_ch08_stair_hold. All viewed, all drift on purpose except the anvil court (one lamp). I also checked the storm hints from scratch views: the seawall's `the_storm_wall` and the headland's `to_the_spire` show the vortex and its teal wounds. The headland's battle camera faces the hill, so its sky is seen only from the hints. **For battle-presentation:** the Ch8 intros could open on those hints.
+- **MERGE-READY @ d524b099** (FAST-TRACK M3-ENV-1334, row 71, the anvil court re-write).
+- **Act I rows, where each stands** (act1_gpu_qa.md is on the PC's branch, so I mark them here):
+  - 62: fixed @ 982d4842. 78: fixed @ 7ddf44d4. 79: fixed @ 07300860/d73f0c89/9f8a36f1. 80: fixed @ 6b437b0c..4a82f498. 81: fixed @ 7e7a4d38. All of these are merged, and the PC's GPU is the judge; big38 (8b546285) predates them.
+  - 71: fixed @ 3bc6e867 (the arena's half).
+  - 72: fixed @ 6b8e416d (the arena's light; the camera is battle-presentation's).
+  - 82, 84 and 65: next.
