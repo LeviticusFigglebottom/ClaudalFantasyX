@@ -91,8 +91,8 @@ func test_buying_spends_lume_and_the_lines_say_the_cost_or_the_refusal() -> void
 	assert_false(refused["ok"])
 	assert_eq(state.currency, 20, "a refused buy changes nothing")
 	assert_eq(
-		m.buy_line(&"relighting_wick", 1)["text"],
-		tr("SHOP_ERR_NOT_IN_STOCK").format({"name": tr("ITEM_RELIGHTING_WICK")})
+		m.buy_line(&"tidewash_salve", 1)["text"],
+		tr("SHOP_ERR_NOT_IN_STOCK").format({"name": tr("ITEM_TIDEWASH_SALVE")})
 	)
 
 

@@ -61,8 +61,8 @@
    "pitch_deg": -25.0,
    "yaw_deg": -135.0,
    "color": "#9FB4C8",
-   "energy": 0.6,
-   "specular": 0.3,
+   "energy": 0.8,
+   "specular": 0.15,
    "block": "Storm"
   },
   {
@@ -70,6 +70,22 @@
    "yaw_deg": 45.0,
    "color": "#8FD0D8",
    "energy": 0.55,
+   "specular": 0.0,
+   "block": "Storm"
+  },
+  {
+   "pitch_deg": -20.0,
+   "yaw_deg": 60.0,
+   "color": "#93A8BA",
+   "energy": 0.55,
+   "specular": 0.0,
+   "block": "Storm"
+  },
+  {
+   "pitch_deg": -70.0,
+   "yaw_deg": 0.0,
+   "color": "#8C9CAC",
+   "energy": 0.3,
    "specular": 0.0,
    "block": "Storm"
   }

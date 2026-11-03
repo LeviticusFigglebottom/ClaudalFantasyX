@@ -293,3 +293,6 @@ Player-facing text uses British spelling with Oxford -ize: colour, armour, defen
 
 ### Lamptongue Roots, added (Audio, 2026-10-30)
 The Hush's verses 3-8 (docs/kb/audio/lamptongue.md, the full sheet): *arre* fire/flare · *seli* sail/kite · *aun* deep/below · *thel* cord/thread · *sen* count/number · *sev* still/level · *kor* storm · *una* one/the first.
+
+### Items, added (combat-systems, 2026-11-03)
+- **Relighting Wick** (n.): the revive consumable (`relighting_wick`). A taper lit from a living lamp and held to a friend's guttering one until it catches again; in-world it is what lamp-divers carry sealed in wax for the one who goes too deep. It brings back a KO'd ally (HP 0) with a quarter of their HP, in battle or from the field menu. Never call it by any other series' revive name (`tools/banned_terms.txt`).

@@ -2,8 +2,8 @@
 id: M3-ENV-1333
 title: "env_weathering: a world-space macro variation, so a far slope isn't one flat tone (PC pass 7 row 80, Pemakar's hillside)"
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art-b (claude/env-art-b)"
 depends_on: []
 reviewer: environment
 milestone: M3
@@ -30,3 +30,4 @@ normal, fading in with distance so near views keep the fine tile. Then turn it o
       while the near slope by the stairs keeps its fine grain.
 
 ## Review log
+- env-art-b (10-31, with the Lead's leave): the macro layer is in 6b437b0c, turned on in `kit_volcanic_far` in d250de79 and 5a6e4596; see env-art.md. Over to env-art for review.

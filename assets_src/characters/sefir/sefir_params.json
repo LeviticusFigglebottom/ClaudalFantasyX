@@ -64,7 +64,7 @@
     ],
     "back_groups": 6,
     "front_groups": 2,
-    "cards_per_group": [26, 26],
+    "cards_per_group": [26, 34],
     "chain_bones": 5,
     "stiffness": 0.85,
     "wind_response": 0.1,

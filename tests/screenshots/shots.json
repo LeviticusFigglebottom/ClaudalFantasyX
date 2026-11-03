@@ -3182,6 +3182,25 @@
       }
     },
     {
+      "id": "battle_arena_derelict_spar_wraith",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_derelict_spar_wraith.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
       "id": "battle_arena_ash_terrace_lanternfall",
       "scene": "res://game/levels/_tests/battle_arenas/preview_ash_terrace_lanternfall.tscn",
       "camera": "BattleCamera",
@@ -3203,6 +3222,25 @@
     {
       "id": "battle_arena_oruvel_raft_morning",
       "scene": "res://game/levels/_tests/battle_arenas/preview_oruvel_raft_morning.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_oruvel_raft_storm",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_oruvel_raft_storm.tscn",
       "camera": "BattleCamera",
       "resolution": [
         960,
@@ -10581,6 +10619,37 @@
         540
       ],
       "settle_frames": 240
+    },
+    {
+      "id": "field_hero_walk_release",
+      "scene": "res://game/levels/_tests/hero_motion/field_hero_walk_release.tscn",
+      "camera": "ShotCamera",
+      "pending_baseline": true,
+      "settle_frames": 30,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    {
+      "id": "battle_arena_oruvel_raft_storm",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/battle_arenas/preview_oruvel_raft_storm.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }

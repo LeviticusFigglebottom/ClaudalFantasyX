@@ -42,6 +42,10 @@ var played: Array[StringName] = []
 var flashes_suppressed := 0
 ## The boss's own VFX and set piece (M2-RND-04), when the encounter has one (else null).
 var boss: BattleBossVfx
+## Every status shown on its fighter while it lasts (FAST-TRACK 11-03).
+var status_looks: BattleStatusLooks
+## A storm fight's sky, rain, wind and the Undertow behind (FAST-TRACK 11-03; null in a fight with none).
+var storm: BattleStorm
 var _ctl: BattleController
 var _engine: BattleEngine
 var _flash_layer: CanvasLayer
@@ -97,6 +101,8 @@ func attach(controller: BattleController, engine: BattleEngine) -> void:
 		settings.changed.connect(func(_key: StringName) -> void: reduced_motion = settings.reduced_motion())
 	_build_flash_layer(controller)
 	boss = BattleBossVfx.attached_if_boss(self, controller, engine)
+	status_looks = BattleStatusLooks.attached(controller, engine)
+	storm = BattleStorm.attached_if_storm(controller, engine)
 	BattleBossSetPiece.attach_all(self, controller, engine)  # M3-BPR-420: the other Act I bosses' set pieces
 	if engine.vowbound != null:  # M3-BPR-420: a Vowbound's call, dismissal and fall play in bound light
 		engine.vowbound.called.connect(

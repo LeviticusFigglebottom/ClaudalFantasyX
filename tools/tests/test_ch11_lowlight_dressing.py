@@ -87,6 +87,27 @@ class Ch11DressingTests(unittest.TestCase):
         fx0, fx1, fz0, fz1 = lz.HALL_FALLEN
         self.assertTrue(fx0 < (x0 + x1) / 2 < fx1 and fz0 < (z0 + z1) / 2 < fz1, "the daylight falls on the Engine")
 
+    def test_the_fallen_bays_sunlight_lands_on_its_rubble_low_and_off_the_engine(self) -> None:
+        """PC row 86: the sun through the fallen bay drew a hard white patch on bare flags. Its shards now lie where it
+        lands (the pool's middle is covered), none taller than POOL_TOP_M, none inside the Engine."""
+        import numpy as np
+
+        bl = lz.blocks()
+        px0, px1, pz0, pz1 = lz.sun_pool(bl)
+        hall = lz.build_hall()[0]
+        pos = np.asarray(hall.pos)
+        floor = lz._box(bl["Hall"])[3]
+        ex0, ex1, _, _, ez0, ez1 = lz._box(bl["LampEngine"])
+        cx, cz = (px0 + px1) / 2, (pz0 + pz1) / 2
+        low = (pos[:, 1] > floor + 0.005) & (pos[:, 1] < floor + lz.POOL_TOP_M + 0.05)
+        in_pool = low & (np.abs(pos[:, 0] - cx) < (px1 - px0) / 2) & (np.abs(pos[:, 2] - cz) < (pz1 - pz0) / 2)
+        in_pool &= ~((pos[:, 0] > ex0) & (pos[:, 0] < ex1) & (pos[:, 2] > ez0) & (pos[:, 2] < ez1))
+        self.assertGreater(int(in_pool.sum()), 300, "rubble lies in the sun's pool")
+        pool = (pos[:, 0] > px0 - 1.0) & (pos[:, 0] < px1 + 1.0) & (pos[:, 2] > pz0 - 1.0) & (pos[:, 2] < pz1 + 1.0)
+        pool &= ~((pos[:, 0] > ex0 - 0.3) & (pos[:, 0] < ex1 + 0.3) & (pos[:, 2] > ez0 - 0.3) & (pos[:, 2] < ez1 + 0.3))
+        pool &= pos[:, 1] < 2.0
+        self.assertLess(float(pos[pool, 1].max()), floor + lz.POOL_TOP_M + 0.08, "walked over: nothing stands tall")
+
     def test_the_well_mouth_keeps_off_the_sanctum_spawn_and_nhoa(self) -> None:
         lay = gen._layout("lowlight")
         s = {b["id"]: b for b in lay["blocks"]}["Sanctum"]

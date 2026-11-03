@@ -2330,3 +2330,30 @@ MERGE-READY @ (this commit).
 - **Headless crash seen once in a return_probe run:** the M3-HER-1151 race again (a WeatherClock global write, "wrong RID", then `material is null`, then signal 11).
   - I believe the dummy renderer's RID owners aren't thread-safe while the PC's RenderingDevice ones are, so threaded instantiates can race headless only. It's unverified, and an engine-level detail. The PC's row 68 segfaults need their own backtraces.
 MERGE-READY @ (this commit).
+
+### 2026-11-03: FAST-TRACK "the walk animation stops playing for the main character randomly" (M3-HER-1231). Fixed at the root
+- Session: integration-qa track under Lead session_018aiGwGLGkxsnMnu8VfCu1m. Merged `origin/claude/undertow-lead-handoff-ze8rrn` first (clean).
+- **Reproduced headless** (`tests/unit/test_hero_walk_cycle.gd`, the real Rhen on the field_test zone):
+  - The stop/start, reversal and teleport paths are clean on the old code. The walk shows on every travelling frame, so the gait state machine (starts, stops, turns) was not the cause.
+  - **The cause:** a cutscene clip left on the field body. HeroFieldActor keeps a loop, or a clip played with `hold`, until the next play_clip, and meanwhile holds the gait and blend off.
+  - The sequencer plays `talk` (a loop) on a line's speaker and plays `idle` only after a line the player advanced by hand. An **overheard bark** (`_new_overhear`: auto_advance, hold_player false, so the player keeps walking), a timed line or a skipped line leaves the speaker in `talk`. A held pose (`hold_clips`) also stays after `_finish`.
+  - On Rhen this meant the player walked a talking or kneeling Rhen across the field: thigh swing 0.0°. "Randomly" = whenever Rhen spoke a bark, or a scene ended on a held pose.
+- **Fix** (`HeroFieldActor._release_clip`, data `hero_motion.json` field.clip_release):
+  - When the player steers (FieldController.accepts_input with the stick pushed), any clip gives way to the locomotion.
+  - A loop nobody held gives way once a body (a follower, a stage root) has travelled faster than 0.5 × its walk clip speed for 0.6 s, longer than the 0.5 s stand-in glide.
+  - Explicit holds on bodies the player doesn't steer stay, and so does every clip while a scene holds the player's input.
+- **Regression test:** test_hero_walk_cycle, 5 tests. On the old code 3 fail (talk left on; held pose; follower left talking). With the fix, 5/0.
+- **Shot `field_hero_walk_release`** (new, `pending_baseline`; rig hero_gait_strip.gd with an `strip_path` export): self-rendered and VIEWED, before and after.
+  - Old code: the bark row slides standing in `talk`, and the held row slides kneeling.
+  - Fixed: all three rows show the same stride.
+  - `field_hero_gait_strip` re-rendered and viewed: unchanged (run start, stop, turn).
+- **Request filed:** M3-HER-1232 (slice-polish, `game/cutscene/**`): the sequencer should send every line's speaker back to idle on every path, and at `_finish`. With my fix a moving body recovers either way, but a standing NPC can still mouth `talk` after a bark.
+- **Inventory (placeholder_audit, mine):** the static pass after the merge showed 2 new "high" Ch1 foes, `court_stillguard` and `letting_stilled`. These were false positives: the tool counted every summon in skills.json as Act I.
+  - Fixed: a summon counts only when an Act I encounter or an Act I foe names its skill. New tools test `test_only_act1_summons_are_act1_foes` fails on the old tool.
+  - The inventory is back to 2 low items (env-art-b, M3-HER-1141), so the file is unchanged.
+- **Act I GPU QA rows for me (gpu/act1-qa-7):** row 21 is fixed on my side but not re-checkable by the PC's walk. Row 88 has no leak headless and needs a Windows/driver-level look. Both are PC-only now.
+- **Pre-existing, not mine:** `tools.tests.test_screenshots` fails on `wildlife_zone_ossa_fen_walk0` (no baseline, no pending_baseline key) on the integration branch as merged.
+- **test_hero_field_gait** `test_a_cutscene_clip_holds_the_gait…` encoded the old contract: talk on a player who takes input, with the stick pushed, and the gait held off. It now holds the player's input for that phase, as a scene does.
+- **Pre-existing, not mine:** `test_hero_stage::test_helper_bones_match_the_baked_clips` fails on the base tree too (asha attack DEF-armpit.R 38.83°). **LEAD-ASK:** route it to characters (Asha's helper-bone bake vs the attack clip).
+- Checks run: gdlint and gdformat (touched files), validate_data 0, taskboard --check, test_placeholder_audit 15/0, test_screenshots (the one pre-existing failure only), Godot `--filter=hero_` 121 run (2 failed: the gait test, updated and now 13/0, and hero_stage, pre-existing), hero_walk_cycle 5/0, two shots self-rendered and viewed. Skipped: Blender (no Blender source), the full manifest, coverage (no game/battle or game/progression change).
+- **FAST-TRACK** MERGE-READY @ 817699bb4: M3-HER-1231, the walk cycle no longer stops (fix 3aee287c7); placeholder_audit's summon scope (8c922bf45). Merged integration -ze8rrn @ e2411fb04 (docs only). Cherry-pick: 3aee287c7, plus 8c922bf45 for the inventory.

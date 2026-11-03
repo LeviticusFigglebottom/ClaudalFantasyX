@@ -61,6 +61,7 @@ const LOOPING_CUES: Array[String] = [
 	"res://assets/audio/music/liss_theme.ogg",
 	"res://assets/audio/music/raid.ogg",
 	"res://assets/audio/music/shoals_dusk.ogg",
+	"res://assets/audio/music/storm_battle.ogg",
 ]
 const SAMPLE_RATE := 44100
 const MIN_LENGTH_S := 60.0

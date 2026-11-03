@@ -1,0 +1,276 @@
+{
+  "version": 1,
+  "doc": "FAST-TRACK 11-03 (the human's playtest: the seagull/storm scene's fights used the normal sunny backdrop and never showed the Undertow). BattleStorm (game/vfx/battle/battle_storm.gd) turns a storm fight's arena into its storm variant at spawn, battle-side, without touching the arena scenes: the sky (a storm environment, or the arena sky's own shader turned overcast with sky_params), a dimmer cooler sun, rain streaks and wind-blown spray over the field, and the Undertow (UndertowStorm, an undertow.json preset) standing in the background, in the battle camera's view (azimuth from the rest frame's look, plus yaw_offset_deg). Its lightning never flashes the screen (the battle flash safety contract): exposure_flash off. fights: encounter -> look. Colours are palette.json swatches. docs/kb/tech/battle_status_looks.md (Storm fights).",
+  "fights": {
+    "ch01_scuttlers": "rising",
+    "ch01_hullgnaw": "rising",
+    "ch08_headland_gulls": "seawall_front",
+    "ch08_headland_crabs": "seawall_front",
+    "ch08_flue_moths": "seawall_front",
+    "ch08_stair_hold_1": "seawall_landfall",
+    "ch08_stair_hold_2": "seawall_landfall",
+    "ch08_stair_hold_3": "seawall_landfall",
+    "undertows_reach": "reach"
+  },
+  "fights_doc": "Ch1: the scuttlers and Hullgnaw are fought after the gulls cry and the Rising (ch01.json, set_storm). Ch8: the headland path and the spire's tier landing under the storm front; the set piece's three holds and the Reach in the landfall storm (ch08.json). ch06_ridge_gulls is a calm afternoon (no storm in its beat): not listed.",
+  "looks": {
+    "rising": {
+      "preset": "ch01_arrival",
+      "yaw_offset_deg": 28.0,
+      "environment_res": "res://assets/environments/zones/ch01/oruvel_ch01_storm_environment.tres",
+      "sky_params": {},
+      "sun": {
+        "energy_scale": 0.45,
+        "swatch": "cumulus_shadow",
+        "color": "#8FA7C4"
+      },
+      "rain": {
+        "swatch": "foam_white",
+        "color": "#EEF6F4",
+        "alpha": 0.32,
+        "amount": 900,
+        "box_m": [
+          34.0,
+          2.0,
+          34.0
+        ],
+        "height_m": 13.0,
+        "speed_m_s": 13.0,
+        "streak_m": [
+          0.012,
+          0.55
+        ],
+        "lifetime_s": 1.1,
+        "slant": 0.15
+      },
+      "wind": {
+        "swatch": "foam_white",
+        "color": "#EEF6F4",
+        "amount": 50,
+        "box_m": [
+          30.0,
+          3.0,
+          30.0
+        ],
+        "height_m": 1.6,
+        "speed_m_s": [
+          4.8999999999999995,
+          7.0
+        ],
+        "size_m": [
+          0.03,
+          0.07
+        ],
+        "lifetime_s": 2.2,
+        "turbulence": 0.6,
+        "energy": 0.9
+      },
+      "wind_dir": [
+        1.0,
+        0.0,
+        0.35
+      ],
+      "sky_note": "env-art's Oruvel storm grade (the zone's own after the Rising), as the field shows it."
+    },
+    "seawall_front": {
+      "preset": "ch08_seawall",
+      "yaw_offset_deg": -24.0,
+      "environment_res": "",
+      "sky_params": {
+        "cloud_coverage": 0.97,
+        "cloud_opacity": 1.0,
+        "sun_disc_energy": 0.0,
+        "halo_energy": 0.0,
+        "glow_energy": 0.15,
+        "band_energy": 0.1,
+        "sky_energy": 1.1,
+        "cloud_sun_energy": 0.6,
+        "col_zenith": "#3E4A57",
+        "col_cloud_lit": "#6F7E8E",
+        "col_cloud_shadow": "#3E4A57",
+        "col_horizon_away": "#6F7E8E",
+        "col_horizon_sun": "#8FA7C4"
+      },
+      "sun": {
+        "energy_scale": 0.5,
+        "swatch": "cumulus_shadow",
+        "color": "#8FA7C4"
+      },
+      "rain": {
+        "swatch": "foam_white",
+        "color": "#EEF6F4",
+        "alpha": 0.32,
+        "amount": 700,
+        "box_m": [
+          34.0,
+          2.0,
+          34.0
+        ],
+        "height_m": 13.0,
+        "speed_m_s": 13.0,
+        "streak_m": [
+          0.012,
+          0.55
+        ],
+        "lifetime_s": 1.1,
+        "slant": 0.2
+      },
+      "wind": {
+        "swatch": "foam_white",
+        "color": "#EEF6F4",
+        "amount": 70,
+        "box_m": [
+          30.0,
+          3.0,
+          30.0
+        ],
+        "height_m": 1.6,
+        "speed_m_s": [
+          5.6,
+          8.0
+        ],
+        "size_m": [
+          0.03,
+          0.07
+        ],
+        "lifetime_s": 2.2,
+        "turbulence": 0.6,
+        "energy": 0.9
+      },
+      "wind_dir": [
+        -1.0,
+        0.0,
+        0.4
+      ]
+    },
+    "seawall_landfall": {
+      "preset": "ch08_landfall",
+      "yaw_offset_deg": 22.0,
+      "environment_res": "",
+      "sky_params": {
+        "cloud_coverage": 0.97,
+        "cloud_opacity": 1.0,
+        "sun_disc_energy": 0.0,
+        "halo_energy": 0.0,
+        "glow_energy": 0.15,
+        "band_energy": 0.1,
+        "sky_energy": 1.1,
+        "cloud_sun_energy": 0.6,
+        "col_zenith": "#3E4A57",
+        "col_cloud_lit": "#6F7E8E",
+        "col_cloud_shadow": "#3E4A57",
+        "col_horizon_away": "#6F7E8E",
+        "col_horizon_sun": "#8FA7C4"
+      },
+      "sun": {
+        "energy_scale": 0.4,
+        "swatch": "cumulus_shadow",
+        "color": "#8FA7C4"
+      },
+      "rain": {
+        "swatch": "foam_white",
+        "color": "#EEF6F4",
+        "alpha": 0.32,
+        "amount": 1400,
+        "box_m": [
+          34.0,
+          2.0,
+          34.0
+        ],
+        "height_m": 13.0,
+        "speed_m_s": 15.0,
+        "streak_m": [
+          0.012,
+          0.55
+        ],
+        "lifetime_s": 1.1,
+        "slant": 0.25
+      },
+      "wind": {
+        "swatch": "foam_white",
+        "color": "#EEF6F4",
+        "amount": 90,
+        "box_m": [
+          30.0,
+          3.0,
+          30.0
+        ],
+        "height_m": 1.6,
+        "speed_m_s": [
+          6.3,
+          9.0
+        ],
+        "size_m": [
+          0.03,
+          0.07
+        ],
+        "lifetime_s": 2.2,
+        "turbulence": 0.6,
+        "energy": 0.9
+      },
+      "wind_dir": [
+        -1.0,
+        0.0,
+        0.3
+      ]
+    },
+    "reach": {
+      "preset": "ch08_landfall",
+      "yaw_offset_deg": -30.0,
+      "environment_res": "",
+      "sky_params": {},
+      "sun": {},
+      "rain": {
+        "swatch": "foam_white",
+        "color": "#EEF6F4",
+        "alpha": 0.32,
+        "amount": 1400,
+        "box_m": [
+          34.0,
+          2.0,
+          34.0
+        ],
+        "height_m": 13.0,
+        "speed_m_s": 15.0,
+        "streak_m": [
+          0.012,
+          0.55
+        ],
+        "lifetime_s": 1.1,
+        "slant": 0.25
+      },
+      "wind": {
+        "swatch": "foam_white",
+        "color": "#EEF6F4",
+        "amount": 90,
+        "box_m": [
+          30.0,
+          3.0,
+          30.0
+        ],
+        "height_m": 1.6,
+        "speed_m_s": [
+          6.3,
+          9.0
+        ],
+        "size_m": [
+          0.03,
+          0.07
+        ],
+        "lifetime_s": 2.2,
+        "turbulence": 0.6,
+        "energy": 0.9
+      },
+      "wind_dir": [
+        -1.0,
+        0.0,
+        0.3
+      ],
+      "note": "The Reach keeps its own night key and boss lights (effects.json boss_rim_lights); the storm adds rain, wind and the Undertow behind."
+    }
+  },
+  "reduced_motion": {
+    "particle_scale": 0.4,
+    "speed_scale": 0.6
+  }
+}

@@ -285,9 +285,15 @@ def check_battle(root: Path = ROOT) -> list[Item]:
     for fid in list(foes):
         for sp in enemies.get(fid, {}).get("spawn", []) or []:
             foes.setdefault(str(sp), foes[fid])
-    for sid in _collect_key(skills, "summon"):
-        if sid in enemies:
-            foes.setdefault(sid, min(foes.values()) if foes else None)
+    # a summon counts only when an Act I encounter (a set piece's skill) or an Act I foe's row names its skill
+    named = {str(v) for enc_id in used for v in _strings(encounters.get(enc_id, {}))}
+    named |= {str(v) for fid in list(foes) for v in _strings(enemies.get(fid, {}))}
+    for sk in skills.get("skills", []):
+        if str(sk.get("id", "")) not in named:
+            continue
+        for sid in _collect_key(sk, "summon"):
+            if sid in enemies:
+                foes.setdefault(sid, min(foes.values()) if foes else None)
     vowbound = [str(v.get("id", "")) for v in _json(root / "game/data/battle/vowbound.json").get("vowbound", [])]
     for fid, ch in sorted(foes.items(), key=lambda kv: kv[0]):
         e = enemies.get(fid, {})

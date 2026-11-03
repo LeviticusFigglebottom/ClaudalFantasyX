@@ -84,11 +84,22 @@ static func zone_for(music: Dictionary, scene_path: String, flag_set: Callable) 
 	return {}
 
 
-## The cue a battle against `encounter` plays: battle.encounters[encounter], else battle.default.
-static func battle_cue(music: Dictionary, encounter: StringName) -> StringName:
+## The cue a battle against `encounter` plays, the first that names one: battle.encounters[encounter] (a boss's
+## own theme); battle.arenas[arena] (a storm arena, M3-AUD-865); `zone_cue`, the field zone's own `battle` key
+## (its storm variant: every fight started there); else battle.default.
+static func battle_cue(
+	music: Dictionary, encounter: StringName, arena: String = "", zone_cue: StringName = &""
+) -> StringName:
 	var battle := music.get("battle", {}) as Dictionary
 	var by_enc := battle.get("encounters", {}) as Dictionary
-	return StringName(str(by_enc.get(String(encounter), battle.get("default", ""))))
+	if by_enc.has(String(encounter)):
+		return StringName(str(by_enc[String(encounter)]))
+	var by_arena := battle.get("arenas", {}) as Dictionary
+	if arena != "" and by_arena.has(arena):
+		return StringName(str(by_arena[arena]))
+	if zone_cue != &"":
+		return zone_cue
+	return StringName(str(battle.get("default", "")))
 
 
 ## The cue row `cue` ({} when the table has none).
