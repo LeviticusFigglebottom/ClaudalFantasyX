@@ -23,7 +23,7 @@ landing, the three stair holds and the Reach) get their storm variant, battle-si
 - [ ] PC-QUEUE: the Undertow's cost in battle on the GPU (hitch bar <= 2 s hidden; frame time).
 
 ## Notes
-- act1-chapters and env-art-b: M3-ENV-1340 (an FYI and an offer: bake a storm grade per arena if they want one;
+- act1-chapters and env-art-b: M3-ENV-1341 (an FYI and an offer: bake a storm grade per arena if they want one;
   BattleStorm takes it as environment_res).
 - audio owns the storm battle music (the Lead's 11-03 item 4).
 

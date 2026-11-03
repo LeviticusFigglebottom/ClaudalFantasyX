@@ -1,7 +1,7 @@
 # Battle status looks and storm fights (FAST-TRACK 11-03)
 
 Owner: battle-presentation. Tasks: M3-BPR-450 (status looks), M3-BPR-451 (storm fights). Requests out: M3-UI-212
-(ui-menus: the icons in the status help), M3-ENV-1340 (env-art-b and act1-chapters: the storm fight list and grades).
+(ui-menus: the icons in the status help), M3-ENV-1341 (env-art-b and act1-chapters: the storm fight list and grades).
 
 ## Status looks
 

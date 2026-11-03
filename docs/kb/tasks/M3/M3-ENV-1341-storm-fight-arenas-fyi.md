@@ -1,5 +1,5 @@
 ---
-id: M3-ENV-1340
+id: M3-ENV-1341
 title: "FYI/offer: the storm fights' arena variant is applied battle-side (BattleStorm); bake a storm grade if wanted"
 role: environment
 status: todo
