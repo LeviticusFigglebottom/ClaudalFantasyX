@@ -359,6 +359,36 @@
       "out_dir": "res://assets/ui/portraits/heroes",
       "emotions": ["neutral", "smile", "soft_smile", "laugh", "tender", "determined", "exhausted"],
       "camera": {}
+    },
+    {
+      "id": "kirru",
+      "stage": "res://game/levels/_tests/characters/kirru/kirru_adult_stage.tscn",
+      "model": "res://assets/characters/kirru_adult/kirru_adult.glb",
+      "materials": "res://assets/characters/kirru_adult/materials/",
+      "face_poses": "res://game/levels/_tests/characters/pell/pell_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "soft_smile", "sad"],
+      "camera": {}
+    },
+    {
+      "id": "kirru_child",
+      "stage": "res://game/levels/_tests/characters/kirru/kirru_child_stage.tscn",
+      "model": "res://assets/characters/kirru_child/kirru_child.glb",
+      "materials": "res://assets/characters/kirru_child/materials/",
+      "face_poses": "res://game/levels/_tests/characters/pell/pell_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "soft_smile", "sad"],
+      "camera": {}
+    },
+    {
+      "id": "ullari_woman",
+      "stage": "res://game/levels/_tests/characters/villagers/ullari_woman_stage.tscn",
+      "model": "res://assets/characters/villagers/ullari_woman/ullari_woman.glb",
+      "materials": "res://assets/characters/villagers/ullari_woman/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/ullari_woman_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "soft_smile", "tender", "sad"],
+      "camera": {}
     }
   ],
   "creatures": [
