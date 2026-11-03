@@ -125,6 +125,31 @@ func test_the_page_walks_caster_spell_hero_and_casts() -> void:
 	_teardown()
 
 
+## With combat-systems' FieldSpell in the project (M3-CMB-05), the live rules drive the page: Asha's Mend heals Rhen
+## for what FieldSpell's own preview says, the MP is spent and both are saved. Before that class is merged it passes
+## as a no-op (the Magic row is hidden then, which test_no_rules_no_page_and_no_root_row covers).
+func test_the_live_field_spell_rules_drive_the_page() -> void:
+	var live := FieldMagicRules.live()
+	if live == null:
+		return
+	state.party_vitals = {"rhen": {"hp": 50}}
+	var m := MagicMenuModel.new(_sheet(), live, [&"poison", &"petrify", &"zombie"] as Array[StringName])
+	assert_true(m.spells_of(&"asha").has(&"mend"), "Asha casts Mend in the field: %s" % [m.spells_of(&"asha")])
+	assert_eq(m.hero_error(&"asha", &"mend", &"toma"), &"nothing_to_do", "Toma is whole")
+	assert_eq(
+		m.refusal_text(&"nothing_to_do", &"asha", &"mend", &"toma"),
+		tr("MAGIC_MENU_ERR_NO_EFFECT_FMT").format({"spell": tr("SKILL_MEND"), "name": tr("CHAR_TOMA")})
+	)
+	var asha_mp := m.sheet.combatant(&"asha").mp
+	var pv := m.preview(&"asha", &"mend", &"rhen")
+	assert_true(pv["ok"], str(pv["text"]))
+	var done := m.cast_on(&"asha", &"mend", &"rhen")
+	assert_true(done["ok"])
+	assert_true(int(state.vitals_of(&"rhen").get("hp", 0)) > 50, "Rhen is healed in the save")
+	assert_eq(int(state.vitals_of(&"asha").get("mp", asha_mp)), asha_mp - m.spell_cost(&"mend"), "Asha paid once")
+	assert_eq(str(done["text"]).get_slice(". ", 1), str(pv["text"]), "the receipt is what the preview said")
+
+
 func _rules() -> FieldMagicRules:
 	var usable := func(c: BattleCombatant) -> Array[StringName]:
 		var out: Array[StringName] = []

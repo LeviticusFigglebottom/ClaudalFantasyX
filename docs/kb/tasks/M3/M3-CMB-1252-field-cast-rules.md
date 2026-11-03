@@ -2,7 +2,7 @@
 id: M3-CMB-1252
 title: "Request (ui-menus): field-usable abilities and a field cast API for the Magic page"
 role: combat
-status: todo
+status: done
 owner_session: ""
 depends_on: []
 milestone: M3
@@ -26,5 +26,9 @@ node-free and tested, in the shape the Items page already uses (`ItemBattleActio
 3. **Tests** for the three, including that a field Mend heals what a battle Mend would at the same stats.
 
 ui-menus writes the page, the target picker, the words and the save write-back against it.
+
+## Notes
+- 2026-11-03 (ui-menus): superseded by combat-systems' own M3-CMB-05 `FieldSpell` (claude/combat-systems @ da778b9e),
+  which the Magic page now binds by name (FieldMagicRules.live). Nothing more is asked here.
 
 ## Review log

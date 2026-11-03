@@ -6,7 +6,7 @@
     "panel": {"rect": [219, 111, 1482, 858], "pad": 27, "title_height": 56, "help_height": 40},
     "casters": {
       "rect": [246, 219, 450, 0], "header_height": 45, "row_pitch": 57, "max_rows": 7, "row_inset": 12, "text_indent": 40,
-      "cost_width": 165, "rank_width": 90, "submenu_dim": 0.5, "cursor_sec": 0.09, "mote_lag_sec": 0.03, "mote_px": 10,
+      "cost_width": 252, "rank_width": 108, "submenu_dim": 0.5, "cursor_sec": 0.09, "mote_lag_sec": 0.03, "mote_px": 10,
       "mote_offset": 14, "breath_sec": 2.4, "breath_min": 0.75
     },
     "spells": {

@@ -2587,6 +2587,11 @@
       "scene": "res://game/ui/menus/items/shots/items_menu_use.tscn"
     },
     {
+      "id": "magic_menu",
+      "pending_baseline": true,
+      "scene": "res://game/ui/menus/magic/shots/magic_menu.tscn"
+    },
+    {
       "id": "status_menu",
       "scene": "res://game/ui/menus/status/shots/status_menu.tscn"
     },
