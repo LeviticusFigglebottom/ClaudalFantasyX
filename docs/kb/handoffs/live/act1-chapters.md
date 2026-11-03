@@ -1488,7 +1488,66 @@ The six relays from 23:06 to 03:02 reached this session only at 03:35, after the
   - Checks: battle_party_kits 4/0, ch17 3/0, ch18 1/0, ch19 2/0, ch20 4/0, ch21 4/0; validate_data, taskboard and gdlint clean.
 - MERGE-READY @ a5e41aca6
 
+## 2026-11-03: FAST-TRACK, the storm's fights (Lead session_018aiGwGLGkxsnMnu8VfCu1m)
+- Merged `origin/claude/undertow-lead-handoff-ze8rrn` (big45), clean.
+- **FAST-TRACK M3-C01-1252: the storm's fights on storm arenas with storm music** (@ ce4bcb6d7, 1bcae269f).
+  - **Which fights are in the storm:** the human's "seagull/storm scene" is Ch1's lintel-gulls and Rising
+    (C1-11/C1-12). Its fights are `ch01_scuttlers` (C1-13) and `ch01_hullgnaw` (C1-14). Both were on the sunny
+    `oruvel_raft_morning`, and the Scuttlers played `battle.default` (the uplifting `battle_standard_v2`). Also in the
+    storm: Ch8's `ch08_stair_hold_1/2/3` and `undertows_reach` (already on the seawall storm arenas, which carry the
+    Undertow node, and on the seawall_hold and undertows_reach cues), and Ch16's `ch16_storm_wakes` (on the moonlit
+    `drowned_choir_ring`, playing `battle.default`, with its storm beds keyed to the planned id
+    `ch16_holding_the_line`).
+  - **Not storm fights:** `ch08_headland_gulls` and `_crabs`. They are B04 at 13:00, the table stops at
+    `ch08_entered_coilspire` before B07's storm, and B08's run back is a cutscene to the wall-gate. The Underway
+    fights come before the gulls.
+  - **Wired:**
+    - encounters.json: `storm: true` on the seven fights. Ch1's two now name `oruvel_raft_storm`, and Ch16's names
+      `drowned_choir_storm`.
+    - arenas.json `storm`: `arenas` lists the four wall-head ids with the vortex. `pending` lists the two new ids,
+      whose `scenes` rows point at the base arena until env-art-b's scenes land (M3-ENV-1253).
+    - music.json battle `storm_cues`. `ch01_scuttlers` plays `battle_storm`, an interim row (`undertow_rising` with
+      the run pulse in, the C1-13 run's own cue) that audio replaces with the composed cue (M3-AUD-1254).
+      `ch16_storm_wakes` plays `abiding_guard_storm` (stem 2, the storm, in from the start).
+    - ambience.json: `ch16_storm_wakes` now plays the Choir's storm beds.
+    - `tests/unit/test_storm_encounters.gd` (5/0) checks that every storm fight is flagged, on a storm arena and
+      playing a storm cue (never the default), and that every storm arena has the Undertow node. A pending arena
+      must have its request, and the test fails once that arena's own scene exists, so the swap can't be forgotten.
+  - **Requests:** M3-ENV-1253 (env-art-b: `oruvel_raft_storm` with a blue sky over the wall per act1_ch01 §9, and
+    `drowned_choir_storm`; also the Ch8 wall in frame), M3-AUD-1254 (audio: the composed `battle_storm`, plus storm
+    battle beds for the raft and wall-head arenas), M3-BPR-1255 (battle-presentation: rain and vortex at the battle
+    camera).
+  - **combat-systems:** I touched only `ch01_hullgnaw`'s `arena` and `storm` keys. Its HP and tuning rows are yours.
+  - **SELF-RENDERED @ ce4bcb6d7:** `battle_ch08_stair_hold`, `battle_arena_seawall_stairhead_storm`, `_hoist`,
+    `_surge`, `battle_arena_oruvel_raft_morning`, `battle_arena_drowned_choir_ring`, all viewed. There is no scene
+    change, so these document the state:
+    - **Ch8 waves:** storm clouds and faint rain read, but the wall itself is not in the battle frame (noted on
+      M3-ENV-1253 and M3-BPR-1255).
+    - **The Reach:** reads (rain, dark sky, the hand).
+    - **Ch1 raft:** still sunny until M3-ENV-1253.
+  - **Playthrough in order (headless):** `ch01_thread` 2/0 and `ch08_thread` 6/0 drive the Scuttlers → Hullgnaw →
+    waves 1–3 → Reach in order. `act1_encounters_resolve` 2/0 starts every Act I and Act II fight on its arena.
+  - **Checks run:** validate_data 0/0, taskboard --check, gdlint and gdformat. Godot: `storm_encounters` 5/0,
+    `test_battle_arena.` 8/0, `arena_ambience` 5/0, `slice_primitives` 1/0, `music` 15/0, `battle_audio` 22/0,
+    `audio_runtime` 11/0. Tools suite: the audio, music and validate groups pass. `test_b_arenas` fails on
+    `ashcrown_anvil_court` reproducibility **with or without this change** (env-art-b's generated scene; FYI Lead).
+  - **Checks skipped:** coverage (no game/battle or progression code), Blender (no source), the full suite.
+- **Act I rows (act1_gpu_qa.md @ gpu/act1-qa-7):** none of mine are open. Row 82's camera (corrow_lake) and row 86's
+  Keth cameras were fixed earlier; their remaining parts are lighting (env-art and env-art-b).
+### PC-QUEUE
+- Re-check rows 82 (corrow_lake's camera) and 86 (Keth Pass flight cameras) on the GPU.
+- LEAD-ASK: if env-art-b can't take M3-ENV-1253 soon, may act1-chapters write `oruvel_raft_storm` itself (the
+  `oruvel_raft_morning` table plus M3-ENV-07B's storm pieces, `lut_ch01_storm` and an Undertow node, through
+  env-art's `arena_scenes.write_arena`)? It would be a one-row table in a new act1-chapters module.
+- MERGE-READY @ 1bcae269f (FAST-TRACK M3-C01-1252)
+
 ## Exact next step
+**2026-11-03:** M3-C01-1252 is in review. When env-art-b's M3-ENV-1253 lands, repoint arenas.json `scenes`
+for `oruvel_raft_storm` and `drowned_choir_storm` to their own scenes, move both ids from `storm.pending` to
+`storm.arenas`, and render and view `ch01_scuttlers`, `ch01_hullgnaw` and `ch16_storm_wakes`. Then go back to the Act III
+backlog below.
+
+### Earlier exact next step (superseded 11-03)
 **BACKLOG EMPTY (the Lead answered the overlap at 04:43: zones and flows are mine).** Every Act III row assigned to act1-chapters is built and in review (M5-A3P-1001, 1004,
 1007, 1009, 1011, 1013, 1015, 1017 and 1849; the combat rows for 1852 and 1853). What is left waits on other tracks:
 1. **M5-A3P-1009's mid-battle line hook** (battle-presentation): when it lands, wire the fight lines

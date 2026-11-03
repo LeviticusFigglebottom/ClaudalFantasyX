@@ -286,7 +286,8 @@
     "drowned_choir_ring": ["choir_bowl"]
   },
   "encounters": {
-    "ch16_holding_the_line": ["choir_storm", "choir_bowl"]
+    "ch16_holding_the_line": ["choir_storm", "choir_bowl"],
+    "ch16_storm_wakes": ["choir_storm", "choir_bowl"]
   },
   "pending_encounters": ["ch16_holding_the_line"],
   "wind": {
