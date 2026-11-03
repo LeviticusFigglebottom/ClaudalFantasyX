@@ -52,6 +52,7 @@ const CHILD_PAGES := {
 	FieldMenuModel.ROW_LATTICE: preload("res://game/ui/menus/lattice/lattice_menu.gd"),
 	FieldMenuModel.ROW_STATUS: preload("res://game/ui/menus/status/status_menu.gd"),
 	FieldMenuModel.ROW_FORMATION: preload("res://game/ui/menus/formation/formation_menu.gd"),
+	FieldMenuModel.ROW_MAGIC: preload("res://game/ui/menus/magic/magic_menu.gd"),
 }
 
 ## Pause the tree while open (the field must not move under a menu).

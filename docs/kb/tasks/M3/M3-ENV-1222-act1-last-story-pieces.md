@@ -2,8 +2,9 @@
 id: M3-ENV-1222
 title: "Act I's last greybox story pieces: Ch4's islet landing (rock, gangplank, wrapped name board, gangway gate) and Coilspire's flue gates, niche seal and wright's mark"
 role: environment
-status: todo
-owner_session: ""
+status: review
+reviewer: cinematics
+owner_session: env-art (claude/env-art); env-art-b (Coilspire)
 depends_on: [M3-C04-1204, M3-C08-1210]
 milestone: M3
 request-from: cinematics

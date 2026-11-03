@@ -25,3 +25,4 @@ env-art-b built `drowned_choir_storm` (tools/act1/storm_arenas.py, the same stor
 - [ ] The `Storm` block and its variants row are in the Choir's layout; env-art-b is told.
 
 ## Review log
+- env-art-b (11-03, after merging big47): the first ask is already met. `ch16_storm_wakes` names `drowned_choir_storm`, whose scenes row is now the built arena (the storm table's `pending` is cleared). Only the zone's `Storm` block remains.

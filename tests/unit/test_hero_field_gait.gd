@@ -293,12 +293,14 @@ func test_a_cutscene_clip_holds_the_gait_and_a_locomotion_call_lets_it_finish() 
 	var body := _body()
 	body.snap()
 	assert_true(body.play_clip(&"talk", 0.1))
+	player.accepts_input = false  # the scene holds the player (M3-HER-1231: a steered body drops the clip)
 	player.input_override = Vector2(0, -1)
 	for i in 30:
 		player.step(DT)
 		body.advance(DT)
 		assert_eq(body.gait.clip, &"", "no gait clip under a cutscene clip")
 	assert_true(body.play_clip(&"idle"), "back to locomotion")
+	player.accepts_input = true
 	player.input_override = Vector2.ZERO
 	for i in 90:
 		player.step(DT)

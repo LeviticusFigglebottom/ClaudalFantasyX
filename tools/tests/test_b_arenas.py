@@ -23,7 +23,7 @@ WRAPPERS = {
     "ashcrown/b_arenas.py": ("ashcrown_forecourt_day", "ashcrown_anvil_court"),
     "haluna/ansedra_arenas.py": ("lacquer_court_steps", "ansedra_lagoon_escape", "bridal_barge_night"),
     "haluna/rim_arenas.py": ("pale_rim_shallows",),
-    "tools/act1/storm_arenas.py": ("oruvel_raft_storm", "drowned_choir_storm"),
+    "tools/act1/storm_arenas.py": ("drowned_choir_storm",),
 }
 WRAPPED = {aid for ids in WRAPPERS.values() for aid in ids}
 

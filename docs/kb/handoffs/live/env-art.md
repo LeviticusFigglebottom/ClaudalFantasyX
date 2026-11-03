@@ -589,6 +589,64 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+### 2026-11-03 (Lead session_018aiGwGLGkxsnMnu8VfCu1m; integration -ze8rrn @ e2411fb0, fast-forwarded in)
+- **MERGE-READY @ 52bf4c11:** PC rows 24, 47, 77, 86 (my part), 90 (findings), and FAST-TRACK 4's Ch1 storm arena.
+  - **Checks run:**
+    - Godot `--filter`: arena 25/0, ch11 3/0, haluna 67/0.
+    - Tools: test_arenas, test_ch11_lowlight_dressing and test_lowlight OK.
+    - gdlint and gdformat clean; validate_data clean; taskboard --check; the screenshot manifest (790 valid).
+    - Blender: rebuilt `lowlight_hall` only.
+  - **Checks skipped:** the full tools suite and other shots (nothing else reads the files changed).
+- **Row 24 (the DockShore spawn too dark): fixed @ 8f0b0188**, still intact on e2411fb0.
+  - big38 (8b546285) predates that fix, so the PC's "dark against the night sky" was measured without it.
+  - SELF-RENDERED @ b429d8d6: a walk still of DockShore, with the Ch4 flags (behind, in front, along the dock).
+    Rhen stands in the warm pools of the dock's lamps, lit, not a silhouette. The dock reads as a lamp-lined walk.
+  - `tools/act1/walkthrough.py`'s ch04_wake now carries the sworn-in flags, so the walk renders the wake as played.
+- **Row 47 (the Brightwater landing pier dark): fixed @ 8f0b0188** (also after big38).
+  - SELF-RENDERED @ 52bf4c11: brightwater_landing_f01 and f06.
+  - F01: two lantern pools on the landing, with the purser, Rhen and the ferry all lit and readable. F06 reads.
+- **Row 77 (O17's straight streaks and grey-box horizon): fixed @ 6c08bd85** (also after big38).
+  - SELF-RENDERED @ 52bf4c11: oruvel_o17_pen_split, against its baseline.
+  - The long parallel pale bands, the thin diagonal streaks and the grey boxes are gone.
+  - Now: a crossed storm sea (irregular dark and light patches) and a skyline of broken drowned towers.
+- **Row 86, my part (Ch10–Ch12): fixed @ fa34e5f6 + 1881f2b5, Lowlight's jagged white floor patch.**
+  - The cause was in my kit: the hall's fallen-bay rubble was scattered over a zero-width z range
+    (`fz0 .. z0 + 1.5`, both −33.5), so it lay in one line against the north wall. The sun's pool fell ~4 m
+    south, on bare pale flags.
+  - `sun_pool()` now projects the bay along the layout's sun. 46 low blocks lie across the pool, grey core more
+    than white skin, clear of the Engine, with no collision (≤ 0.24 m).
+  - SELF-RENDERED: walk stills from the EngineHall spawn and the field-camera height. The pool lands on a broken
+    heap with shadowed gaps and reads as fallen vault.
+  - **LEAD-ANSWERED (self):** my 10-31 LEAD-ASK (the sun's softness) is withdrawn; this fix is in my lane.
+  - The rest of row 86 is already done by its owners: Ossa Fen (mine, 2707ac2a; the mud is a GPU check, below),
+    the Lacquer Court and the Lamp Archive (env-art-b, 5628c704, baf421df), and Keth Pass's cameras
+    (act1-chapters, 17bf3a44).
+- **Row 90 (a 149 ms visible frame at the wake entry): no env-art cause found; needs a GPU re-measure.**
+  - Probe (scratch, not committed): the F8 Ch4 start into ch04/haluna_wake through SceneRouter on lavapipe, logging
+    every frame's time and pipeline compiles.
+  - Every compile (22 surface + 21 specialization, then 16) happens under the opaque fade.
+  - After the fade lifts, the frames show zero compiles and flat times (2.5–4.4 s, lavapipe noise, no outlier).
+  - So nothing in the wake's dressing first-draws after the reveal.
+  - The PC's own big38 note says its big36 timings, where the 149 ms came from, are invalid (the monitor was off).
+- **FAST-TRACK 4, the storm fights (M3-ENV-1340, review: rendering): `oruvel_raft_storm`.**
+  - Ch1's scuttlers and Hullgnaw fights named the calm morning raft.
+  - The new arena is the same raft in the zone's storm: the veiled sun, the storm environment, lut_ch01_storm and
+    the crossed swell with its glint veiled.
+  - Rendering's **UndertowStorm** stands behind the foes at the zone's preset and distance (`ch01_arrival`, 18 km,
+    clock held), so its wall rises dark over the raft-town.
+  - `ArenaCameraReach` (a child, since `BattleArena.apply` frees the root) raises the far plane past the storm.
+  - New shot `battle_arena_oruvel_raft_storm` (pending_baseline). SELF-RENDERED and viewed: the Hullgnaw on the
+    deck under the storm wall and its dark canopy, over a slate sea.
+  - Tried at 7 km for a bigger wall. That put the raft under the canopy (black sky, the funnel's sea over the
+    deck), so it stays at 18 km.
+  - **Request (in the task file): act1-chapters**, set `"arena": "oruvel_raft_storm"` on `ch01_scuttlers` and
+    `ch01_hullgnaw` in encounters.json (Combat's file).
+  - **LEAD-ASK:** route that two-line repoint to act1-chapters (or combat-systems) as FAST-TRACK 4's Ch1 half.
+  - Ch8's storm arenas are env-art-b's (the seawall_stairhead_* trio). The same `undertow` row in `arena_scenes.py`
+    (docs/kb/tech/battle_arenas.md "Adding an arena" step 4) puts the wall in them.
+- **Gotcha:** `python3 arena_scenes.py` with no `--arena` rewrites env-art-b's wrapped arenas and drops their smoke
+  columns and slot swaps. Always pass `--arena <id>`.
+
 - **Noted (the Lead, 05:22):** env-art-b makes rows 79, 80 and 62 (M3-ENV-1331 to 1333) in my kit, and I review them.
   I'm not redoing them.
 - **M5-A3P-1403 (Act III, Ch18 K04): the shell-carver's place at Reedhollow. MERGE-READY @ b95d1b39** (review: art).
@@ -1448,6 +1506,10 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- **2026-11-03, big38 predates these:** re-check rows 24 (DockShore; with the Ch4 flags), 47 (the landing) and 77 (O17)
+  at 52bf4c11 or later. Row 86: Lowlight's floor under the fallen bay, and Ossa Fen's mud. Row 90: re-measure the
+  wake entry's visible window with the screen on. New: `battle_arena_oruvel_raft_storm` on the GPU (the Undertow's
+  wall at 18 km behind the Hullgnaw).
 - PC pass 7 fixes (7769d2ad): re-check rows 59, 76, 77 and 83 on the GPU (expectations in Now).
 - Ch1 Underway pass (922cd122): Underway caustics on a real GPU (strength 1.2, and whether caustics inside the sun's shadows read wrong), and the dive well's floats from the deck.
 - Prologue dressing pass (b39caa29): look at P01 and P02 on a real GPU for the Iskarra towers' grime streaks and tide band, the plaza puddles' gloss and the amber lamp globes.

@@ -196,6 +196,54 @@ func test_a_grounded_scatter_sits_on_its_ground() -> void:
 
 ## M3-ENV-06 `underway_tower`: the arena carries its own underwater look on its Sea, Rhen's lantern target, and held
 ## motes at their own energy (a day battle keeps the hymn_glimmer gate shut).
+## The human's 11-03 FAST-TRACK 4: Ch1's storm arena stands the real Undertow up behind the foes, on the arena's own
+## Sea, Sun and grade; those references hold when the battle moves the arena's children (BattleArena.apply frees the
+## root and reparents Sun and WorldEnvironment to the battle scene); and its CameraReach reaches past the storm.
+func test_the_storm_arena_keeps_its_undertow_wired_through_the_battle_move() -> void:
+	var arena := _instance(&"oruvel_raft_storm") as BattleArenaRoot
+	var storm := arena.get_node_or_null(NodePath(BattleArenaRoot.UNDERTOW)) as UndertowStorm
+	assert_true(storm != null, "an UndertowStorm")
+	var reach := arena.get_node_or_null(^"CameraReach") as ArenaCameraReach
+	assert_true(reach != null and reach.far_m > 20000.0, "the camera reaches the storm 18 km off")
+	if storm == null:
+		arena.free()
+		return
+	var sun := arena.sun()
+	var sea := arena.sea()
+	var env := arena.world_environment()
+	assert_eq(storm.preset, "ch01_arrival", "the zone's preset")
+	assert_false(storm.playing, "its clock held")
+	assert_false(storm.zone_shadow, "no zone shadow: a fight never flickers")
+	var battle := Node3D.new()
+	for child in arena.get_children():
+		arena.remove_child(child)
+		battle.add_child(child)
+	arena.free()
+	assert_eq(storm.sun, sun, "still lit by the arena's Sun")
+	assert_eq(storm.water, sea, "still on the arena's Sea")
+	assert_eq(storm.world_environment, env, "still on the arena's grade")
+	battle.free()
+
+
+func test_the_camera_reach_raises_the_drawing_cameras_far_plane() -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	var cam := Camera3D.new()
+	cam.far = 4000.0
+	var reach := ArenaCameraReach.new()
+	reach.far_m = 40000.0
+	var holder := Node3D.new()
+	holder.add_child(cam)
+	holder.add_child(reach)
+	tree.current_scene.add_child(holder)
+	cam.make_current()
+	reach._process(0.0)
+	assert_eq(cam.far, 40000.0, "raised to the storm's reach")
+	reach.far_m = 100.0
+	reach._process(0.0)
+	assert_eq(cam.far, 40000.0, "never lowered")
+	holder.free()
+
+
 func test_the_underwater_arena_carries_its_rig_lantern_and_held_motes() -> void:
 	var arena := _instance(&"underway_tower") as BattleArenaRoot
 	var rig := arena.get_node_or_null(^"Underwater") as ArenaUnderwater

@@ -278,3 +278,19 @@ func test_party_data_keeps_every_source_to_the_party() -> void:
 	for src: Dictionary in party["sources"]:
 		assert_true(bool(src["party_only"]), "%s keeps to the party" % src["json"])
 	assert_false(bool((data["sources"][0] as Dictionary)["party_only"]), "the data itself is left as it was")
+
+
+## Act I GPU QA row 68: two loads that share a dependency never run at once (reed_b and reed_d segfaulted the PC);
+## unrelated loads still run side by side.
+func test_loads_that_share_a_dependency_wait_for_each_other() -> void:
+	var r := ResidentLoads.new()
+	var actor_b := "res://assets/characters/villagers/reed_b/reed_b_actor.tscn"
+	var glb_b := "res://assets/characters/villagers/reed_b/reed_b.glb"
+	assert_true(r.deps_of(actor_b).has(glb_b), "the actor scene names its model: %s" % [r.deps_of(actor_b)])
+	r._in_flight = PackedStringArray([glb_b])
+	assert_true(r.shares_with_in_flight(actor_b), "the actor waits for the model it is built on")
+	var unrelated := "res://game/data/ui/status_help.json"
+	assert_false(r.shares_with_in_flight(unrelated), "an unrelated path still loads beside it")
+	r._in_flight = PackedStringArray()
+	assert_false(r.shares_with_in_flight(actor_b), "nothing in flight: nothing to wait for")
+	r.free()

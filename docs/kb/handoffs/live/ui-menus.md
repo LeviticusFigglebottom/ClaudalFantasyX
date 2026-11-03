@@ -1585,3 +1585,77 @@ MERGE-READY @ 01597d03a: M5-A3P-1710, the Memories gallery through Act II.
   - **The optional-content log** is M5-A3P-1703 (the ship's log: revisits and heirlooms).
   - **The Kite map** has its Act III revisits (M5-A3P-1702).
 MERGE-READY @ 3cbba87bc: M5-A3P-1711, the Kite's flight card.
+
+## FROM 2026-11-03 (Lead session_018aiGwGLGkxsnMnu8VfCu1m; integration `claude/undertow-lead-handoff-ze8rrn`)
+Merged origin/claude/undertow-lead-handoff-ze8rrn @ e2411fb04 (clean). The human's FAST-TRACKs first.
+
+- **FAST-TRACK 3, M3-UI-1250 (status explanations): review (combat).**
+  - `StatusHelpModel` (game/ui/status_help/) builds every status's words from game/data: name and what it does,
+    how long it lasts (statuses.json default_duration; Last Tide counts down instead), whether it outlasts the battle
+    (party_rest.json), and what removes it: items.json `cure` items (battle-only ones marked), party skills'
+    `cleanses` (heroes, Lattice nodes, a Vowbound's only once bound), a save shrine's rest, and its own way
+    (status_help.json notes). **No cure data was missing**, so no request to combat-systems for it.
+  - `StatusHelpPanel`: every status (glyph, name, blessing/affliction, page). The new remappable **status help**
+    key (H / pad Back; Controls page) opens it from the battle command menu (the actor), target picking (the fighter
+    under the cursor), the Read panel (its hint names the key) and the field Status page (its help line names it).
+  - `StatusTipCard`: the first time each status lands on the party, at the party's next command, holding the battle.
+    Once per save (`status_<id>_met`, 21 flags), off with the tips setting, never in fixtures or captures.
+  - Codex **Afflictions** (5th category): an entry per status, opened as met; its page is the whole help.
+  - Status chips in the party panel and the target info: hover = tooltip, long press = callout (the one line).
+  - Glyphs are the HUD's StatusGlyph set; battle-presentation's on-body icons can replace it in one class.
+  - Tests: test_status_help 13/0; status 60/0; codex 16/0; read_panel 13/0; controls 12/0; input_parity 68/0;
+    field_menu 29/0; items_menu 14/0; tutorial 10/0; bestiary 37/0. validate_data 0/0; taskboard ok; lint ok.
+- **Act I GPU QA rows 69 and 73 (help line):** "acts again in 1 turns" now reads "after one turn"; the command
+  rows' "R3" gets its legend on the help line: "R3 wait: Rhen acts again in 2 turns".
+- **FAST-TRACK 5, M3-UI-1251 (field Magic page): built, waiting on combat-systems.** MagicMenu (caster → spell →
+  hero, preview, MP spent, save write-back as the Items page) over `FieldMagicRules`, which binds combat-systems'
+  static `FieldCast.usable/refusal/cast` (request **M3-CMB-1252**, role combat, todo). Until that class exists the
+  field menu shows no Magic row. test_magic_menu 6/0 with stand-in rules.
+  LEAD-ASK: please point combat-systems at M3-CMB-1252 (the API shape is in the task; any equivalent is fine if
+  they name it there). Once it lands I wire the names and add a shot.
+- **FAST-TRACK 5, M3-UI-1253 (revive in the field Items page): review (combat).** It already worked with the
+  Relighting Wick; a new data-driven test runs every `field` item with a `revive` effect, so combat-systems' new
+  item is covered the moment it lands.
+- **SELF-RENDERED @ 54b033510:** battle_status_help, battle_status_tip (new, pending_baseline), battle_read_panel,
+  status_menu, field_menu_codex, settings_controls — viewed. Fixed from viewing: the tip card ran off screen,
+  the panel grew onto the turn order, the Codex frame cut off Afflictions, Last Tide said "wears off". The Read
+  panel and Status page drift only by their new hint text; settings_controls is unchanged in view (the new row is
+  further down the list). Battle shots with the command menu open drift by the help line's "R3 wait:".
+MERGE-READY @ 54b033510: FAST-TRACK 3 (M3-UI-1250), FAST-TRACK 5 UI (M3-UI-1251 page behind the rules seam,
+M3-UI-1253), Act I rows 69 and 73; checks above; full battle suite running (result below). Skipped: Blender (no
+Blender source touched).
+- **combat-systems shipped `FieldSpell` (M3-CMB-05, claude/combat-systems @ da778b9e) and asked for the page (their
+  M3-MNU-05).** The Magic page now binds FieldSpell **by name** (FieldMagicRules.live; magic_menu.json
+  rules_class), so claude/ui builds before their branch merges, and words its refusals (fallen, stone, Hollowed,
+  nothing to do, no MP). My request M3-CMB-1252 is withdrawn. M3-UI-1251 is in review (combat).
+  - Checked in a throwaway merge of claude/ui + claude/combat-systems: test_magic_menu 7/0, including
+    `test_the_live_field_spell_rules_drive_the_page` (Asha's Mend on Rhen through the real FieldSpell). Shot
+    **magic_menu** (new, pending_baseline) rendered there and viewed: "Asha: MP 60 → 56 · Rhen: HP 151 → 381".
+    On claude/ui alone the Magic row is hidden and the shot shows the casters only, so **render magic_menu after
+    both branches merge**.
+  - Merge note for the Lead: the two branches touch different files except game/data/loc (append-only rows).
+- **Act I GPU QA row 68 (ResidentLoads, 75236a571):** two loads that share a dependency never run at once (reed_b
+  and reed_d share sub-resources; the PC logged "Another resource is loaded from path" then segfaulted). Unrelated
+  loads keep max_in_flight 4. resident 15/0 (a new test on the real reed variant). PC-QUEUE: re-run the row 68
+  walks (the fresh Prologue, Haluna cold, the Drownbell probe).
+- **Row 73:** the legend now reads "R3: Rhen acts again in 2 turns" (the longer "R3 wait:" wrapped a one-line help).
+- **Row 70 (faint party damage numbers on bright arenas):** battle-presentation's first. The numbers already draw
+  ui_line_white with a 4 px night_sky outline (theme.json), so I can't see from here why the GPU stills read them
+  as a translucent grey (mid-fade stills?). LEAD-ASK: battle-presentation to take it with a GPU still; I'll change
+  the fill or outline on their word.
+- **Full battle suite:** 874 run, 3 failed. Mine: test_the_help_line_wraps (fixed above; test_battle_controller
+  33/0). Not mine: test_battle_stings and test_battle_audio's fire sound read LFS audio that is a pointer in this
+  container (no lfs pull: lfs.github.com is blocked). The 3 LEAK lines in test_battle_controller predate this work
+  (those tests never free the sandbox).
+MERGE-READY @ 73699ed9f: M3-UI-1250, M3-UI-1251 (FieldSpell-bound), M3-UI-1253, Act I rows 68, 69, 73. Checks: as above,
+plus validate_data 0/0, taskboard ok, lint and format clean. Skipped: Blender (none touched). Shots to approve:
+battle_status_help, battle_status_tip, magic_menu (new); battle_read_panel, status_menu, field_menu_codex, and the
+command-menu battle shots (help line).
+
+### PC-QUEUE (11-03)
+- Row 68: re-run the segfault walks on the merged ResidentLoads change.
+- Row 70: a GPU still of party damage numbers over ch02_tideline's sand.
+
+### Next (ui-menus)
+- Act I has no other open ui row I can fix without the PC. Next: the Lead's word on row 70, then Act II items from
+  my M4 tasks (M4-A2P-080..083 are STALE "doing" on the board: re-check each against what has shipped).

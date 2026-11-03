@@ -13,6 +13,8 @@ extends Node3D
 ##   CameraHints       optional Marker3Ds for the battle-presentation camera (see the doc)
 ##   BossAnchor        optional: where a boss set piece stands (the Drownbell's sunk pool)
 ##   FloodAnchor       optional: the flood rig's water origin and datum (x, z = 0; y = from_m)
+##   Undertow          optional: an UndertowStorm on the horizon (a storm arena; the human's 11-03 FAST-TRACK 4),
+##                     with CameraReach (ArenaCameraReach) beside it: the storm stands km off, past a camera's far.
 
 const WORLD_ENVIRONMENT := &"WorldEnvironment"
 const SUN := &"Sun"
@@ -20,6 +22,7 @@ const SEA := &"Sea"
 const CAMERA_HINTS := &"CameraHints"
 const BOSS_ANCHOR := &"BossAnchor"
 const FLOOD_ANCHOR := &"FloodAnchor"
+const UNDERTOW := &"Undertow"
 ## Arena scenes live at ARENA_DIR/<arena_id>/<arena_id>.tscn.
 const ARENA_DIR := "res://assets/environments/arenas"
 

@@ -7,7 +7,7 @@
 script = ExtResource("1_preview")
 arena_scene = ExtResource("2_arena")
 party = Array[StringName]([&"rhen"])
-enemies = Array[StringName]([&"scuttler", &"scuttler"])
+enemies = Array[StringName]([&"hullgnaw"])
 
 [node name="BattleCamera" type="Camera3D" parent="."]
 current = true

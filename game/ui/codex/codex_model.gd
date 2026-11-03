@@ -167,8 +167,18 @@ func title(id: StringName) -> String:
 	return _tr(str(entry(id).get("title_key", "")))
 
 
+## An Afflictions entry's page is its status's whole help (StatusHelpModel.body: what it does and every way it
+## ends, from the game's tables); every other entry's is its body_key.
 func body(id: StringName) -> String:
+	var sid := status_of(id)
+	if sid != &"":
+		return StatusHelpModel.shared().body(sid)
 	return _tr(str(entry(id).get("body_key", "")))
+
+
+## The status an Afflictions entry explains (&"" for any other entry).
+func status_of(id: StringName) -> StringName:
+	return StringName(str(entry(id).get("status", "")))
 
 
 ## "6 of 10 entries found" (the header).

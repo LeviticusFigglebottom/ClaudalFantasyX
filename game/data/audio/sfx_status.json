@@ -1,0 +1,222 @@
+{
+  "version": 1,
+  "doc": "M3-AUD-866 (the human's playtest FAST-TRACKs 3 and 5, 11-03): one apply cue per status in statuses.json, the cure (a harmful status lifted), the fade (a beneficial one gone) and the revive (assets_src/sfx/status_sfx.py; plain git). battle_sfx.json `statuses` says which plays when; BattleAudio plays them off the engine's results, in place of the generic status_apply.",
+  "sfx": {
+    "status_poison": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_poison.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_sleep": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_sleep.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_silence": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_silence.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_darkness": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_darkness.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_petrify": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_petrify.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_slow": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_slow.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_haste": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_haste.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_stop": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_stop.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_berserk": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_berserk.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_confuse": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_confuse.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_doom": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_doom.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_zombie": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_zombie.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_shell": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_shell.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_protect": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_protect.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_reflect": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_reflect.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_regen": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_regen.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_armor_break": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_armor_break.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_mental_break": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_mental_break.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_power_break": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_power_break.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_magic_break": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_magic_break.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_provoke": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_provoke.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_cure": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_cure.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_fade": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_fade.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "revive": {
+      "files": [
+        "res://assets/audio/sfx/battle/revive.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 4,
+      "volume_db": 0.0
+    }
+  }
+}

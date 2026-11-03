@@ -148,10 +148,14 @@ Rhen fights alone all chapter (act1_ch01.md §9 Combat), with `active: [rhen]` a
 |---|---|---|---|---|---|
 | `ch01_wickfry`, `ch01_oil_slug`, `ch01_shaft_limpet`, and the random `ch01_underway_shoals` and `ch01_underway_limpet` | tutorial (logged exception) | 80–100% | ≥ 95% | ≥ 98% | ≤ 30 |
 | `ch01_scuttlers` | Ch1–Ch3 regular | 40–80% | ≥ 95% | ≥ 98% | ≤ 30 |
-| `ch01_hullgnaw` | Ch1–Ch3 boss | 0–10% | report only | 80–95% | ≤ 60 |
+| `ch01_hullgnaw` | Ch1 solo boss (M3-CMB-06, first-timer band) | 5–25% | 55–85% | ≥ 97%, mean ≥ 24 actions | ≤ 60 |
 
 - **Tutorial fights:** each teaches one thing (the command menu, items, escape), and a first-time masher shouldn't lose one.
 - **Hullgnaw's `role_answer`:** the policy never uses items, and in a one-hero fight nobody can swap in, so it measures only the masher plus MP skills and the Swell. Rhen's answer is tempo plus a Salt Tonic when the Coil telegraphs the Gnaw, and only `smart` plays that.
+- **Hullgnaw is the first boss, fought alone (M3-CMB-06, the human's playtest 2026-11-03: "a little too hard").** Its bands are a first-timer's, not a regular boss's:
+  - `naive` 5–25%: a pure masher who never heals should still usually fall to the second Gnaw. That is the lesson of the Coil telegraph, and it stays.
+  - `role_answer` 55–85% (banded, was report only): Rhen's skills and the Swell but no items. This is a first-time player's "basic play"; it should win more often than not without knowing the item lesson.
+  - `smart` ≥ 97%, with an ease ceiling of 24 mean actions: anyone who heals once when the Coil shows wins, and the fight still lasts long enough to see both phases.
 - **Kick Off:** the encounter lends it (`party_skills`), because the second phase teaches it.
 - **Tempo (M3-CMB-02):** no Ch1 regular should routinely double-turn a solo Rhen. A foe's rank × base delay should be no shorter than about 0.85 of Rhen's Attack (174 ticks): the Wickfry is 150, and every other regular is slower. Only Hullgnaw's second phase out-tempos him, by design. The timeline shows each foe at its AI's rank (ADR 0038).
 

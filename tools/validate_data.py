@@ -1366,6 +1366,8 @@ def run(root: Path) -> Report:
     check_creatures(root, files, rep)
     check_wildlife(root, rep)  # M3-CRE-611
     check_npc(root, rep)  # M3-CRE-613
+    for e in field_usable_errors(files.get("game/data/battle/skills.json")):  # M3-CMB-05
+        rep.err(e)
     return rep
 
 
@@ -3275,6 +3277,37 @@ def check_kite(files: dict[str, object], flags: set[str], rep: Report) -> list[s
     for e in kite_errors(doc, flags, locations):
         rep.err(e)
     return collect_keys([doc])
+
+# --- M3-CMB-05 (combat-systems): spells castable from the field menu ------------------------------
+
+FIELD_SPELL_TARGETS = {"single_ally", "all_allies", "self", "all_other_allies"}
+
+
+def field_usable_errors(doc: object) -> list[str]:
+    """skills.json `field_usable` (M3-CMB-05; FieldSpell, docs/kb/design/battle_ctb.md § Field spells):
+    a bool; when true the skill must reach allies (FIELD_SPELL_TARGETS), heal (kind "heal") or
+    clear statuses (a non-empty "cleanses"), and must not be a Swell technique, a charge or a drain."""
+    errs: list[str] = []
+    if not isinstance(doc, dict):
+        return errs
+    for s in doc.get("skills", []):
+        if not isinstance(s, dict) or "field_usable" not in s:
+            continue
+        w = f"skills.{s.get('id')}"
+        if not isinstance(s["field_usable"], bool):
+            errs.append(f"{w}: 'field_usable' must be a bool (M3-CMB-05)")
+            continue
+        if not s["field_usable"]:
+            continue
+        if s.get("target") not in FIELD_SPELL_TARGETS:
+            errs.append(f"{w}: a field_usable skill must target allies ({sorted(FIELD_SPELL_TARGETS)})")
+        if s.get("kind") != "heal" and not s.get("cleanses"):
+            errs.append(f"{w}: a field_usable skill must heal (kind 'heal') or clear statuses ('cleanses')")
+        for k in ("swell", "charge", "drain_pct"):
+            if s.get(k):
+                errs.append(f"{w}: a field_usable skill must not have '{k}'")
+    return errs
+
 
 if __name__ == "__main__":
     sys.exit(main())

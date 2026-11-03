@@ -136,7 +136,9 @@
     "arena_court_steps": {"file": "res://assets/audio/act2/ambience/arena_court_steps.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): battle arena, Ch14 the Lacquer Court's water-steps: the crowd drawn back and far, silk, water on the steps, a far gong"},
     "hollowmere_flotilla": {"file": "res://assets/audio/act2/ambience/hollowmere_flotilla.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch15, Hollowmere's first visit (ambience only, beats act2_ch15.md §6): water among the hulls, tide-wheels, a pump, gulls, far hammers, low voices"},
     "open_sea_fog": {"file": "res://assets/audio/act2/ambience/open_sea_fog.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch15 B09, the bow at dawn in fog: flat calm, a low swell, fog-damp drips off the canopy, the barge barely creaking"},
-    "choir_storm": {"file": "res://assets/audio/act2/ambience/choir_storm.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch16, the storm waking early at the Choir (ch16_holding_the_line): the mouths roaring in a gale, surge and spray, the sea's roar"}
+    "choir_storm": {"file": "res://assets/audio/act2/ambience/choir_storm.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch16, the storm waking early at the Choir (ch16_holding_the_line): the mouths roaring in a gale, surge and spray, the sea's roar"},
+    "storm_gale": {"file": "res://assets/audio/ambience/storm_gale.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M3-AUD-865 / M3-AUD-1254 (assets_src/sfx/storm_ambience.py; plain git): the Undertow's storm in the open: the gale in gusts, driven rain on water and wood, the swell breaking on hulls, the low roar (Ch1 Oruvel after the gulls, Ch8's headland after the beacon)"},
+    "storm_wall": {"file": "res://assets/audio/ambience/storm_wall.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M3-AUD-865 / M3-AUD-1254 (assets_src/sfx/storm_ambience.py; plain git): the storm at Corrow's seawall: the same gale and rain, the sea booming on the stone face and its spray coming over, the roar heavier"}
   },
   "zones": {
     "res://game/levels/prologue/prologue.tscn": {"day": ["iskarra_dusk"], "_note": "M3-AUD-817: Iskarra's drowned plaza at dusk, the room tone under the prologue cutscene"},
@@ -283,10 +285,16 @@
     "lacquer_court_steps": ["arena_court_steps"],
     "ansedra_lagoon_escape": ["arena_lagoon_dusk"],
     "bridal_barge_night": ["open_sea_night"],
-    "drowned_choir_ring": ["choir_bowl"]
+    "drowned_choir_ring": ["choir_bowl"],
+    "oruvel_raft_storm": ["storm_gale"],
+    "seawall_stairhead_storm": ["storm_wall"],
+    "seawall_stairhead_hoist": ["storm_wall"],
+    "seawall_stairhead_surge": ["storm_wall"],
+    "wall_head_storm": ["storm_wall"]
   },
   "encounters": {
-    "ch16_holding_the_line": ["choir_storm", "choir_bowl"]
+    "ch16_holding_the_line": ["choir_storm", "choir_bowl"],
+    "ch16_storm_wakes": ["choir_storm", "choir_bowl"]
   },
   "pending_encounters": ["ch16_holding_the_line"],
   "wind": {

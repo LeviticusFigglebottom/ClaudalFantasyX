@@ -1,5 +1,53 @@
 # Live log: audio (branch `claude/audio`)
 
+## FROM 2026-11-03 (Lead `session_018aiGwGLGkxsnMnu8VfCu1m`; integration `claude/undertow-lead-handoff-ze8rrn`)
+Merged integration @ e2411fb0 into claude/audio (clean). Newest first.
+
+- **MERGE-READY @ 25256466: FAST-TRACK M3-AUD-866 (status sounds and the revive; `review`, reviewer qa), and the storm item reconciled with act1-chapters' (M3-AUD-1254 done).**
+  - **Status cues** (assets_src/sfx/status_sfx.py → 24 files under assets/audio/sfx/battle/; plain git; rows in sfx_status.json):
+    - a `status_<id>` for each of statuses.json's 21 statuses: harmful ones sink, beneficial ones rise, and the breaks share one crack;
+    - `status_cure`, `status_fade` and `revive`.
+    - Levels −20 to −21 LUFS momentary (the revive −18), and `--determinism` identical.
+  - **BattleAudio.play_statuses** works off the engine's results, so **nothing needs wiring**. Each added status plays its own cue in place of the generic `status_apply`. An item's removed statuses play the cure (harmful) or the fade (beneficial), and a `revived` hit plays the revive.
+  - **combat-systems' Relighting Wick:** its effect now rings `revive` instead of `heal`.
+  - **battle-presentation:** if you add per-status effects, map them in battle_sfx.json `vfx` to the same `status_<id>` rows; the dedupe keeps one sound. A status expiry signal, when one exists, would play `status_fade`/`status_cure`.
+  - **The storm, reconciled:** merged act1-chapters @ fd4c131f (M3-C01-1252: their `storm: true`, `battle.storm_cues`, `oruvel_raft_storm`, and their interim `battle_storm` row).
+    - **One cue id:** `battle_storm` now plays the composed storm_battle.ogg; my `storm_battle` id is retired. **IDS FOR OTHER TRACKS: `battle_storm` (fights), `undertow_storm` (the storm's field loop), `undertow_rising` (the Rising).**
+    - **New storm beds** (assets_src/sfx/storm_ambience.py, plain git, −26 LUFS): `storm_gale` on oruvel_raft_storm, and `storm_wall` on the three seawall storm arenas and wall_head_storm. The storm zone variants carry them into the field too.
+    - `coilspire_headland_storm` is still a proposed arena id in `battle.pending_arenas`; until it exists, the headland's stormgulls play `battle_storm` through the zone variant.
+  - **Checks:**
+    - Godot: `--filter=storm` 36/0 (act1-chapters' test_storm_encounters and mine), status_audio 7/0, field_audio 22/0, audio_loops 3/0. battle_audio 21/22: its one red is the unfetched-LFS `abl_ember`, as before.
+    - Tools: test_storm_music 12/0; test_audio_loudness OK (all new files measured); test_audio_data and test_act1_audio_audit OK.
+    - validate_data 0; taskboard --check; gdlint and gdformat clean.
+  - **Skipped:** screenshots, Blender, coverage (nothing under game/battle/ or game/progression/).
+  - **Queue:** empty of FAST-TRACK items. Next is Act II and III audio from the plan (M5-A3P-1951/1952 and Ch17–Ch20's music cues), unless the Lead or battle-presentation asks for more.
+
+- **MERGE-READY @ 7d388d54: FAST-TRACK M3-AUD-865, the storm's music (the human's playtest item 4). `review`, reviewer qa.**
+  - **Why it was uplifting (two causes):**
+    1. `ch01_scuttlers`, the fight straight after the Rising, had no battle row, so it played `battle_standard_v2`.
+    2. No storm zone had a flag variant, so a return from a storm fight brought back the calm bed: Oruvel's town tune before `ch01_net_pen`, and Corrow's day bed between the Ch8 waves. The storm cutscenes `ch01_bridge_gone`, `ch01_scuttlers` and `ch01_net_pen` name no `@music`, so they inherited it.
+  - **New cue `storm_battle`** (assets/audio/music/storm_battle.ogg, plain git, 0.75 MB):
+    - Original; a battle variant of our `undertow_rising`, whose brass line, clusters and run it imports (G octatonic).
+    - 96 BPM: a 5 s intro and a 70 s loop.
+    - −16.0 LUFS, −1.8 dBTP. Splice residual −164 dB; `--determinism` identical.
+  - **Battle cue order** is now: the encounter's row, then `battle.arenas`, then the field zone's `battle` key, then the default. A boss keeps its own theme, and so do the Ch8 waves (seawall_hold) and the Reach.
+  - **Storm variants**, each with `music: undertow_storm` and `battle: storm_battle`:
+    - Oruvel on `ch01_gulls_cried`;
+    - Corrow on `ch08_beacon_opened` (`ch08_wall_fell` gives corrow_aftermath first);
+    - Coilspire on `ch08_beacon_opened` (the stormgulls).
+  - `undertow_storm` is the Rising's own stems from its loop start (new `from_loop` key) and resumes, so the town-tune intro never replays.
+  - **CUE IDS FOR OTHER TRACKS:**
+    - **act1-chapters:** name your storm arena variants `oruvel_raft_storm` (Ch1) and `coilspire_headland_storm` (Ch8). They already map to storm_battle (`battle.pending_arenas`); take them off that list when arenas.json has them, or tell me other names. A storm encounter needs no row. `ch01_scuttlers` → storm_battle is set by encounter.
+    - **slice-polish:** the storm cues are undertow_rising (the Rising), undertow_storm (the storm loop with no intro, for any storm shot), storm_battle, undertow_reach, seawall_hold and hullgnaw. The vortex shots need no cue change. `tools/tests/test_storm_music.py` fails if a storm script names a calm cue.
+    - **battle-presentation:** nothing to wire; BattleAudio resolves the cue itself.
+  - **Checks:**
+    - validate_data 0; taskboard --check; gdlint and gdformat clean.
+    - Godot `--filter=storm_music` 5/0, `audio_loops` 3/0, `zone_return` 9/0.
+    - `--filter=audio` 189 run, 2 failed; `--filter=music` 20 run, 1 failed. All three fail on files this cloud checkout never fetched from LFS (pointers): prologue_dusk.loop.json and abl_ember.ogg. They are not from this change; the PC with LFS pulled runs them.
+    - Tools: test_storm_music 10/0, test_audio_data, test_act1_audio_audit, test_music_markers and test_cutscene_music_sync (63 OK); test_banned_scan OK.
+  - **Skipped:** screenshots (no scene or shader touched), Blender (no Blender source), coverage (game/battle/ and game/progression/ untouched).
+  - **Next:** Act I audio rows, then the revive item's sound and the status apply/cure cues (combat-systems has only claimed so far, and battle-presentation hasn't asked yet).
+
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 

@@ -5,9 +5,8 @@ storm's bearing, the ambient lifted so the party reads), rain on the battle came
 (ArenaRainWet over the weathering shader's `rain_wet`), and Rendering's UndertowStorm on the sea down the battle
 camera's view, with a StormFarPlane so the camera's far plane reaches it.
 
-  oruvel_raft_storm         Ch1 C1-12 on: the Scuttlers and the Hullgnaw after the lintel-gulls cry (preset
-                            ch01_arrival). A new arena from env-art's oruvel_raft_morning table (read-only), written
-                            here; act1-chapters points the two encounters at it.
+  (Ch1's oruvel_raft_storm is env-art's: they own the Prologue-Ch4 arenas, the Lead's big47 decision. This module
+  no longer writes it; its ch01_rising look stays here for reference.)
   seawall_stairhead_*       Ch8's three wall-head arenas (the stair holds and the Reach), in place: their wrapper
                             (assets_src/environments/kits/corrow/b_seawall_storm.py) takes LOOKS["ch08_storm"]
                             ("ch08_reach" for the surge).
@@ -18,7 +17,7 @@ camera's view, with a StormFarPlane so the camera's far plane reaches it.
                             storm is not yet overhead, so LOOKS["ch08_brewing"] (overcast, a little rain) and the
                             Undertow at ch08_seawall; written by b_headland_arena.py.
 
-This module holds the looks and the scene additions; each wrapper applies them. Re-run (Ch1's arena):
+This module holds the looks and the scene additions; each wrapper applies them. Re-run (Ch16's arena):
 
     python3 tools/act1/storm_arenas.py
 """
@@ -221,20 +220,6 @@ def _arena_scenes():
     return mod
 
 
-# Ch1: the storm comes from the sea, past the foes' side of the deck (the battle camera looks down -Z).
-CH01_ID = "oruvel_raft_storm"
-CH01_BASE = "oruvel_raft_morning"
-CH01_AZIMUTH = 340.0
-CH01_LUT = "res://assets/environments/kits/oruvel/lut_ch01_storm.png"
-# The lagoon's tropical water under a storm sky reads sunny: the Ch8 arenas' storm-grey sea, a shade darker
-CH01_SEA_MATERIAL = {"name": "arena_storm_grey_ch01", "shader": "res://game/shaders/water/water_ocean.gdshader",
-                     "params": [["col_deep", "#0B3340"], ["col_scatter_shallow", "#1A5E68"],
-                                ["absorption_per_m", "Vector3(2, 0.5, 0.42)"], ["absorption_scale", 2.25],
-                                ["scatter_energy", 0.1], ["caustic_strength", 0.0], ["col_foam", "#DDE6E6"],
-                                ["col_sss", "#1A5E68"], ["foam_crest_threshold", 0.5], ["roughness_far", 0.2],
-                                ["use_caustics", "false"], ["use_ssr", "false"], ["use_sss", "false"]]}
-
-
 # Ch16: the storm over the ring behind the enemy line (the battle camera looks down -Z), between two singers.
 CH16_ID = "drowned_choir_storm"
 CH16_AZIMUTH = 0.0
@@ -248,14 +233,6 @@ def main(out_dir: Path | None = None) -> int:
     AS = _arena_scenes()
     if out_dir is not None:  # tools/tests/test_b_arenas.py writes to a scratch dir
         AS.OUT_DIR = out_dir
-    base = AS.ARENAS[CH01_BASE]
-    table = styled(base, "ch01_rising", id=CH01_ID, lut=CH01_LUT, sub_frame="ch01_storm",
-                   sea={**base["sea"], "material": CH01_SEA_MATERIAL})
-    path = AS.write_arena(table)
-    text = dress(path.read_text(encoding="utf-8"), "ch01_rising", azimuth=CH01_AZIMUTH, preset="ch01_arrival",
-                 sea_y=table["sea"]["y"])
-    path.write_text(add_rain_wet(text, "ch01_rising"), encoding="utf-8")
-    print(f"ARENA {path.name} (storm look ch01_rising, Undertow ch01_arrival at {CH01_AZIMUTH} deg)")
     base = AS.CHOIR_ARENA
     table = styled(base, "ch16_waking", id=CH16_ID, sub_frame="ch16_storm")
     path = AS.write_arena(table)

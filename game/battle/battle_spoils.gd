@@ -24,6 +24,31 @@ static func xp_awards(engine: BattleEngine) -> Dictionary:
 	return out
 
 
+## M3-CMB-04 (the human's playtest, 2026-11-03): the party as it leaves the battle, for the saved
+## vitals (BattleVitals.send_back), active then reserve. After a won fight (SPOILS_OUTCOMES) each
+## member at HP 0 is replaced by a risen copy (risen_copy) at Formulas.victory_rise_hp; everyone
+## else, and everyone after an escape, is the battle's own combatant. The battle's combatants are
+## never changed, so the XP credit rule (alive at victory) still leaves the fallen out.
+static func returning_party(engine: BattleEngine) -> Array[BattleCombatant]:
+	var out: Array[BattleCombatant] = []
+	var won := engine.outcome in SPOILS_OUTCOMES
+	for c in engine.party_active + engine.party_reserve:
+		out.append(risen_copy(c) if won and c.hp <= 0 else c)
+	return out
+
+
+## A detached copy of fallen `c` standing at Formulas.victory_rise_hp, with what the saved vitals
+## read kept: max HP, MP, statuses (a KO cleared them), and the Swell gauge and mode.
+static func risen_copy(c: BattleCombatant) -> BattleCombatant:
+	var r := c.sim_copy()
+	r.name_key = c.name_key
+	r.level = c.level
+	r.hp = Formulas.victory_rise_hp(c.hp)
+	r.swell = c.swell
+	r.swell_mode = c.swell_mode
+	return r
+
+
 ## Battle lume: the sum of every enemy's `currency`, times the engine's currency_multiplier hook
 ## for the credited party (x1 when unset). 0 unless victorious.
 static func currency_award(engine: BattleEngine) -> int:

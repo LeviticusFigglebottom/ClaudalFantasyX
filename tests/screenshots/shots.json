@@ -362,6 +362,16 @@
       "scene": "res://game/battle/scene/shots/battle_statuses.tscn"
     },
     {
+      "id": "battle_status_help",
+      "pending_baseline": true,
+      "scene": "res://game/battle/scene/shots/battle_status_help.tscn"
+    },
+    {
+      "id": "battle_status_tip",
+      "pending_baseline": true,
+      "scene": "res://game/battle/scene/shots/battle_status_tip.tscn"
+    },
+    {
       "id": "save_shrine_field",
       "scene": "res://game/levels/_tests/save_shrine/shot_save_field.tscn",
       "settle_frames": 30,
@@ -2575,6 +2585,11 @@
     {
       "id": "items_menu_use",
       "scene": "res://game/ui/menus/items/shots/items_menu_use.tscn"
+    },
+    {
+      "id": "magic_menu",
+      "pending_baseline": true,
+      "scene": "res://game/ui/menus/magic/shots/magic_menu.tscn"
     },
     {
       "id": "status_menu",
@@ -10775,6 +10790,37 @@
         540
       ],
       "settle_frames": 240
+    },
+    {
+      "id": "field_hero_walk_release",
+      "scene": "res://game/levels/_tests/hero_motion/field_hero_walk_release.tscn",
+      "camera": "ShotCamera",
+      "pending_baseline": true,
+      "settle_frames": 30,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    {
+      "id": "battle_arena_oruvel_raft_storm",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/battle_arenas/preview_oruvel_raft_storm.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
