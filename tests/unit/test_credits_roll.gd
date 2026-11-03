@@ -81,7 +81,7 @@ func test_confirm_runs_it_faster_and_cancel_skips_only_once_seen() -> void:
 func test_the_view_climbs_fades_for_the_vignette_and_ends_into_the_next_scene() -> void:
 	var roll := _roll(false, _with_vignette_scene())
 	assert_true(roll.shown_text().has(tr("CREDITS_GAME")))
-	assert_true(roll.shown_text().has(tr("CREDITS_ENGINE")))
+	assert_true(roll.shown_text().has(tr("CREDITS_ROLL_GODOT_MADE")))
 	assert_false(roll.hint_text().contains("{"), "the hint names its bindings")
 	assert_false(roll.hint_text().contains(tr("CREDITS_ROLL_SKIP").get_slice("}", 1)), "no skip offered the first time")
 	var started: Array[StringName] = []
@@ -161,3 +161,51 @@ func _roll(seen: bool, config: Dictionary = {}) -> CreditsRoll:
 	ParityHost.scene_root().add_child(roll)
 	made.append(roll)
 	return roll
+
+
+## The Lead (11-03): facts only. The title, what was made for the game, Godot's MIT notice in full (with FreeType's
+## credit), the OFL fonts; no person on the project named, and the Made by section left out until a name is added.
+func test_the_credits_hold_the_required_notices_and_no_one_s_name_yet() -> void:
+	var m := CreditsRollModel.new()
+	var keys: Array[String] = []
+	for r in m.rows():
+		keys.append(str(r["key"]))
+	for need: String in [
+		"CREDITS_GAME",
+		"CREDITS_ROLL_MUSIC",
+		"CREDITS_ROLL_ART",
+		"CREDITS_ROLL_CODE",
+		"CREDITS_ROLL_GODOT_MADE",
+		"CREDITS_ROLL_GODOT_COPYRIGHT_1",
+		"CREDITS_ROLL_MIT_GRANT",
+		"CREDITS_ROLL_MIT_NOTICE",
+		"CREDITS_ROLL_MIT_WARRANTY",
+		"CREDITS_ROLL_FONT_GARAMOND",
+		"CREDITS_ROLL_FONT_SOURCE",
+		"CREDITS_ROLL_OFL",
+	]:
+		assert_true(keys.has(need), "%s is in the roll" % need)
+		assert_ne(tr(need), need, "%s is translated" % need)
+	assert_false(keys.has("CREDITS_ROLL_MADE_BY_TITLE"), "no Made by section while it names no one")
+	var data := CreditsRollModel.load_data()
+	for s: Variant in data["sections"]:
+		if str((s as Dictionary)["title_key"]) == "CREDITS_ROLL_MADE_BY_TITLE":
+			(s as Dictionary)["lines"] = ["CREDITS_THANKS"]
+	var named := CreditsRollModel.new(data)
+	assert_true(named.rows().any(func(r: Dictionary) -> bool: return r["key"] == "CREDITS_ROLL_MADE_BY_TITLE"))
+	var licence := m.rows().filter(func(r: Dictionary) -> bool: return r["key"] == "CREDITS_ROLL_MIT_GRANT")
+	assert_true(bool(licence[0]["notice"]), "licence text is set small")
+
+
+func test_a_long_line_wraps_into_its_own_height() -> void:
+	var roll := _roll(false)
+	var grant: Label = null
+	var next: Label = null
+	for i in roll._labels.size():
+		if roll._labels[i].text == tr("CREDITS_ROLL_MIT_GRANT"):
+			grant = roll._labels[i]
+			next = roll._labels[i + 1]
+	assert_true(grant != null, "the grant is on the roll")
+	assert_true(grant.size.y > float(CreditsRollModel.load_data()["column"]["line_height"]), "it takes several lines")
+	assert_true(next.position.y >= grant.position.y + grant.size.y, "the next line starts below it")
+	after_each()

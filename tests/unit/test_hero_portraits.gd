@@ -47,7 +47,11 @@ const HEROES: Array[StringName] = [
 	# Act II townsfolk who speak (M4-A2P-081): the Lacquer Court's bride and groom, and Ansedra's clerk.
 	&"merel",
 	&"tobin",
-	&"clerk"
+	&"clerk",
+	# Act II (M4-A2P-081, 11-03): the Kirru who speak at Reedhollow (any adult, and the child) and the Ullari woman.
+	&"kirru",
+	&"kirru_child",
+	&"ullari_woman",
 ]
 ## The six party heroes (the pages below stand them up).
 const PARTY: Array[StringName] = [&"rhen", &"asha", &"toma", &"ysolde", &"liss", &"kerrid"]

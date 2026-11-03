@@ -44,18 +44,25 @@ static func load_data() -> Dictionary:
 	return (parsed as Dictionary)[SECTION] as Dictionary
 
 
-## The rows top to bottom: {kind: &"title" | &"line", key, gap_before (px)}.
+## The rows top to bottom: {kind: &"title" | &"line", key, gap_before (px), notice}. A section marked "optional"
+## is left out while it has no lines (the Lead, 11-03: a "Made by" section waits for the human's names); a "notice"
+## section's lines are licence text, set small (CreditsRoll).
 func rows() -> Array[Dictionary]:
 	var col := data.get("column", {}) as Dictionary
 	var out: Array[Dictionary] = []
 	var first := true
 	for s: Variant in data.get("sections", []):
 		var sec := s as Dictionary
+		if bool(sec.get("optional", false)) and (sec.get("lines", []) as Array).is_empty():
+			continue
+		var notice := bool(sec.get("notice", false))
 		var gap := 0.0 if first else float(col.get("section_gap", 0.0))
 		out.append({"kind": &"title", "key": str(sec.get("title_key", "")), "gap_before": gap})
 		first = false
 		for k: Variant in sec.get("lines", []):
-			out.append({"kind": &"line", "key": str(k), "gap_before": float(col.get("line_gap", 0.0))})
+			out.append(
+				{"kind": &"line", "key": str(k), "gap_before": float(col.get("line_gap", 0.0)), "notice": notice}
+			)
 	return out
 
 
