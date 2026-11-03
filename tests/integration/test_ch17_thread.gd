@@ -33,8 +33,16 @@ func test_ch17_plays_hollowmere_in_order() -> void:
 	assert_true(trigger_named(&"a3_board").try_interact())
 	assert_true(zone.player.position.distance_to(zone.spawn_marker(&"HullDeck").position) < 0.01, "aboard")
 	assert_false(trigger_named(&"a3_night").is_available(), "the night waits on the ledger")
+	var readers: Array[LedgerReader] = []
+	var spy := func(n: Node) -> void:
+		if n is LedgerReader:
+			readers.append(n as LedgerReader)
+	zone.get_tree().node_added.connect(spy)
 	assert_true(trigger_named(&"a3_hatch").try_interact())
+	zone.get_tree().node_added.disconnect(spy)
 	assert_true(bool(Game.get_flag(&"ch17_read_the_ledger")), "B05: the ledger")
+	assert_eq(readers.size(), 1, "M5-A3P-1707: the ledger page is mounted for B05, once")
+	assert_true(readers[0].model.turned() + readers[0].model.current().size() > 0, "the scene writes on it")
 	assert_true(trigger_named(&"a3_first_berth").is_available(), "B07: Tobin's post, at dusk")
 	assert_true(trigger_named(&"a3_night").try_interact())
 	for f: StringName in [&"ch17_chose_the_unbinding", &"ch17_first_lamp_lit", &"ch17_verse_begun"]:
