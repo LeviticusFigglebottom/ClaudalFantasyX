@@ -1399,3 +1399,11 @@ SELF-RENDERED @ baf421df: the Lacquer Court from the Barge, Steps and CourtEntry
   - the storm waking over the Choir, once chapters gives it a block or flag;
   - the Ch14 barge's `wake_target`, once the barge moves (M4-C14-01);
   - then M5-A3P-1500 (Ch17's dry-dock).
+- **Ch16, the Choir's votive rings (331d2be9):** new kit piece `choir_votive_rings`: nine salt-white ceramic rings, half buried, one in four stacked. They are placed before every other singer, on the sand past the outer face. Built in Blender; the older pieces are byte-identical, and the manifest and PROVENANCE have the new row. New shot `ch16_choir_offerings`, viewed: the rings read under the water at a singer's foot.
+- **Ch16, the storm waking (33c75049):** new arena `drowned_choir_storm` from `storm_arenas.py` (look `ch16_waking`, the Undertow at `ch08_landfall`).
+  - **Found and fixed:** with the storm's sea level at the arena's own sea (−0.25, just under the dais), the storm's sea drew through the dais and the fighters as a black-and-white speckle. Hiding the storm or lowering its sea cleared it, so its sea is set at −1.5, under the arena's water.
+  - **Request M4-A2P-1502 to chapters:** repoint `ch16_storm_wakes`, and add a `Storm` block for the zone's storm.
+  - New shot `battle_arena_drowned_choir_storm`, viewed (rain, soaked flags, the party lit). Godot battle_arena 18/0, storm_arenas 2/0; tools test_b_arenas OK.
+- SELF-RENDERED @ 33c75049: ch16_choir_offerings, ch16_choir_ring, battle_arena_drowned_choir_storm, battle_arena_drowned_choir_ring (unchanged).
+- **MERGE-READY @ 33c75049.**
+- **Next:** M5-A3P-1500 (Ch17's dry-dock and Dace's hull, ADR 0207) while M4-A2P-1502, M3-C01-1335 and M4-C14-01 wait on others.
