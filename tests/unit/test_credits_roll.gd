@@ -127,7 +127,10 @@ func test_a_held_pad_button_runs_it_faster() -> void:
 
 ## Ending Cinematics' vignette has no scene until it is built: the roll passes over it, never stopping on black.
 func test_a_vignette_with_no_scene_yet_is_passed_over() -> void:
-	var m := CreditsRollModel.new()
+	var d := CreditsRollModel.load_data().duplicate(true)
+	for v: Variant in d["vignettes"]:
+		(v as Dictionary)["scene"] = ""  # M5-A3P-1701 set the live scene; this checks a vignette without one
+	var m := CreditsRollModel.new(d)
 	assert_true(m.vignettes().is_empty(), "the beach rite has no scene yet")
 	m.advance(float(m.data["lead_in_sec"]) + 0.01)
 	var guard := 0
@@ -149,6 +152,7 @@ func _with_vignette_scene() -> Dictionary:
 	var d := CreditsRollModel.load_data().duplicate(true)
 	for v: Variant in d["vignettes"]:
 		(v as Dictionary)["scene"] = VIGNETTE_FIXTURE
+	d["next_scene"] = ""  # M5-A3P-1701 set the live hook (post-credits); this checks the no-next_scene default
 	return d
 
 

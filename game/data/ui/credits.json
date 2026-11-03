@@ -33,10 +33,10 @@
         "id": "beach_rite",
         "at": 0.62,
         "hold_sec": 20.0,
-        "scene": ""
+        "scene": "res://game/flow/ending_beach_rite.tscn"
       }
     ],
-    "next_scene": "",
+    "next_scene": "res://game/flow/post_credits.tscn",
     "sections": [
       {
         "title_key": "CREDITS_GAME",

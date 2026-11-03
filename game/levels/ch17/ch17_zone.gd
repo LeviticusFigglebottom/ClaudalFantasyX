@@ -36,3 +36,9 @@ func _ready() -> void:
 	super()
 	if hold_gate != null:
 		hold_gate.setup(story.sequencer, read_json(CH17_FIELD_PATH).get(KEY_CH17_HOLD, {}))
+
+
+## M5-A3P-1707: B05's ledger page (LedgerReader) on the story's sequencer, the one the hold gate is set up on. The flow
+## calls it just before ch17_the_ledger; the page frees itself when that scene finishes.
+func mount_ledger() -> LedgerReader:
+	return LedgerReader.mount(self, story.sequencer)

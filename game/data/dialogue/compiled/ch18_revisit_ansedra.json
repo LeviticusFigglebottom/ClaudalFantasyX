@@ -19,7 +19,8 @@
     {"op": "line", "id": "ch18_ansedra_002", "key": "DLG_CH18_ANSEDRA_002", "speaker": "liss", "emotion": "sad", "voice": "", "src": 16},
     {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 17},
     {"op": "goto", "to": 12, "src": 11},
-    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 19}
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 19},
+    {"op": "set", "flag": "ch18_revisit_ansedra", "value": ["lit", true], "src": 20}
    ]
   }
  }

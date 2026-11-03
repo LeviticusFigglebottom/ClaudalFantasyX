@@ -18,4 +18,5 @@ location: ch01/oruvel
 <<endif>>
 @anim rhen hand_on stall_frame
 @wait 3.0
+<<set $ch18_revisit_oruvel = true>>
 ===

@@ -13,7 +13,8 @@
     {"op": "line", "id": "ch18_pemakar_002", "key": "DLG_CH18_PEMAKAR_002", "speaker": "garo", "emotion": "soft_smile", "voice": "", "src": 9},
     {"op": "goto", "to": 7, "src": 7},
     {"op": "line", "id": "ch18_pemakar_003", "key": "DLG_CH18_PEMAKAR_003", "speaker": "townsfolk", "emotion": "neutral", "voice": "", "src": 11, "name_key": "DLG_NAME_TOWNSFOLK_BOAT_FOLDER"},
-    {"op": "goto", "to": 7, "src": 10}
+    {"op": "goto", "to": 7, "src": 10},
+    {"op": "set", "flag": "ch18_revisit_pemakar", "value": ["lit", true], "src": 13}
    ]
   }
  }

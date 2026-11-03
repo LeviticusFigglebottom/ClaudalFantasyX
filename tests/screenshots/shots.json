@@ -4658,7 +4658,8 @@
             "scene_id": "prologue_dead_city",
             "hold_line": "prologue_dead_city_001"
           }
-        }
+        },
+        "time_scale": 4.0
       }
     },
     {
@@ -5932,7 +5933,7 @@
         960,
         540
       ],
-      "settle_frames": 60,
+      "settle_frames": 600,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
@@ -5951,7 +5952,8 @@
               "tut_field_menu_seen",
               "tut_menu_save_seen",
               "tut_swell_seen"
-            ]
+            ],
+            "hold_line": "ch03_verse_002"
           }
         },
         "time_scale": 4.0
@@ -5996,7 +5998,7 @@
         960,
         540
       ],
-      "settle_frames": 60,
+      "settle_frames": 600,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
@@ -6012,7 +6014,8 @@
             "scene_id": "ch01_gulls",
             "flags": [
               "ch01_started"
-            ]
+            ],
+            "hold_line": "ch01_gulls_001"
           }
         },
         "time_scale": 4.0
@@ -7765,6 +7768,91 @@
       }
     },
     {
+      "id": "ending_e11_dark_sea",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 900,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch02/haluna/haluna.tscn",
+            "flags": [
+              "ch02_met_asha",
+              "ending_landed"
+            ],
+            "story_call": "_ending",
+            "hold_line": "ending_sea_001"
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ending_e12_beach_rite",
+      "pending_baseline": true,
+      "scene": "res://game/flow/ending_beach_rite.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ending_e13_first_lamp",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 900,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "KellRun",
+            "flags": [
+              "ch01_started",
+              "credits_seen"
+            ],
+            "scene_id": "ending_first_lamp",
+            "hold_cue": "fade out"
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
       "id": "ch01_drop",
       "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
@@ -8102,7 +8190,7 @@
         960,
         540
       ],
-      "settle_frames": 240,
+      "settle_frames": 990,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
@@ -8114,9 +8202,11 @@
         "nodes": {
           ".": {
             "level_path": "res://game/levels/prologue/prologue.tscn",
-            "scene_id": "prologue_dead_city"
+            "scene_id": "prologue_dead_city",
+            "hold_cue": "mark rhen"
           }
-        }
+        },
+        "time_scale": 4.0
       }
     },
     {

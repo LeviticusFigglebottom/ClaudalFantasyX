@@ -104,6 +104,9 @@
        "place": "Cabin"
       },
       {
+       "zone": "mount_ledger"
+      },
+      {
        "play": "ch17_the_ledger"
       },
       {

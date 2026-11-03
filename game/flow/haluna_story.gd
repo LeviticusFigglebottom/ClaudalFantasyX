@@ -28,6 +28,10 @@ extends Node
 ##             same box plays an overheard bark instead (M2-FP-20, Triggers/CausewayHeadUnsaved).
 ##   chapter   M2-FP-27: every arrival moves the story to cfg.chapter (2) when it is behind it, so
 ##             Haluna's saves read "Chapter 2" and the chapter autosave runs.
+##   revisit   M5-A3P-1704: an arrival with revisit_open_flag set (Ch18's open world) sets revisit_seen_flag, so the
+##             Kite's log marks Haluna seen on the visit itself, whether or not the lifting plays.
+##   ending    M5-A3P-1203: an arrival with ending.flag set and ending.done_flag unset plays E5 (the dark sea) at the
+##             dock at night, sets done_flag and opens the credits (ending.next_scene).
 ##   route     M2-FP-25: when cfg has ending_location, "Go now" travels there (the Saltgrass
 ##             Causeway, B06) at ending_spawn instead of opening ending_scene.
 ## The zone's interactables only author ids, payloads and flags; nothing in them knows this script.
@@ -97,6 +101,11 @@ func begin() -> void:
 		busy = false
 		return
 	_join_party()
+	if _ending_due():
+		await _ending()
+		return
+	if _flag(&"revisit_open_flag"):  # M5-A3P-1704: Ch18's visit counts on arrival (the Kite's log), lifting or not
+		Game.set_flag(StringName(str(cfg.get("revisit_seen_flag", ""))))
 	if _flag(&"night_flag") and not _flag(&"sworn_flag"):
 		await _night()
 	elif _flag(&"battle_victory_flag") and not _flag(&"after_battle_flag"):
@@ -169,6 +178,32 @@ func _night() -> void:
 	await sequencer.play(StringName(str(cfg.get("night_scene_id", ""))), _stage())
 	if is_inside_tree() or hand_off.is_valid():
 		_go(KEY_CUTSCENE, str(cfg.get("night_end_scene", "")))
+
+
+## M5-A3P-1203: the Ending's last stop (cfg "ending") is due: its flag set, its done_flag not.
+func _ending_due() -> bool:
+	var e: Dictionary = cfg.get("ending", {})
+	var flag := StringName(str(e.get("flag", "")))
+	var done := StringName(str(e.get("done_flag", "")))
+	return flag != &"" and bool(Game.get_flag(flag)) and not bool(Game.get_flag(done))
+
+
+## E5, the dark sea: Haluna at night with the sea's glow gone and only Asha on the dock, then the credits.
+func _ending() -> void:
+	busy = true
+	var e: Dictionary = cfg.get("ending", {})
+	var night: Dictionary = (cfg.get("night", {}) as Dictionary).duplicate()
+	night["sea_glow"] = float(e.get("sea_glow", 0.0))
+	_zone.call(&"set_night", night, cfg.get("night_hide", []))
+	_zone.call(&"set_beach_cast_visible", false)
+	var spawn := StringName(str(e.get("spawn", "")))
+	_zone.call(&"place_at", spawn, _zone.call(&"spawn_yaw_deg", spawn))
+	_zone.call(&"place_cast", e.get("cast", {}), {})
+	sequencer.restore_fade = false
+	await sequencer.play(StringName(str(e.get("scene_id", ""))), _stage())
+	Game.set_flag(StringName(str(e.get("done_flag", ""))))
+	if is_inside_tree() or hand_off.is_valid():
+		_go(KEY_CUTSCENE, str(e.get("next_scene", "")))
 
 
 ## A bark's night variant once Rhen is sworn (night_barks), else the bark itself.

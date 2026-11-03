@@ -12,7 +12,8 @@
     {"op": "line", "id": "ch18_hollowmere_002", "key": "DLG_CH18_HOLLOWMERE_002", "speaker": "liss", "emotion": "soft_smile", "voice": "", "src": 8},
     {"op": "goto", "to": 6, "src": 6},
     {"op": "line", "id": "ch18_hollowmere_003", "key": "DLG_CH18_HOLLOWMERE_003", "speaker": "hull_captain", "emotion": "neutral", "voice": "", "src": 10, "name_key": "DLG_NAME_HULL_CAPTAIN_SHIP_S_CAPTAIN"},
-    {"op": "goto", "to": 6, "src": 9}
+    {"op": "goto", "to": 6, "src": 9},
+    {"op": "set", "flag": "ch18_revisit_hollowmere", "value": ["lit", true], "src": 12}
    ]
   }
  }

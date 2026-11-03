@@ -1499,6 +1499,41 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     storm.
   - The cutscene suite's long test (test_hero_cutscene_snaps, which plays every cutscene) passed alone: 1 run,
     0 failed. With the 110 passed before the cap, the cutscene filter is green.
+- **Beat audit on big45 (self-rendered and viewed), MERGE-READY @ this commit:**
+  - **Read as staged:**
+    - beach H05 (Asha kneeling over Rhen) and H06 ("One.", Toma off-frame, his spear entering);
+    - the verse steps two-shot and the dock at night;
+    - ch01_hullgnaw_rises: the Hullgnaw clear in the pen;
+    - ch01_going_under_u10: the hull's belly and the three boats read (row 75);
+    - ch01_sadi_mooring.
+  - **Fixed, slice_prologue_vigil_line:**
+    - c054ce546's title card (`prologue_dead_city_000`) delayed the line past the shot's 990 frames, so it caught
+      P01's wide with no line.
+    - The shot now holds `prologue_dead_city_001` and runs at time_scale 4, like the other cutscene shots.
+    - Viewed: the P02 two-shot, the line up, the lantern lit.
+  - Shots still timed by frame count, all early in their scenes: slice_prologue_p01, slice_verse_hall and
+    ch01_o10_gull.
+- **Queue status (2026-11-03, after the FAST-TRACK, the Act I rows and the audit):** MERGE-READY @ 7558cebe6 (it
+  includes b3264a223). Every other open item waits on another track:
+  - the Act II stills (M4-A2P-070..075) wait on M4-CIN-1305 and M4-A2P-077 (chapters; both still todo);
+  - Ch17's D01–D18 is M5-A3P-1001, which act1-chapters is doing;
+  - row 75 and the storm shots wait on the GPU (PC-QUEUE).
+  - **LEAD-ASK:** anything you want ahead of those? Otherwise I'll pick up Act III staging as each chapter's set lands.
+    **LEAD-ANSWERED (19:51):** first convert the three frame-count shots to held timing, then Act III staging per
+    ADR 0207 as each set lands; Act I FAST-TRACKs always come first. W20's glint and kites went to env-art-b and
+    act1-chapters.
+  - **Held timing (the Lead's answer), done in shots.json:**
+    - slice_verse_hall holds `ch03_verse_002` (the baseline's moment, S07_reverse);
+    - ch01_o10_gull holds `ch01_gulls_001`;
+    - slice_prologue_p01 holds the `mark rhen` cue, at time_scale 4 (P01 fully faded in, just before Rhen crosses).
+    - **SELF-RENDERED @ 539546088, VIEWED:**
+      - P01: fully faded in on Asha on the paving, before Rhen crosses;
+      - verse_hall: "Shout if it bites." on S07_reverse, Asha's shoulder in the foreground and Toma and Rhen at the
+        portal. It drifts from the old baseline because of M3-CIN-1236's restaged reverse, which is intended;
+        **Lead:** please re-approve it.
+      - o10_gull: the gull and "...That's the gulls.", unchanged.
+    - No cutscene shot in the manifest is timed by frame count any more.
+    - **Next:** Act III staging per ADR 0207 as each set lands; Act I FAST-TRACKs first.
 - **Act I rows (act1_gpu_qa.md @ gpu/act1-qa-7):**
   - 31 and 32 are fixed.
   - 75's hull key and rim (1086628b1) is on integration now; it only needs the PC's GPU re-check (PC-QUEUE).
