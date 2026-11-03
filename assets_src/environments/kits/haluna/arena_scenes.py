@@ -864,6 +864,46 @@ RAFT_MORNING = {
 }
 
 
+# The human's 11-03 FAST-TRACK 4 (the storm fights use the normal backdrop): Ch1's two fights in the Rising (the
+# scuttlers after the gulls cry, the Hullgnaw) on the same raft in the zone's storm (oruvel.md §0 `ch01_storm`, the
+# Oruvel kit preview's storm phase): the 10:30 sun veiled behind the wall's high cloud, the cleared slate sky and
+# lut_ch01_storm, the crossed storm swell with its glint veiled, and the Undertow itself standing up out to sea
+# behind the foes at the zone's own preset (ch01_arrival), its clock held as the zone holds it.
+STORM_SEA_MAT = {  # the Oruvel kit's oruvel_water_material.tres, its glint veiled as the preview's storm phase does
+    "name": "arena_oruvel_storm", "shader": "res://game/shaders/water/water_ocean.gdshader",
+    "params": [("col_deep", "#0E4A55"), ("col_scatter_shallow", "#1FA3A6"),
+               ("absorption_per_m", "Vector3(2, 0.5, 0.42)"), ("absorption_scale", 2.0), ("scatter_energy", 0.25),
+               ("caustic_strength", 1.6), ("col_foam", "#EEF6F4"), ("col_sss", "#3FD0C9"),
+               ("foam_crest_threshold", 0.62), ("glint_strength", 0.15)],
+}
+RAFT_STORM = {
+    **RAFT_MORNING,
+    "id": "oruvel_raft_storm",
+    "sub_frame": "ch01_storm",
+    "lut": "res://assets/environments/kits/oruvel/lut_ch01_storm.png",
+    # oruvel_preview.gd STORM_SUN_*: the day's angles, veiled; oruvel_ch01_storm_environment.tres for the rest.
+    "sun": {"elev": 58.0, "az": 120.0, "color": "#F6F0E8", "energy": 2.6},
+    "fill": {"color": "#80949F", "energy": 0.9},
+    "exposure": 0.85,
+    "fog": {"color": "#96A9B2", "density": 0.0012, "sky_affect": 0.0, "height": 0.0, "height_density": 0.0},
+    "sky": {"background_energy": 1.5, "horizon_curve": 0.14, "cloud_coverage": 0.0, "cloud_coverage_overhead": 0.0,
+            "col_zenith": "#242E38", "col_horizon": "#707F8C", "col_ground": "#394754", "sun_disc_energy": 0.0,
+            "sun_glow": 0.1,
+            "cloud_lattice": ("Texture3D", "res://assets/vfx/undertow/undertow_noise3d.png"),
+            "cloud_lattice2": ("Texture2D", "res://assets/vfx/sky/cloud_lattice2.png")},
+    "sea": {"y": arenas.RAFT_SEA_Y, "tide_line_y": arenas.RAFT_SEA_Y, "sea_glow": 0.0, "material": STORM_SEA_MAT,
+            # ov_preview_layout.STORM_WAVES (direction, wavelength, amplitude, steepness): the crossed storm sea.
+            "waves": [(0.0, 31.0, 0.09, 0.3), (38.0, 23.0, 0.08, 0.35), (317.0, 19.0, 0.07, 0.35),
+                      (340.0, 7.5, 0.035, 0.6), (60.0, 2.6, 0.012, 0.5)]},
+    # At the zone's distance (the preset's 18 km), as the cutscene before the fight shows it: its wall rises dark over
+    # the raft-town behind the foes. Nearer than ~14 km the raft stands under its canopy (radius 10.5 km, softness
+    # 3.5 km): the sky goes black and the funnel's sea covers the deck (tried at 7 km). `distance_m` overrides it.
+    "undertow": {"preset": "ch01_arrival", "azimuth_deg": 0.0, "time_s": 205.0, "ambient": 0.6,
+                 "haze": "#96A9B2",
+                 "camera_far_m": 40000.0},  # oruvel_layout.json storm.undertow.camera_far_m: the storm is 18 km off
+    "hints": {**RAFT_MORNING["hints"], "the_storm": ((4.0, 1.2, 6.0), (-2.0, 4.0, -14.0))},
+}
+
 # ---------------------------------------------------------------------------------------------
 # M3-ENV-706: Ch6's two arenas from the Brine Shoals kit (M3-BPR-03's greybox ids)
 # ---------------------------------------------------------------------------------------------
@@ -1828,7 +1868,7 @@ UNDERTOW_HEART_LETTING = dict(
 )
 
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
-                               RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL, KETH_ARENA,
+                               RAFT_MORNING, RAFT_STORM, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL, KETH_ARENA,
                                LOWLIGHT_ARENA, VEY_ARENA, FEN_ARENA, BRIDAL_ARENA, ANSEDRA_ESCAPE, CHOIR_ARENA,
                                SPIRE_CROWN, UNDERTOW_CAGE, UNDERTOW_HEART, UNDERTOW_HEART_LETTING)}
 
@@ -2020,6 +2060,7 @@ def write_arena(a: dict) -> Path:
     _write_lamps(sc, a)
     _write_far_lights(sc, a)
     _write_underwater(sc, a)
+    _write_undertow(sc, a)
     sc.node("CameraHints", "Node3D", ".", {})
     for name, (eye, target) in a["hints"].items():
         sc.node(name, "Marker3D", "CameraHints", {"transform": look_xform(eye, target)})
@@ -2104,6 +2145,30 @@ def _write_far_lights(sc: Scene, a: dict) -> None:
         f"instance_count = {len(far['points'])}", 'mesh = SubResource("FarLightQuad")',
         "buffer = PackedFloat32Array(" + ", ".join(f"{float(v):.6g}" for v in buf) + ")"]))
     sc.node("FarLights", "MultiMeshInstance3D", ".", {"cast_shadow": 0, "multimesh": 'SubResource("FarLightSet")'})
+
+
+UNDERTOW_STORM = "res://game/vfx/undertow/undertow_storm.gd"
+CAMERA_REACH = "res://game/world/arenas/arena_camera_reach.gd"
+
+
+def _write_undertow(sc: Scene, a: dict) -> None:
+    """A storm arena's `undertow`: Rendering's UndertowStorm at the arena's origin (the storm is built in world axes,
+    out along `azimuth_deg`), on the arena's sea and lit by its Sun, at a chapter preset with its clock held (as the
+    zones hold it: no zone shadow, no exposure flash, no rain). `preset` is written first: the lines after it override
+    the preset's values."""
+    u = a.get("undertow")
+    if not u:
+        return
+    sc.node("Undertow", "Node3D", ".", {
+        "script": f'ExtResource("{sc.res("Script", UNDERTOW_STORM)}")', "preset": f'"{u["preset"]}"',
+        **({"approach_distance_m": u["distance_m"]} if "distance_m" in u else {}),
+        "approach_azimuth_deg": u["azimuth_deg"], "rain_amount": 0.0, "zone_shadow": "false",
+        "exposure_flash": "false", "world_environment": 'NodePath("../WorldEnvironment")', "playing": "false",
+        "start_time_s": u["time_s"], "water": 'NodePath("../Sea")', "sun": 'NodePath("../Sun")',
+        "ambient_energy": u["ambient"], "haze_color": hexc(u["haze"])},
+        node_paths=("world_environment", "water", "sun"))
+    sc.node("CameraReach", "Node", ".", {"script": f'ExtResource("{sc.res("Script", CAMERA_REACH)}")',
+                                         "far_m": u["camera_far_m"]})
 
 
 UNDERWATER_RIG = "res://game/world/arenas/arena_underwater.gd"
