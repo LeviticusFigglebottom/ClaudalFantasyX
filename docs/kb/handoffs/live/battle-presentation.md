@@ -5,7 +5,7 @@
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
 ### 2026-11-03 (later): FAST-TRACKS 1 and 2 viewed and tuned
-**MERGE-READY @ the branch head** (FAST-TRACK).
+**MERGE-READY @ a361f17c1** (FAST-TRACK; checks: gdlint, gdformat, validate_data, taskboard --check, tools test_status_icons, Godot battle_storm 4/0, camera 74/0, battle_status 8/0; skipped: the full suite, Blender (none touched) and baselines (self-rendered instead)).
 - **Status looks:** contact-sheet pass 2 VIEWED (13 statuses re-rendered, plus a stack). Every status now reads on
   Rhen and on a Scuttler.
   - The breaks show a cracks pattern in their colour.
