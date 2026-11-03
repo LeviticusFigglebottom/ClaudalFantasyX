@@ -1440,3 +1440,16 @@ SELF-RENDERED @ baf421df: the Lacquer Court from the Barge, Steps and CourtEntry
   - **Viewed:** no sun glint on the sea under the storm. The water reads dark, with only the storm's cyan rents and rain on it, while the wall-head, the drowned low town and the vortex hold the frame.
 - **Checks:** Godot zone_kit 14/0 (new test: no glint under the storm, restored after), corrow 18/0, ch08 25/0, ch09 13/0; tools test_corrow_kit; validate_data; gdlint/gdformat.
 - **MERGE-READY @ 1a115b49.**
+
+### FINAL (Lead 21:25, the human: "finish, commit everything, and stop")
+- Nothing was in progress, there is no uncommitted work, and there are no WIP commits.
+- **FINAL MERGE-READY @ b10d44fd.** Everything on `claude/env-art-b` is finished and checked; the checks are listed in each entry above. Final scoped checks: validate_data 0/0 and taskboard --check OK.
+- **Exact next step for whoever resumes env-art-b:**
+  1. Merge `origin/claude/undertow-lead-handoff-ze8rrn`. Run `git lfs pull` and `godot --headless --path . --import`.
+  2. Take the requests that have landed:
+     - **M4-A2P-1502:** chapters' Choir `Storm` block. Then add a `storms` row following it in `tools/act2/ch16_drowned_choir_dressing.py` (preset ch08_landfall).
+     - **M4-C14-01:** the moving barge. Then set the court's `Ripples` `wake_target`.
+     - **The Ch17 beats' `environment_res` rows.** Then view H04/H07 at dusk and B08/B09 at night.
+  3. **M5-A3P-1500, still open:** a walkable hatch ramp from Dace's hull deck to the cabin; boarding is by `place` until then. Do it with a `collision_path` stair or ramp in the Ch17 dressing, or ask chapters for a layout ramp.
+  4. **Re-render once slice-polish's b3264a22 is merged:** ch08_wall_falls_w20 (HYMN_SHOT_TIMEOUT=1500).
+  5. **The PC-QUEUE above:** the GPU re-check of Act I rows 62–84.
