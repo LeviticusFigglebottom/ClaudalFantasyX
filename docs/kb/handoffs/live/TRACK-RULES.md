@@ -1,3 +1,17 @@
+## FROM 2026-11-03: LEAD IS session_018aiGwGLGkxsnMnu8VfCu1m AGAIN; INTEGRATION BRANCH IS `claude/undertow-lead-handoff-ze8rrn` (this overrides everything below)
+- `claude/undertow-lead-handoff-ze8rrn` was fast-forwarded to `claude/new-session-mj8c3c` @ c972ea42 (big45). **Merge `origin/claude/undertow-lead-handoff-ze8rrn` from now on.** `-mj8c3c` is frozen.
+- **The PC is offline.** Self-render as before. GPU-only items go under `### PC-QUEUE`.
+- **The human's playtest FAST-TRACKS (11-03), ahead of ALL Act II and Act III work:**
+  1. The main character's WALK animation randomly stops playing (he slides). Owner: integration-qa.
+  2. The SOLO boss fight (Rhen alone, the Ch1 Hullgnaw) is a little too hard. Owner: combat-systems (sim-tuned).
+  3. Status effects must be OBVIOUS on the character (a VFX and tint per status, with an icon over the head), and the game must explain how to identify and remove each one: a help panel in the Read and status UI, a first-time tip, and codex entries. Owners: battle-presentation (on-body visuals) and ui-menus (explanations).
+  4. The seagull/storm scene doesn't show the actual VORTEX (the Undertow), and its fights use the normal backdrop and uplifting music. Owners:
+     - slice-polish: the cutscene vortex (Ch1's Rising and Ch8's storm);
+     - act1-chapters: the storm fights' arena variants with the storm sky and vortex (with env-art and env-art-b);
+     - audio: storm battle music in place of the uplifting theme.
+  5. A REVIVE item (an original name; "Phoenix Down" is banned), KO'd members back at 1 HP after a won fight, and SPELLS castable outside combat (Heal etc. from the field menu). Owners: combat-systems (rules, items, tests) and ui-menus (the field menu).
+- Act II and Act III content continue only after your FAST-TRACK items and open Act I rows.
+
 # Track rules (2026-10-25; updated 2026-10-29)
 
 ## FROM 2026-10-29: NEW LEAD; THE PC IS OFFLINE FOR A WHILE (this overrides everything below)
