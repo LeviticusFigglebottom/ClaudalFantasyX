@@ -4,6 +4,19 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+### 2026-11-03 ~18:50: LEAD-ANSWERED (the Lead's 18:45)
+- **(1) The sightline: LEAD-ANSWERED.** My ask was about Ch8, not Ch1.
+  - Ch1's storm arena (env-art's oruvel_raft_storm, big47) needs no sightline ask: its own Undertow stands in the
+    raft's sky. Once it is merged here, I re-view the 8 deg rest tilt against it.
+  - The Ch8 stair holds' arenas are env-art-b's (seawall_stairhead_*). They now carry their own Undertow, so they
+    own the vortex. M3-ENV-1340 stays with env-art-b: the wall's merlons fill the top of the battle's rest frame,
+    so that Undertow can't be seen there.
+  - The storm decision applies: BattleStorm adds the dynamic layer only (6231069dc, 304146c55).
+- **(2) Row 70, the damage numbers: LEAD-ANSWERED, taken.**
+  - A new tool, tools/vfx/float_fade_sheet.tscn, takes stills of a tideline hit's number through its pop, rise and
+    fade (the tween stepped by hand), with its alpha and colour logged.
+  - Rendering now; the result follows.
+
 ### 2026-11-03 ~18:10: the Lead's storm-overlap decision (big47): ONE Undertow per fight
 **MERGE-READY @ 304146c55** (FAST-TRACK, for big48; supersedes 6231069dc).
 - **BattleStorm:** when the arena has its own Undertow (an UndertowStorm in the battle scene: the seawall arenas,

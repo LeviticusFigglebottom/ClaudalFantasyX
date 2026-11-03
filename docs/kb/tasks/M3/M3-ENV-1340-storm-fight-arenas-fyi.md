@@ -29,3 +29,10 @@ and seawall_stairhead_storm/hoist get their sky shader's storm params; all get r
 - **seawall_stairhead_storm/hoist:** the wall's merlons fill the top of the frame, and the sea shows between them.
   A lower parapet in the rest frame's view, or a sightline over it, would let the storm show.
 - I'll then tilt the rest frame (choreo.json camera.rest_by_encounter) to frame the storm, as on the Ch1 raft.
+
+## Update (2026-11-03 18:50, after the Lead's big47 storm decision)
+- The storm arenas own the vortex (their `Undertow`). BattleStorm adds only wind and spray, plus rain only when
+  the arena's storm has none.
+- Ch1 (env-art's oruvel_raft_storm) needs nothing from env-art-b.
+- **Still asked of env-art-b:** a sightline in the seawall stair-head arenas. From the battle's rest frame, the
+  wall's merlons hide the arena's own Undertow.
