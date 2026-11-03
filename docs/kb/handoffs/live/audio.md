@@ -3,6 +3,20 @@
 ## FROM 2026-11-03 (Lead `session_018aiGwGLGkxsnMnu8VfCu1m`; integration `claude/undertow-lead-handoff-ze8rrn`)
 Merged integration @ e2411fb0 into claude/audio (clean). Newest first.
 
+- **FINAL MERGE-READY @ d7b5bcec** (the Lead's FINAL, 21:25: finish, commit everything, stop). Everything is committed and pushed, and there is no WIP or unpushed state.
+  - **Ready:** M3-AUD-865 (storm music, storm beds, beds looping), M3-AUD-1254 (act1-chapters' ask) and M3-AUD-866 (status, cure, fade and revive cues). All are `review`.
+  - **Checks:** validate_data 0 and taskboard --check, on this sha. The scoped tests are as in the entries below.
+  - **Exact next step for whoever resumes:**
+    1. Merge `origin/claude/undertow-lead-handoff-ze8rrn` and run `godot --headless --path . --import`. Then revert the LFS .import churn: `git checkout -- assets/lfs assets/audio/music/act2 assets/audio/music/act3 assets/audio/sfx/act3`.
+    2. Re-run `--filter=storm`, `--filter=status_audio`, test_storm_music.py and test_audio_data.
+    3. Answer any asks from battle-presentation or combat-systems: per-status effect ids map to the same `status_<id>` rows; a status expiry signal should play `status_fade`/`status_cure`; a victory-rise cue if wanted.
+    4. Then resume the Act III score (M5-A3P-1951/1952, and the Ch17–Ch20 cue list below).
+
+- **MERGE-READY @ d3052411 (for big48): the Lead's 19:28 red, `test_audio_data::test_every_loop_imports_looping`.**
+  - **Cause:** Godot wrote storm_gale.ogg.import and storm_wall.ogg.import after render_all's import sync had already run, so they kept loop=false and the beds would have stopped instead of looping.
+  - **Fix:** loop=true and loop_offset=0.0, from the beds' .loop.json sidecars. No other .import under assets/audio has loop=false next to a sidecar. Integration (big47) is merged in.
+  - **Checks:** test_audio_data 45/0, test_storm_music OK, validate_data 0. Godot `--filter=storm` ran 41 with 2 red, both in battle-presentation's test_storm_arenas (oruvel_raft_storm's rain and rim, and a nil `wetted_count`). They are arena scene checks; this fix touched only the two ambience .import files.
+
 - **MERGE-READY @ 25256466: FAST-TRACK M3-AUD-866 (status sounds and the revive; `review`, reviewer qa), and the storm item reconciled with act1-chapters' (M3-AUD-1254 done).**
   - **Status cues** (assets_src/sfx/status_sfx.py → 24 files under assets/audio/sfx/battle/; plain git; rows in sfx_status.json):
     - a `status_<id>` for each of statuses.json's 21 statuses: harmful ones sink, beneficial ones rise, and the breaks share one crack;
