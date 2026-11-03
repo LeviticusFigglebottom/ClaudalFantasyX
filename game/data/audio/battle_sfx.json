@@ -105,7 +105,7 @@
     "brine_eyewash": "heal",
     "drag_net": "heal",
     "quiet_tea": "heal",
-    "relighting_wick": "heal",
+    "relighting_wick": "revive",
     "smelling_salts": "heal",
     "throat_honey": "heal",
     "tidewash_salve": "heal",

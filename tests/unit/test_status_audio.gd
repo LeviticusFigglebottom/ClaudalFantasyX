@@ -87,7 +87,6 @@ func test_two_statuses_on_two_targets_each_play() -> void:
 			{"target_id": foe2, "hit": false, "amount": 0, "statuses_added": [&"sleep"]},
 		]
 	)
-	engine.action_resolved.emit(r)
 	var got := audio.play_statuses(r)
 	assert_eq(got, [&"status_slow", &"status_darkness"] as Array[StringName], "a miss plays nothing")
 	_teardown()
@@ -119,6 +118,19 @@ func test_cure_fade_and_revive() -> void:
 	r.hits.append({"target_id": ally, "hit": true, "amount": 0, "statuses_removed": [&"protect"]})
 	r.hits.append({"target_id": ally, "hit": true, "amount": -1, "revived": true, "statuses_added": []})
 	assert_eq(audio.play_statuses(r), [&"status_cure", &"status_fade", &"revive"] as Array[StringName], "in hit order")
+	_teardown()
+
+
+func test_the_relighting_wick_rings_the_revive_once() -> void:
+	var ally := engine.party_active[0].id
+	var r := ActionResult.new()
+	r.actor_id = ally
+	r.item_id = &"relighting_wick"
+	r.hits.append({"target_id": ally, "hit": true, "amount": -1, "revived": true, "statuses_added": []})
+	vfx.effect_played.emit(&"relighting_wick", Vector3.ZERO)  # the Wick's own effect (effects.json map.items)
+	engine.action_resolved.emit(r)
+	assert_eq(audio.played.count(&"revive"), 1, "the revive once, not the heal: %s" % [audio.played])
+	assert_false(audio.played.has(&"heal"), "a revive, not a Salt Tonic heal")
 	_teardown()
 
 

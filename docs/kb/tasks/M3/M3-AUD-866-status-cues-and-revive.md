@@ -43,8 +43,10 @@ cure cues". Audio built them ahead of the other tracks' requests, and they work 
   - a status with no row keeps the generic.
 
 ## For other tracks
-- **combat-systems (the revive item, FAST-TRACK 5):** nothing to wire. Any item whose hit carries `revived: true`
-  (ItemBattleAction.resolve_on already sets it) plays `revive`, whatever the item is named. Revival after a won
+- **combat-systems (the revive item, FAST-TRACK 5):** nothing to wire. The Relighting Wick's own effect
+  (`relighting_wick`) now rings `revive` instead of `heal`, so it doesn't sound like a Salt Tonic. Any other item
+  whose hit carries `revived: true` plays `revive` too. Status rows are fallbacks under the `dedupe_ms` rule, so the
+  two paths never double. Revival after a won
   fight, at 1 HP, isn't in a battle, so it has no cue yet; ask if the result screen should play one. A new status
   needs a row in battle_sfx.json `statuses.apply` (test_status_audio fails without one), so request it from audio.
 - **battle-presentation (the on-body status VFX):** nothing to wire for sound. If you add one effect per status
@@ -53,13 +55,14 @@ cure cues". Audio built them ahead of the other tracks' requests, and they work 
   `status_fade` and `status_cure` are its cues.
 
 ## Tests
-`tests/unit/test_status_audio.gd` (6):
+`tests/unit/test_status_audio.gd` (7):
 - every status has its own existing cue, and no two share one;
 - an added status plays its own cue and silences the generic;
 - two targets each play theirs, and a miss plays none;
 - the generic is dropped when it comes second;
 - an unknown status keeps the generic;
-- cure, fade and revive play in hit order.
+- cure, fade and revive play in hit order;
+- the Wick rings the revive once and never the heal.
 
 The loudness suite measures the 24 new files.
 

@@ -97,7 +97,11 @@ func _attach_creatures(controller: Node) -> void:
 ## `from_vfx`: the view played it (a repeat layers); otherwise it is a fallback (a repeat is dropped). Returns the
 ## sfx id played, or &"" when nothing played.
 func play_key(table: String, key: String, from_vfx := false) -> StringName:
-	var id := StringName(str((data.get(table, {}) as Dictionary).get(key, "")))
+	return play_id(StringName(str((data.get(table, {}) as Dictionary).get(key, ""))), from_vfx)
+
+
+## Plays sfx row `id` under play_key's rules (reduced swaps, repeats layering, fallbacks deduped).
+func play_id(id: StringName, from_vfx := false) -> StringName:
 	if id == &"" or director == null or director.sfx == null:
 		return &""
 	if reduced:
@@ -214,17 +218,9 @@ func play_statuses(result: ActionResult) -> Array[StringName]:
 	return out
 
 
+## A status row is a fallback: the view's own effect for it (the Relighting Wick's `revive`) already rang it.
 func _play_status_row(sfx_id: String) -> StringName:
-	if sfx_id == "":
-		return &""
-	var id := StringName(sfx_id)
-	if reduced:
-		id = StringName(str((data.get("reduced", {}) as Dictionary).get(String(id), id)))
-	var p := director.play_sfx(id) if director != null and director.sfx != null else null
-	if p == null:
-		return &""
-	played.append(id)
-	return id
+	return play_id(StringName(sfx_id), false)
 
 
 ## Stops the generic status sound if the view started it within dedupe_ms (the same action's effect).
