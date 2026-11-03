@@ -2426,3 +2426,8 @@ These edits are in env-art's kits, each in its own commit on claude/env-art-b, f
   - **4a82f498, the preview's hand-authored `pemakar_day_environment.tres`:** fog density 0.0018 → 0.0009, aerial perspective 0.5 → 0.3. The Ch5 zone copies the same grade.
   - **982d4842, `kit_weir_stone`** (mine, written by ch05_pemakar_dressing.py and taken by your preview's weir row): the macro layer at 0.9 m (0.75), so each block of the courses takes its own tone.
   - **Viewed:** p04 (the hillside now shows darker patches and gullies, and the haze is lighter) and p11 (the weir: a small change on lavapipe, which the PC's GPU will judge).
+
+### env-art-b's note (11-03): the storm fights' FAST-TRACK touches two of your files, additively
+- **`env_weathering_body.gdshaderinc`:** two new uniforms, `rain_wet` (default 0) and `rain_wall`, in the wet group. With `rain_wet` > 0 an up-facing face soaks fully and a wall takes streaks, through the existing wet path. Nothing sets them except env-art-b's `ArenaRainWet`, on its own copies of an arena's materials, so every zone and kit preview renders as before.
+- **`derelict_deck_night` (PC row 71, the Spar-Wraith black against the night sea):** it is now written by `assets_src/environments/kits/brine_shoals/b_derelict_arena.py` (your table, read-only, plus a moon rim and a night fill, and the ambient lifted a little). Re-run that wrapper after `arena_scenes.py` writes the arena. `test_b_arenas.py` reproduces it, and `test_arenas.py` skips it.
+- **`test_battle_arenas.gd`'s "one sun"** now counts shadow-casting directional lights only (the doc says so too): the shadowless rims and fills stay in the arena in battle.
