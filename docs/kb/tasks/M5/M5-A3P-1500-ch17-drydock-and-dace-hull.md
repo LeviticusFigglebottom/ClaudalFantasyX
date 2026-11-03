@@ -101,3 +101,8 @@ in the mud under the water.
     night-grade test.
 
 ## Review log
+- **env-art-b, 2026-11-03:** chapters' walk (M5-A3P-1001) is dressed.
+  - The `Gangway`, `BerthWalk` and `FirstBerthDeck` blocks were greybox, and hiding the greybox left an invisible deck over the water. Each is now a run of `hm_dock_4m` modules along the block at its own yaw. The gang and berth piles are stilt posts scaled to their 1.7 m tops.
+  - The hull's deck, cabin and engine floors keep the greybox collision; the hull piece draws them.
+  - Shots `ch17_hollowmere_gangway` and `_berth_walk`, viewed. Test `Ch17WalkTests`.
+  - **Still open here:** the hatch ramp between the hull's deck and the cabin (boarding is by `place` until then), and the B06 dusk and B08/B09 night `environment_res` rows (chapters').

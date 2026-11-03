@@ -9304,6 +9304,44 @@
       }
     },
     {
+      "id": "ch17_hollowmere_gangway",
+      "scene": "res://game/levels/_tests/hollowmere_kit/ch17_hollowmere_walk_shots.tscn",
+      "camera": "Cameras/Gangway",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch17_hollowmere_berth_walk",
+      "scene": "res://game/levels/_tests/hollowmere_kit/ch17_hollowmere_walk_shots.tscn",
+      "camera": "Cameras/BerthWalk",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
       "id": "ch15_sea_deck",
       "scene": "res://game/levels/_tests/hollowmere_kit/ch15_open_sea_shots.tscn",
       "camera": "Cameras/Deck",
