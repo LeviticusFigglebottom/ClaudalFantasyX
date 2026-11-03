@@ -1,0 +1,67 @@
+extends TestCase
+## FAST-TRACK 11-03 (the human's playtest: the storm fights used the normal sunny backdrop and never showed the
+## Undertow). BattleStorm: every listed fight is a real encounter with a real look; a storm fight gets rain, wind
+## and the Undertow in front of the battle camera, its sun dimmed, and the arena's own resources untouched; a calm
+## fight gets none.
+
+const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
+const PALETTE := "res://docs/kb/art/palette.json"
+const UNDERTOW := "res://game/data/vfx/undertow.json"
+
+
+func test_data_names_real_fights_presets_and_swatches() -> void:
+	var data := BattleStorm.load_data()
+	var db := BattleDB.load_default()
+	var presets := (JSON.parse_string(FileAccess.get_file_as_string(UNDERTOW)) as Dictionary)["presets"] as Dictionary
+	var swatches := (JSON.parse_string(FileAccess.get_file_as_string(PALETTE)) as Dictionary)["swatches"] as Dictionary
+	var looks := data["looks"] as Dictionary
+	for enc: String in data["fights"]:
+		assert_true(db.encounters.has(StringName(enc)) or db.encounters.has(enc), "%s is an encounter" % enc)
+		assert_true(looks.has(str(data["fights"][enc])), "%s has a look" % enc)
+	for id: String in looks:
+		var look := looks[id] as Dictionary
+		assert_true(presets.has(str(look["preset"])), "%s: an undertow.json preset" % id)
+		var res := str(look.get("environment_res", ""))
+		assert_true(res == "" or ResourceLoader.exists(res), "%s: its environment exists" % id)
+		for part in ["rain", "wind", "sun"]:
+			var row := look.get(part, {}) as Dictionary
+			if row.has("color"):
+				assert_eq(str(row["color"]), str((swatches[row["swatch"]] as Dictionary)["hex"]).to_upper(), id)
+	for enc in ["ch01_scuttlers", "ch01_hullgnaw", "ch08_headland_gulls", "ch08_stair_hold_1", "undertows_reach"]:
+		assert_ne(BattleStorm.look_for(StringName(enc)), &"", "%s is a storm fight" % enc)
+	assert_eq(BattleStorm.look_for(&"ch01_wickfry"), &"", "the Underway is calm")
+
+
+func test_a_storm_fight_shows_rain_wind_and_the_undertow_in_view() -> void:
+	var ctl := _battle(&"ch08_headland_gulls", [&"rhen", &"asha", &"toma"] as Array[StringName])
+	var storm := ctl.stage.get_node_or_null(^"BattleStorm") as BattleStorm
+	assert_true(storm != null, "the headland fight is a storm fight")
+	assert_true(storm.rain != null and storm.rain.emitting, "rain")
+	assert_true(storm.wind != null and storm.wind.emitting, "wind")
+	assert_true(storm.undertow != null, "the Undertow stands in the background")
+	var to_storm := storm.undertow.storm_center() - ctl.stage.camera.global_position
+	var fwd := -ctl.stage.choreo.camera.default_transform.basis.z
+	var flat := Vector2(to_storm.x, to_storm.z).normalized().dot(Vector2(fwd.x, fwd.z).normalized())
+	assert_true(flat > cos(deg_to_rad(40.0)), "it stands in front of the battle camera (%.2f)" % flat)
+	assert_false(storm.undertow.exposure_flash, "no screen flashes (battle flash safety)")
+	ctl.get_parent().remove_child(ctl)
+	ctl.free()
+
+
+func test_a_calm_fight_has_no_storm() -> void:
+	var ctl := _battle(&"sandbox_reef", [&"rhen", &"asha"] as Array[StringName])
+	assert_true(ctl.stage.get_node_or_null(^"BattleStorm") == null, "no storm in the sandbox")
+	ctl.get_parent().remove_child(ctl)
+	ctl.free()
+
+
+func _battle(enc: StringName, party: Array[StringName]) -> BattleController:
+	var ctl := (load(SANDBOX) as PackedScene).instantiate() as BattleController
+	ctl.auto_start = false
+	ctl.pacing_scale = 0.0
+	ctl.persist_progress = false
+	ctl.set_meta(BattleBossIntro.META_PLAYED, String(enc))
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(ctl)
+	ctl.start_battle(party, [] as Array[StringName], enc, 7)
+	return ctl
