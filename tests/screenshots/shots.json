@@ -7678,6 +7678,39 @@
       }
     },
     {
+      "id": "ch08_wall_falls_w20",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch08/corrow/corrow.tscn",
+            "spawn": "WallHead",
+            "flags": [
+              "ch08_beacon_opened",
+              "ch08_reach_survived"
+            ],
+            "scene_id": "ch08_wall_falls",
+            "hold_cue": "camera W20"
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
       "id": "ch01_drop",
       "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",

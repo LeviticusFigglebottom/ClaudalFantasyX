@@ -1487,6 +1487,17 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
       every cutscene. That test is re-running alone; its result follows.
   - **Checks skipped:** coverage (no battle or progression code); Blender (no source); the tools suite (no tools/
     change).
+- **M3-CIN-1252, the seawall side (Corrow B17 "The wall falls"), MERGE-READY @ this commit:**
+  - W20 (the Breach, "unlit except by the storm") aimed 32° off the Undertow, which only peeked into the top-right
+    corner. It is re-aimed toward the storm (the same camera position, levelled, fov 58), so the wall-head and the
+    drowned low town are the foreground and the storm with its big cyan rents fills the upper right.
+  - New pending shot ch08_wall_falls_w20, SELF-RENDERED and VIEWED. Needs `HYMN_SHOT_TIMEOUT=1500` on lavapipe
+    (536 s).
+  - **For act1-chapters and env-art (not mine to change):** in W20 a bright sun glint lies on the sea under the
+    storm, and the festival kites still fly over the wall. B17's direction says the frame is unlit except by the
+    storm.
+  - The cutscene suite's long test (test_hero_cutscene_snaps, which plays every cutscene) passed alone: 1 run,
+    0 failed. With the 110 passed before the cap, the cutscene filter is green.
 - **Act I rows (act1_gpu_qa.md @ gpu/act1-qa-7):**
   - 31 and 32 are fixed.
   - 75's hull key and rim (1086628b1) is on integration now; it only needs the PC's GPU re-check (PC-QUEUE).
