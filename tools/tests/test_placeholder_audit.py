@@ -227,6 +227,20 @@ class ScanTests(unittest.TestCase):
         self.assertEqual(len(named), 1, "a mesh and its LOD are one item")
 
 
+    def test_an_arena_no_act1_encounter_uses_is_out_of_scope(self) -> None:
+        raft = "res://assets/environments/arenas/raft/raft.tscn"
+        hall = "res://assets/environments/arenas/engine_hall/engine_hall.tscn"  # only a Ch11 encounter's
+        scan = [{"scene": s, "kind": "greybox", "node": "Lamps/Flame1", "group": "Lamps", "detail": "SphereMesh"}
+                for s in (raft, hall)]
+        repo = Repo()
+        try:
+            rows = pa.from_scan(scan, repo.root)
+        finally:
+            repo.close()
+        self.assertEqual([r.path for r in rows], [raft.removeprefix("res://")], "the Act I arena only")
+        self.assertEqual(rows[0].chapter, 1)
+
+
 class RealRepoTests(unittest.TestCase):
     def test_the_static_half_runs_on_the_repo(self) -> None:
         items = pa.audit(None)

@@ -2357,3 +2357,26 @@ MERGE-READY @ (this commit).
 - **Pre-existing, not mine:** `test_hero_stage::test_helper_bones_match_the_baked_clips` fails on the base tree too (asha attack DEF-armpit.R 38.83°). **LEAD-ASK:** route it to characters (Asha's helper-bone bake vs the attack clip).
 - Checks run: gdlint and gdformat (touched files), validate_data 0, taskboard --check, test_placeholder_audit 15/0, test_screenshots (the one pre-existing failure only), Godot `--filter=hero_` 121 run (2 failed: the gait test, updated and now 13/0, and hero_stage, pre-existing), hero_walk_cycle 5/0, two shots self-rendered and viewed. Skipped: Blender (no Blender source), the full manifest, coverage (no game/battle or game/progression change).
 - **FAST-TRACK** MERGE-READY @ 817699bb4: M3-HER-1231, the walk cycle no longer stops (fix 3aee287c7); placeholder_audit's summon scope (8c922bf45). Merged integration -ze8rrn @ e2411fb04 (docs only). Cherry-pick: 3aee287c7, plus 8c922bf45 for the inventory.
+
+### 2026-11-03: Act I completion check (ADR 0205 §3, the Lead's ask)
+**ACT1-COMPLETION: audit 2 items (0 high, 0 medium, 2 low: env-art-b, M3-HER-1141), playthrough PASS (headless, on hero-integration @ 9d1294573 with integration -ze8rrn @ e2411fb04 merged).**
+- **Playthrough** (ADR 0203 §2: the continuous flow, every chapter thread, every encounter entry, save and load). 16 suites, one Godot process each:
+  - test_act1_route 3/0: New Game → prologue → Ch1 Drop; slice end → Ch4 card → Ch4; Ch9 end → credits → title.
+  - Chapter threads: fp_prologue 8/0, fp_thread (Ch2–3) 2/0, ch01 2/0, ch04 3/0, ch05 4/0, ch06 5/0, ch07 5/0, ch08 6/0, ch09 7/0.
+  - test_act1_encounters_resolve 2/0: every Act I encounter enters its arena against its own enemies.
+  - Save and load: continue_every_act1_zone 2/0, qa_save_shrines 2/0, save_new_run 4/0.
+  - battle_return 2/0.
+  - **0 SCRIPT ERRORs** in all of these.
+- **test_qa_threads** (the error guard over every thread) failed, but only on Act II/III threads (ch10–ch21): 114 errors, all `Cannot open file res://.godot/imported/<music>.ogg-<hash>.oggvorbisstr`.
+  - That is this container's import cache, not the game. Godot rewrote the committed `.ogg.import` files here, I reverted them, and the cache kept the other hash (`reedhollow.ogg-3cc944b…` on disk, the committed import names `02729a4b…`).
+  - The Act I threads raised **no** error and no unhandled warning under the guard. Not routed to anyone. A gate session with a clean import should show the guard green on Act II too. If it doesn't, audio owns those `.import` files.
+- **The audit is the full one** (runtime scan of 61 scenes, plus the static checks): `docs/kb/qa/act1_final_inventory.md` @ 9d1294573. Two false Act I highs came from my own tool's scope and are fixed with tests:
+  - 8c922bf45: every skill's summon counted as Act I (court_stillguard, letting_stilled).
+  - 708048ba2: an arena no Act I encounter uses counted as Act I (lowlight_engine_hall, Ch11).
+- **Left for Act I completion (not mine):**
+  - The audit's 2 low items: env-art-b's `reefball_drop_proxy.glb` and `tb_drop_proxy.tres`, named as placeholders (M3-HER-1141).
+  - The PC's GPU rows (the PC is offline).
+  - The hitch numbers need the PC.
+  - The last fast gate is the Lead's.
+MERGE-READY @ (this commit): the two audit scope fixes and the inventory refresh.
+- Trial merge big46 @ 0ff565787: clean; hero_walk_cycle 5/0, hero_stage 11/0 (big46's characters fix: the pre-existing red is gone), hero_field_gait 13/0, hero_field_actor 15/0. MERGE-READY @ 0ff565787.
