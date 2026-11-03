@@ -166,13 +166,37 @@ def jetty_rows(b: dict) -> list[dict]:
     return rows
 
 
+# Ch17's walk to the dry-dock (the Act III chapters' M5-A3P-1001 blocks): the gangway from the dock, the berth walk and
+# the first berth's deck, each a run of the kit's dock modules along the block's length at its own yaw. (The hull's
+# deck, cabin and engine floors are inside dace_hull_frame; the greybox keeps their collision.)
+WALK_BLOCKS = ("Gangway", "BerthWalk", "FirstBerthDeck")
+
+
+def walk_rows(b: dict) -> list[dict]:
+    rows = []
+    for k in WALK_BLOCKS:
+        if k not in b:
+            continue
+        v = b[k]
+        length = v["size"][0]
+        n = max(1, round(length / DOCK_MODULE_M))
+        step = length / n
+        yaw = float(v.get("yaw", 0.0))
+        ux, uz = math.cos(math.radians(yaw)), -math.sin(math.radians(yaw))  # the block's local +X in the zone
+        for m in range(n):
+            s = -length * 0.5 + step * (m + 0.5)
+            rows.append({"piece": "hm_dock_4m", "at": [r3(v["pos"][0] + ux * s), r3(v["pos"][2] + uz * s)], "y": 0.0,
+                         "yaw_deg": r3(yaw), "scale": r3(step / DOCK_MODULE_M)})
+    return rows
+
+
 def _row(piece: str, x: float, z: float, y: float = 0.0, yaw: float = 0.0, **extra) -> dict:
     return {"piece": piece, "at": [x, z], "y": y, "yaw_deg": yaw, **extra}
 
 
 def dressing() -> dict:
     b = blocks()
-    pieces = dock_rows(b) + jetty_rows(b)
+    pieces = dock_rows(b) + jetty_rows(b) + walk_rows(b)
     pieces += [_row(DOCKMASTER_PIECE if k == DOCKMASTER_BLOCK else "hm_lashed_hulls", v["pos"][0], v["pos"][2], WATER_Y,
                     HOUSE_YAW)
                for k, v in sorted(b.items()) if k.startswith("HousePlatform") and k[13:].isdigit()]
@@ -194,6 +218,10 @@ def dressing() -> dict:
     # audit found the perches over open water with the greybox hidden): a stilt post from the bed, scaled to the top.
     pieces += [_row("timber_stilt_post", v["pos"][0], v["pos"][2], PILE_BED_Y, 0.0, scale=r3(PILE_SCALE))
                for k, v in sorted(b.items()) if k.startswith("DockPile")]
+    # Ch17's walk piles (GangwayGangPile*, BerthWalkBerthPile*), each scaled to its own block's top (1.7 m)
+    pieces += [_row("timber_stilt_post", v["pos"][0], v["pos"][2], PILE_BED_Y, 0.0,
+                    scale=r3(PILE_SCALE * (v["pos"][1] + v["size"][1] * 0.5 - PILE_BED_Y) / (PILE_TOP_Y - PILE_BED_Y)))
+               for k, v in sorted(b.items()) if k.startswith(("GangwayGangPile", "BerthWalkBerthPile"))]
     pieces += [_row("tide_debris", x, z, WATER_Y + DEBRIS_FLOAT_Y, yaw, drift=dict(DEBRIS_DRIFT))
                for x, z, yaw in DEBRIS_AT]
     lights = [{"at": _flame(x, z, yaw), "energy": OIL_ENERGY, "range": OIL_RANGE_M, "flicker": OIL_FLICKER}

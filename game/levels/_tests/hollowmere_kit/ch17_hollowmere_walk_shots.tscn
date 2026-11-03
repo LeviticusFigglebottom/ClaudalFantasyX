@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/act1_zones/act1_zone_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch17/hollowmere/hollowmere.tscn" id="2_zone"]
+
+[node name="Ch17HollowmereWalkShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+views = {
+"Gangway": [[59.0, 1.7, 0.3], [88.0, 1.0, -0.4], 50.0],
+"BerthWalk": [[88.6, 1.7, -0.9], [79.6, 1.0, -15.1], 55.0]
+}

@@ -2,8 +2,8 @@
 id: M3-ENV-1253
 title: "FAST-TRACK request: storm arena variants for Ch1's raft and Ch16's Choir (oruvel_raft_storm, drowned_choir_storm)"
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art-b (claude/env-art-b)"
 depends_on: [M3-ENV-07B]
 milestone: M3
 reviewer: rendering
@@ -34,3 +34,6 @@ The human's playtest (11-03): the storm's fights use the normal backdrop. act1-c
   wall: bring it into the battle camera's frame over the parapet (distance or scale of the arenas' Undertow).
 
 ## Review log
+- **env-art-b, 2026-11-03:**
+  - **`drowned_choir_storm`: built** (tools/act1/storm_arenas.py, 33c75049). It has the ring under the waking storm, rain, a soaked dais, a storm rim and its own `Undertow` (`ch08_landfall`). In `arenas.json` it moves from `storm.pending` to `storm.arenas`, and its `scenes` row points at its own scene, so BattleStorm adds only wind and spray: one Undertow per fight.
+  - **`oruvel_raft_storm`:** env-art's (M3-ENV-1340), per the Lead's big47 decision.

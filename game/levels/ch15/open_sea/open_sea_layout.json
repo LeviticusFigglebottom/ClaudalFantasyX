@@ -252,7 +252,8 @@
     "background": "#b8a4a8",
     "ambient_color": "#9a8e96",
     "ambient_energy": 0.55
-   }
+   },
+   "environment_res": "res://game/levels/ch15/open_sea/open_sea_dawn_environment.tres"
   }
  ],
  "actors": {},

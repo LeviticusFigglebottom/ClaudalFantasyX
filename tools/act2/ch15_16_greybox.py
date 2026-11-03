@@ -113,7 +113,9 @@ def open_sea() -> dict:
         # M4-A2P-105: the dawn at the bow (the `to_hollowmere` beat sets ch15_dawn): grey-rose, no sun yet; env-art-b
         # adds the dawn grade (environment_res: fog 0.03) and the fog bank at the bow to this row
         "variants": [{"when": {"set": ["ch15_dawn"]}, "sun": {"energy": 0.0},
-                      "environment": {"background": "#b8a4a8", "ambient_color": "#9a8e96", "ambient_energy": 0.55}}],
+                      "environment": {"background": "#b8a4a8", "ambient_color": "#9a8e96", "ambient_energy": 0.55},
+                      # env-art-b (11-03): the dawn grade, with the fog bank lying on the sea at the bow
+                      "environment_res": "res://game/levels/ch15/open_sea/open_sea_dawn_environment.tres"}],
         "actors": {},
         "shots": {"U01": {"pos": [1.6, 1.4, -3.0], "look_at": [0.0, 0.8, 4.2], "fov": 40},
                   # M4-A2P-015 (docs/kb/plan/act2/chapters/ch15.md §4): C1 the bier under the bridal cloth; C2a low

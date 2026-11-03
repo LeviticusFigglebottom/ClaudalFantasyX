@@ -3,7 +3,8 @@
 * The bespoke pieces follow the greybox: the balustrades' runs are its edge walls, the water-steps fall from the court
   (y 0) to the barge's deck (-0.6) between the steps' walls, the columns stand on the column blocks.
 * The barge is the wedding dress of the bridal barge (no bier before Ch15), its deck at the greybox Barge's top.
-* Every lamp-stand carries its light at its flame; the files on disk are the generator's.
+* Every lamp-stand carries its light at its flame; after the trap they lie knocked down and out; the files on disk are
+  the generator's.
 """
 
 from __future__ import annotations
@@ -66,12 +67,28 @@ class LacquerCourtTests(unittest.TestCase):
         self.assertAlmostEqual(barge[0]["y"], top, delta=0.01, msg="the deck at the greybox Barge's top")
 
     def test_every_lamp_stand_carries_its_light(self) -> None:
-        stands = [(p["at"][0], p["y"], p["at"][1]) for p in self.d["pieces"] if p["piece"] == "gilt_lamp_stand"]
+        stands = [(p["at"][0], p["y"], p["at"][1]) for p in self.d["pieces"]
+                  if p["piece"] == "gilt_lamp_stand" and p.get("block") == "CeremonyLamps"]
         lights = [tuple(r["at"]) for r in self.d["fire_lights"]]
         self.assertEqual(len(lights), len(stands))
         for (x, y, z), (lx, ly, lz) in zip(stands, lights):
             self.assertEqual((x, z), (lx, lz))
             self.assertAlmostEqual(ly - y, ansedra.FLAME_Y + 0.1, delta=0.01)
+
+    def test_after_the_trap_the_stands_lie_fallen_and_out(self) -> None:
+        """chapters' M4-A2P-104 variants: the wedding set (stands and lights) follows CeremonyLamps; the fallen set
+        follows CeremonyLampsFallen, one per stand, unlit (its flame slot is the stand's gilt), most on their sides."""
+        lit = [p for p in self.d["pieces"] if p.get("block") == "CeremonyLamps"]
+        fallen = [p for p in self.d["pieces"] if p.get("block") == "CeremonyLampsFallen"]
+        self.assertEqual(len(lit), len(GEN.LAMP_STANDS))
+        self.assertEqual(len(fallen), len(GEN.LAMP_STANDS))
+        self.assertTrue(all(r.get("block") == "CeremonyLamps" for r in self.d["fire_lights"]), "no light after the trap")
+        for p in fallen:
+            self.assertEqual(p["material_paths"], {"kit_lamp_flame": GEN.OUT_FLAME})
+            self.assertTrue((ROOT / GEN.OUT_FLAME.removeprefix("res://")).exists())
+        self.assertGreaterEqual(sum(1 for p in fallen if p["tilt_deg"][1] > 45.0), len(fallen) // 2)
+        for b in ("CeremonyLamps", "CeremonyLampsFallen"):
+            self.assertIn(b, self.b, f"chapters' {b} anchor")
 
     def test_the_files_are_the_generators(self) -> None:
         on_disk = json.loads((GEN.ZONE / "ansedra_lacquer_court_dressing.json").read_text(encoding="utf-8"))

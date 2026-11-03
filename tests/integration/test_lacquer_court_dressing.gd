@@ -40,7 +40,7 @@ func test_the_kit_covers_the_greybox_and_the_lamps_sit_on_their_stands() -> void
 		if not n is Node3D:
 			continue
 		var kind := (n as Node3D).scene_file_path.get_file()
-		if kind == "gilt_lamp_stand.glb":
+		if kind == "gilt_lamp_stand.glb" and (n as Node3D).visible:  # the wedding's set; the fallen one waits hidden
 			stands.append((n as Node3D).position)
 		elif kind == "court_column.glb":
 			columns += 1

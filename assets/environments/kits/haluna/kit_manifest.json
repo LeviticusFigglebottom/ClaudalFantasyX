@@ -442,6 +442,17 @@
         "choir_amphitheatre-lod1": 304
       }
     },
+    "choir_amphitheatre_walked": {
+      "budget": [
+        20000,
+        1700
+      ],
+      "bytes": 508052,
+      "lods": {
+        "choir_amphitheatre_walked": 4908,
+        "choir_amphitheatre_walked-lod1": 336
+      }
+    },
     "choir_singer": {
       "budget": [
         5000,
@@ -451,6 +462,17 @@
       "lods": {
         "choir_singer": 2172,
         "choir_singer-lod1": 274
+      }
+    },
+    "choir_votive_rings": {
+      "budget": [
+        3000,
+        300
+      ],
+      "bytes": 76468,
+      "lods": {
+        "choir_votive_rings": 1728,
+        "choir_votive_rings-lod1": 270
       }
     },
     "clay_bowl": {
