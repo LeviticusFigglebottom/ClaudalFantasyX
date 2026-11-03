@@ -39,3 +39,17 @@ GATE-BUILT @ d75aeefc
 
 GATE-FAST-DONE (merge-approved under the standing rule: no batch-caused red). In: row 56's notch fix with Asha's rebuilt library; it turns
 big45's three characters reds green.
+
+## Shots (38: every manifest shot that names Asha; lavapipe, Forward+)
+Published on `lead/gate-big46-shots` @ 04a67231 in `docs/kb/qa/gate-runs/big46/` (out, out/diff, compare.txt, five contact grids g00–g04).
+- **8 PASS** (the faces, sleeves, stylized and smile compares, slice_verse_steps), **23 DRIFT**, **6 NO-BASELINE** (pending: asha_clip_touch,
+  asha_clip_sleep_sitting, slice_verse_threshold, slice_verse_recognition, slice_verse_c08, slice_verse_s08), **1 FAILED-TO-CAPTURE**
+  (slice_neme_table hung past 600 s under the parallel gate load; not re-run).
+- Asha's 18 drifts (0.010–0.071) are the row 56 skirt: the panels hang closer, no white underskirt fan on the floor in the kneels
+  (kneel_over_rhen, laugh, offer_hand, bow_palms_flat), the run's hem trails. Viewed. Watch: **asha_clip_sleep_sitting** (pending) shows the skirt as
+  a boxy block over the knees.
+- The slice drifts (beach_h05 0.29, verse_hall 0.20, villagers 0.13, causeway ×2 0.10, dock_night_yes 0.03) frame a different moment of the
+  cutscene than the baseline (verse_hall's baseline is inside the hall; the capture is on the causeway with Toma). Not the skirt; the baselines lag
+  earlier cutscene timing changes.
+
+LEAD-REVIEW big46: 38 shots (8 PASS, 23 DRIFT, 6 NO-BASELINE, 1 hung), fast gate green (hero 116/0; Asha's clips, locomotion and rig green), merge when you approve
