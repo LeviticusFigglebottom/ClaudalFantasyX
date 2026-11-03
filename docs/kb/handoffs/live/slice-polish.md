@@ -1539,7 +1539,46 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - 75's hull key and rim (1086628b1) is on integration now; it only needs the PC's GPU re-check (PC-QUEUE).
   - No other slice-polish row is open.
 
+- **Ui's Act III requests, done (all review: ui):**
+  - **M5-A3P-1704:** each Ch18 revisit sets `ch18_revisit_<town>`; Haluna's is set on arrival in the open world.
+  - **M5-A3P-1707:** Ch17 B05 mounts the ledger page (a `mount_ledger` zone step before `ch17_the_ledger`). For
+    act1-chapters: this is one step in ch17.json and one method in Ch17Zone.
+  - **M5-A3P-1701 + M5-A3P-1203, the Ending's last stops (review: ui / narrative):**
+    - E5 `ending_the_dark_sea` at Haluna's dark dock (E11, `grade: ending_dock`), then the credits;
+    - the beach-rite vignette (`game/flow/ending_beach_rite.tscn`, E12);
+    - after the roll, PostCredits travels to Oruvel, which plays E7 `ending_first_lamp` (E13, `grade: post_credits`,
+      Kell's-wick oil lamp) and then the title.
+    - credits.json's two hooks are set, and test_credits_roll's default-data cases build their own data.
+  - **Fixed:** CutsceneGrade never found a GreyboxZone's environment, so no greybox scene's `grade:` ever applied.
+    Only the two ending scenes use a built grade row, so no other shot changes.
+  - **SELF-RENDERED and VIEWED (new pending shots):**
+    - ending_e12_beach_rite: Toma, backs to the sea;
+    - ending_e13_first_lamp: the blue hour, the lamp's warm light on Kell's stall, the only warm light in frame;
+    - ending_e11_dark_sea: Asha centred under the stars, the sea completely dark. Her face is barely lit on lavapipe
+      (PC-QUEUE).
+  - **Checks run:**
+    - validate_data, taskboard, dlgc, gdlint and gdformat clean;
+    - Godot: ending_last_stops 4, credits 6, cutscene_grade 4, cutscene_directives 2, haluna 67, ch01 20, ch17 3,
+      ledger 3, ch18_revisit 3, all 0 failed.
+  - **Checks skipped:** coverage (no battle or progression code); Blender (no source); the tools suite (no tools/
+    change).
+  - **For other tracks:**
+    - creatures: the rite's `@anim crowd turn_back sea` has no `crowd` actor;
+    - env-art: the rite plays by day, and the script says dawn (no dawn grade for Haluna yet);
+    - nothing plays `ch18_backs_to_the_water` in Haluna yet (Ch18's flow, M5-A3P-1004).
+
+## FINAL (2026-11-03, the human: "finish, commit everything, and stop")
+- **FINAL MERGE-READY @ HEAD of claude/m2-slice** (the commit that adds this line; it includes every commit above). Nothing
+  is unfinished or uncommitted.
+- **Exact next step for whoever resumes:**
+  1. Merge `origin/claude/undertow-lead-handoff-ze8rrn`.
+  2. View the Lead's renders of the new pending shots: ch01_rising_eye, ch08_storm_wall_f08w, ch08_storm_eye_f08e,
+     ch08_wall_falls_w20, ending_e11_dark_sea, ending_e12_beach_rite, ending_e13_first_lamp.
+  3. Work the PC-QUEUE below on the GPU.
+  4. Act III staging per ADR 0207 as each set lands (Act I FAST-TRACKs first).
+
 ### PC-QUEUE
+- ending_e11_dark_sea: under ending_dock, does Asha's face read on the GPU (the rim)? If not, a cutscene key on E11.
 - M3-CIN-1252: ch01_rising_eye, ch08_storm_wall_f08w and ch08_storm_eye_f08e on the GPU. Does the eye read as a turning vortex in motion (play the Rising and B07)? Are F08E's rim arcs a lavapipe artefact?
 - Row 75: ch01_going_under_u10/_u11 with the new hull key and rim (dive_hull_lights): does the hull read on the GPU?
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.

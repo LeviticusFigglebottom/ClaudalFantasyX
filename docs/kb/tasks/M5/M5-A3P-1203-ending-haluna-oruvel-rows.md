@@ -2,8 +2,8 @@
 id: M5-A3P-1203
 title: "Request (slice-polish; ui for the credits' next_scene): the Ending's last stops at Haluna and Oruvel (E5-E7)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "slice-polish (claude/m2-slice)"
 depends_on: [M5-A3P-1015]
 reviewer: narrative
 milestone: M5
@@ -24,6 +24,24 @@ three beats sit in zones and data that aren't act1-chapters':
   `credits_seen` (slice-polish's flow).
 
 ## Acceptance criteria
-- [ ] From `ending_landed`, the game plays E5, the credits with the beach rite, then E7 in Oruvel, and ends on the title.
+- [x] From `ending_landed`, the game plays E5, the credits with the beach rite, then E7 in Oruvel, and ends on the title.
+
+## Done (slice-polish, 2026-11-03)
+- E5 at Haluna: an arrival on `ending_landed` with `ending_dark_sea_seen` unset gives Haluna at night with the sea's
+  glow at 0 and only Asha on the dock, plays `ending_the_dark_sea` on E11 (`grade: ending_dock`; her turn is
+  `@anim asha look_at haluna` toward the staged `haluna` mark), sets `ending_dark_sea_seen` and opens the credits.
+- The credits: the beach-rite vignette and next_scene (see M5-A3P-1701).
+- E7 in Oruvel: on `credits_seen`, the storm comes down and `ending_first_lamp` plays on E13 (`grade: post_credits`,
+  the blue hour). Kell's-wick oil lamp is a light-only practical (`game/data/cutscene/ch01/oil_lamp.tscn`), and the
+  title follows.
+- Staging: `game/data/cutscene/ch02/haluna.json` (E11, E12, the marks) and `ch01/oruvel.json` (E13, the lamp).
+  HalunaZone gained `location_id` so CutsceneStaging applies.
+- Fixed: CutsceneGrade never found a GreyboxZone's environment (a code-built stage has no owner). No other scene
+  used a built grade row, so nothing else changes.
+- Tests: test_ending_last_stops 4/0, cutscene_grade 4/0, credits 6/0, haluna 67/0, ch01 20/0.
+- Viewed (lavapipe): E12 (Toma, backs to the sea) and E13 (the blue hour, the lamp's warm light on the stall). E11
+  reads very dark under ending_dock on lavapipe (PC-QUEUE).
+- Open: the rite's `@anim crowd turn_back sea` has no `crowd` actor (the villagers' routine is creatures'); E12 is
+  daylight, with no dawn grade yet (env-art).
 
 ## Review log
