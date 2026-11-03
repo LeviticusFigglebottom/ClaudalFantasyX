@@ -5880,7 +5880,7 @@
         960,
         540
       ],
-      "settle_frames": 60,
+      "settle_frames": 600,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
@@ -5899,7 +5899,8 @@
               "tut_field_menu_seen",
               "tut_menu_save_seen",
               "tut_swell_seen"
-            ]
+            ],
+            "hold_line": "ch03_verse_002"
           }
         },
         "time_scale": 4.0
@@ -5944,7 +5945,7 @@
         960,
         540
       ],
-      "settle_frames": 60,
+      "settle_frames": 600,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
@@ -5960,7 +5961,8 @@
             "scene_id": "ch01_gulls",
             "flags": [
               "ch01_started"
-            ]
+            ],
+            "hold_line": "ch01_gulls_001"
           }
         },
         "time_scale": 4.0
@@ -8050,7 +8052,7 @@
         960,
         540
       ],
-      "settle_frames": 240,
+      "settle_frames": 990,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
@@ -8062,9 +8064,11 @@
         "nodes": {
           ".": {
             "level_path": "res://game/levels/prologue/prologue.tscn",
-            "scene_id": "prologue_dead_city"
+            "scene_id": "prologue_dead_city",
+            "hold_cue": "mark rhen"
           }
-        }
+        },
+        "time_scale": 4.0
       }
     },
     {

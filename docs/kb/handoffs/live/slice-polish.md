@@ -1519,6 +1519,14 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - Ch17's D01–D18 is M5-A3P-1001, which act1-chapters is doing;
   - row 75 and the storm shots wait on the GPU (PC-QUEUE).
   - **LEAD-ASK:** anything you want ahead of those? Otherwise I'll pick up Act III staging as each chapter's set lands.
+    **LEAD-ANSWERED (19:51):** first convert the three frame-count shots to held timing, then Act III staging per
+    ADR 0207 as each set lands; Act I FAST-TRACKs always come first. W20's glint and kites went to env-art-b and
+    act1-chapters.
+  - **Held timing (the Lead's answer), done in shots.json:**
+    - slice_verse_hall holds `ch03_verse_002` (the baseline's moment, S07_reverse);
+    - ch01_o10_gull holds `ch01_gulls_001`;
+    - slice_prologue_p01 holds the `mark rhen` cue, at time_scale 4 (P01 fully faded in, just before Rhen crosses).
+    - Renders are in progress; the SELF-RENDERED line follows.
 - **Act I rows (act1_gpu_qa.md @ gpu/act1-qa-7):**
   - 31 and 32 are fixed.
   - 75's hull key and rim (1086628b1) is on integration now; it only needs the PC's GPU re-check (PC-QUEUE).
