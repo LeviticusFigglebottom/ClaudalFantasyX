@@ -104,3 +104,19 @@ MERGE-READY @ 2acd3abc, for big48: M3-CMB-1252.
 - Data: `field_usable` is on Mend and Chorus Mend. No cure or revive spell exists in skills.json yet; FieldSpell already handles `cleanses`.
 - I didn't copy the task file here. It lives on claude/ui as done, and a second copy would be an add/add conflict at merge.
 - Checks: test_field_spell 8/0; gdlint and gdformat clean.
+
+### 2026-11-03 ~21:30: FINAL (the Lead's 21:25: the human's "finish, commit everything, and stop")
+FINAL MERGE-READY @ 554bc2d4 (this log commit sits on top of it; nothing on the branch is WIP or NOT-READY).
+- **On the branch, all `status: review`:**
+  - M3-CMB-03: the Relighting Wick in the Act I economy: Haluna Market from Ch2, the boss drops, Ch1's old tin;
+  - M3-CMB-04: the KO'd at 1 HP after a win;
+  - M3-CMB-05 and M3-CMB-1252: field spells, `FieldSpell`;
+  - M3-CMB-06: the solo Hullgnaw eased;
+  - M4-A2P-1202: the sim's Vowbound call and p90 on report-only rows.
+- **Final scoped checks:** validate_data 0/0; taskboard --check; gdlint and gdformat clean on the touched core; Godot tests field_spell 8/0, victory_rise 5/0, revive_economy 4/0, test_formulas 29/0, test_shop 25/0, battle_sim 56/0.
+- **Open LEAD-ASKs** (each assumed OK): the one-line hook in battle_vitals.gd; p90 no longer gating report-only sim rows.
+- **EXACT NEXT STEP for whoever resumes:**
+  1. Merge `origin/claude/undertow-lead-handoff-ze8rrn` into `claude/combat-systems` (merge commit) and re-import.
+  2. Rerun the scoped tests above, plus `sim.py --check` on the suites the merge touches. The full 76 suites need a 2-hour timeout here.
+  3. Answer reviews on the six tasks.
+  4. Then the content call in this log: a party cure or revive spell (FieldSpell already supports `cleanses`). After that, Act II combat rows per ADR 0205 §4.
