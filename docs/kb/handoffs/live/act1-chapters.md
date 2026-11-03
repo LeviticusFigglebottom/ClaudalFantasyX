@@ -1276,14 +1276,14 @@ done and in `status: review` (reviewer: narrative). Each task file's **Done** se
   green, along with validate_data, chapter_flow_check, taskboard --check, and the tool tests for zone-map POIs, POI
   views, dialogue clarity, creatures, Act II creature SFX, encounter pacing and music markers. No render (no shot
   can change: the triggers are invisible, the flows are data).
-- LEAD-ASK: Ch9 → Ch10. Ch9's last beat opens the end card, and `first_playable.json` `end_card.next_location` is
+- LEAD-ANSWERED 11-03 (see "LEAD-ANSWERED (20:32)" below); was LEAD-ASK: Ch9 → Ch10. Ch9's last beat opens the end card, and `first_playable.json` `end_card.next_location` is
   empty by ADR 0042's note ("the end of Act I ... accept returns to the title"). Should it now go on to
   `ch10/ossa_fen` FenEdge (the card's title says "The end of Act I")? It's one line in that file, and I haven't
   made it because it moves the shipping boundary.
-- LEAD-ASK: who stages Act II Ch13–16 (M4-A2P-071–075)? slice-polish staged Ch10–12 as cinematics (M4-CIN-1304).
+- LEAD-ANSWERED 11-03 (see "LEAD-ANSWERED (20:32)" below); was LEAD-ASK: who stages Act II Ch13–16 (M4-A2P-071–075)? slice-polish staged Ch10–12 as cinematics (M4-CIN-1304).
   The played Ch13–16 scenes name about 50 marks and 110 shots that no stage has. I'll leave them to slice-polish
   unless you route them to me.
-- LEAD-ASK: the Act II break. `ch16_swept_away` sets `ch16_act_two_complete` and then nothing happens: B11's vigil
+- LEAD-ANSWERED 11-03 (see "LEAD-ANSWERED (20:32)" below); was LEAD-ASK: the Act II break. `ch16_swept_away` sets `ch16_act_two_complete` and then nothing happens: B11's vigil
   at `prologue/iskarra_dusk` and B12's act card ("Act III: The Unbinding.", M3-UI-210) aren't wired. Who owns the
   act break, and where does Act III begin (Hollowmere `ch17/hollowmere`)? I'll wire it as part of Act III unless
   you say otherwise.
