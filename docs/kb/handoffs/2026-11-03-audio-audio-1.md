@@ -30,9 +30,8 @@ Nothing.
 4. Otherwise resume the Act III score (M5-A3P-1951/1952; the Ch17–Ch20 cue list in the live log).
 
 ## Known issues
-- In a cloud checkout without `git lfs pull`, three Godot audio tests fail on LFS pointers: test_battle_audio's
-  `abl_ember`, test_music_transitions' `prologue_dusk.loop.json`, and the second of test_audio_loops' names. The
-  storm and status work didn't cause them.
+- In a cloud checkout without `git lfs pull`, two Godot audio tests fail on LFS pointers: test_battle_audio's
+  `abl_ember` and test_music_transitions' `prologue_dusk.loop.json`. The storm and status work didn't cause them.
 - `godot --import` in such a checkout rewrites about 190 LFS `.import` files. Revert them
   (`git checkout -- assets/lfs assets/audio/music/act2 assets/audio/music/act3 assets/audio/sfx/act3`) before
   committing.
