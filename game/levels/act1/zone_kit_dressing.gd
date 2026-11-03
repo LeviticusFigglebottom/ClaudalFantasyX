@@ -69,6 +69,10 @@ extends HalunaDresser
 ##                  for a frame the key leaves black (Corrow under the storm's dimmed sun); a "block" one follows its
 ##                  block, so it shows only while the story shows it.
 ##   fire_lights[].flicker  0..1: the share of the light's energy a flame's flicker takes away at its deepest.
+##   block_looks  [{"block", "sun_specular"?, "water_params"?: {param: value}}]: while the block shows, the zone's sun
+##                  takes that specular and every water material in the zone (its Water and the "waters" rows) those
+##                  shader params; both go back when it hides or the dressing leaves the tree (Corrow's storm frames
+##                  are lit by the storm only: no sun glint on the sea, slice-polish's W20).
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
 ## It writes hymn_sun_direction from the zone's sun every frame, so the sky's sun follows the story's
@@ -131,6 +135,7 @@ const FAR_SIZE_RANGE_M := 700.0
 const KEY_GREYBOX := "greybox"
 const KEY_FIRE := "fire_lights"
 const KEY_ENVIRONMENT := "environment"
+const KEY_BLOCK_LOOKS := "block_looks"
 const KEY_TIME_OF_DAY := "time_of_day_h"
 const GLOBAL_SUN := &"hymn_sun_direction"
 const GLOBAL_TIME_OF_DAY := &"hymn_time_of_day"
@@ -141,6 +146,7 @@ const COLLIDER := &"Collider"
 var zone: GreyboxZone
 
 var _sun_written := Vector3.ZERO
+var _look_saved: Dictionary = {}  ## block id -> {"sun": specular, "water": [[material, param, value]]} while applied
 var _followers: Dictionary = {}  ## block id -> Array of kit nodes
 var _kit_caches: Dictionary = {}  ## materials dir -> that kit's material cache
 var _spinners: Array[Array] = []  ## [piece, block, the piece's own basis]
@@ -201,6 +207,7 @@ func dress() -> void:
 	_place_smokes()
 	_place_ebbing()
 	_place_edge_walls()
+	_place_block_looks()
 	_hide_greybox()
 	_apply_environment()
 	if layout.has(KEY_TIME_OF_DAY):
@@ -612,6 +619,69 @@ func _place_fill_lights() -> void:
 		light.light_volumetric_fog_energy = 0.0  # the fog-lamp rule (test_fog_lamps)
 		root.add_child(light)
 		_attach(light, str(row.get(KEY_BLOCK, "")))
+
+
+func _place_block_looks() -> void:
+	for r: Variant in layout.get(KEY_BLOCK_LOOKS, []):
+		var row: Dictionary = r
+		var b := block(str(row.get(KEY_BLOCK, "")))
+		if b == null:
+			push_warning("ZoneKitDressing: no block for block_looks %s" % row.get(KEY_BLOCK, ""))
+			continue
+		b.visibility_changed.connect(_apply_block_look.bind(row))
+		_apply_block_look(row)
+
+
+func _exit_tree() -> void:
+	for id: String in _look_saved.keys():
+		_restore_block_look(id)
+
+
+## The zone's water materials: its Water node's and every WaterSurface the dressing placed.
+func _water_materials() -> Array[ShaderMaterial]:
+	var out: Array[ShaderMaterial] = []
+	var roots: Array[Node] = [self]
+	if zone != null:
+		roots.append(zone)
+	for root: Node in roots:
+		for n: Node in root.get_children() + (root.find_children("*", "", true, false) if root == self else []):
+			var w := n as WaterSurface
+			if w != null and w.material != null and not out.has(w.material):
+				out.append(w.material)
+	return out
+
+
+func _apply_block_look(row: Dictionary) -> void:
+	var id := str(row.get(KEY_BLOCK, ""))
+	var b := block(id)
+	if b == null:
+		return
+	if not b.visible:
+		_restore_block_look(id)
+		return
+	if _look_saved.has(id):
+		return
+	var saved := {"water": []}
+	if row.has("sun_specular") and zone != null and zone.sun != null:
+		saved["sun"] = zone.sun.light_specular
+		zone.sun.light_specular = float(row["sun_specular"])
+	var params: Dictionary = row.get("water_params", {})
+	for m: ShaderMaterial in _water_materials():
+		for k: String in params:
+			(saved["water"] as Array).append([m, StringName(k), m.get_shader_parameter(StringName(k))])
+			m.set_shader_parameter(StringName(k), params[k])
+	_look_saved[id] = saved
+
+
+func _restore_block_look(id: String) -> void:
+	if not _look_saved.has(id):
+		return
+	var saved: Dictionary = _look_saved[id]
+	_look_saved.erase(id)
+	if saved.has("sun") and zone != null and zone.sun != null and is_instance_valid(zone.sun):
+		zone.sun.light_specular = float(saved["sun"])
+	for e: Array in saved["water"]:
+		(e[0] as ShaderMaterial).set_shader_parameter(e[1] as StringName, e[2])
 
 
 func _place_multimeshes() -> void:

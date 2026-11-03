@@ -1428,3 +1428,28 @@ SELF-RENDERED @ baf421df: the Lacquer Court from the Barge, Steps and CourtEntry
 - **Checks:** Godot `--filter=storm` 41/0 (includes test_battle_storm's one-Undertow test and test_storm_encounters), battle_arena 20/0; tools test_b_arenas and test_arenas OK; validate_data, taskboard, gdlint/gdformat.
 - M3-ENV-1253 (the Choir's half) and M3-ENV-1341 are at review. M4-A2P-1502's first ask is already met by the storm table.
 - **MERGE-READY @ 74df3bdb** for big48 (everything since 211d8bd7, the Act II and Ch17 work included).
+
+### Lead 19:51: W20's sun glint under the storm (slice-polish's ch08_wall_falls_w20)
+- **Merged integration @ d89a9e23** (big47).
+- **Fixed @ 1a115b49.** The water shader draws its sun glint for every light, whatever the light's specular, so the glint can't be switched off through the lights.
+  - New `ZoneKitDressing` row type, additive: `block_looks`. While a block shows, the zone's sun takes a given specular and every water material in the zone (its Water and the `waters` rows) takes given shader params. Both go back when the block hides or the dressing leaves the tree.
+  - Corrow's `Storm` block now carries `sun_specular 0` and `glint_strength 0`, and its landward fill's specular is 0: the storm's light only.
+  - The water material is shared with Coilspire and Ch9's Corrow, so it is restored when the dressing leaves.
+- **For act1-chapters:** the festival kites still fly over the wall in W20. Removing them in the storm state is yours, as the Lead said.
+- SELF-RENDERED: ch08_wall_falls_w20 (HYMN_SHOT_TIMEOUT=1500, 548 s). I applied slice-polish's b3264a22 W20 camera and shot entry to my tree for the render only, then reverted them; that work is theirs to merge.
+  - **Viewed:** no sun glint on the sea under the storm. The water reads dark, with only the storm's cyan rents and rain on it, while the wall-head, the drowned low town and the vortex hold the frame.
+- **Checks:** Godot zone_kit 14/0 (new test: no glint under the storm, restored after), corrow 18/0, ch08 25/0, ch09 13/0; tools test_corrow_kit; validate_data; gdlint/gdformat.
+- **MERGE-READY @ 1a115b49.**
+
+### FINAL (Lead 21:25, the human: "finish, commit everything, and stop")
+- Nothing was in progress, there is no uncommitted work, and there are no WIP commits.
+- **FINAL MERGE-READY @ b10d44fd.** Everything on `claude/env-art-b` is finished and checked; the checks are listed in each entry above. Final scoped checks: validate_data 0/0 and taskboard --check OK.
+- **Exact next step for whoever resumes env-art-b:**
+  1. Merge `origin/claude/undertow-lead-handoff-ze8rrn`. Run `git lfs pull` and `godot --headless --path . --import`.
+  2. Take the requests that have landed:
+     - **M4-A2P-1502:** chapters' Choir `Storm` block. Then add a `storms` row following it in `tools/act2/ch16_drowned_choir_dressing.py` (preset ch08_landfall).
+     - **M4-C14-01:** the moving barge. Then set the court's `Ripples` `wake_target`.
+     - **The Ch17 beats' `environment_res` rows.** Then view H04/H07 at dusk and B08/B09 at night.
+  3. **M5-A3P-1500, still open:** a walkable hatch ramp from Dace's hull deck to the cabin; boarding is by `place` until then. Do it with a `collision_path` stair or ramp in the Ch17 dressing, or ask chapters for a layout ramp.
+  4. **Re-render once slice-polish's b3264a22 is merged:** ch08_wall_falls_w20 (HYMN_SHOT_TIMEOUT=1500).
+  5. **The PC-QUEUE above:** the GPU re-check of Act I rows 62–84.

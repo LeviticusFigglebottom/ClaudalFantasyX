@@ -73,3 +73,21 @@ func test_a_shown_storm_is_inside_the_camera_far_plane() -> void:
 	(storm.get_node(^"FarPlane") as StormFarPlane)._process(0.0)
 	assert_true(cam.far > storm.approach_distance_m + storm.state.bound_radius(), "far %.0f m" % cam.far)
 	_close()
+
+
+func test_under_the_storm_the_sea_takes_no_sun_glint() -> void:
+	# slice-polish's W20 ("unlit except by the storm"): while the Storm block shows, the zone's water takes no sun
+	# glint and the sun no specular (block_looks); both come back when the storm goes.
+	var water := zone.get_node(^"Water") as WaterSurface
+	var glint: Variant = water.material.get_shader_parameter(&"glint_strength")
+	var spec := zone.sun.light_specular
+	zone.show_block("Storm")
+	assert_eq(float(water.material.get_shader_parameter(&"glint_strength")), 0.0, "no glint under the storm")
+	assert_eq(zone.sun.light_specular, 0.0, "the sun takes no specular under the storm")
+	var flood := _water("Flood")
+	zone.show_block("Flood")
+	assert_eq(float(flood.material.get_shader_parameter(&"glint_strength")), 0.0, "nor does the flood")
+	zone.hide_block("Storm")
+	assert_eq(water.material.get_shader_parameter(&"glint_strength"), glint, "the glint comes back")
+	assert_eq(zone.sun.light_specular, spec, "and the sun's specular")
+	_close()
