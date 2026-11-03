@@ -1346,3 +1346,19 @@ SELF-RENDERED @ baf421df: the Lacquer Court from the Barge, Steps and CourtEntry
   - 71: fixed @ 3bc6e867 (the arena's half).
   - 72: fixed @ 6b8e416d (the arena's light; the camera is battle-presentation's).
   - 82, 84 and 65: next.
+- **Row 82, Corrow's flood and lake: fixed @ 9e66085b (my half).** The fills followed the Storm block and were on, but the flood's and the lake's cameras look landward (WNW). The faces they see turn to the sea, and only the low rim reached them. Changes: a seaward front fill under the storm (bearing 120, 0.55), a soft sky fill from overhead (0.3), and the landward fill raised from 0.6 to 0.8 (specular 0.15).
+  - **Viewed:** ch08_corrow_flood (the walk's figures now have lit faces and colour; mean +7 %), ch08_corrow_lake (+8 %) and ch08_corrow_storm (unchanged in look).
+  - corrow_lake's flat foreground is act1-chapters' camera. Godot corrow 18/0, zone_kit 13/0, test_corrow_kit OK.
+- **Row 84, the Coilspire laterite: fixed @ 211d8bd7.** `laterite_blocks` is baked at 2880 × 480 (480 px a metre, was 160). The pattern is the same, the PNGs are under 3 MB (plain git), and the materials reference the textures by path, so no Blender rebuild.
+  - **Viewed:** ch08_coilspire_gate, where the pores are round and the square blots are gone, and crowd_zone_corrow.
+  - M3-ENV-1331 (and the done 1332 and 1333) are at review for env-art; note in env-art.md. test_corrow_kit and test_coilspire_kit OK.
+- **Row 65 (cost): fixed earlier @ edb18aae** (smoke at 24 steps at High; the drop's god rays moved to Ultra). It is GPU-only to re-measure and already in the PC-QUEUE.
+- SELF-RENDERED @ 211d8bd7: ch08_corrow_flood, ch08_corrow_lake, ch08_corrow_storm, ch08_coilspire_gate, crowd_zone_corrow (all viewed; drift as intended).
+- **MERGE-READY @ 211d8bd7** (everything since abe3da17: the storm-arena FAST-TRACK, rows 71, 72's light, 82, 84, the anvil court re-write).
+  - **Checks run:** Godot battle_arena 18/0, storm_arenas 2/0, corrow 18/0, zone_kit 13/0; tools test_b_arenas, test_arenas, test_corrow_kit and test_coilspire_kit OK; gdlint and gdformat; validate_data 0/0; taskboard --check.
+  - **Checks skipped:** coverage (no battle or progression code); Blender (no Blender source); the full tools suite (no other tool's inputs changed).
+- **No open Act I row of mine that a cloud track can fix.** 62, 65, 71, 72, 78, 79, 80, 81, 82 and 84 are fixed; the PC's GPU is the judge. Outstanding:
+  - M3-C01-1335 (act1-chapters: point the Ch1 fights at `oruvel_raft_storm`);
+  - creatures-b's half of 71 (the Spar-Wraith's body);
+  - battle-presentation's half of 72 (the camera).
+- **Exact next step for env-art-b:** when M3-C01-1335 lands, self-render `battle_boss_intro_hullgnaw`. Then, by ADR 0205, go back to the Act II and Act III lane (M5-A3P-1500, Ch17's dry-dock) unless a new Act I row appears.
