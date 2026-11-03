@@ -5,12 +5,14 @@
     "dir": "res://assets/vfx/battle/status_icons",
     "pixel_size": 0.00028,
     "gap_px": 10,
-    "lift_m": 0.32,
+    "lift_m": 0.3,
     "max_shown": 5,
     "feet_over_height_m": 3.2,
     "render_priority": 20,
     "count_font_px": 64,
-    "count_outline_px": 14
+    "count_outline_px": 14,
+    "beside_px": 150,
+    "doc": "The icon row starts beside_px (texture pixels, scaled like the icon) right of the head point at head + lift_m: the actor marker (battle_hud.json actor_marker, head + 0.3 m, a 96 px mote) stays clear."
   },
   "reduced_motion": {
     "doc": "UiSettings.reduced_motion(): fewer aura particles, slower patterns and props.",
@@ -26,7 +28,7 @@
         "swatch": "palm_green",
         "color": "#3E7A3A",
         "pattern": "pulse",
-        "strength": 0.55,
+        "strength": 0.9,
         "speed": 0.8,
         "priority": 60
       },
@@ -35,11 +37,11 @@
         "color": "#B9B26A",
         "motion": "rise",
         "at": "chest",
-        "amount": 10,
+        "amount": 15,
         "lifetime_s": 1.4,
         "size_m": [
-          0.05,
-          0.11
+          0.07,
+          0.154
         ],
         "speed_m_s": 0.35,
         "radius_m": 0.22,
@@ -54,7 +56,7 @@
         "swatch": "indigo_dye",
         "color": "#2B3A6B",
         "pattern": "rim",
-        "strength": 0.75,
+        "strength": 0.95,
         "speed": 1.0,
         "priority": 65
       },
@@ -63,11 +65,11 @@
         "color": "#9DB4D9",
         "motion": "drift_up",
         "at": "head",
-        "amount": 4,
+        "amount": 6,
         "lifetime_s": 2.6,
         "size_m": [
-          0.1,
-          0.16
+          0.14,
+          0.224
         ],
         "speed_m_s": 0.18,
         "radius_m": 0.15,
@@ -84,7 +86,7 @@
         "kind": "ring",
         "at": "hood",
         "alpha": 0.8,
-        "radius_m": 0.32,
+        "radius_m": 0.22,
         "tube_m": 0.035,
         "spin_deg_s": 0.0
       }
@@ -92,12 +94,12 @@
     "darkness": {
       "icon_swatch": "ui_text_dim",
       "icon_color": "#A9B8CC",
-      "reads_as": "A dark veil sinks down the body; dark motes fall around the head. Icon: a slashed eye.",
+      "reads_as": "A black veil sinks down the body; dark motes fall around the head. Icon: a slashed eye.",
       "overlay": {
-        "swatch": "storm_slate",
-        "color": "#3E4A57",
+        "swatch": "lacquer_black",
+        "color": "#1D1916",
         "pattern": "bands_down",
-        "strength": 0.7,
+        "strength": 0.85,
         "speed": 0.35,
         "priority": 70
       },
@@ -106,11 +108,11 @@
         "color": "#24323A",
         "motion": "fall",
         "at": "head",
-        "amount": 12,
+        "amount": 18,
         "lifetime_s": 1.3,
         "size_m": [
-          0.06,
-          0.12
+          0.084,
+          0.168
         ],
         "speed_m_s": 0.25,
         "radius_m": 0.3,
@@ -126,11 +128,11 @@
         "color": "#B9AE98",
         "motion": "fall",
         "at": "chest",
-        "amount": 8,
+        "amount": 12,
         "lifetime_s": 1.1,
         "size_m": [
-          0.03,
-          0.06
+          0.042,
+          0.084
         ],
         "speed_m_s": 0.2,
         "radius_m": 0.25,
@@ -145,7 +147,7 @@
         "swatch": "reef_blue",
         "color": "#1569A0",
         "pattern": "bands_down",
-        "strength": 0.5,
+        "strength": 0.75,
         "speed": 0.25,
         "priority": 44
       },
@@ -154,11 +156,11 @@
         "color": "#A9DCF2",
         "motion": "sag",
         "at": "feet",
-        "amount": 6,
+        "amount": 9,
         "lifetime_s": 2.2,
         "size_m": [
-          0.08,
-          0.12
+          0.112,
+          0.168
         ],
         "speed_m_s": 0.08,
         "radius_m": 0.35,
@@ -173,7 +175,7 @@
         "swatch": "sun_gold",
         "color": "#FFD27A",
         "pattern": "bands_up",
-        "strength": 0.5,
+        "strength": 0.65,
         "speed": 2.2,
         "priority": 45
       },
@@ -182,11 +184,11 @@
         "color": "#F2A64A",
         "motion": "rise_fast",
         "at": "feet",
-        "amount": 14,
+        "amount": 21,
         "lifetime_s": 0.6,
         "size_m": [
-          0.03,
-          0.06
+          0.042,
+          0.084
         ],
         "speed_m_s": 2.4,
         "radius_m": 0.3,
@@ -196,12 +198,12 @@
     "stop": {
       "icon_swatch": "starlight",
       "icon_color": "#DCE6FF",
-      "reads_as": "A still pale glaze, no motion at all; sparkles hang frozen around the body. Icon: two bars.",
+      "reads_as": "A still deep-blue glaze, no motion at all (stone is grey; this is blue glass); sparkles hang frozen around the body. Icon: two bars.",
       "overlay": {
-        "swatch": "starlight",
-        "color": "#DCE6FF",
+        "swatch": "reef_blue",
+        "color": "#1569A0",
         "pattern": "frost",
-        "strength": 0.55,
+        "strength": 0.6,
         "speed": 0.0,
         "priority": 100
       },
@@ -210,11 +212,11 @@
         "color": "#BFE6E0",
         "motion": "hang",
         "at": "chest",
-        "amount": 10,
+        "amount": 15,
         "lifetime_s": 3.0,
         "size_m": [
-          0.04,
-          0.07
+          0.056,
+          0.098
         ],
         "speed_m_s": 0.0,
         "radius_m": 0.45,
@@ -229,7 +231,7 @@
         "swatch": "lacquer_red",
         "color": "#B3261E",
         "pattern": "pulse",
-        "strength": 0.6,
+        "strength": 0.85,
         "speed": 2.6,
         "priority": 80
       },
@@ -238,11 +240,11 @@
         "color": "#E0702E",
         "motion": "burst",
         "at": "hood",
-        "amount": 12,
+        "amount": 18,
         "lifetime_s": 0.7,
         "size_m": [
-          0.04,
-          0.08
+          0.056,
+          0.112
         ],
         "speed_m_s": 1.2,
         "radius_m": 0.25,
@@ -257,7 +259,7 @@
         "swatch": "gold_leaf",
         "color": "#D4A437",
         "pattern": "flicker",
-        "strength": 0.4,
+        "strength": 0.7,
         "speed": 1.0,
         "priority": 50
       },
@@ -266,11 +268,11 @@
         "color": "#F1D27A",
         "motion": "orbit",
         "at": "head",
-        "amount": 6,
+        "amount": 9,
         "lifetime_s": 1.6,
         "size_m": [
-          0.06,
-          0.1
+          0.084,
+          0.14
         ],
         "speed_m_s": 1.0,
         "radius_m": 0.32,
@@ -280,12 +282,12 @@
     "doom": {
       "icon_swatch": "bone",
       "icon_color": "#E6DAC0",
-      "reads_as": "A dark tide climbs the body from the feet; the count shows by the icon. Icon: a bell.",
+      "reads_as": "A red tide climbs the body from the feet in slow bands; the count shows by the icon. Icon: a bell.",
       "overlay": {
-        "swatch": "deep_teal_shadow",
-        "color": "#0E4A55",
+        "swatch": "lacquer_red",
+        "color": "#B3261E",
         "pattern": "bands_up",
-        "strength": 0.75,
+        "strength": 0.9,
         "speed": 0.3,
         "priority": 90
       },
@@ -299,7 +301,7 @@
         "swatch": "bronze_patina",
         "color": "#5F8A78",
         "pattern": "hatch",
-        "strength": 0.55,
+        "strength": 0.8,
         "speed": 1.0,
         "priority": 55
       },
@@ -308,11 +310,11 @@
         "color": "#1E4A3A",
         "motion": "fall",
         "at": "chest",
-        "amount": 8,
+        "amount": 12,
         "lifetime_s": 1.2,
         "size_m": [
-          0.05,
-          0.09
+          0.07,
+          0.126
         ],
         "speed_m_s": 0.3,
         "radius_m": 0.25,
@@ -329,7 +331,7 @@
         "kind": "sphere",
         "at": "chest",
         "alpha": 0.5,
-        "radius_scale": 1.15
+        "radius_scale": 0.8
       }
     },
     "protect": {
@@ -342,7 +344,7 @@
         "kind": "rings",
         "at": "chest",
         "alpha": 0.85,
-        "radius_m": 0.5,
+        "radius_m": 0.38,
         "tube_m": 0.02,
         "spin_deg_s": 40.0
       }
@@ -373,7 +375,7 @@
         "swatch": "turquoise_shallow",
         "color": "#3FD0C9",
         "pattern": "pulse",
-        "strength": 0.35,
+        "strength": 0.6,
         "speed": 0.5,
         "priority": 30
       },
@@ -382,11 +384,11 @@
         "color": "#3FD0C9",
         "motion": "drift_up",
         "at": "feet",
-        "amount": 6,
+        "amount": 9,
         "lifetime_s": 1.8,
         "size_m": [
-          0.04,
-          0.07
+          0.056,
+          0.098
         ],
         "speed_m_s": 0.5,
         "radius_m": 0.3,
@@ -396,81 +398,113 @@
     "armor_break": {
       "icon_swatch": "brass",
       "icon_color": "#B08D57",
-      "reads_as": "Brass shards fall off the chest. Icon: a cracked shield with a down arrow.",
+      "reads_as": "Brass shards fall off the chest. A crack pattern in the same colour spreads over the body. Icon: a cracked shield with a down arrow.",
       "aura": {
         "swatch": "brass",
         "color": "#B08D57",
         "motion": "shards",
         "at": "chest",
-        "amount": 8,
+        "amount": 18,
         "lifetime_s": 1.0,
         "size_m": [
-          0.04,
-          0.07
+          0.07,
+          0.12
         ],
         "speed_m_s": 0.5,
         "radius_m": 0.2,
         "energy": 1.3
+      },
+      "overlay": {
+        "swatch": "brass",
+        "color": "#B08D57",
+        "pattern": "cracks",
+        "strength": 0.85,
+        "speed": 0.0,
+        "priority": 20
       }
     },
     "mental_break": {
       "icon_swatch": "glimmer_held",
       "icon_color": "#7FC6D9",
-      "reads_as": "Cyan shards fall off the head. Icon: cracked rings with a down arrow.",
+      "reads_as": "Cyan shards fall off the head. A crack pattern in the same colour spreads over the body. Icon: cracked rings with a down arrow.",
       "aura": {
         "swatch": "glimmer_held",
         "color": "#7FC6D9",
         "motion": "shards",
         "at": "head",
-        "amount": 8,
+        "amount": 18,
         "lifetime_s": 1.0,
         "size_m": [
-          0.04,
-          0.07
+          0.07,
+          0.12
         ],
         "speed_m_s": 0.5,
         "radius_m": 0.18,
         "energy": 1.3
+      },
+      "overlay": {
+        "swatch": "glimmer_held",
+        "color": "#7FC6D9",
+        "pattern": "cracks",
+        "strength": 0.85,
+        "speed": 0.0,
+        "priority": 20
       }
     },
     "power_break": {
       "icon_swatch": "roof_clay",
       "icon_color": "#B5523A",
-      "reads_as": "Clay-red shards fall from the arms. Icon: a cracked blade with a down arrow.",
+      "reads_as": "Clay-red shards fall from the arms. A crack pattern in the same colour spreads over the body. Icon: a cracked blade with a down arrow.",
       "aura": {
         "swatch": "roof_clay",
         "color": "#B5523A",
         "motion": "shards_wide",
         "at": "chest",
-        "amount": 8,
+        "amount": 18,
         "lifetime_s": 1.0,
         "size_m": [
-          0.04,
-          0.07
+          0.07,
+          0.12
         ],
         "speed_m_s": 0.5,
         "radius_m": 0.42,
         "energy": 1.3
+      },
+      "overlay": {
+        "swatch": "roof_clay",
+        "color": "#B5523A",
+        "pattern": "cracks",
+        "strength": 0.85,
+        "speed": 0.0,
+        "priority": 20
       }
     },
     "magic_break": {
       "icon_swatch": "sky_zenith_noon",
       "icon_color": "#2E7FD6",
-      "reads_as": "Blue shards fall from just over the head. Icon: a cracked star with a down arrow.",
+      "reads_as": "Blue shards fall from just over the head. A crack pattern in the same colour spreads over the body. Icon: a cracked star with a down arrow.",
       "aura": {
         "swatch": "sky_zenith_noon",
         "color": "#2E7FD6",
         "motion": "shards",
         "at": "crest",
-        "amount": 8,
+        "amount": 18,
         "lifetime_s": 1.0,
         "size_m": [
-          0.04,
-          0.07
+          0.07,
+          0.12
         ],
         "speed_m_s": 0.5,
         "radius_m": 0.2,
         "energy": 1.3
+      },
+      "overlay": {
+        "swatch": "sky_zenith_noon",
+        "color": "#2E7FD6",
+        "pattern": "cracks",
+        "strength": 0.85,
+        "speed": 0.0,
+        "priority": 20
       }
     },
     "provoke": {

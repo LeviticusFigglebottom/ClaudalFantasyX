@@ -16,10 +16,10 @@ Each look (`game/data/vfx/battle/status_looks.json` `looks.<id>`) is made of:
 
 | part | what it is | data |
 |---|---|---|
-| overlay | `status_overlay.gdshader` as every body surface's `material_overlay` (not the target ring). One at a time: the highest `priority` | `pattern` (rim, pulse, bands_up, bands_down, flicker, hatch, frost), `strength`, `speed` |
+| overlay | `status_overlay.gdshader` as every body surface's `material_overlay` (not the target ring). One at a time: the highest `priority` | `pattern` (rim, pulse, bands_up, bands_down, flicker, hatch, frost, cracks), `strength`, `speed` |
 | aura | a looping GPUParticles3D on the fighter, at an anchor height (effects.json `anchor_heights`) | `motion` (rise, rise_fast, drift_up, fall, sag, shards, shards_wide, burst, hang, orbit), `at`, amount, size, speed |
 | prop | a mesh round the body | `kind`: sphere (Shell), rings (Protect), panes (Reflect), ring at the mouth (Silence), ground_mark (Provoke) |
-| icon | `assets/vfx/battle/status_icons/<id>.svg` over the head, in a row with the others; over the feet of a body taller than `icons.feet_over_height_m` | `icon_swatch`; Doom adds its count (`count`) |
+| icon | `assets/vfx/battle/status_icons/<id>.svg` in a row beside the head (right of the actor marker, or left of it for a fighter on the screen's right half, so it never leaves the frame); over the feet, centred, for a body taller than `icons.feet_over_height_m` | `icon_swatch`; Doom adds its count (`count`) |
 
 Petrify's body look is the stage's existing stone material (`BattleStage.refresh_ko`); its look adds grit and the icon.
 
@@ -33,23 +33,23 @@ stat it breaks, so Protect and Armor Break share a shield, Shell and Mental Brea
 | poison | green pulse; yellow-green bubbles rise off the chest | drop |
 | sleep | indigo edge glow; big pale motes drift up from the head | crescent |
 | silence | a still grey band at the mouth | slashed speech bubble |
-| darkness | a dark veil sinks down the body; dark motes fall round the head | slashed eye |
+| darkness | a black veil sinks down the body; dark motes fall round the head | slashed eye |
 | petrify | stone; grit trickles | cairn |
 | slow | slow blue bands sink; heavy motes sag at the feet | hourglass |
 | haste | gold bands race up; quick gold streaks rise | double chevron |
-| stop | still pale glaze, no motion; sparkles hang frozen | two bars |
+| stop | still deep-blue glaze, no motion (stone is grey); sparkles hang frozen | two bars |
 | berserk | fast red pulse; embers burst off the shoulders | jagged burst |
 | confuse | gold flicker in patches; gold motes circle the head | spiral |
-| doom | a dark tide climbs from the feet; the count by the icon | bell |
+| doom | a red tide climbs from the feet in slow bands; the count by the icon | bell |
 | zombie | patina hatching; dark drops fall | cracked heart |
 | shell | a clear blue bubble round the body | three rings |
 | protect | three gold rings at knee, waist and chest | shield |
 | reflect | three salt-glass panes circle the body | mirror and rebound |
 | regen | slow turquoise breath; small motes rise from the feet | plus |
-| armor_break | brass shards fall off the chest | shield + down tab |
-| mental_break | cyan shards fall off the head | rings + down tab |
-| power_break | clay shards fall from the arms | blade + down tab |
-| magic_break | blue shards fall from over the head | star + down tab |
+| armor_break | brass cracks over the body; brass shards fall off the chest | shield + down tab |
+| mental_break | cyan cracks; cyan shards fall off the head | rings + down tab |
+| power_break | clay-red cracks; clay shards fall from the arms | blade + down tab |
+| magic_break | blue cracks; blue shards fall from over the head | star + down tab |
 | provoke | a red crosshair mark turns on the ground | crosshair |
 
 Reduced motion: fewer aura particles and slower patterns and props (`reduced_motion`).

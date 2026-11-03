@@ -220,29 +220,10 @@
       "environment_res": "",
       "sky_params": {},
       "sun": {},
-      "rain": {
-        "swatch": "foam_white",
-        "color": "#EEF6F4",
-        "alpha": 0.32,
-        "amount": 1400,
-        "box_m": [
-          34.0,
-          2.0,
-          34.0
-        ],
-        "height_m": 13.0,
-        "speed_m_s": 15.0,
-        "streak_m": [
-          0.012,
-          0.55
-        ],
-        "lifetime_s": 1.1,
-        "slant": 0.25
-      },
       "wind": {
         "swatch": "foam_white",
         "color": "#EEF6F4",
-        "amount": 90,
+        "amount": 40,
         "box_m": [
           30.0,
           3.0,
@@ -266,7 +247,7 @@
         0.0,
         0.3
       ],
-      "note": "The Reach keeps its own night key and boss lights (effects.json boss_rim_lights); the storm adds rain, wind and the Undertow behind."
+      "note": "The Reach keeps its own night key, boss lights and the arena's rain (act1_gpu_qa row 72: more rain hid the party's turns); the storm adds a little wind and the Undertow behind."
     }
   },
   "reduced_motion": {

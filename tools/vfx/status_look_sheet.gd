@@ -6,6 +6,7 @@ extends Node
 ## Montage them with ImageMagick (docs/kb/tech/battle_status_looks.md).
 ##   godot-render --path . --audio-driver Dummy --fixed-fps 60 --disable-vsync --rendering-driver vulkan \
 ##     res://tools/vfx/status_look_sheet.tscn -- --out=<abs dir> [--enc=ch01_scuttlers] [--only=poison,sleep]
+## --rest_only: just <enc>_rest.png, the fight's rest frame (the storm fights, BattleStorm).
 
 const SCENE := "res://game/battle/scene/battle_sandbox.tscn"
 const SWEEP := preload("res://tools/vfx/encounter_sweep.gd")
@@ -41,6 +42,10 @@ func _run() -> void:
 			ctl.stage.choreo.finish()
 		ctl.tick(0.2)
 		await get_tree().process_frame
+	if opts.has("rest_only"):  # a storm fight's rest frame (BattleStorm), no statuses: <out>/<enc>_rest.png
+		await _capture(out.path_join("%s_rest.png" % enc))
+		get_tree().quit()
+		return
 	var looks := ctl.stage.get_node(^"BattleStatusLooks") as BattleStatusLooks
 	var hero := ctl.engine.party_active[0]
 	var foe := ctl.engine.enemies[0]
@@ -50,19 +55,19 @@ func _run() -> void:
 		i += 1
 		if not only.is_empty() and not only.has(str(sid)):
 			continue
-		_set(ctl, hero, [StringName(str(sid))] as Array[StringName])
-		_set(ctl, foe, [StringName(str(sid))] as Array[StringName])
+		_give(ctl, hero, [StringName(str(sid))] as Array[StringName])
+		_give(ctl, foe, [StringName(str(sid))] as Array[StringName])
 		looks.refresh()
 		await _capture(out.path_join("%02d_%s.png" % [i, sid]))
 		print("STATUS_SHEET %s" % sid)
-	_set(ctl, hero, STACK)
-	_set(ctl, foe, STACK_FOE)
+	_give(ctl, hero, STACK)
+	_give(ctl, foe, STACK_FOE)
 	looks.refresh()
 	await _capture(out.path_join("stack.png"))
 	get_tree().quit()
 
 
-func _set(ctl: BattleController, c: BattleCombatant, ids: Array[StringName]) -> void:
+func _give(ctl: BattleController, c: BattleCombatant, ids: Array[StringName]) -> void:
 	c.statuses.clear()
 	for sid in ids:
 		c.statuses[sid] = 3
