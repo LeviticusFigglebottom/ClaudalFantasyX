@@ -195,6 +195,21 @@ class ArenaSceneTests(unittest.TestCase):
                     committed = ROOT / "assets" / "environments" / "arenas" / aid / f"{aid}.tscn"
                     self.assertEqual(committed.read_text(encoding="utf-8"), out.read_text(encoding="utf-8"))
 
+    def test_the_ch1_storm_arena_shows_the_undertow_beyond_the_far_plane(self) -> None:
+        """The human's 11-03 FAST-TRACK 4: Ch1's storm fights stand in the zone's storm, the Undertow on the horizon
+        behind the foes at the zone's preset, and the camera reaches it (it stands 18 km off; Godot's far is 4 km)."""
+        text = (ROOT / "assets" / "environments" / "arenas" / "oruvel_raft_storm" / "oruvel_raft_storm.tscn").read_text(
+            encoding="utf-8")
+        self.assertIn('[node name="Undertow" type="Node3D" parent="."', text)
+        self.assertIn('preset = "ch01_arrival"', text)
+        self.assertIn("lut_ch01_storm.png", text)
+        self.assertLess(text.index('preset = "ch01_arrival"'), text.index("approach_azimuth_deg = 0.0"),
+                        "the preset first: the lines after it override its values")
+        far = float(text.split("far_m = ")[1].split("\n")[0])
+        undertow = json.loads((ROOT / "game" / "data" / "vfx" / "undertow.json").read_text(encoding="utf-8"))
+        reach = undertow["presets"]["ch01_arrival"]["approach_distance_m"] + undertow["shape"]["eye_radius_m"]
+        self.assertGreater(far, reach)
+
     def test_no_prop_stands_on_the_fighting_floor(self) -> None:
         scenes = _load("arena_scenes")
         for aid, arena in scenes.ARENAS.items():
