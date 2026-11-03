@@ -42,6 +42,9 @@ var _scene_wanted: Dictionary = {}
 var _prewarm_queue: Array[Resource] = []
 ## The paths requested from the loader and not in yet (at most max_in_flight).
 var _in_flight: PackedStringArray = []
+## Act I GPU QA row 68: path -> its direct dependencies (ResourceLoader.get_dependencies, read once from the file's
+## header). Two loads that share one never run at once.
+var _deps: Dictionary = {}
 var _done_count := 0
 ## The resident paths warm() asked for (a path both lists name stays resident).
 var _resident_wanted: Dictionary = {}
@@ -314,7 +317,7 @@ func _pump() -> void:
 	for path in order:
 		if _in_flight.size() >= cap:
 			break
-		if _in_flight.has(path):
+		if _in_flight.has(path) or shares_with_in_flight(path):
 			continue
 		if ResourceLoader.load_threaded_request(path) == OK:
 			_in_flight.append(path)
@@ -324,6 +327,38 @@ func _pump() -> void:
 			_pump()
 			return
 	set_process(not pending.is_empty())
+
+
+## True when `path` shares a dependency (or is one) with a load in flight. Act I GPU QA row 68: on the PC two
+## villager variants (reed_b and reed_d, which share sub-resources) loading at once logged "Another resource is loaded
+## from path" and then segfaulted Godot 4.6.3. Such a pair now loads one after the other; unrelated paths still run
+## max_in_flight at once.
+func shares_with_in_flight(path: String) -> bool:
+	if _in_flight.is_empty():
+		return false
+	var mine := deps_of(path)
+	for other in _in_flight:
+		if mine.has(other):
+			return true
+		var theirs := deps_of(other)
+		if theirs.has(path):
+			return true
+		for d in mine:
+			if theirs.has(d):
+				return true
+	return false
+
+
+## `path`'s direct dependencies as res:// paths (cached; ResourceLoader gives "uid::type::path" entries).
+func deps_of(path: String) -> PackedStringArray:
+	if _deps.has(path):
+		return _deps[path]
+	var out := PackedStringArray()
+	if ResourceLoader.exists(path):
+		for entry in ResourceLoader.get_dependencies(path):
+			out.append(entry.get_slice("::", entry.get_slice_count("::") - 1))
+	_deps[path] = out
+	return out
 
 
 func _done_with(path: String) -> void:
