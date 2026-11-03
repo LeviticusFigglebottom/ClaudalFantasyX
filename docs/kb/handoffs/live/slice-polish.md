@@ -1526,7 +1526,14 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     - slice_verse_hall holds `ch03_verse_002` (the baseline's moment, S07_reverse);
     - ch01_o10_gull holds `ch01_gulls_001`;
     - slice_prologue_p01 holds the `mark rhen` cue, at time_scale 4 (P01 fully faded in, just before Rhen crosses).
-    - Renders are in progress; the SELF-RENDERED line follows.
+    - **SELF-RENDERED @ 539546088, VIEWED:**
+      - P01: fully faded in on Asha on the paving, before Rhen crosses;
+      - verse_hall: "Shout if it bites." on S07_reverse, Asha's shoulder in the foreground and Toma and Rhen at the
+        portal. It drifts from the old baseline because of M3-CIN-1236's restaged reverse, which is intended;
+        **Lead:** please re-approve it.
+      - o10_gull: the gull and "...That's the gulls.", unchanged.
+    - No cutscene shot in the manifest is timed by frame count any more.
+    - **Next:** Act III staging per ADR 0207 as each set lands; Act I FAST-TRACKs first.
 - **Act I rows (act1_gpu_qa.md @ gpu/act1-qa-7):**
   - 31 and 32 are fixed.
   - 75's hull key and rim (1086628b1) is on integration now; it only needs the PC's GPU re-check (PC-QUEUE).
