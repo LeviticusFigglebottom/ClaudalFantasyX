@@ -9,7 +9,11 @@
   - act1-chapters stages Act II Ch13–16 and wires the Act II → III break.
   - slice-polish moves its frame-timed shots to line-held timing, then starts Act III staging.
   - W20's sun glint goes to env-art-b, and its kites to act1-chapters.
-- Waiting on the human: whether to create `main` (or change the default branch); whether to put a name in the credits; switching the PC back on for real-GPU QA.
+- **The human (21:10):**
+  - **`main` is created**, at 45de9176. Fast-forward it after every merged batch (ADR 0205).
+  - **No name in the credits.** They stay facts only.
+  - The PC's finished QA branches are merged: gpu/act1-qa-7 (passes 3–7), m1-qa-09-heroes, and the old paused log.
+- Still waiting on the human: switching the PC back on for real-GPU QA.
 
 ## STATE 2026-11-03 19:30 UTC
 - **big47 merged** (b06e963a): all five of the human's 11-03 playtest FAST-TRACKs.
