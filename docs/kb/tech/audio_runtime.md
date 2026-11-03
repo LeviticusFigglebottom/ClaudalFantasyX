@@ -104,6 +104,11 @@ town-tune intro); with `resume` too, a later start carries on where it stopped.
   - `reduced` swaps the Flood, the ambush stinger and the toll for versions without sub-bass;
   - the SFX bank plays at `reduced_level` while the battle lasts. The listener multiplies its factor in and
     divides it out on exit, so a retry's overlapping listeners compose.
+- **Statuses (M3-AUD-866):** `BattleAudio.play_statuses` plays, per hit of an `action_resolved`, each added
+  status's own cue (battle_sfx.json `statuses.apply`, sounds from `assets_src/sfx/status_sfx.py`) in place of the
+  generic `status_apply` (stopped, or dropped within `dedupe_ms` when the view plays it second); an item hit's
+  `statuses_removed` play `cure` (a harmful status) or `fade` (a beneficial one, statuses.json `category`); a
+  `revived` hit plays `revive`.
 
 **Ambience (M2-AUD-05).** music.json stays the lead's table. `ambience.json` adds:
 - `ambience`: more bed rows. `AudioData.bed_rows` merges them with music.json's, and music.json's rows win a clash.

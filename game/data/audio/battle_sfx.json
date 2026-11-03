@@ -256,6 +256,36 @@
     "defeat": "defeat",
     "escaped": "escape"
   },
+  "statuses": {
+    "_note": "M3-AUD-866: a hit's statuses_added each play their own `apply` row in place of the generic status (vfx `status_apply` is stopped when an own row played); an item's statuses_removed play `cure` (a harmful status) or `fade` (a beneficial one), and a `revived` hit plays `revive`. A status with no row keeps the generic sound.",
+    "generic": "status_apply",
+    "apply": {
+      "poison": "status_poison",
+      "sleep": "status_sleep",
+      "silence": "status_silence",
+      "darkness": "status_darkness",
+      "petrify": "status_petrify",
+      "slow": "status_slow",
+      "haste": "status_haste",
+      "stop": "status_stop",
+      "berserk": "status_berserk",
+      "confuse": "status_confuse",
+      "doom": "status_doom",
+      "zombie": "status_zombie",
+      "shell": "status_shell",
+      "protect": "status_protect",
+      "reflect": "status_reflect",
+      "regen": "status_regen",
+      "armor_break": "status_armor_break",
+      "mental_break": "status_mental_break",
+      "power_break": "status_power_break",
+      "magic_break": "status_magic_break",
+      "provoke": "status_provoke"
+    },
+    "cure": "status_cure",
+    "fade": "status_fade",
+    "revive": "revive"
+  },
   "reduced": {
     "flood": "flood_soft",
     "stinger_ambush": "stinger_ambush_soft",

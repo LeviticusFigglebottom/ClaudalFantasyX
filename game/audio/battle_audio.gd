@@ -39,6 +39,10 @@ var _settings: UiSettings
 var _applied := 1.0
 ## sfx id -> [msec of its last play, whether the view's effect_played played it].
 var _last: Dictionary = {}
+## sfx id -> the player it last started (M3-AUD-866: a status's own cue stops the generic one it replaces).
+var _players: Dictionary = {}
+## msec of the last status's own cue (-1: none): the generic status sound is dropped within dedupe_ms of it.
+var _status_at := -1
 
 
 func attach(dir: AudioDirector, controller: BattleController, eng: BattleEngine, view: BattleVfx) -> void:
@@ -99,6 +103,9 @@ func play_key(table: String, key: String, from_vfx := false) -> StringName:
 	if reduced:
 		id = StringName(str((data.get("reduced", {}) as Dictionary).get(String(id), id)))
 	var now := int(director.sfx.clock.call())
+	if _status_at >= 0 and now - _status_at <= int(data.get("dedupe_ms", 0)):
+		if String(id) == str((data.get("statuses", {}) as Dictionary).get("generic", "")):
+			return &""  # a status's own cue already plays (play_statuses)
 	var opts: Dictionary = {}
 	if _last.has(id):
 		var dt := now - int((_last[id] as Array)[0])
@@ -109,8 +116,10 @@ func play_key(table: String, key: String, from_vfx := false) -> StringName:
 			opts["volume_db"] = float(data.get("layer_db", 0.0))
 		elif (not from_vfx or not by_vfx) and dt < int(data.get("dedupe_ms", 0)):
 			return &""
-	if director.play_sfx(id, opts) == null:
+	var p := director.play_sfx(id, opts)
+	if p == null:
 		return &""
+	_players[id] = p
 	_last[id] = [now, from_vfx]
 	played.append(id)
 	return id
@@ -163,6 +172,78 @@ func _on_effect_played(effect_id: StringName, _at: Vector3) -> void:
 func _on_action_resolved(result: ActionResult) -> void:
 	if result != null and result.ok and result.skill_id != &"":
 		play_key("skills", String(result.skill_id))
+	if result != null and result.ok:
+		play_statuses(result)
+
+
+## M3-AUD-866 (the human's playtest FAST-TRACKs 3 and 5): what each hit did to its target's statuses, heard. Every
+## status added plays its own cue (battle_sfx.json statuses.apply) and silences the generic one the view's `status`
+## effect started this frame; a status removed plays the cure (harmful) or the fade (beneficial, statuses.json
+## category); a revive plays the revive. Returns the sfx ids played, in order.
+func play_statuses(result: ActionResult) -> Array[StringName]:
+	var out: Array[StringName] = []
+	var rows := data.get("statuses", {}) as Dictionary
+	if rows.is_empty():
+		return out
+	var own := rows.get("apply", {}) as Dictionary
+	var replaced := false
+	for hit: Dictionary in result.hits:
+		if not bool(hit.get("hit", true)):
+			continue
+		for s: Variant in hit.get("statuses_added", []):
+			var id := _play_status_row(String(own.get(str(s), "")))
+			if id != &"":
+				out.append(id)
+				replaced = true
+		var cure := false
+		var fade := false
+		for s: Variant in hit.get("statuses_removed", []):
+			if _harmful(str(s)):
+				cure = true
+			else:
+				fade = true
+		for key: String in ["cure", "fade", "revive"]:
+			var want := cure if key == "cure" else (fade if key == "fade" else bool(hit.get("revived", false)))
+			if want:
+				var id := _play_status_row(str(rows.get(key, "")))
+				if id != &"":
+					out.append(id)
+	if replaced:
+		_status_at = int(director.sfx.clock.call())
+		_stop_generic(StringName(str(rows.get("generic", ""))))
+	return out
+
+
+func _play_status_row(sfx_id: String) -> StringName:
+	if sfx_id == "":
+		return &""
+	var id := StringName(sfx_id)
+	if reduced:
+		id = StringName(str((data.get("reduced", {}) as Dictionary).get(String(id), id)))
+	var p := director.play_sfx(id) if director != null and director.sfx != null else null
+	if p == null:
+		return &""
+	played.append(id)
+	return id
+
+
+## Stops the generic status sound if the view started it within dedupe_ms (the same action's effect).
+func _stop_generic(id: StringName) -> void:
+	if id == &"" or not _last.has(id) or director == null or director.sfx == null:
+		return
+	if int(director.sfx.clock.call()) - int((_last[id] as Array)[0]) > int(data.get("dedupe_ms", 0)):
+		return
+	var p: Variant = _players.get(id, null)
+	if p is AudioStreamPlayer and is_instance_valid(p):
+		(p as AudioStreamPlayer).stop()
+
+
+## A status's statuses.json category is "harmful" (the cure, not the fade, when it is lifted).
+func _harmful(status_id: String) -> bool:
+	if engine == null or engine.db == null:
+		return true
+	var row := engine.db.statuses.get(status_id, engine.db.statuses.get(StringName(status_id), {})) as Dictionary
+	return str(row.get("category", "harmful")) == "harmful"
 
 
 func _on_charge_broken(_enemy: BattleCombatant, _skill_id: StringName) -> void:
