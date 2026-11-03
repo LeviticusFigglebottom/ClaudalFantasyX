@@ -83,3 +83,24 @@ MERGE-READY for big48), so those two env-art-b reds below clear in big48. The sh
 
 GATE-FAST-DONE (merge-approved for the FAST-TRACKs, with the routed reds above: the storm-arena reds that env-art-b's big48 head clears, and two small ui/audio reds; every other
 red is this container's LFS pointers or the standing list).
+- Merge fallout found by the shot compare: `tests/screenshots/shots.json` carried `battle_arena_oruvel_raft_storm` twice (env-art's and
+  env-art-b's entries; merge_union keeps both when both sides add the same id). Fixed on this branch: env-art's entry (pending_baseline) kept.
+
+## Shots (48: the tracks' self-rendered ids, the new shots, and the battle HUD/status/storm-arena shots the batch can affect)
+Published on `lead/gate-big47-shots` @ 39e79747 in `docs/kb/qa/gate-runs/big47/` (out, out/diff, compare.txt, contact grids g00–g07).
+- **5 PASS, 31 DRIFT, 12 NO-BASELINE** (pending: battle_status_help, battle_status_tip, magic_menu, ch01_net_pen, field_hero_walk_release,
+  battle_arena_oruvel_raft_storm; never baselined: battle_arena_derelict_spar_wraith, battle_arena_drowned_choir_ring, ch08_corrow_flood,
+  ch08_coilspire_gate, ch08_corrow_storm, crowd_zone_corrow). 0 failed to capture.
+- Viewed (FAST-TRACKs):
+  - **Statuses (3):** battle_statuses/_colorblind show the icons over the heads and the on-body ring/tint; battle_status_help (the Statuses
+    panel: list, Last Tide's text, how it ends) and battle_status_tip read. magic_menu (FT5): caster, Asha's Mend, target with MP/HP preview.
+  - **Storm (4):** battle_arena_oruvel_raft_storm has the storm sky over the raft-town and the Hullgnaw on the deck; **the vortex isn't in the rest
+    frame** (env-art puts it 18 km behind the foe). The seawall stair-head arenas have rain and the storm grade; the merlons still hide the
+    Undertow (M3-ENV-1341's ask, open).
+  - **Watch: battle_boss_intro_hullgnaw (0.395):** the Hullgnaw reads as a near-black silhouette against the storm sky (the baseline shows its
+    lit teal-green shell). Route: battle-presentation / env-art (the storm rim or grade doesn't light the boss).
+- The remaining drifts are the merged content: Sefir's hair (row 54), Fenn's and Sabe's crops (row 55), Asha's skirt (row 56) in asha_clip_*, the
+  battle HUD's help line and rank legend (ui, row 73) across battle_hud_preview, swap_menu, read_panel and heroes_victory, field_menu/status_menu
+  /codex (ui), the Ch8 arenas and zones (env-art-b rows 71, 82, 84), oruvel_o17_pen_split and brightwater_landing_f01 (env-art rows 77, 24).
+
+LEAD-REVIEW big47: 48 shots (5 PASS, 31 DRIFT, 12 NO-BASELINE), all five FAST-TRACKs in; routed reds: ui (audio hooks), audio (storm bed loops), env-art-b's storm reds clear in big48; watch the Hullgnaw intro silhouette; merge when you approve
