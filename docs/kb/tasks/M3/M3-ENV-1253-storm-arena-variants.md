@@ -30,4 +30,7 @@ The human's playtest (11-03): the storm's fights use the normal backdrop. act1-c
 - The Undertow node's preset: Ch1's is `ch01_arrival` today; act1_ch01.md §9 asks for `ch01_landfall` (the wall at
   the town in a clear sky), rendering's preset.
 
+- Ch8 (with battle-presentation's M3-BPR-1255): the wave arenas' battle stills show clouds and rain but not the
+  wall: bring it into the battle camera's frame over the parapet (distance or scale of the arenas' Undertow).
+
 ## Review log
