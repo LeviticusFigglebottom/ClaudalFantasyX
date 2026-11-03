@@ -589,6 +589,23 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+### FINAL (2026-11-03, the Lead's stop)
+- **FINAL MERGE-READY @ ef8c6260.** Everything is committed and pushed. There's no WIP and nothing NOT-READY; the
+  only uncommitted thing is a scratch probe in `.scratch_envart/` (git-excluded, not for merging).
+  - Rows 24, 47, 77 and 86 (my part) are fixed; 90 is in PC-QUEUE.
+  - M3-ENV-1340 (the Ch1 storm arena), M4-A2P-115 and M4-A2P-1501 are in review.
+  - Checks as logged in each entry below.
+- **Open asks:**
+  - LEAD-ASK: route the Ch1 encounter repoint (`oruvel_raft_storm`) to act1-chapters or combat-systems.
+  - LEAD-ASK: route the import-category red (cinematics' seabed, characters' Act III props).
+- **Exact next step for whoever resumes:**
+  1. Merge `origin/claude/undertow-lead-handoff-ze8rrn`.
+  2. If the repoint comes back to env-art, set `"arena": "oruvel_raft_storm"` on `ch01_scuttlers` and `ch01_hullgnaw`
+     in game/data/battle/encounters.json, and update tests/unit/test_battle_arena.gd lines 15–16.
+  3. Otherwise, re-walk the Ch10–Ch12 zones at eye height (walk_render.tscn, four views per spawn) and close
+     M4-A2P-040/041/042 (stale `doing`).
+  4. Session handoff: docs/kb/handoffs/2026-11-03-environment-env-art-1.md.
+
 ### 2026-11-03, Act II (ADR 0205 §4: env-art has no open Act I row)
 - **LEAD-ANSWERED:** the Lead's 17:16 message asked for rows 24/47/77/86/90. They were already logged below
   (MERGE-READY @ 52bf4c11) and stay as written: 24, 47, 77 and 86 (my part) are fixed; 90 is in PC-QUEUE.
