@@ -9,6 +9,7 @@ const STORMS: Array[StringName] = [
 	&"seawall_stairhead_hoist",
 	&"seawall_stairhead_surge",
 	&"coilspire_headland_path",
+	&"drowned_choir_storm",
 ]
 
 var arena: BattleArenaRoot
