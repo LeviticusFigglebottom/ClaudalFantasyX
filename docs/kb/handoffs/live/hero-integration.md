@@ -2380,3 +2380,16 @@ MERGE-READY @ (this commit).
   - The last fast gate is the Lead's.
 MERGE-READY @ (this commit): the two audit scope fixes and the inventory refresh.
 - Trial merge big46 @ 0ff565787: clean; hero_walk_cycle 5/0, hero_stage 11/0 (big46's characters fix: the pre-existing red is gone), hero_field_gait 13/0, hero_field_actor 15/0. MERGE-READY @ 0ff565787.
+
+### 2026-11-03 FINAL (the Lead: finish, commit everything, stop)
+**FINAL MERGE-READY @ 3a5d60cde** (the log commit that records this line sits on top; it carries no code).
+- On this branch, all committed and pushed: M3-HER-1231, the FAST-TRACK walk fix (3aee287c7), and placeholder_audit's two scope fixes (8c922bf45, 708048ba2), plus the inventory refresh (9d1294573).
+  - Recorded: ACT1-COMPLETION, the audit's 2 low items, playthrough PASS; and the big46 trial merge, green.
+- No WIP and no uncommitted experiments. Nothing NOT-READY.
+- Scoped checks on the merged tree: hero_walk_cycle 5/0, hero_stage 11/0, hero_field_gait 13/0, hero_field_actor 15/0, test_placeholder_audit 16/0 (one test added this session), validate_data 0, taskboard --check.
+- **Exact next step for whoever resumes:**
+  1. Merge origin/claude/undertow-lead-handoff-ze8rrn.
+  2. Approve the `field_hero_walk_release` baseline from the Lead's capture (it has pending_baseline: true; drop the key once the baseline is in).
+  3. Check that M3-HER-1232 (slice-polish: the sequencer sends talkers back to idle) is picked up.
+  4. Re-run test_qa_threads on a clean import to confirm the Act II music-cache errors were this container's.
+  5. Then start the architect's M4 (Act II) tasks.
