@@ -47,7 +47,7 @@ def _layout(zone: str) -> dict:
 
 
 ZONE_PIECES = {"keth_pass": ("keth_pass_ground", "keth_pass_road", "keth_pass_arena"),
-               "quellan": ("quellan_ground", "quellan_town", "quellan_houses_n", "quellan_houses_s"), "cloudloom": ("cloudloom_ground", "cloudloom_temple")}
+               "quellan": ("quellan_ground", "quellan_town", "quellan_houses_n", "quellan_houses_s", "quellan_yards"), "cloudloom": ("cloudloom_ground", "cloudloom_temple")}
 
 
 def _built(zone: str) -> list[dict]:

@@ -38,7 +38,7 @@ ROOT = Path(__file__).resolve().parents[4]
 ZONES = ROOT / "game" / "levels" / "ch12"
 TRI_BUDGET = {"keth_pass_ground": (60000, 4000), "quellan_ground": (40000, 3000), "cloudloom_ground": (30000, 2500),
               "keth_pass_road": (120000, 6000), "keth_pass_arena": (60000, 3000), "quellan_town": (60000, 3000),
-              "quellan_houses_n": (45000, 1500), "quellan_houses_s": (45000, 1500),
+              "quellan_houses_n": (45000, 1500), "quellan_houses_s": (45000, 1500), "quellan_yards": (60000, 100),
               "cloudloom_temple": (90000, 5000)}
 
 VALLEY_Y = -1.6  # under the greybox's catch floor (the Snowfield's top at -1.5)
@@ -127,6 +127,16 @@ ZONE_SPEC = {
 }
 # A cliff's crag stands this high over its block's top (the cut the road was made in goes on up).
 CLIFF_OVER = {"keth_pass": 6.0, "quellan": 9.0, "cloudloom": 6.0}
+# M4-A2P-115 (Quellan at eye height): per zone and cliff block, how far behind its line a cliff's crag reaches before
+# it falls back to the valley (absent = unbounded: the pass's mountains, the mountainside behind Quellan's terrace). Unbounded, Quellan's road-up walls raised a 19-21 m mesa over
+# everything west of the road: a sheer face beside the gate, rock round the FromCloudloom spawn, the terrace in a pit.
+CLIFF_BAND_M = {"quellan": {"RoadUpWallW": 10.0, "RoadUpWallE": 10.0}}
+# and the cliffs whose crag follows their walk's own height (a road cut into the slope, low shoulders either side, so
+# its top looks out over the town) instead of standing over the block's top: block -> (shoulder m, rise per m behind).
+# and a notch: every other cliff's crag gives way round this walk (ramp or block id), from `near` m to `far` m off it, so
+# the road up is cut into a hillside with the town below in view, not a slot through the mountain.
+CLIFF_NOTCH = {"quellan": ("RoadUp", 4.0, 22.0)}
+CLIFF_SHOULDER = {"quellan": {"RoadUpWallW": (0.9, 0.06), "RoadUpWallE": (0.9, 0.06)}}
 
 
 def surfaces(zone: str) -> list[Surface]:
@@ -144,6 +154,9 @@ def zone_height(zone: str, noise: kc.Noise3):
     by_id = {(s.block["id"] if s.block is not None else s.ramp["id"]): s for s in surfs}
     cliffs = [(bl[c], by_id[w]) for c, w in ZONE_SPEC[zone][1].items() if c in bl and w in by_id]
     over = CLIFF_OVER[zone]
+    bands = CLIFF_BAND_M.get(zone, {})
+    shoulders = CLIFF_SHOULDER.get(zone, {})
+    notch = CLIFF_NOTCH.get(zone)
 
     def h(X, Z):
         X, Z = np.asarray(X, float), np.asarray(Z, float)
@@ -166,8 +179,16 @@ def zone_height(zone: str, noise: kc.Noise3):
             else:
                 side = -1.0 if slx[0] > 0 else 1.0
                 behind, along = side * lx + sx, np.abs(lz) - sz
-            top = _box(c)[3] + over + n * 4.0 + np.clip(behind, 0.0, None) * 0.35
+            if c["id"] in shoulders:
+                lift, rise = shoulders[c["id"]]
+                top = s.height(X, Z) + lift + n * 0.8 + np.clip(behind, 0.0, None) * rise
+            else:
+                top = _box(c)[3] + over + n * 4.0 + np.clip(behind, 0.0, None) * 0.35
             w = kc.smoothstep(-0.2, CLIFF_RISE_M, behind) * (1.0 - kc.smoothstep(0.0, CLIFF_FADE_M, along))
+            if notch is not None and c["id"] not in shoulders and notch[0] in by_id:
+                w = w * kc.smoothstep(notch[1], notch[2], by_id[notch[0]].dist(X, Z))
+            if c["id"] in bands:
+                w = w * (1.0 - kc.smoothstep(bands[c["id"]], bands[c["id"]] + CLIFF_FADE_M, behind))
             y = np.maximum(y, y + (top - y) * w)
         # Every walk level under its own stones (the cut and the aprons never rise over a walk).
         for s in surfs:
@@ -417,7 +438,10 @@ def build_keth_pass_arena(seed: int = 1851) -> list[kc.MeshBuilder]:
 
 # ---- Quellan ------------------------------------------------------------------------------------------------------
 STREET_HALF = 4.6  # the street between the house rows
-SQUARE = (46.0, 62.0, -4.6, 18.0)  # x0, x1, z0, z1: the well's square, paved
+SQUARE = (46.0, 62.0, -4.6, 18.0)
+YARD_KEEP = 0.55  # the yards' flags: about half laid, the turf between (M4-A2P-115)
+FOOTING_PROUD_M = 0.14  # a house's footing course stands this far out from its walls
+FOOTING_H_M = 0.32  # and this high (a dry-stone plinth the walls stand on)  # x0, x1, z0, z1: the well's square, paved
 
 
 def _house(mb, rng, noise, house: dict, roof: dict | None, lod: bool) -> None:
@@ -428,6 +452,10 @@ def _house(mb, rng, noise, house: dict, roof: dict | None, lod: bool) -> None:
     faces_pos_z = (z0 + z1) / 2 < 0.0  # the north row faces +Z (the street), the south row -Z
     sub = kc.MeshBuilder("house")
     crag, timber = sub.material(kt.M_DRYSTONE), sub.material(kt.M_TIMBER)
+    # M4-A2P-115: the footing course the walls stand on, so a house sits on the terrace, not over it.
+    kc.rounded_block(sub, (0.0, FOOTING_H_M / 2 - 0.06, -d / 2), (w / 2 + FOOTING_PROUD_M, FOOTING_H_M / 2,
+                     d / 2 + FOOTING_PROUD_M), crag, radius=0.06, seg=1, noise=None if lod else noise,
+                     disp_m=0.02, weather=kt.ROCK)
     if lod:
         kc.rounded_block(sub, (0.0, h / 2, -d / 2), (w / 2, h / 2, d / 2), crag, radius=0.1, seg=1)
     else:
@@ -494,6 +522,37 @@ def build_quellan_town(seed: int = 1852) -> list[kc.MeshBuilder]:
         for b in lay["blocks"]:
             if b["id"].startswith("TerraceEdge") or b["id"] == "RoadTopBound":
                 _dry_wall(mb, rng, noise, b, lod, height=min(b["size"][1], 1.2))
+        out.append(mb)
+    return out
+
+
+def build_quellan_yards(seed: int = 1856) -> list[kc.MeshBuilder]:
+    """M4-A2P-115: the rest of Quellan's terrace (the yards behind and between the houses) flagged, sparsely, the turf
+    in the gaps. At eye height the bare ground read as a flat dark slab with the houses floating over it. Its own piece
+    (quellan_town is at the 5 MB file rule). LOD1 is the ground's turf alone."""
+    lay = layout("quellan")
+    bl = {b["id"]: b for b in lay["blocks"]}
+    t = bl["Terrace"]
+    covered = [b for b in lay["blocks"] if b["id"].startswith(("House", "Inn", "Well")) and b["id"] != "InnBanner"]
+
+    def taken(x, z):
+        if abs(z) < STREET_HALF and x < SQUARE[0]:
+            return True  # the street (quellan_town)
+        if SQUARE[0] <= x <= SQUARE[1] and SQUARE[2] <= z <= SQUARE[3]:
+            return True  # the square (quellan_town)
+        return any(abs(x - b["pos"][0]) < b["size"][0] / 2 + 0.2 and abs(z - b["pos"][2]) < b["size"][2] / 2 + 0.2
+                   for b in covered)
+
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("quellan_yards", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("quellan_yards" + ("-lod1" if lod else ""))
+        if lod:  # one flag at the terrace's corner, so the LOD1 mesh isn't empty; the yards are near-range detail
+            kc.rounded_block(mb, (t["pos"][0], -0.03, t["pos"][2]), (0.3, 0.02, 0.3), mb.material(kt.M_DRYSTONE),
+                             radius=0.01, seg=1)
+        else:
+            _road_stones(mb, rng, noise, Surface(block=t), lod, keep=YARD_KEEP, skip=taken)
         out.append(mb)
     return out
 
@@ -588,6 +647,7 @@ def build_cloudloom_temple(seed: int = 1853) -> list[kc.MeshBuilder]:
 TARGETS = {
     "keth_pass_ground": lambda: build_ground("keth_pass", 1854),
     "quellan_ground": lambda: build_ground("quellan", 1855),
+    "quellan_yards": build_quellan_yards,
     "cloudloom_ground": lambda: build_ground("cloudloom", 1856, cell_m=1.0),
     "keth_pass_road": build_keth_pass_road,
     "keth_pass_arena": build_keth_pass_arena,
