@@ -331,7 +331,7 @@
         "kind": "sphere",
         "at": "chest",
         "alpha": 0.5,
-        "radius_scale": 0.8
+        "radius_scale": 0.62
       }
     },
     "protect": {
@@ -375,7 +375,7 @@
         "swatch": "turquoise_shallow",
         "color": "#3FD0C9",
         "pattern": "pulse",
-        "strength": 0.6,
+        "strength": 0.38,
         "speed": 0.5,
         "priority": 30
       },
