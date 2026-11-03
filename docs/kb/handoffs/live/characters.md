@@ -726,3 +726,8 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   flags him. The "Pell's look" in CONSOLIDATED §1 looks stale. LEAD-ASK: is there a Pell item I'm missing? If not,
   please drop it from CONSOLIDATED.
 - MERGE-READY @ 59fb4fc4: row 55 (Sabe), on top of the earlier row 54, 55 and 56 work.
+
+## 2026-11-03 FINAL (the Lead's stop order)
+FINAL MERGE-READY @ 38681bbf: rows 54 (a step; still open), 55 (Fenn and Sabe) and 56 (the outputs verified). Nothing is
+uncommitted and there's no WIP. Exact next step: row 54, Sefir's front-fall shading (clumps and darker inner layers,
+LOD0 ≤ 62k), then Asha's verse-sleeve in the run. See docs/kb/handoffs/2026-11-03-art-characters-1.md.
