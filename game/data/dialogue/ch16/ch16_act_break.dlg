@@ -1,0 +1,29 @@
+// Ch16 B11 "Act break" (C, 1 min) and B12 "Act card" (C, 0.2 min), act2_ch16.md §2. The Lead, 11-03: act1-chapters
+// owns the Act II break; it plays at the Prologue's plaza at dusk (PrologueScene's visits row in
+// first_playable.json, after ch16_swept_away's B10), then hands on to Act III at Hollowmere's dock.
+// S04: black, the sea, deep. P04: the Prologue's vigil frame (the stage's P02, the two-shot on the rise, Rhen
+// beside Asha), deeper again; the burner lower (no fire, no circle). Rhen's VO, older, plain fact (the sheet's
+// recommended line; Narrative to finalise). B12: the act card on black (#card: UI's ActCard caption, M3-UI-210).
+// Lines moved unchanged from ch16_swept_away.dlg (same ids and loc keys).
+title: ch16_act_break
+location: prologue
+---
+@letterbox on
+@sfx storm_wall vol=0.4
+@wait 3.0
+@mark rhen by_asha
+@camera P02
+@light LanternLight off
+@fade in 2.0
+@music act2_break fade=2.0
+@wait 3.0
+Narrator(rhen) [tender]: Everybody I loved had a reason to stay where they were. That night, all of us stopped. #line:ch16_break_001 #vo
+@wait 4.0
+@fade out 3.0
+@music silence fade=2.0
+<<set $ch16_act_two_complete = true>>
+@wait 1.5
+Act III\: The Unbinding #line:ch16_act_card_001 #card #tn:"The act card between Act II and Act III. Title case, as a chapter heading."
+@wait 2.0
+@letterbox off
+===

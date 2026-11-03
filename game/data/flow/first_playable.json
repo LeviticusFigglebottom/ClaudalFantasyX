@@ -16,7 +16,10 @@
       "scene_id": "prologue_dead_city",
       "_next_note": "The M2 review switch (Lead, 2026-10-24), flipped on 2026-10-29 under ADR 0042 (the M2 review is approved; M3-CIN-1233): New Game plays Act I as one path, the prologue into Ch1, ch01/oruvel_underway at Drop (M3-C01-02), together with end_card.next_location. Before the flip it was the slice route, ch02/haluna at Beach.",
       "next_location": "ch01/oruvel_underway",
-      "next_spawn": "Drop"
+      "next_spawn": "Drop",
+      "visits": [
+        {"flag": "ch16_line_held", "unless": "ch16_act_two_complete", "scene_id": "ch16_act_break", "next_location": "ch17/hollowmere", "next_spawn": "Dock", "_note": "The Lead, 2026-11-03 (act1-chapters owns the Act II break): after Ch16's swept_away (B10) the party comes to the Prologue's plaza at dusk for B11's vigil and B12's act card (ch16_act_break.dlg sets ch16_act_two_complete), then Act III begins at Hollowmere's dock (ch17)."}
+      ]
     },
     "end_card": {
       "return_scene": "res://game/core/boot.tscn",
