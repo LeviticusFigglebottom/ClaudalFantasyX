@@ -49,3 +49,10 @@ MERGE-READY @ 08eaf116 (plus this log commit): FAST-TRACK, cherry-pick all of `c
 LEAD-ASK: M3-CMB-04 put a one-line hook in `game/battle/scene/battle_vitals.gd` (BattleSpoils.returning_party in send_back). OK to keep, or should its owner take it? (Assumed OK.)
 
 **Next:** adjacent combat work, if the Lead has none queued. Candidate: a party cure or revive spell, since no hero can cure poison or raise the fallen with a skill yet (FieldSpell already supports `cleanses`). That is a content decision, so it waits for the Lead's word.
+- **Follow-up, tools suite:** `run_tool_tests.py -j 4` finished: 222 units, 11 failing, none in files this branch touches.
+  - LFS-pointer audio that ffmpeg can't decode: test_dialogue_clarity, test_direction_holds, test_cutscene_sfx_files.
+  - Rig, creature, arena and palette assets: test_rig_integrity Asha, test_creatures, test_b_arenas, test_palette_check, test_hero_clips.
+  - Screenshot baselines: test_screenshots.
+  - `memories.csv` MEMORY_CH04_SHELL_IS_SET uses the old "Shell" name: test_status_names, ui-menus'/story's.
+  - `game/audio/prop_audio.gd:77`: test_freed_cast_lint, audio's.
+  - Every validator and balance unit is green.
