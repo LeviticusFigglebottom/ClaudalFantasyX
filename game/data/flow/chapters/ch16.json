@@ -133,8 +133,8 @@
       },
       {
        "go": {
-        "location": "ch17/hollowmere",
-        "spawn": "Dock"
+        "location": "prologue",
+        "spawn": "Start"
        }
       }
      ]

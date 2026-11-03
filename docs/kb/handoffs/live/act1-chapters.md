@@ -1276,14 +1276,14 @@ done and in `status: review` (reviewer: narrative). Each task file's **Done** se
   green, along with validate_data, chapter_flow_check, taskboard --check, and the tool tests for zone-map POIs, POI
   views, dialogue clarity, creatures, Act II creature SFX, encounter pacing and music markers. No render (no shot
   can change: the triggers are invisible, the flows are data).
-- LEAD-ASK: Ch9 → Ch10. Ch9's last beat opens the end card, and `first_playable.json` `end_card.next_location` is
+- LEAD-ANSWERED 11-03 (see "LEAD-ANSWERED (20:32)" below); was LEAD-ASK: Ch9 → Ch10. Ch9's last beat opens the end card, and `first_playable.json` `end_card.next_location` is
   empty by ADR 0042's note ("the end of Act I ... accept returns to the title"). Should it now go on to
   `ch10/ossa_fen` FenEdge (the card's title says "The end of Act I")? It's one line in that file, and I haven't
   made it because it moves the shipping boundary.
-- LEAD-ASK: who stages Act II Ch13–16 (M4-A2P-071–075)? slice-polish staged Ch10–12 as cinematics (M4-CIN-1304).
+- LEAD-ANSWERED 11-03 (see "LEAD-ANSWERED (20:32)" below); was LEAD-ASK: who stages Act II Ch13–16 (M4-A2P-071–075)? slice-polish staged Ch10–12 as cinematics (M4-CIN-1304).
   The played Ch13–16 scenes name about 50 marks and 110 shots that no stage has. I'll leave them to slice-polish
   unless you route them to me.
-- LEAD-ASK: the Act II break. `ch16_swept_away` sets `ch16_act_two_complete` and then nothing happens: B11's vigil
+- LEAD-ANSWERED 11-03 (see "LEAD-ANSWERED (20:32)" below); was LEAD-ASK: the Act II break. `ch16_swept_away` sets `ch16_act_two_complete` and then nothing happens: B11's vigil
   at `prologue/iskarra_dusk` and B12's act card ("Act III: The Unbinding.", M3-UI-210) aren't wired. Who owns the
   act break, and where does Act III begin (Hollowmere `ch17/hollowmere`)? I'll wire it as part of Act III unless
   you say otherwise.
@@ -1586,6 +1586,55 @@ The six relays from 23:06 to 03:02 reached this session only at 03:35, after the
   - **`drowned_choir_storm` stays in `storm.pending`** (Act II): env-art-b built no Choir variant, and
     M3-ENV-1253 keeps that half. `oruvel_raft_storm` moves to `storm.arenas` when env-art-b's 6b8e416d reaches the
     integration branch (the resolution is above).
+- **Merged the integration branch (big47, d89a9e23), clean.** `oruvel_raft_storm` is now in `storm.arenas` (env-art's
+  scene) and `drowned_choir_storm` is still pending.
+  - **FYI Lead, a red on the integration branch itself:** `test_storm_arenas` fails 2/12 on `oruvel_raft_storm`: no
+    far plane, rain 0.0, no StormRim, not soaked, and `wetted_count` called on Nil. That's env-art-b's test against
+    env-art's scene kept by big47. My tree is byte-identical to the integration branch for those paths.
+- **FAST-TRACK (Lead 19:51, the W20 follow-up): the festival kites come down in Corrow's storm** (@ a0e7ae974).
+  - They had flown over the seawall until `ch08_wave1_held`, so through B08–B09 and in any later start without
+    that flag (W20's shot sets only `ch08_beacon_opened` and `ch08_reach_survived`).
+  - Now `ch08_run_back` still plays its W04_kite shot (the kites coming down, one torn loose). Its arrival row then
+    sets the new flag `ch08_kites_down` (flags.tres) and refreshes the zone's states. The layout's
+    `ch08_kites_down` state hides `Kites` and `KitesHigh`, and `ch08_reach_survived` hides them too, so any start
+    after the Reach has no kites.
+  - `test_ch08_thread` asserts the flag and no kites after B08.
+  - **SELF-RENDERED `ch08_wall_falls_w20`** on a scratch merge with slice-polish's m2-slice (its shot and its W20
+    camera live there), viewed: no kites over the wall. The storm and the Undertow's wounds fill the sky with rain
+    over the breach. The bright sun glint on the sea is still there; that's env-art-b's item.
+  - **Checks run:** validate_data 0/0, gdlint and gdformat. `--filter=ch08` 25/0. The tools corrow tests 28 OK.
+    `storm_` 10/12 (the 2 reds are the integration branch's, above).
+  - **Checks skipped:** coverage (no battle or progression code) and Blender (no source).
+- MERGE-READY @ a0e7ae974 (FAST-TRACK: kites down in the storm)
+- **LEAD-ANSWERED (20:32), the three asks of 10-31:**
+  1. **Ch9 → Ch10 (@ 5df49e678):** the end card still returns to the TITLE. The new `first_playable.json`
+     `end_card.act2_playable` (false), with `act2_next_location` `ch10/ossa_fen` and `act2_next_spawn` `FenEdge`,
+     is the one-line flip at sign-off. `EndCard.next_of` reads it (a small edit to game/flow/end_card.gd, FYI
+     slice-polish). `test_end_card_act2` 2/0 checks the switch ships off and points at a real location. Act II stays
+     reachable by F8.
+  2. **Act II Ch13–16 staging (M4-A2P-071–075):** taken. owner_session is now act1-chapters, and slice-polish's
+     staging data stays as the base. Their remaining items are the stills, which wait on the bodies (M4-CIN-1305).
+  3. **The Act II break (@ d447da840):**
+     - `ch16_swept_away` keeps B10. B11 (the vigil, Rhen's VO) and B12 ("Act III: The Unbinding", now `#card`: UI's
+       ActCard caption) move unchanged to the new `ch16_act_break.dlg` (location `prologue`, the same line ids).
+     - Ch16's last row goes to `prologue` Start. `first_playable.json` `prologue.visits` plays `ch16_act_break`
+       there while `ch16_line_held` is set and `ch16_act_two_complete` isn't, then hands on to `ch17/hollowmere`
+       Dock. `PrologueScene.visit_of` picks the row; `prologue_seen` is set only for the real prologue (a small
+       edit to game/levels/prologue/prologue_scene.gd, FYI slice-polish).
+     - `test_ch14_16_thread` runs the Choir → the plaza → Ch17. Request **M4-UI-1256** (ui-menus): the two-line act
+       card from `<<event act_card 3>>`.
+     - **SELF-RENDERED `ch16_act_break_vigil`** (new, pending_baseline), viewed: the Iskarra plaza at dusk, Rhen
+       beside Asha on the rise, the VO line up. Before this the Choir's P04 played under black. Still to do: the
+       sheet's "deeper again, the burner lower" (a darker grade for this visit), for the M4-A2P-074 stills pass.
+  - **Checks run:** validate_data 0/0, dlgc --check 0/0, taskboard, gdlint and gdformat. Godot: `end_card` 7/0,
+    `fp_prologue` 8/0, `ch14_16_thread` 1/0, `cutscene_music` 3/0. Tools: dlg, dialogue, flow, chapter and loc pass.
+  - **Reds that aren't mine (FYI Lead):**
+    - `tools.tests.test_cutscene_sfx_files` (19 music cues without stand-ins) fails on the tree without my change.
+    - `tools.tests.test_screenshots` fails on a **duplicate shot id `battle_arena_oruvel_raft_storm`** in
+      shots.json on the integration branch (big47 took both env-art's and env-art-b's rows).
+    - `test_dialogue_box` fails because `ullari_woman` has a model but no portrait (no speaker or portrait change
+      of mine).
+- MERGE-READY @ d046e5c70 (LEAD-ANSWERED 1–3: the end card's act2 switch, the Act II break at the plaza, staging taken)
 - **Act II sweep (ADR 0205 §4, 11-03):**
   - **Thread and walkable tests on this branch (big45 merged):** `ch10_` 3/0, `ch11_` 3/0, `ch12_` 5/0, `ch13_` 7/0,
     and `ch14_16_` 6/0, which runs through the act break to Ch17's hand-off. Ch16's flow, act break included, is in
@@ -1602,6 +1651,14 @@ The six relays from 23:06 to 03:02 reached this session only at 03:35, after the
       same rows.
   - What is left on my M4 rows (010–017, 023) waits on other tracks: the Drowned Choir's dressing (env-art-b after
     M4-A2P-106), creature and character models, and Venn's pipeline.
+
+## FINAL (2026-11-03 21:30, the human: "finish, commit everything, and stop")
+- **FINAL MERGE-READY @ 5ea5ecebe.** Everything is committed; no WIP, nothing uncommitted. Scoped checks: validate_data 0/0,
+  taskboard --check, dlgc --check 0/0 (the Godot runs are listed in the entries above).
+- **Exact next step for whoever resumes:** docs/kb/handoffs/2026-11-03-cinematics-act1-chapters-2.md, "Exact next
+  step". In short: merge the next integration batch and re-run the storm, Ch8, Ch14–16 and prologue tests. Move
+  `drowned_choir_storm` out of pending when its scene exists. Swap the act break's `#card` for the act_card event
+  when M4-UI-1256 lands. Do the M4-A2P-071–075 stills once the bodies land.
 
 ## Exact next step
 **2026-11-03:** M3-C01-1252 is in review. When env-art-b's M3-ENV-1253 lands, repoint arenas.json `scenes`

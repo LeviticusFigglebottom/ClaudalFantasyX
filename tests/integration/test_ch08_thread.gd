@@ -310,7 +310,10 @@ func _the_set_piece() -> void:
 			assert_true(&"ch08_run_back_002" in lines, "B08: 'He will be where he is needed.'")
 			assert_eq(Game.state.respawn_spawn, &"WallHead", "B09's checkpoint")
 			assert_true(zone.sun.light_energy < 1.0, "the storm")
-			assert_true(zone.block_shown("Kites"), "B08: the kites are still coming down over the wall (W04_kite)")
+			assert_true(&"ch08_run_back_001" in lines, "B08 played (its W04_kite shot brings the kites down)")
+			assert_true(bool(Game.get_flag(&"ch08_kites_down")), "B08: the kites came down on the run back")
+			assert_false(zone.block_shown("Kites"), "no festival kites over the wall in the storm (FAST-TRACK 11-03)")
+			assert_false(zone.block_shown("KitesHigh"), "nor the high line")
 		else:
 			assert_true(zone.mends.size() == 1, "the party is mended between waves")
 			assert_true(int(Game.state.vitals_of(&"ysolde").get("hp", 1 << 20)) > 1, "Ysolde is mended")

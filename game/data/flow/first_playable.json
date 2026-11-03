@@ -16,7 +16,10 @@
       "scene_id": "prologue_dead_city",
       "_next_note": "The M2 review switch (Lead, 2026-10-24), flipped on 2026-10-29 under ADR 0042 (the M2 review is approved; M3-CIN-1233): New Game plays Act I as one path, the prologue into Ch1, ch01/oruvel_underway at Drop (M3-C01-02), together with end_card.next_location. Before the flip it was the slice route, ch02/haluna at Beach.",
       "next_location": "ch01/oruvel_underway",
-      "next_spawn": "Drop"
+      "next_spawn": "Drop",
+      "visits": [
+        {"flag": "ch16_line_held", "unless": "ch16_act_two_complete", "scene_id": "ch16_act_break", "next_location": "ch17/hollowmere", "next_spawn": "Dock", "_note": "The Lead, 2026-11-03 (act1-chapters owns the Act II break): after Ch16's swept_away (B10) the party comes to the Prologue's plaza at dusk for B11's vigil and B12's act card (ch16_act_break.dlg sets ch16_act_two_complete), then Act III begins at Hollowmere's dock (ch17)."}
+      ]
     },
     "end_card": {
       "return_scene": "res://game/core/boot.tscn",
@@ -29,7 +32,11 @@
       "min_hold_sec": 16.0,
       "_next_note": "M3-C04-04: next_location / next_spawn (a locations.json id and spawn) send accept on into the story instead of back to the title. Since the M2 review switch flipped (2026-10-29, ADR 0042; M3-CIN-1233, the Lead) this card is the end of Act I only: Ch9's last scene shows it, its credits roll, and accept returns to the title, so both stay empty. The slice's dock at night goes on into Ch4 through chapter_card instead (no demo card mid-game). voice_key is empty: B12's voice-over moved to chapter_card, into Ch4.",
       "next_location": "",
-      "next_spawn": ""
+      "next_spawn": "",
+      "_act2_note": "The Lead, 2026-11-03 (act1-chapters' LEAD-ASK): the card returns to the title until Act I is signed off (ADR 0205 section 3). act2_playable true sends accept on into Act II at act2_next_location / act2_next_spawn instead (EndCard.next_of); flip it at sign-off. Act II stays reachable by the F8 chapter select meanwhile.",
+      "act2_playable": false,
+      "act2_next_location": "ch10/ossa_fen",
+      "act2_next_spawn": "FenEdge"
     },
     "chapter_card": {
       "_doc": "M3-CIN-1233: the chapter title card between the slice and Ch4 (game/flow/chapter_card.gd): UI's ActCard on black: voice_key first as a caption alone (B12's voice-over, which closed the slice, now leads into Ch4), then the two-line title (label_key over the rule, title_key), then on to next_location / next_spawn. haluna.night_end_scene opens it after B11.",
