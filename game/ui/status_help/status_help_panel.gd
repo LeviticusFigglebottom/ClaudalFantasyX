@@ -85,6 +85,7 @@ func _ready() -> void:
 	_kind = _label(names, &"DimLabel", "")
 	_on = _label(page, &"HelpLabel", "")
 	_desc = _label(page, &"BodyLabel", "", true)
+	_desc.custom_minimum_size.x = _page_width()
 	_lines = VBoxContainer.new()
 	_lines.add_theme_constant_override(&"separation", int(HudLayout.num(_m, "line_gap")))
 	page.add_child(_lines)
@@ -215,7 +216,7 @@ func _show_current() -> void:
 		_lines.remove_child(c)
 		c.queue_free()
 	for line in model.removal_lines(sid):
-		_label(_lines, &"HelpDimLabel", line, true)
+		_label(_lines, &"HelpDimLabel", line, true).custom_minimum_size.x = _page_width()
 
 
 func _on_row_input(event: InputEvent, index: int) -> void:
@@ -232,6 +233,12 @@ func _on_click(event: InputEvent) -> void:
 	if mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
 		if not _panel.get_global_rect().has_point(mb.global_position):
 			close()
+
+
+## The page column's width (the panel less its padding, the list and the gap): what wrapping text is measured at.
+func _page_width() -> float:
+	var w := HudLayout.rect_of(_m).size.x - HudLayout.num(_m, "pad") * 2.0
+	return w - HudLayout.num(_m, "list_width") - HudLayout.num(_m, "detail_gap") * 2.0 - HudLayout.num(_m, "page_slack")
 
 
 func _label(parent: Control, variation: StringName, text: String, wrap: bool = false) -> Label:

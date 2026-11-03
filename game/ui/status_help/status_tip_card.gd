@@ -58,6 +58,10 @@ func _ready() -> void:
 	row.add_child(v)
 	_title = _label(v, &"HeaderLabel", true)
 	_body = _label(v, &"BodyLabel", true)
+	# Wrapping text is measured at the column's width: at 1 px the card would grow off the screen.
+	var text_w := HudLayout.rect_of(_m).size.x - HudLayout.num(_m, "pad") * 2.0 - gp - HudLayout.num(_m, "gap")
+	_title.custom_minimum_size.x = text_w
+	_body.custom_minimum_size.x = text_w
 	_hint = _label(v, &"HelpDimLabel", false)
 	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	UiFrame.centre(self)
@@ -74,11 +78,18 @@ func show_tip(sid: StringName, hero: String) -> void:
 	_title.text = tr(key).format({"name": model.name_of(sid), "hero": hero})
 	_body.text = model.body(sid)
 	_hint.text = tr("STATUS_TIP_HINT_FMT").format({"key": InputNames.first_name(StatusHelpPanel.ACTION)})
-	_panel.size = Vector2(_panel.size.x, 0.0)
+	_fit()
 	visible = true
+	_fit.call_deferred()  # again once the wrapped labels have measured their new text
 	if motion_scale > 0.0 and is_inside_tree():
 		_panel.modulate.a = 0.0
 		create_tween().tween_property(_panel, "modulate:a", 1.0, HudLayout.num(_m, "open_sec"))
+
+
+## Shrinks the card to its text (a Control grows to its minimum size but never shrinks back by itself).
+func _fit() -> void:
+	if _panel != null:
+		_panel.reset_size()
 
 
 func close(open_help: bool = false) -> void:

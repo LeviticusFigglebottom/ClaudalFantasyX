@@ -52,6 +52,8 @@ var carried: Array[StringName] = []
 var shrine_cures: Array[StringName] = []
 ## status id -> loc key of its one-off way out (status_help.json notes).
 var notes: Dictionary = {}
+## status id -> loc key of its own time line (status_help.json lasts: Last Tide counts down, it never wears off).
+var lasts_keys: Dictionary = {}
 var met_prefix := "status_"
 
 var _is_set: Callable
@@ -89,6 +91,7 @@ func _init(tables: Dictionary = {}, flag_check: Callable = Callable()) -> void:
 	carried = _ids(tables.get("carried", []))
 	shrine_cures = _ids(tables.get("shrine", []))
 	notes = tables.get("notes", {}) as Dictionary
+	lasts_keys = tables.get("lasts", {}) as Dictionary
 	met_prefix = str(tables.get("met_prefix", met_prefix))
 
 
@@ -105,6 +108,7 @@ static func from_game() -> StatusHelpModel:
 		"carried": Game.carried_statuses(),
 		"shrine": Game.shrine_cures(),
 		"notes": help.get("notes", {}),
+		"lasts": help.get("lasts", {}),
 		"met_prefix": help.get("met_prefix", "status_"),
 	}
 	return StatusHelpModel.new(tables)
@@ -192,6 +196,8 @@ func is_carried(sid: StringName) -> bool:
 ## "Lasts about 3 of their turns, then wears off." / "Lasts until it is cured."
 func lasts(sid: StringName) -> String:
 	var turns := duration_of(sid)
+	if lasts_keys.has(String(sid)):
+		return _tr(str(lasts_keys[String(sid)])).format({"turns": turns})
 	if turns > 0:
 		return _tr(LASTS_TURNS_KEY).format({"turns": turns})
 	return _tr(LASTS_CURED_KEY)

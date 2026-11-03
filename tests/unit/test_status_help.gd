@@ -67,6 +67,9 @@ func test_a_battle_only_cure_says_so_and_a_timed_status_says_its_turns() -> void
 	assert_eq(m.kind_of(&"haste"), tr("STATUS_HELP_KIND_BUFF"))
 	assert_eq(m.kind_of(&"poison"), tr("STATUS_HELP_KIND_AILMENT"))
 	assert_true(m.removal_lines(&"doom").has(tr("STATUS_HELP_NOTE_DOOM")), "Last Tide says nothing lifts it")
+	assert_eq(
+		m.lasts(&"doom"), tr("STATUS_HELP_LASTS_DOOM_FMT").format({"turns": 5}), "it counts down, it never wears off"
+	)
 
 
 func test_a_vowbound_s_cleanse_is_named_only_once_it_is_bound() -> void:
@@ -258,6 +261,7 @@ func _model() -> StatusHelpModel:
 	fresh.carried = m.carried
 	fresh.shrine_cures = m.shrine_cures
 	fresh.notes = m.notes
+	fresh.lasts_keys = m.lasts_keys
 	return fresh
 
 
