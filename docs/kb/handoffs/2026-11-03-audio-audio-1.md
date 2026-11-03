@@ -1,7 +1,7 @@
 # Handoff: audio, 2026-11-03 (session 1)
 
 Lead `session_018aiGwGLGkxsnMnu8VfCu1m`; integration branch `claude/undertow-lead-handoff-ze8rrn` (merged @ e2411fb0).
-Branch `claude/audio` @ 891ecd0c, everything pushed.
+Branch `claude/audio`: FINAL MERGE-READY @ d7b5bcec, everything pushed (the Lead's FINAL at 21:25; the session stopped there).
 
 ## Done
 - **M3-AUD-865, FAST-TRACK (review):** the storm's music.
@@ -20,7 +20,7 @@ Branch `claude/audio` @ 891ecd0c, everything pushed.
   - The Relighting Wick rings `revive`.
 
 ## In progress
-Nothing.
+Nothing. After the first handoff, the Lead's 19:28 red was fixed: the storm beds' `.import` files are now loop=true (d3052411).
 
 ## Exact next step
 1. Merge the integration branch again when the Lead announces a merge.
