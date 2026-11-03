@@ -10,4 +10,5 @@ location: ch05/pemakar
 <<else>>
     Townsfolk as "Boat-Folder" [neutral]: Mooring rings, for the little boats. The smith makes them now. #line:ch18_pemakar_003
 <<endif>>
+<<set $ch18_revisit_pemakar = true>>
 ===

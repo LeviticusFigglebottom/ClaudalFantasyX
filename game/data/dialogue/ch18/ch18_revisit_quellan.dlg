@@ -8,4 +8,5 @@ location: ch12/quellan
 <<else>>
     Ullari_woman as "Dorro's daughter" [neutral]: The cords hold. They always held. #line:ch18_quellan_002
 <<endif>>
+<<set $ch18_revisit_quellan = true>>
 ===

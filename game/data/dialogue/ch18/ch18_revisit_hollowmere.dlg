@@ -9,4 +9,5 @@ location: ch17/hollowmere
 <<else>>
     Hull_captain as "Ship's captain" [neutral]: Dock-master's back at the berths. Doesn't say much. Works, though. #line:ch18_hollowmere_003
 <<endif>>
+<<set $ch18_revisit_hollowmere = true>>
 ===

@@ -12,4 +12,5 @@ location: ch07/tamsule
 <<else>>
     Townsfolk as "Supporter" [smile]: Season's back on. Salt and stone! #line:ch18_tamsule_003
 <<endif>>
+<<set $ch18_revisit_tamsule = true>>
 ===

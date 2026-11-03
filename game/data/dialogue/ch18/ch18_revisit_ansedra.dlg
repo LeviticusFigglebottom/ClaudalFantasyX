@@ -17,4 +17,5 @@ location: ch18/kite
     @wait 4.0
 <<endif>>
 @letterbox off
+<<set $ch18_revisit_ansedra = true>>
 ===

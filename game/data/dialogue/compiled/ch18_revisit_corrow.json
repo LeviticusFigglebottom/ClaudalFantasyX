@@ -18,7 +18,8 @@
     {"op": "cue", "cue": "mark", "args": ["toma", "ivo_stone", "walk"], "kwargs": {}, "src": 15},
     {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 16},
     {"op": "line", "id": "ch18_corrow_003", "key": "DLG_CH18_CORROW_003", "speaker": "toma", "emotion": "sad", "voice": "", "src": 17},
-    {"op": "goto", "to": 12, "src": 14}
+    {"op": "goto", "to": 12, "src": 14},
+    {"op": "set", "flag": "ch18_revisit_corrow", "value": ["lit", true], "src": 19}
    ]
   }
  }

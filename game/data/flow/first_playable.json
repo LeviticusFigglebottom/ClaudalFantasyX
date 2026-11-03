@@ -61,6 +61,8 @@
       "overheard_read_cps": 15.0,
       "night_flag": "ch03_drownbell_defeated",
       "sworn_flag": "ch03_rhen_sworn_guardian",
+      "revisit_open_flag": "ch18_world_open",
+      "revisit_seen_flag": "ch18_revisit_haluna",
       "night_scene_id": "ch03_dock_at_night",
       "night_spawn": "DockNight",
       "night_end_scene": "res://game/flow/chapter_card.tscn",

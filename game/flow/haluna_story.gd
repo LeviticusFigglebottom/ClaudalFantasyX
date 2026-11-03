@@ -28,6 +28,8 @@ extends Node
 ##             same box plays an overheard bark instead (M2-FP-20, Triggers/CausewayHeadUnsaved).
 ##   chapter   M2-FP-27: every arrival moves the story to cfg.chapter (2) when it is behind it, so
 ##             Haluna's saves read "Chapter 2" and the chapter autosave runs.
+##   revisit   M5-A3P-1704: an arrival with revisit_open_flag set (Ch18's open world) sets revisit_seen_flag, so the
+##             Kite's log marks Haluna seen on the visit itself, whether or not the lifting plays.
 ##   route     M2-FP-25: when cfg has ending_location, "Go now" travels there (the Saltgrass
 ##             Causeway, B06) at ending_spawn instead of opening ending_scene.
 ## The zone's interactables only author ids, payloads and flags; nothing in them knows this script.
@@ -97,6 +99,8 @@ func begin() -> void:
 		busy = false
 		return
 	_join_party()
+	if _flag(&"revisit_open_flag"):  # M5-A3P-1704: Ch18's visit counts on arrival (the Kite's log), lifting or not
+		Game.set_flag(StringName(str(cfg.get("revisit_seen_flag", ""))))
 	if _flag(&"night_flag") and not _flag(&"sworn_flag"):
 		await _night()
 	elif _flag(&"battle_victory_flag") and not _flag(&"after_battle_flag"):
