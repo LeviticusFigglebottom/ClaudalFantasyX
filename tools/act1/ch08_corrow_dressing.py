@@ -447,7 +447,7 @@ STORM = {"name": "Undertow", "at": [cf.r3(v) for v in STORM_AT], "preset": "ch08
 # block shows: a cool fill from landward on the faces the cameras see, and a glimmer rim from the storm's own bearing
 # that edges the figures against it. Shadowless (yaw = 180 - the bearing they come from, as the zones' sun rows).
 STORM_FILLS = [
-    {"pitch_deg": -25.0, "yaw_deg": 180.0 - 315.0, "color": "#9FB4C8", "energy": 0.8, "specular": 0.15, "block": "Storm"},
+    {"pitch_deg": -25.0, "yaw_deg": 180.0 - 315.0, "color": "#9FB4C8", "energy": 0.8, "specular": 0.0, "block": "Storm"},
     {"pitch_deg": -12.0, "yaw_deg": 180.0 - STORM["azimuth_deg"], "color": "#8FD0D8", "energy": 0.55, "specular": 0.0,
      "block": "Storm"},
     # big38 (row 82 partly): the flood's and the lake's cameras look landward (WNW), so the faces they see turn to the
@@ -456,6 +456,12 @@ STORM_FILLS = [
     {"pitch_deg": -20.0, "yaw_deg": 180.0 - 120.0, "color": "#93A8BA", "energy": 0.55, "specular": 0.0, "block": "Storm"},
     {"pitch_deg": -70.0, "yaw_deg": 0.0, "color": "#8C9CAC", "energy": 0.3, "specular": 0.0, "block": "Storm"},
 ]
+
+
+# slice-polish's W20 (B17 "The wall falls", "unlit except by the storm"): under the storm a bright sun glint lay on the
+# sea. The water shader draws its sun glint for every light whatever the light's specular, so while the Storm block
+# shows the zone's water takes no glint at all and the sun no specular: the storm's own light and rents are the light.
+STORM_LOOK = {"block": "Storm", "sun_specular": 0.0, "water_params": {"glint_strength": 0.0}}
 
 
 def storm_relayout() -> None:
@@ -528,6 +534,7 @@ def dressing() -> dict:
         "waters": story_waters(LAYOUT, ("Flood", "Lake")),
         "storms": [dict(STORM, block="Storm")],
         "fill_lights": [dict(f) for f in STORM_FILLS],
+        "block_looks": [dict(STORM_LOOK)],
         "fire_light_color": preview.get("fire_light_color", "#E0702E"),
         "fire_lights": [{"at": f[:3], "energy": f[3], "range": f[4]} for f in preview.get("fire_lights", [])],
         "kit_material_paths": kit_material_paths(),
