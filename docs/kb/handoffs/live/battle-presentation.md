@@ -4,6 +4,28 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+### 2026-11-03 ~21:30: FINAL (the Lead's 21:25: "finish, commit everything, and stop")
+**FINAL MERGE-READY @ 4d4e35e77** (everything is committed; no WIP, nothing NOT-READY).
+- **What it holds:**
+  - FAST-TRACK 1, status looks (M3-BPR-450, in review).
+  - FAST-TRACK 2, storm fights (M3-BPR-451): one Undertow per fight; the Ch1 tilt viewed.
+  - The row 70 investigation and its tool.
+  - The LEAD-ANSWERED notes.
+- **Checks at the final head:** gdlint and gdformat on everything touched; validate_data 0/0; taskboard --check;
+  the tools test_status_icons. The Godot tests this session: battle_storm 6/0 (also on a trial merge with the storm
+  arenas), battle_status 8/0 and camera 74/0.
+- **Skipped:** the full suite and Blender (no Blender source touched).
+- **Exact next step for whoever resumes:**
+  1. Merge -ze8rrn once big48 lands (env-art's oruvel_raft_storm).
+  2. Re-render ch01_hullgnaw's rest frame:
+     `tools/vfx/status_look_sheet.tscn -- --enc=ch01_hullgnaw --rest_only`.
+  3. Retune choreo.json camera.rest_by_encounter.ch01_*.tilt_up_deg until the arena's own Undertow sits in the
+     sky behind the boss, with the party clear of the HUD.
+- **Then:**
+  - the Ch8 stair holds' tilt, once env-art-b answers M3-ENV-1340;
+  - FAST-TRACK 3, the revive VFX, when combat-systems asks;
+  - the PC-QUEUE (the status looks at 1080p, the Undertow's battle cost, row 70 on the GPU).
+
 ### 2026-11-03 ~18:50: LEAD-ANSWERED (the Lead's 18:45)
 - **(1) The sightline: LEAD-ANSWERED.** My ask was about Ch8, not Ch1.
   - Ch1's storm arena (env-art's oruvel_raft_storm, big47) needs no sightline ask: its own Undertow stands in the
