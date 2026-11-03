@@ -21,3 +21,11 @@ and seawall_stairhead_storm/hoist get their sky shader's storm params; all get r
   look's `environment_res` (or ask me to).
 
 ## Review log
+
+## Ask (2026-11-03, after viewing the Ch8 rest frames)
+- **coilspire_headland_path:** the backdrop hill fills the whole sky of the battle's rest frame, so the Undertow
+  (azimuth = the rest look -12 deg, 14 km) can't be seen. Only its teal wounds peek over the crest when the frame is
+  tilted up, and a tilt pushes the party behind the HUD. Could the hill drop, or open a gap, behind the foes?
+- **seawall_stairhead_storm/hoist:** the wall's merlons fill the top of the frame, and the sea shows between them.
+  A lower parapet in the rest frame's view, or a sightline over it, would let the storm show.
+- I'll then tilt the rest frame (choreo.json camera.rest_by_encounter) to frame the storm, as on the Ch1 raft.

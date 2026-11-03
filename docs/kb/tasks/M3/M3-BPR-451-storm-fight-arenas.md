@@ -19,7 +19,10 @@ landing, the three stair holds and the Reach) get their storm variant, battle-si
 - [x] BattleStorm (game/vfx/battle/battle_storm.gd): the arena's sky turned to storm (a duplicate; the arena scenes
       are untouched), the sun dimmed, rain and wind over the field, the Undertow in the battle camera's view, no
       screen flashes; tests/unit/test_battle_storm.gd.
-- [ ] Self-rendered the Ch1 and Ch8 storm fights, viewed.
+- [x] Self-rendered the Ch1 and Ch8 storm fights, viewed. Ch1 (the gulls/Rising fights): the Undertow's wall fills
+      the sky over Hullgnaw (rest frame tilted 8 deg, choreo.json camera.rest_by_encounter).
+- [ ] Ch8: the arenas hide the sky (the headland's hill, the stair's merlons); M3-ENV-1340 asks env-art-b for a
+      sightline. The rain, wind, storm grade and dim sun are in.
 - [ ] PC-QUEUE: the Undertow's cost in battle on the GPU (hitch bar <= 2 s hidden; frame time).
 
 ## Notes

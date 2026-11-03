@@ -70,8 +70,7 @@
         0.0,
         0.35
       ],
-      "sky_note": "env-art's Oruvel storm grade (the zone's own after the Rising), as the field shows it.",
-      "distance_m": 7000.0
+      "sky_note": "env-art's Oruvel storm grade (the zone's own after the Rising), as the field shows it."
     },
     "seawall_front": {
       "preset": "ch08_seawall",
@@ -136,8 +135,7 @@
         -1.0,
         0.0,
         0.4
-      ],
-      "distance_m": 6500.0
+      ]
     },
     "seawall_landfall": {
       "preset": "ch08_landfall",
@@ -202,8 +200,7 @@
         -1.0,
         0.0,
         0.3
-      ],
-      "distance_m": 6000.0
+      ]
     },
     "reach": {
       "preset": "ch08_landfall",
@@ -238,13 +235,12 @@
         0.0,
         0.3
       ],
-      "note": "The Reach keeps its own night key, boss lights and the arena's rain (act1_gpu_qa row 72: more rain hid the party's turns); the storm adds a little wind and the Undertow behind.",
-      "distance_m": 6000.0
+      "note": "The Reach keeps its own night key, boss lights and the arena's rain (act1_gpu_qa row 72: more rain hid the party's turns); the storm adds a little wind and the Undertow behind."
     }
   },
   "reduced_motion": {
     "particle_scale": 0.4,
     "speed_scale": 0.6
   },
-  "looks_doc": "distance_m overrides the preset's approach distance: the field puts the storm 10-18 km out, which in a battle's low frame is a faint mass on the horizon; at 6-7 km its wall fills part of the sky behind the foes. yaw_offset_deg stays inside the frame (the rest frame's half field of view is about 40 deg across)."
+  "looks_doc": "yaw_offset_deg stays inside the frame (the rest frame's half field of view is about 40 deg across). The storm keeps its preset's distance: its bound is about 16 km, so nearer than that the battle stands inside its envelope (a probe at 7 km drew a black wall)."
 }

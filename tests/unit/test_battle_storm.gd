@@ -65,3 +65,19 @@ func _battle(enc: StringName, party: Array[StringName]) -> BattleController:
 	(tree.current_scene if tree.current_scene != null else tree.root).add_child(ctl)
 	ctl.start_battle(party, [] as Array[StringName], enc, 7)
 	return ctl
+
+
+## The storm fights' rest frame tilts up (choreo.json camera.rest_by_encounter) so the sky with the Undertow is in it.
+func test_a_storm_fight_rest_frame_tilts_up_to_the_sky() -> void:
+	var cam := BattleChoreo.load_data().get("camera", {}) as Dictionary
+	var xf := Transform3D(Basis.looking_at(Vector3(0.0, -0.5, -1.0), Vector3.UP), Vector3(0.0, 3.0, 8.0))
+	var tilted := BattleCameraDirector.rest_tilt(cam, xf, &"ch01_hullgnaw")
+	assert_true((-tilted.basis.z).y > (-xf.basis.z).y, "it looks higher")
+	assert_eq(tilted.origin, xf.origin, "from the same place")
+	assert_eq(BattleCameraDirector.rest_tilt(cam, xf, &"ch01_wickfry"), xf, "a calm fight keeps its frame")
+	for enc: String in BattleStorm.load_data()["fights"]:
+		if enc.begins_with("ch01"):  # Ch8's arenas hide the sky (the headland hill, the wall): M3-ENV-1340
+			assert_true(
+				((cam.get("rest_by_encounter", {}) as Dictionary).get(enc, {}) as Dictionary).has("tilt_up_deg"),
+				"%s tilts up to its storm" % enc
+			)

@@ -240,8 +240,6 @@ func _undertow(controller: BattleController, centre: Vector3) -> UndertowStorm:
 	s.sun = controller.get_node_or_null(^"Sun") as DirectionalLight3D
 	s.world_environment = controller.get_node_or_null(^"WorldEnvironment") as WorldEnvironment
 	add_child(s)
-	if look.has("distance_m"):  # after the preset (applied as it enters the tree): nearer, to read in a battle frame
-		s.approach_distance_m = float(look["distance_m"])
 	var far := StormFarPlane.new()
 	far.name = "FarPlane"
 	s.add_child(far)  # the battle camera reaches past the storm (M3-ENV-1308)

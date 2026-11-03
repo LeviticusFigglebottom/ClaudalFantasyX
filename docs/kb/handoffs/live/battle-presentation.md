@@ -4,6 +4,27 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+### 2026-11-03 (later): FAST-TRACKS 1 and 2 viewed and tuned
+**MERGE-READY @ the branch head** (FAST-TRACK).
+- **Status looks:** contact-sheet pass 2 VIEWED (13 statuses re-rendered, plus a stack). Every status now reads on
+  Rhen and on a Scuttler.
+  - The breaks show a cracks pattern in their colour.
+  - Doom shows a red tide; Stop shows blue glass (not stone); Darkness shows a black veil.
+  - The icon rows sit beside the actor marker, flipping side by screen half.
+  - Then Shell's bubble was made smaller and Regen's wash lighter.
+  - M3-BPR-450 is in review (rendering).
+- **Storm fights:** Ch1 (the gulls and the Rising, the scuttlers and Hullgnaw) VIEWED.
+  - The Undertow's dark wall now fills the sky over the boss, with Oruvel's storm grade and rain. The rest frame
+    tilts up 8 deg (new choreo.json camera.rest_by_encounter; BattleCameraDirector.rest_tilt), and the fighters
+    stay clear of the HUD.
+  - A probe at 7 km put the battle inside the storm's 16 km bound (a black wall), so the presets' distances stay.
+- **Ch8 is half done.** Rain, wind, the storm sky and the dim sun are in, but the arenas hide the sky:
+  - on the headland, the backdrop hill (a tilt pushed the party behind the party panel);
+  - on the stair, the wall's merlons.
+  - M3-ENV-1340 asks env-art-b for a sightline. LEAD-ASK: please nudge env-art-b, or let me take the
+    headland arena's camera axis instead.
+- Tests: battle_storm 4/0, camera 74/0, battle_status 8/0.
+
 ### 2026-11-03: the human's playtest FAST-TRACKS (Lead session_018aiGwGLGkxsnMnu8VfCu1m; integration -ze8rrn merged @ e2411fb04)
 **FAST-TRACK 1: statuses obvious on the character (M3-BPR-450).** In progress; first cut pushed @ d2543cc20.
 - BattleStatusLooks (game/vfx/battle/battle_status_looks.gd, attached by BattleVfx): every status a fighter holds
