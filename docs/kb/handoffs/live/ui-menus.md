@@ -1624,3 +1624,38 @@ Merged origin/claude/undertow-lead-handoff-ze8rrn @ e2411fb04 (clean). The human
 MERGE-READY @ 54b033510: FAST-TRACK 3 (M3-UI-1250), FAST-TRACK 5 UI (M3-UI-1251 page behind the rules seam,
 M3-UI-1253), Act I rows 69 and 73; checks above; full battle suite running (result below). Skipped: Blender (no
 Blender source touched).
+- **combat-systems shipped `FieldSpell` (M3-CMB-05, claude/combat-systems @ da778b9e) and asked for the page (their
+  M3-MNU-05).** The Magic page now binds FieldSpell **by name** (FieldMagicRules.live; magic_menu.json
+  rules_class), so claude/ui builds before their branch merges, and words its refusals (fallen, stone, Hollowed,
+  nothing to do, no MP). My request M3-CMB-1252 is withdrawn. M3-UI-1251 is in review (combat).
+  - Checked in a throwaway merge of claude/ui + claude/combat-systems: test_magic_menu 7/0, including
+    `test_the_live_field_spell_rules_drive_the_page` (Asha's Mend on Rhen through the real FieldSpell). Shot
+    **magic_menu** (new, pending_baseline) rendered there and viewed: "Asha: MP 60 → 56 · Rhen: HP 151 → 381".
+    On claude/ui alone the Magic row is hidden and the shot shows the casters only, so **render magic_menu after
+    both branches merge**.
+  - Merge note for the Lead: the two branches touch different files except game/data/loc (append-only rows).
+- **Act I GPU QA row 68 (ResidentLoads, 75236a571):** two loads that share a dependency never run at once (reed_b
+  and reed_d share sub-resources; the PC logged "Another resource is loaded from path" then segfaulted). Unrelated
+  loads keep max_in_flight 4. resident 15/0 (a new test on the real reed variant). PC-QUEUE: re-run the row 68
+  walks (the fresh Prologue, Haluna cold, the Drownbell probe).
+- **Row 73:** the legend now reads "R3: Rhen acts again in 2 turns" (the longer "R3 wait:" wrapped a one-line help).
+- **Row 70 (faint party damage numbers on bright arenas):** battle-presentation's first. The numbers already draw
+  ui_line_white with a 4 px night_sky outline (theme.json), so I can't see from here why the GPU stills read them
+  as a translucent grey (mid-fade stills?). LEAD-ASK: battle-presentation to take it with a GPU still; I'll change
+  the fill or outline on their word.
+- **Full battle suite:** 874 run, 3 failed. Mine: test_the_help_line_wraps (fixed above; test_battle_controller
+  33/0). Not mine: test_battle_stings and test_battle_audio's fire sound read LFS audio that is a pointer in this
+  container (no lfs pull: lfs.github.com is blocked). The 3 LEAK lines in test_battle_controller predate this work
+  (those tests never free the sandbox).
+MERGE-READY @ 73699ed9f: M3-UI-1250, M3-UI-1251 (FieldSpell-bound), M3-UI-1253, Act I rows 68, 69, 73. Checks: as above,
+plus validate_data 0/0, taskboard ok, lint and format clean. Skipped: Blender (none touched). Shots to approve:
+battle_status_help, battle_status_tip, magic_menu (new); battle_read_panel, status_menu, field_menu_codex, and the
+command-menu battle shots (help line).
+
+### PC-QUEUE (11-03)
+- Row 68: re-run the segfault walks on the merged ResidentLoads change.
+- Row 70: a GPU still of party damage numbers over ch02_tideline's sand.
+
+### Next (ui-menus)
+- Act I has no other open ui row I can fix without the PC. Next: the Lead's word on row 70, then Act II items from
+  my M4 tasks (M4-A2P-080..083 are STALE "doing" on the board: re-check each against what has shipped).
