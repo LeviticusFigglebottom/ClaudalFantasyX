@@ -29,10 +29,11 @@ func test_stock_follows_story_flags_in_data_order() -> void:
 	var market := Shop.new(db, &"haluna_market")
 	var before := market.stock(flags)
 	assert_eq(before[0], &"salt_tonic")
-	assert_false(before.has(&"relighting_wick"))
+	assert_false(before.has(&"tidewash_salve"))
+	assert_true(before.has(&"relighting_wick"), "M3-CMB-03: the revive is sold from the first visit")
 	flags.values["ch03_drownbell_defeated"] = true
 	var after := market.stock(flags)
-	assert_true(after.has(&"relighting_wick"))
+	assert_true(after.has(&"tidewash_salve"))
 	assert_eq(after.slice(0, before.size()), before, "new rows append, old order holds")
 
 
@@ -56,7 +57,7 @@ func test_cannot_overspend() -> void:
 func test_buy_refuses_items_not_in_stock_and_bad_counts() -> void:
 	var market := Shop.new(db, &"haluna_market")
 	party.wallet.earn(5000)
-	assert_eq(market.buy(&"relighting_wick", 1, party, flags), Shop.ERR_NOT_IN_STOCK)
+	assert_eq(market.buy(&"tidewash_salve", 1, party, flags), Shop.ERR_NOT_IN_STOCK)
 	assert_eq(market.buy(&"brass_lantern", 1, party, flags), Shop.ERR_NOT_IN_STOCK)
 	assert_eq(market.buy(&"salt_tonic", 0, party, flags), Shop.ERR_BAD_COUNT)
 	assert_eq(Shop.new(db, &"nowhere").buy(&"salt_tonic", 1, party, flags), Shop.ERR_UNKNOWN_SHOP)

@@ -267,7 +267,7 @@
     },
     {
       "id": "ch01_hullgnaw",
-      "chapter": "Ch1 boss (solo Rhen)",
+      "chapter": "Ch1 boss (solo Rhen; first-timer bands, M3-CMB-06)",
       "kind": "boss",
       "encounter": "ch01_hullgnaw",
       "active": [
@@ -276,19 +276,25 @@
       "reserve": [],
       "bands": {
         "naive": [
-          0,
-          10
+          5,
+          25
         ],
         "naive_swell": null,
-        "role_answer": null,
+        "role_answer": [
+          55,
+          85
+        ],
         "smart": [
-          80,
-          95
+          97,
+          100
         ]
       },
       "p90_turns_max": 60,
       "loadout": "ch01_hullgnaw",
-      "swell": "good"
+      "swell": "good",
+      "mean_turns_min": {
+        "smart": 24
+      }
     },
     {
       "id": "ch01_underway_shoals",
