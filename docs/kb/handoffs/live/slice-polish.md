@@ -1513,6 +1513,12 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     - Viewed: the P02 two-shot, the line up, the lantern lit.
   - Shots still timed by frame count, all early in their scenes: slice_prologue_p01, slice_verse_hall and
     ch01_o10_gull.
+- **Queue status (2026-11-03, after the FAST-TRACK, the Act I rows and the audit):** MERGE-READY @ 7558cebe6 (it
+  includes b3264a223). Every other open item waits on another track:
+  - the Act II stills (M4-A2P-070..075) wait on M4-CIN-1305 and M4-A2P-077 (chapters; both still todo);
+  - Ch17's D01–D18 is M5-A3P-1001, which act1-chapters is doing;
+  - row 75 and the storm shots wait on the GPU (PC-QUEUE).
+  - **LEAD-ASK:** anything you want ahead of those? Otherwise I'll pick up Act III staging as each chapter's set lands.
 - **Act I rows (act1_gpu_qa.md @ gpu/act1-qa-7):**
   - 31 and 32 are fixed.
   - 75's hull key and rim (1086628b1) is on integration now; it only needs the PC's GPU re-check (PC-QUEUE).
