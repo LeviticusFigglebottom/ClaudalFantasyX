@@ -680,3 +680,16 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   (viewed): docs/kb/qa/characters/jog_2026-10-31/asha_run_hem_momentum.jpg. Needs a real-GPU look in motion.
 - **Rows 55 and 46** were done at fd9b4879: Fenn's and Sabe's white crop, and Moll's soft face key.
 - MERGE-READY @ a480b2cb
+
+## 2026-11-03 (Lead session_018aiGwGLGkxsnMnu8VfCu1m; integration claude/undertow-lead-handoff-ze8rrn)
+- Merged -ze8rrn @ e2411fb0 into claude/characters.
+- **Row 56, big45's reds, at this head:** test_hero_clips + test_hero_battle_clips 34 OK (the committed libraries rebuild
+  byte for byte from hero_clips.py; 979a5482 committed Asha's rebuilt library); test_hero_stage 11/11 (5e9cb380 samples
+  offer_hand, so the attack's battle-stance armpit corrective no longer trips the 38.8° check). test_rig_integrity: running.
+- **FAST-TRACK 1 (walk randomly stops), the clip side is clean.** For integration-qa:
+  - rhen/asha/toma `walk`, `run` and the idle loops all have loop_mode 1; locomotion.json lengths match the libraries;
+  - every walk/run start/stop `root_travel_m` curve is monotonic and ends at its `distance_m`.
+  - So a clip can't freeze by itself. My suspect is engine-side, in HeroGaitClips (not my code): a slow walk under
+    `stop_unknown_ratio` (0.5) x the walk clip speed enters walk_stop, which plays by distance; if the body keeps
+    creeping it holds the stop's last pose and slides. An early START that never covers its travel (blocked by a wall)
+    would freeze the same way. Worth a probe with a partial stick or a slope.
