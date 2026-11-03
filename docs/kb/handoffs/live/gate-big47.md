@@ -44,3 +44,44 @@ validate_data 0/0 · taskboard --check clean (after the renumber) · dlgc --chec
 keys · no conflict markers · no new binary over 5 MB · no gate-run images.
 
 GATE-BUILT @ 16ee7393
+
+### Correction after the tests (2635d0a3): oruvel_raft_storm takes **env-art-b's** build
+The first resolution (env-art's scene) failed env-art-b's test_storm_arenas (no rain, rim, soak or StormFarPlane). env-art-b's build is the one that
+meets M3-ENV-1253's storm look (rain, rim, soak, far plane, the Undertow), so 2635d0a3 takes it, with its PROVENANCE row. Either choice leaves the
+other track's tests red: **the two builds can't both stand; routed below.**
+
+## Fast gate
+- Godot tests filtered to the touched areas, one run per filter: battle, status, storm, field_, hero, item, magic, codex, read_panel, shop, victory,
+  audio, music, resident, formulas (storm and battle_arena re-run after 2635d0a3). Tools suite: 224 units with -j 2.
+- XDG_DATA_HOME and logs under the gate's scratch dir; HYMN_STEP_TIMEOUT=10800. No GATE-HELPER lane.
+
+## Fast-gate results
+- Import clean (godot_log_check import 0 on the second pass); boot smoke 0 ERROR lines.
+- **Green:** status 82/0, field_ 148/0, hero 121/0, item 83/0, magic 7/0, codex 16/0, read_panel 13/0, shop 28/0, victory 5/0, resident 15/0,
+  formulas 42/0, **storm 41/0** (after 2635d0a3).
+- **battle 888/2, audio 196/1, music 20/1: this container's LFS pointers**, not the batch: test_battle_stings (the boss stings under
+  assets/lfs/ don't import), test_battle_audio's fire hit (`abl_ember` is a pointer, so `hit_fire` plays), test_music_transitions (`prologue_dusk`'s
+  beat grid is a pointer). Audio's own log reports the same three.
+- **battle_arena 20/1, batch-caused (the storm-arena collision):** test_battle_arenas::test_the_storm_arena_keeps_its_undertow_wired_through_the_battle_move
+  (env-art's test of its own build: the 18 km camera reach, the clock hold, the arena's Sun, Sea and WorldEnvironment after the move).
+- **Tools suite, batch-caused:**
+  - test_arenas::test_the_ch1_storm_arena_shows_the_undertow_beyond_the_far_plane (env-art's, the same collision; test_b_arenas is green on
+    env-art-b's build, and it also fixes the old ashcrown_anvil_court red).
+  - **test_act1_audio_audit:** four new ui classes take input with no UI sound hook (StatusGlyph, BattleStatusTips, StatusHelpPanel,
+    StatusTipCard; M3-UI-1250). Routed: **ui** (or audio for the hooks).
+  - **test_audio_data::test_every_loop_imports_looping:** `assets/audio/ambience/storm_gale.ogg.import` and `storm_wall.ogg.import` are committed
+    with loop=false (audio's M3-AUD-865 storm beds; red on claude/audio too). Routed: **audio**.
+- Tools, this container (LFS pointers): test_dialogue_clarity, test_direction_holds. The standing routed list, unchanged: test_cutscene_sfx_files'
+  sequencer check and test_freed_cast_lint (audio), test_creatures (creatures-b), test_status_names (ui). Known: test_palette_check, test_screenshots.
+
+### ROUTED (big47)
+- **env-art + env-art-b (FAST-TRACK 4): one oruvel_raft_storm.** env-art's build (arena_scenes.py RAFT_STORM, ArenaCameraReach, the Undertow 18 km
+  off) and env-art-b's (tools/act1/storm_arenas.py: rain, rim, soak, StormFarPlane) both claim the scene, and each one's tests fail on the other's.
+  Agree on one generator that meets both test sets (test_arenas + test_battle_arenas, test_storm_arenas + test_b_arenas), commit that scene, and
+  drop the other generator's row. The gate holds env-art-b's for now.
+- **ui:** test_act1_audio_audit's four status-help classes. **audio:** the two storm beds' loop flag.
+- **battle-presentation + act1-chapters + env-art (FAST-TRACK 4):** BattleStorm still adds its storm to the Ch1 fights on top of a storm arena,
+  and storm_fights.json treats the ch08 headland fights as storm fights while act1-chapters' table doesn't. See the shots.
+
+GATE-FAST-DONE (merge-approved for the FAST-TRACKs, with the routed reds above: the storm-arena collision and two small ui/audio reds; every other
+red is this container's LFS pointers or the standing list).
