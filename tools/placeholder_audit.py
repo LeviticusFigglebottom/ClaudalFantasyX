@@ -510,8 +510,10 @@ def from_scan(scan: list[dict], root: Path = ROOT) -> list[Item]:
         groups[(it["scene"], it["kind"], key_group)].append(it)
     for (scene, kind, group), its in sorted(groups.items()):
         rel = scene.removeprefix("res://")
-        ch = arena_ch.get(scene, chapter_of(rel))
         arena = "/arenas/" in rel
+        if arena and scene not in arena_ch:
+            continue  # the scan loads every encounter's arena: only the act's own encounters' are in scope
+        ch = arena_ch.get(scene, chapter_of(rel))
         nodes = sorted({i.get("node", "") for i in its})
         variants = sorted({i.get("detail", "").split(";")[0] for i in its if i.get("detail", "").startswith("variant")})
         if kind == "capsule":

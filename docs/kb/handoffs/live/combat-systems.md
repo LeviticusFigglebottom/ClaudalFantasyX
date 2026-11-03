@@ -56,3 +56,51 @@ LEAD-ASK: M3-CMB-04 put a one-line hook in `game/battle/scene/battle_vitals.gd` 
   - `memories.csv` MEMORY_CH04_SHELL_IS_SET uses the old "Shell" name: test_status_names, ui-menus'/story's.
   - `game/audio/prop_audio.gd:77`: test_freed_cast_lint, audio's.
   - Every validator and balance unit is green.
+
+### 2026-11-03 ~17:30: the Lead's 17:15 check: each FAST-TRACK confirmed
+- **FT done @ dd522443: (1) the revive item.** The Relighting Wick: original name and lore (glossary).
+  - Shops: Haluna Market sells it from Ch2's first visit, at 240 lume (4eb42a51).
+  - Drops: the Hullgnaw and the Spar-Wraith 100%, the Gull Harrier 4% (4eb42a51).
+  - **Chest (new, dd522443):** one Wick in Ch1's hidden old tin, the Underway's find behind the coral curtain that the lantern reveals. test_ch01_thread pins it.
+- **FT done @ bfda429a: (2) the KO'd at 1 HP after a won fight.** BattleSpoils.returning_party, Formulas.VICTORY_RISE_HP, and the BattleVitals.send_back hook. Tests: test_victory_rise, test_formulas.
+- **FT done @ bfda429a (API task da778b9e): (3) field spells.** skills.json `field_usable` (Mend, Chorus Mend, validated) and `FieldSpell` (game/progression/field_spell.gd: castable, caster_error, target_error, cast_error, reach, preview, cast). ui-menus binds it per M3-MNU-05. Tests: test_field_spell, tools/tests/test_field_usable.py.
+- **FT done @ 08eaf116: (4) the Hullgnaw** (logged above).
+- **Sim check, touched suites only** (every encounter with the Hullgnaw, the Gull Harrier or the Spar-Wraith; 1000 seeds; `sim.py --check` exit 0, all ok):
+  - sandbox_reef 10.9 / 97.1 / 100.0;
+  - sandbox_reef_tier1 25.1 / 98.4 / 100.0;
+  - sandbox_reef_vowbound naive_swell 38.9;
+  - sandbox_reef_vowbound_good naive_swell 46.2;
+  - ch01_hullgnaw 12.8 / 68.4 / 100.0;
+  - ch03_causeway_shore 71.3 / 95.3 / 99.9;
+  - ch03_causeway_harrier 65.8 / 95.3 / 100.0;
+  - ch04_spar_wraith 3.7 / 72.8 / 100.0;
+  - ch06_ridge_gulls 57.3 / 74.0 / 99.7;
+  - ch06_flats_crabs 55.2 / 95.8 / 100.0.
+
+  The columns are naive / role_answer / smart win %. The drop changes don't move win rates (drops roll after the victory). Only the Hullgnaw's numbers changed.
+
+MERGE-READY @ dd522443: FAST-TRACKs 1–4 complete. Checks: validate_data; test_ch01_thread and test_ch01_zones green; the sim on the touched suites as above.
+**Next:** no open combat Act I rows, so Act II per ADR 0205 §4: my M4 combat tasks and docs/kb/plan/act2_plan.md.
+
+### 2026-11-03 ~19:00: Act II (ADR 0205 §4): M4-A2P-1202 to review
+MERGE-READY @ f096de6b: M4-A2P-1202.
+- When no field calls for a particular Vowbound, the sim now calls the latest bound one (3e843993).
+- `sim.py` gates `p90_turns_max` on banded rows only (`within_p90`); report-only rows still fail on timeouts.
+- `--check` is clean on all 40 suites that bind more than one Vowbound.
+  - The Wakefin's masher tail is the same whichever Vowbound is called (p90 91–92), so the call rule alone couldn't fix it.
+  - Spire Wicks p90 went 55 → 48.
+  - Details are in balance_report.md (2026-11-03).
+- Checks: battle_sim tests 56/0; tools test_balance_sim and test_balance_naive_swell OK; taskboard --check.
+- LEAD-ASK: the p90 cap no longer gates report-only rows (my lane, tools/balance). Overrule if you want the cap back on naive_swell. Assumed OK.
+- **Next:** no open combat-rules task on the board. Battle-presentation owns the open BPR and A2P VFX requests. I'm waiting for the Lead's next combat item, or the cure/revive-spell content call above.
+
+### 2026-11-03 ~19:20: the Lead's 18:45: M3-CMB-1252 (ui-menus' field cast request) DONE
+MERGE-READY @ 2acd3abc, for big48: M3-CMB-1252.
+- The API is `FieldSpell` (game/progression/field_spell.gd), the equivalent the task allows. ui-menus' `FieldMagicRules.live` already binds it by name (origin/claude/ui), and their task file was marked "withdrawn, superseded" there.
+- To close it fully, this branch adds what the original ask named and FieldSpell lacked:
+  - the result shape `{ok, mp_spent, healed: {id: HP}, cured: {id: [statuses]}, revived: []}` (alongside `changes`);
+  - a Silenced-caster refusal (`ERR_SILENCED`) for magic skills;
+  - a test that a field Mend heals exactly what a battle Mend heals at variance 100. Over 120 seeds the battle's heals bracket the field amount, and the field amount appears among them.
+- Data: `field_usable` is on Mend and Chorus Mend. No cure or revive spell exists in skills.json yet; FieldSpell already handles `cleanses`.
+- I didn't copy the task file here. It lives on claude/ui as done, and a second copy would be an add/add conflict at merge.
+- Checks: test_field_spell 8/0; gdlint and gdformat clean.

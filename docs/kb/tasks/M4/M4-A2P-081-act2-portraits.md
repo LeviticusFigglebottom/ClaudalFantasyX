@@ -25,4 +25,13 @@ Bake portraits for Tobin, Merel, Malcor Venn, Liss's father, the Kirru eldest an
 
 - 2026-10-30 ui-menus: **Act II townsfolk faces baked**: Merel (neutral, soft_smile, tender, determined, sad, angry), Tobin (neutral, smile, soft_smile, laugh, tender, determined, exhausted) and Ansedra's clerk (neutral, cold, worried): the emotions their Act II lines use, from claude/characters' villager stages (PROVENANCE rows; viewed as one sheet). test_dialogue_box::test_every_act2_speaker_with_a_model_has_a_portrait guards the next Act II model that lands. Note for characters: Tobin's `laugh` pose reads as a lopsided grimace with the tongue showing at 256 px.
 
+- 2026-11-03 ui-menus: **the Kirru and the Ullari woman baked** (M4-A2P-053's models): `kirru` (any speaking Kirru adult;
+  neutral, soft_smile, sad) and `kirru_child` from their stages, which use Pell's face poses; `ullari_woman` (neutral,
+  soft_smile, tender, sad) from her own pose table. Viewed as one sheet; PROVENANCE rows; test_hero_portraits 22/0,
+  test_dialogue_box 27/0 (every Act II speaker with a model has a face). Notes for characters: on the Kirru muzzle
+  Pell's human poses barely move, so their three faces read nearly alike (a Kirru pose table would fix it); the
+  Ullari woman's `laugh` read as a grimace with the tongue out (as Tobin's), so it is not baked and falls back to
+  neutral. Still waiting: Liss's father and Kesh (no models), the Abiding guard (the abiding_* models have no
+  speaking line yet).
+
 ## Review log

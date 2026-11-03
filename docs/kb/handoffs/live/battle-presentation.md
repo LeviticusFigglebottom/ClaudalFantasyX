@@ -4,6 +4,128 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+### 2026-11-03 ~18:50: LEAD-ANSWERED (the Lead's 18:45)
+- **(1) The sightline: LEAD-ANSWERED.** My ask was about Ch8, not Ch1.
+  - Ch1's storm arena (env-art's oruvel_raft_storm, big47) needs no sightline ask: its own Undertow stands in the
+    raft's sky. Once it is merged here, I re-view the 8 deg rest tilt against it.
+  - The Ch8 stair holds' arenas are env-art-b's (seawall_stairhead_*). They now carry their own Undertow, so they
+    own the vortex. M3-ENV-1340 stays with env-art-b: the wall's merlons fill the top of the battle's rest frame,
+    so that Undertow can't be seen there.
+  - The storm decision applies: BattleStorm adds the dynamic layer only (6231069dc, 304146c55).
+- **(2) Row 70, the damage numbers: LEAD-ANSWERED, taken.**
+  - A new tool, tools/vfx/float_fade_sheet.tscn, takes stills of a tideline hit's number through its pop, rise and
+    fade (the tween stepped by hand), with its alpha and colour logged.
+  - **Result (lavapipe, 1080p, VIEWED):** the "111" over the beach sand is solid white (#F2F5FA, ui_line_white)
+    with its 4 px dark outline at alpha 1.00 at 60, 300 and 600 ms: it reads clearly for its whole 0.7 s rise.
+  - Only the last 250 ms fade (battle_hud.json damage.fade_sec) gives the row's "faint translucent grey": alpha
+    0.69 at 760 ms and 0.33 at 850 ms, with the outline fading too and the sand showing through.
+  - So the row's stills (115, 62, 203; the Reach's 132) were most likely caught mid-fade. Not a colour or theme
+    defect: nothing changed.
+  - **PC-QUEUE (row 70):** re-check on the GPU with a still inside the first 0.7 s
+    (`float_fade_sheet -- --at_ms=60,300,600,760,850`). If the human still finds them faint at play speed, the
+    lever is ui-menus' timing: a short hold at full alpha before damage.fade_sec, not a colour change.
+
+### 2026-11-03 ~18:10: the Lead's storm-overlap decision (big47): ONE Undertow per fight
+**MERGE-READY @ 304146c55** (FAST-TRACK, for big48; supersedes 6231069dc).
+- **BattleStorm:** when the arena has its own Undertow (an UndertowStorm in the battle scene: the seawall arenas,
+  env-art's oruvel_raft_storm), that arena owns the sky, the wet surfaces and the vortex.
+  - BattleStorm then adds only wind and spray, plus rain only when the arena's storm has none (row 72).
+  - Its own sky, sun and Undertow remain only as the fallback for an interim arena (storm.pending).
+- **storm_fights.json now matches act1-chapters' storm table:** ch01_scuttlers, ch01_hullgnaw, the three stair
+  holds, undertows_reach and ch16_storm_wakes (new). The headland fights and the flue moths are out: they come
+  before the storm (B05 < B07).
+- **Tests** (test_battle_storm 6/0):
+  - test_no_storm_fight_draws_two_undertows: all seven fights, each drawing exactly one.
+  - test_an_arena_undertow_is_never_doubled: an arena Undertow means none of ours and no doubled rain.
+- **Trial merge with act1-chapters, env-art-b and env-art** (a scratch worktree, not pushed): `--filter=storm`.
+  - **Mine pass:** test_battle_storm 6/0 there and here.
+    - test_no_storm_fight_draws_two_undertows passes with the real storm arenas: one Undertow each, the arena's
+      where it has one.
+  - **For the Lead at big48: env-art and env-art-b both add oruvel_raft_storm.tscn and its preview, and they
+    conflict.** With env-art's version, env-art-b's test_storm_arenas fails on oruvel_raft_storm:
+    - no far plane;
+    - rain_amount 0;
+    - no rim light;
+    - no RainWet.
+  - act1-chapters' test_a_pending_storm_arena_has_its_request_and_a_fallback then asks for the id to move from
+    storm.pending to storm.arenas.
+  - None of these is battle-presentation's.
+  - The arenas.json conflict: env-art-b repoints oruvel_raft_storm at env-art's new scene, while act1-chapters
+    keeps it pending on oruvel_raft_morning. Lead, pick one at big48. If the scene lands, move the id from
+    storm.pending to storm.arenas.
+- **The Ch1 tilt** (camera.rest_by_encounter, 8 deg) was viewed on the interim arena. Re-view it once
+  oruvel_raft_storm's own Undertow stands at its own azimuth.
+
+### 2026-11-03 (later): FAST-TRACKS 1 and 2 viewed and tuned
+**MERGE-READY @ a361f17c1** (FAST-TRACK; checks: gdlint, gdformat, validate_data, taskboard --check, tools test_status_icons, Godot battle_storm 4/0, camera 74/0, battle_status 8/0; skipped: the full suite, Blender (none touched) and baselines (self-rendered instead)).
+- **Status looks:** contact-sheet pass 2 VIEWED (13 statuses re-rendered, plus a stack). Every status now reads on
+  Rhen and on a Scuttler.
+  - The breaks show a cracks pattern in their colour.
+  - Doom shows a red tide; Stop shows blue glass (not stone); Darkness shows a black veil.
+  - The icon rows sit beside the actor marker, flipping side by screen half.
+  - Then Shell's bubble was made smaller and Regen's wash lighter.
+  - M3-BPR-450 is in review (rendering).
+- **Storm fights:** Ch1 (the gulls and the Rising, the scuttlers and Hullgnaw) VIEWED.
+  - The Undertow's dark wall now fills the sky over the boss, with Oruvel's storm grade and rain. The rest frame
+    tilts up 8 deg (new choreo.json camera.rest_by_encounter; BattleCameraDirector.rest_tilt), and the fighters
+    stay clear of the HUD.
+  - A probe at 7 km put the battle inside the storm's 16 km bound (a black wall), so the presets' distances stay.
+- **Ch8 is half done.** Rain, wind, the storm sky and the dim sun are in, but the arenas hide the sky:
+  - on the headland, the backdrop hill (a tilt pushed the party behind the party panel);
+  - on the stair, the wall's merlons.
+  - M3-ENV-1340 asks env-art-b for a sightline. LEAD-ASK: please nudge env-art-b, or let me take the
+    headland arena's camera axis instead.
+- Tests: battle_storm 4/0, camera 74/0, battle_status 8/0.
+
+### 2026-11-03: the human's playtest FAST-TRACKS (Lead session_018aiGwGLGkxsnMnu8VfCu1m; integration -ze8rrn merged @ e2411fb04)
+**FAST-TRACK 1: statuses obvious on the character (M3-BPR-450).** In progress; first cut pushed @ d2543cc20.
+- BattleStatusLooks (game/vfx/battle/battle_status_looks.gd, attached by BattleVfx): every status a fighter holds
+  shows ON it while it lasts: an overlay pattern (status_overlay.gdshader), a looping aura, a prop (Shell's bubble,
+  Protect's rings, Reflect's panes, Silence's muffle band, Provoke's ground crosshair), and its icon beside the head.
+  Doom shows its count. Data: game/data/vfx/battle/status_looks.json; docs/kb/tech/battle_status_looks.md.
+- 21 icons (assets/vfx/battle/status_icons/*.svg, tools/vfx/status_icons.py): circle = beneficial, rounded square =
+  harmful, a glyph per status, a down-arrow tab on the breaks. Colour-blind safe by shape and motion (tested).
+- SELF-RENDERED the contact sheet (tools/vfx/status_look_sheet.tscn; every status on Rhen AND a Scuttler, ch01
+  storm arena, lavapipe 720p), VIEWED. Fixed from it: weak overlays (stronger, with a body-wide floor), Stop looked
+  like stone (now deep-blue glass), Doom invisible on dark bodies (red tide), the breaks invisible on the body (a
+  cracks pattern), oversized Shell/Protect props, icons under the actor marker and off the screen's edge (now beside
+  the marker, flipping side by screen half). Pass 2 rendering now.
+- ui-menus: M3-UI-212 (the icon set and a reads_as line per status for the help panel, tip and codex).
+
+**FAST-TRACK 2: the storm fights show the storm (M3-BPR-451).** First cut pushed.
+- BattleStorm (game/vfx/battle/battle_storm.gd; game/data/vfx/battle/storm_fights.json), battle-side, arena scenes
+  untouched: storm sky (Oruvel's storm grade for Ch1; the arena sky shader overcast for Ch8), a dimmer cool sun, rain
+  streaks and wind spray over the field, and the Undertow (UndertowStorm at its undertow.json preset) in the battle
+  camera's view. No screen flashes (exposure_flash off).
+- **The fights:** Ch1 after the Rising, ch01_scuttlers and ch01_hullgnaw (oruvel_raft_morning: this is the
+  gulls/Rising scene). Ch8: the headland gulls and crabs, the flue moths, the three stair holds, and the Reach.
+  ch06_ridge_gulls is a calm afternoon, so it is left out.
+- The Reach adds no rain: act1_gpu_qa row 72 says its own rain already hides the party.
+- SELF-RENDERED ch01_scuttlers (in the contact sheet): a dark storm sky and rain over the raft. The Ch8 and Hullgnaw
+  rest frames are rendering now.
+- act1-chapters and env-art-b: M3-ENV-1340 (an FYI: confirm the fight list; an optional baked storm grade per arena).
+- audio owns the storm battle music (the Lead's item 4).
+
+**FAST-TRACK 3: the revive VFX.** Waiting on combat-systems' item. The existing Relighting Wick has its own effect.
+
+**Act I rows:**
+- Row 72 (the Reach's rain hides the party): not made worse; the storm layer adds no rain there.
+- Row 70 (faint damage numbers): the theme and DamageNumber are ui-menus'. My 10-31 readability pass found the
+  numbers reading at full size with their 4 px outline. LEAD-ASK / PC-QUEUE: a GPU re-check of row 70; the
+  translucent grey was likely a capture mid-fade.
+
+### PC-QUEUE
+- Row 70: the damage numbers at full alpha on the GPU (float_fade_sheet; lavapipe reads them solid until the fade).
+- The status looks at 1080p on the GPU: strength and readability.
+- The Undertow's cost inside a battle: the frame time and the hitch bar (<= 2 s hidden).
+
+MERGE-READY @ d2543cc20 (FAST-TRACK, first cut): status looks and storm fights.
+- Checks run: gdlint and gdformat on the touched files; validate_data; taskboard --check; the status_icons tools
+  test; Godot `--filter=battle_st` 35/1 (the one failure is test_battle_stings: LFS audio is not in this container)
+  and `--filter=battle_status` 8/0.
+- Checks skipped: the full suite, Blender (no Blender source touched), and screenshot baselines (self-rendered
+  instead).
+
 ### 2026-10-31 ~06:30: the Act II readability pass is DONE (MERGE-READY @ the branch head, 8cf83d11+)
 - **All 14 Act II fights** (Ch10–12 and Ch16 regulars; the Drowner, the Lamp Engine with its crawlers, the Ram and the
   Wakefin) at 1920x1080. Text 1.3 for all of them; 1.0 too for the four Ch10–11 fights.

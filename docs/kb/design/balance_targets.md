@@ -52,7 +52,7 @@ Only `smart` uses items. Its rule: a heal item on the most hurt ally below `heal
 | Column | Meaning |
 |---|---|
 | Win % | Victories ÷ seeds. Loss rate = 100 − win %. Timeouts (more than `max_actions` = 2000 actions) count as misses. |
-| Band | The win band, plus the ease ceiling (`mean_turns_min`) where the suite sets one. A row is OK only if it meets both and p90 turns. |
+| Band | The win band, plus the ease ceiling (`mean_turns_min`) where the suite sets one. A row is OK only if it meets both and p90 turns. A report-only row (no band) is never gated on p90 turns, only on timeouts (M4-A2P-1202): its length is information, not a target. |
 | Mean / p90 turns | Actions taken by both sides, automatic (Berserk/Confuse) turns included, lost Stop/Sleep turns excluded. p90 is nearest-rank. |
 | Party KO | Mean party members down (KO or stone) at the end. |
 | Items | Mean consumables used (the `smart` item rule). |

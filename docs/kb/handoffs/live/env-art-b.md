@@ -1133,6 +1133,16 @@ that test at this branch's zones.
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
 - Carried: M3-RND-26's drop cost, M3-RND-21's four columns under 0.3 ms at High 1440p.
+- **Act I rows to re-check on the GPU (11-03, the Lead's ask).** Each is fixed, merged into -ze8rrn and viewed on lavapipe. big38 (8b546285) predates every fix, so only the PC's next pass can close them:
+  - 62, the day weir's courses: 982d4842. Lavapipe shows little difference, so this is the one most in need of the GPU's eye.
+  - 71, the Spar-Wraith on the derelict: 3bc6e867 is the arena's half; the body is creatures-b's.
+  - 72, the Reach's light and rain: 6b8e416d; the camera is battle-presentation's.
+  - 78, the Ashcrown court's doorway and brazier: 7ddf44d4.
+  - 79, the Ashcrown preview's plume, mound and hands: 07300860, d73f0c89 and 9f8a36f1.
+  - 80, Pemakar's hillside: 6b437b0c, d250de79, 5a6e4596 and 4a82f498.
+  - 81, the Brine camp's seam: 7e7a4d38.
+  - 82, Corrow's storm, flood and lake: ca8ad639 and 9e66085b.
+  - 84, the Coilspire laterite: 211d8bd7.
 
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
@@ -1362,3 +1372,59 @@ SELF-RENDERED @ baf421df: the Lacquer Court from the Barge, Steps and CourtEntry
   - creatures-b's half of 71 (the Spar-Wraith's body);
   - battle-presentation's half of 72 (the camera).
 - **Exact next step for env-art-b:** when M3-C01-1335 lands, self-render `battle_boss_intro_hullgnaw`. Then, by ADR 0205, go back to the Act II and Act III lane (M5-A3P-1500, Ch17's dry-dock) unless a new Act I row appears.
+
+### Act II per ADR 0205 §4 (Lead 17:16): the requests chapters answered (M4-A2P-104, 105, 106)
+- **Act I rows (the Lead's ask):** 62, 71, 72, 78, 79, 80 and 81 are all fixed and merged. They are listed with their shas under `### PC-QUEUE` for the GPU's re-check; big38 predates every fix. None is open for a cloud track.
+- **Ch14, the court after the trap (M4-A2P-044/104), 7d30625f:**
+  - The eight lit lamp-stands and their lights follow chapters' `CeremonyLamps`.
+  - A fallen set follows `CeremonyLampsFallen`: five stands knocked onto their sides and three standing, all out. A dark flame read as a black teardrop, so the flame slot takes the stand's gilt instead.
+  - The step-hold arena keeps the lit set and is byte-identical.
+  - New shot `ch14_court_after`, viewed. Tools test_ch14 7/0, Godot lacquer 2/0.
+- **Ch15, the dawn at the bow (M4-A2P-105), ad225d60:** the `ch15_dawn` variant's `environment_res` is now `open_sea_dawn_environment.tres`.
+  - The grade: grey-rose, fog 0.03, with height fog so the bank lies on the water.
+  - I made a one-line edit in chapters' `ch15_16_greybox.py`; re-running it changes only the open sea layout.
+  - New shot `ch15_open_sea_dawn`, viewed. New test test_ch15_open_sea_dressing; Godot open_sea 2/0, ch14_16 6/0.
+- **Ch16, the Drowned Choir (M4-A2P-046/106), 74cdf970:** dressed over chapters' relayout.
+  - **Found:** the kit's amphitheatre had no gap or aisle, so the approach walked through a solid ceramic wall that only the greybox collision allowed.
+  - **Fix:** a new kit target, `choir_amphitheatre_walked`, with the aisles cut, a flagged causeway at sea level, the north ramp and both bridges. The Haluna kit was rebuilt `--all` in Blender 5.0.1 and every older glb is byte-identical; the manifest takes the one new row.
+  - **Dressing:** fifteen singers on the Mouth blocks facing the dais, the flats, the night water and the moonrise grade.
+  - **Shots:** `ch16_choir_approach` (now through the gap), `_ring` and `_mouth`, viewed.
+  - **Checks:** tools test_ch16_drowned_choir_dressing (new), test_drowned_choir and test_haluna_kit; Godot test_drowned_choir_dressing (new: the walk through the gap and up the aisle to Kesh), dressing 31/0, party_spawns 3/0, placeholder 8/0, ch14_16 6/0.
+- SELF-RENDERED @ 74cdf970: ch14_court_after, ch14_court_ceremony, ch15_open_sea_dawn, ch16_choir_approach, ch16_choir_ring, ch16_choir_mouth (all new or changed, all viewed).
+- **MERGE-READY @ 74cdf970** (everything since 211d8bd7).
+  - **Checks run:** as listed above, plus validate_data, taskboard --check, gdlint and gdformat.
+  - **Checks skipped:** coverage (no battle or progression code); the full tools suite (only the court, open sea, Choir and Haluna kit generators changed, and their tests ran).
+- **Next:**
+  - the Choir's votive rings (spec);
+  - the storm waking over the Choir, once chapters gives it a block or flag;
+  - the Ch14 barge's `wake_target`, once the barge moves (M4-C14-01);
+  - then M5-A3P-1500 (Ch17's dry-dock).
+- **Ch16, the Choir's votive rings (331d2be9):** new kit piece `choir_votive_rings`: nine salt-white ceramic rings, half buried, one in four stacked. They are placed before every other singer, on the sand past the outer face. Built in Blender; the older pieces are byte-identical, and the manifest and PROVENANCE have the new row. New shot `ch16_choir_offerings`, viewed: the rings read under the water at a singer's foot.
+- **Ch16, the storm waking (33c75049):** new arena `drowned_choir_storm` from `storm_arenas.py` (look `ch16_waking`, the Undertow at `ch08_landfall`).
+  - **Found and fixed:** with the storm's sea level at the arena's own sea (−0.25, just under the dais), the storm's sea drew through the dais and the fighters as a black-and-white speckle. Hiding the storm or lowering its sea cleared it, so its sea is set at −1.5, under the arena's water.
+  - **Request M4-A2P-1502 to chapters:** repoint `ch16_storm_wakes`, and add a `Storm` block for the zone's storm.
+  - New shot `battle_arena_drowned_choir_storm`, viewed (rain, soaked flags, the party lit). Godot battle_arena 18/0, storm_arenas 2/0; tools test_b_arenas OK.
+- SELF-RENDERED @ 33c75049: ch16_choir_offerings, ch16_choir_ring, battle_arena_drowned_choir_storm, battle_arena_drowned_choir_ring (unchanged).
+- **MERGE-READY @ 33c75049.**
+- **Next:** M5-A3P-1500 (Ch17's dry-dock and Dace's hull, ADR 0207) while M4-A2P-1502, M3-C01-1335 and M4-C14-01 wait on others.
+- **M5-A3P-1500, Ch17's walk to the dry-dock (bec5e5e0):** chapters' new `Gangway`, `BerthWalk` and `FirstBerthDeck` (M5-A3P-1001) were greybox. With the greybox hidden, the player walked an invisible deck over the water.
+  - Each is now a run of `hm_dock_4m` modules along the block at its own yaw. The gang and berth piles are stilt posts scaled to their 1.7 m tops.
+  - Shots `ch17_hollowmere_gangway` and `_berth_walk`, viewed.
+  - **Checks:** tools test_ch15_hollowmere_dressing 10/0 (new Ch17WalkTests); Godot hollowmere 2/0, ch14_16 6/0, ch17 3/0, ambient_life 3/0; validate_data.
+- SELF-RENDERED @ bec5e5e0: ch17_hollowmere_gangway, ch17_hollowmere_berth_walk (new, viewed).
+- **MERGE-READY @ bec5e5e0.**
+- **Waiting on others:**
+  - M3-C01-1335: the Ch1 fights onto `oruvel_raft_storm`;
+  - M4-A2P-1502: Ch16's storm fight and its Storm block;
+  - M4-C14-01: the Ch14 barge's `wake_target`;
+  - the Ch17 beats' `environment_res` rows.
+- **Mine, next:** the hull's hatch ramp (deck to cabin; boarding is by `place` until then). It needs a walk-collision ramp in the zone, through chapters' `ramps` or a `collision_path` file of mine. I'll write the collision file next session unless chapters prefers a layout ramp.
+
+### Lead 18:04 (big47's gate notes): Ch1's storm arena is env-art's; one Undertow per fight
+- **Merged `lead/gate-big47` @ 74df3bdb.**
+  - Conflicts resolved: PROVENANCE keeps env-art's `oruvel_raft_storm` row plus my new rows. Ownership takes both new rows from big47, and my storm row no longer claims Ch1. In `arenas.json`, `drowned_choir_storm`'s scenes row points at its own built scene and moves from `storm.pending` to `storm.arenas`, so `pending` is empty.
+- **`tools/act1/storm_arenas.py` no longer writes `oruvel_raft_storm`.** The scene in the tree is env-art's (big47's, untouched). `test_b_arenas` and `test_storm_arenas` no longer list it.
+- **One Undertow per fight:** battle-presentation's equivalent of a `has_undertow` flag is the storm table's `storm.arenas` together with the arena's own `Undertow` node (BattleStorm.arena_undertow). Every storm arena of mine has both, and its rain amount is above 0, so BattleStorm adds neither a vortex nor rain.
+- **Checks:** Godot `--filter=storm` 41/0 (includes test_battle_storm's one-Undertow test and test_storm_encounters), battle_arena 20/0; tools test_b_arenas and test_arenas OK; validate_data, taskboard, gdlint/gdformat.
+- M3-ENV-1253 (the Choir's half) and M3-ENV-1341 are at review. M4-A2P-1502's first ask is already met by the storm table.
+- **MERGE-READY @ 74df3bdb** for big48 (everything since 211d8bd7, the Act II and Ch17 work included).

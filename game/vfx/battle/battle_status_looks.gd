@@ -24,6 +24,7 @@ const PATTERNS := {
 	"flicker": 4,
 	"hatch": 5,
 	"frost": 6,
+	"cracks": 7,
 }
 ## The height fractions an aura or a prop sits at (effects.json anchor_heights' keys).
 const VISIBILITY_HALF_M := 2.5
@@ -32,6 +33,8 @@ const RINGS := 3
 ## Protect's rings: knee, waist and chest, as fractions of the body's height.
 const RING_HEIGHTS: Array[float] = [0.25, 0.5, 0.75]
 const DOOM := &"doom"
+## An icon's (or Doom count's) place in its fighter's row.
+const SLOT_META := &"status_slot"
 
 static var _data_cache: Dictionary = {}
 
@@ -53,6 +56,9 @@ var _textures: Dictionary = {}
 var _draw_mesh: QuadMesh
 var _spinners: Array[Node3D] = []
 var _spin_rates: Array[float] = []
+## cid -> the row's layout {beside, first, step, tex, head_y}; cid -> the side it is on now (1 right, -1 left).
+var _rows: Dictionary = {}
+var _side: Dictionary = {}
 
 
 static func load_data() -> Dictionary:
@@ -170,6 +176,8 @@ func clear_all() -> void:
 		_restore_overlay(cid)
 	_overlay_of.clear()
 	shown.clear()
+	_rows.clear()
+	_side.clear()
 
 
 func _process(delta: float) -> void:
@@ -179,6 +187,38 @@ func _process(delta: float) -> void:
 		var n := _spinners[i]
 		if is_instance_valid(n):
 			n.rotation.y += deg_to_rad(_spin_rates[i]) * delta * k
+	_place_rows()
+
+
+## A row beside the head runs right of the actor marker, or left of it for a fighter on the screen's right half, so
+## it never leaves the screen at the frame's edge.
+func _place_rows() -> void:
+	var cam := get_viewport().get_camera_3d() if is_inside_tree() else null
+	if cam == null or _ctl == null:
+		return
+	var half := get_viewport().get_visible_rect().size.x * 0.5
+	for cid: StringName in _rows:
+		var row := _rows[cid] as Dictionary
+		if not bool(row["beside"]) or not _ctl.stage.has_fighter(cid):
+			continue
+		var f := _ctl.stage.stand_in(cid)
+		var head := f.global_position + Vector3.UP * float(row["head_y"])
+		if cam.is_position_behind(head):
+			continue
+		var side := -1 if cam.unproject_position(head).x > half else 1
+		if int(_side.get(cid, 0)) == side:
+			continue
+		_side[cid] = side
+		var first := float(row["first"])
+		var step := float(row["step"])
+		var tex := float(row["tex"])
+		for root: Variant in (_parts.get(cid, {}) as Dictionary).values():
+			var icon := (root as Node3D).get_node_or_null(^"Icon") as Sprite3D
+			if icon != null and icon.has_meta(SLOT_META):
+				icon.offset.x = side * (first + float(icon.get_meta(SLOT_META)) * step)
+			var count := (root as Node3D).get_node_or_null(^"Count") as Label3D
+			if count != null and count.has_meta(SLOT_META):
+				count.offset.x = side * (first + float(count.get_meta(SLOT_META)) * step) + tex * 0.42
 
 
 func _holder(f: FighterStandIn) -> Node3D:
@@ -329,7 +369,10 @@ func _prop(pr: Dictionary, height: float, hover: float, body_radius: float) -> N
 	root.name = "Prop"
 	var kind := str(pr.get("kind", ""))
 	var at := _height_at(str(pr.get("at", "chest")), height, hover)
-	var r := maxf(float(pr.get("radius_m", body_radius * 1.4)), body_radius * 1.25)
+	var r := maxf(
+		float(pr.get("radius_m", body_radius * 1.4)),
+		body_radius * (0.7 if kind == "ring" else (0.95 if kind == "rings" else 1.25))
+	)
 	var spin := float(pr.get("spin_deg_s", 0.0))
 	match kind:
 		"ring", "ground_mark":
@@ -359,7 +402,7 @@ func _prop(pr: Dictionary, height: float, hover: float, body_radius: float) -> N
 					tick.rotation.y = ang
 					root.add_child(tick)
 			else:
-				r = maxf(r, body_radius * 1.1)
+				r = maxf(r, body_radius * 0.7)
 		"sphere":
 			var s := SphereMesh.new()
 			var sr := maxf(height * 0.5, body_radius) * float(pr.get("radius_scale", 1.15))
@@ -454,14 +497,16 @@ func _count_label(_sid: StringName) -> Label3D:
 	return l
 
 
-## The icons in one row over the head (or the feet of a tall body), centred, statuses.json order; at most max_shown.
+## The icons in one row, statuses.json order, at most max_shown: over the head, starting beside_px right of the head
+## point so the actor marker (head + 0.3 m) stays clear; over the feet of a tall body, centred.
 func _layout_icons(c: BattleCombatant, f: FighterStandIn, ids: Array[StringName]) -> void:
 	var cfg := data.get("icons", {}) as Dictionary
 	var per := _parts.get(c.id, {}) as Dictionary
 	var height := float(f.spec.get("height", 1.7))
 	var hover := float(f.spec.get("hover", 0.0))
 	var y := hover + height + float(cfg.get("lift_m", 0.3))
-	if height > float(cfg.get("feet_over_height_m", INF)):
+	var feet := height > float(cfg.get("feet_over_height_m", INF))
+	if feet:
 		y = hover + float(cfg.get("lift_m", 0.3)) * 0.5
 	var tex_px := 128.0
 	var step := tex_px + float(cfg.get("gap_px", 8))
@@ -469,6 +514,9 @@ func _layout_icons(c: BattleCombatant, f: FighterStandIn, ids: Array[StringName]
 	for sid in ids:
 		if shown_ids.size() < int(cfg.get("max_shown", 5)):
 			shown_ids.append(sid)
+	var first := -float(shown_ids.size() - 1) * 0.5 * step
+	if not feet:
+		first = float(cfg.get("beside_px", 0.0)) + tex_px * 0.5
 	for sid in ids:
 		var root := per.get(sid) as Node3D
 		if root == null:
@@ -480,13 +528,17 @@ func _layout_icons(c: BattleCombatant, f: FighterStandIn, ids: Array[StringName]
 			if icon.texture != null:
 				tex_px = float(icon.texture.get_width())
 			icon.position = Vector3(0.0, y - root.position.y, 0.0)
-			icon.offset = Vector2((float(i) - float(shown_ids.size() - 1) * 0.5) * step, 0.0)
+			icon.offset = Vector2(first + float(i) * step, 0.0)
+			icon.set_meta(SLOT_META, i)
 		var count := root.get_node_or_null(^"Count") as Label3D
 		if count != null:
 			count.visible = i >= 0
 			count.text = str(c.doom_count()) if sid == DOOM else str(int(c.statuses.get(sid, 0)))
 			count.position = Vector3(0.0, y - root.position.y, 0.0)
-			count.offset = Vector2((float(i) - float(shown_ids.size() - 1) * 0.5) * step + tex_px * 0.42, -tex_px * 0.3)
+			count.offset = Vector2(first + float(i) * step + tex_px * 0.42, -tex_px * 0.3)
+			count.set_meta(SLOT_META, i)
+	_rows[c.id] = {"beside": not feet, "first": first, "step": step, "tex": tex_px, "head_y": y}
+	_side.erase(c.id)  # placed on the next frame (_place_rows)
 
 
 ## The overlay on every surface of the fighter (not the target ring, not our own parts), or our overlay off.

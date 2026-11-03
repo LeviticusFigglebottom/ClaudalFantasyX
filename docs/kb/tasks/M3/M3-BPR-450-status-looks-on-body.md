@@ -2,7 +2,7 @@
 id: M3-BPR-450
 title: "FAST-TRACK: every status is obvious on the character (on-body look and an icon over the head)"
 role: combat
-status: doing
+status: review
 owner_session: claude/battle-presentation
 depends_on: [M3-BPR-424]
 milestone: M3
@@ -22,7 +22,8 @@ tall body) for as long as it lasts.
 - [x] 21 icons, assets/vfx/battle/status_icons/*.svg from tools/vfx/status_icons.py (circle = beneficial, rounded
       square = harmful, a glyph per status, a down-arrow tab on the breaks).
 - [x] tests/unit/test_battle_status_looks.gd.
-- [ ] Contact sheet (tools/vfx/status_look_sheet.tscn) of every status on a hero and a foe, viewed.
+- [x] Contact sheet (tools/vfx/status_look_sheet.tscn) of every status on a hero and a foe, viewed (two passes,
+      tuned from each).
 - [ ] PC-QUEUE: the looks on the GPU at 1080p.
 
 ## Notes

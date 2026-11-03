@@ -108,13 +108,16 @@ func call_vowbound(engine: BattleEngine) -> bool:
 
 
 ## M3-CMB-01: of the Vowbound `ids` the actor may call, the first whose finisher clears a field that
-## is up (Virel's Flare Line for storm_dark, Ilun's Floodnet for the flood), else the first.
+## is up (Virel's Flare Line for storm_dark, Ilun's Floodnet for the flood), else the strongest.
+## M4-A2P-1202: the strongest is the latest bound, the last of `ids` (vowbound.json lists them in the
+## order the story binds them, and each is stronger than the last), so a masher with six Vowbound no
+## longer re-calls Ilun all fight.
 static func field_answer(engine: BattleEngine, ids: Array[StringName]) -> StringName:
 	for vid in ids:
 		var sk := engine.db.skill(engine.vowbound.finisher_of(vid))
 		if engine.fields.has(StringName(str(sk.get("clears_field", "")))):
 			return vid
-	return ids[0]
+	return ids[ids.size() - 1]
 
 
 func _swell_targets(engine: BattleEngine, actor: BattleCombatant, tid: StringName) -> Array[BattleCombatant]:

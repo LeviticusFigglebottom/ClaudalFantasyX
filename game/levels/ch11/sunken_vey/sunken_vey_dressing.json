@@ -640,6 +640,150 @@
    "yaw_deg": 0.0
   },
   {
+   "piece": "tide_debris",
+   "at": [
+    59.576,
+    -25.306
+   ],
+   "y": -0.25,
+   "yaw_deg": 290.903,
+   "drift": {
+    "bob_m": 0.04,
+    "period_s": 6.5,
+    "tilt_deg": 2.5,
+    "wander_m": 0.8,
+    "wander_s": 90.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    39.5,
+    -7.36
+   ],
+   "y": -0.25,
+   "yaw_deg": 17.531,
+   "drift": {
+    "bob_m": 0.04,
+    "period_s": 6.5,
+    "tilt_deg": 2.5,
+    "wander_m": 0.8,
+    "wander_s": 90.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    91.24,
+    -11.8
+   ],
+   "y": -0.25,
+   "yaw_deg": 350.106,
+   "drift": {
+    "bob_m": 0.04,
+    "period_s": 6.5,
+    "tilt_deg": 2.5,
+    "wander_m": 0.8,
+    "wander_s": 90.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    33.8,
+    -44.72
+   ],
+   "y": -0.25,
+   "yaw_deg": 58.997,
+   "drift": {
+    "bob_m": 0.04,
+    "period_s": 6.5,
+    "tilt_deg": 2.5,
+    "wander_m": 0.8,
+    "wander_s": 90.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    44.5,
+    -44.72
+   ],
+   "y": -0.25,
+   "yaw_deg": 105.028,
+   "drift": {
+    "bob_m": 0.04,
+    "period_s": 6.5,
+    "tilt_deg": 2.5,
+    "wander_m": 0.8,
+    "wander_s": 90.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    75.88,
+    -22.5
+   ],
+   "y": -0.25,
+   "yaw_deg": 323.574,
+   "drift": {
+    "bob_m": 0.04,
+    "period_s": 6.5,
+    "tilt_deg": 2.5,
+    "wander_m": 0.8,
+    "wander_s": 90.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    70.76,
+    -11.8
+   ],
+   "y": -0.25,
+   "yaw_deg": 24.025,
+   "drift": {
+    "bob_m": 0.04,
+    "period_s": 6.5,
+    "tilt_deg": 2.5,
+    "wander_m": 0.8,
+    "wander_s": 90.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    23.677,
+    -9.257
+   ],
+   "y": -0.25,
+   "yaw_deg": 312.573,
+   "drift": {
+    "bob_m": 0.04,
+    "period_s": 6.5,
+    "tilt_deg": 2.5,
+    "wander_m": 0.8,
+    "wander_s": 90.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    25.759,
+    5.304
+   ],
+   "y": -0.25,
+   "yaw_deg": 316.793,
+   "drift": {
+    "bob_m": 0.04,
+    "period_s": 6.5,
+    "tilt_deg": 2.5,
+    "wander_m": 0.8,
+    "wander_s": 90.0
+   }
+  },
+  {
    "piece": "strangler_fig",
    "at": [
     14.45,

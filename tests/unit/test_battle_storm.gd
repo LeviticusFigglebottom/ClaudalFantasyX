@@ -7,6 +7,8 @@ extends TestCase
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const PALETTE := "res://docs/kb/art/palette.json"
 const UNDERTOW := "res://game/data/vfx/undertow.json"
+## The sim suites' party per fight (tools/balance/targets.json), as the sweep tools use.
+const SWEEP := preload("res://tools/vfx/encounter_sweep.gd")
 
 
 func test_data_names_real_fights_presets_and_swatches() -> void:
@@ -27,23 +29,66 @@ func test_data_names_real_fights_presets_and_swatches() -> void:
 			var row := look.get(part, {}) as Dictionary
 			if row.has("color"):
 				assert_eq(str(row["color"]), str((swatches[row["swatch"]] as Dictionary)["hex"]).to_upper(), id)
-	for enc in ["ch01_scuttlers", "ch01_hullgnaw", "ch08_headland_gulls", "ch08_stair_hold_1", "undertows_reach"]:
+	for enc in ["ch01_scuttlers", "ch01_hullgnaw", "ch08_stair_hold_1", "undertows_reach", "ch16_storm_wakes"]:
 		assert_ne(BattleStorm.look_for(StringName(enc)), &"", "%s is a storm fight" % enc)
 	assert_eq(BattleStorm.look_for(&"ch01_wickfry"), &"", "the Underway is calm")
+	for enc in ["ch08_headland_gulls", "ch08_headland_crabs", "ch08_flue_moths"]:  # before the storm (B05 < B07)
+		assert_eq(BattleStorm.look_for(StringName(enc)), &"", "%s is fought before the storm" % enc)
 
 
 func test_a_storm_fight_shows_rain_wind_and_the_undertow_in_view() -> void:
-	var ctl := _battle(&"ch08_headland_gulls", [&"rhen", &"asha", &"toma"] as Array[StringName])
+	var ctl := _battle(&"ch01_scuttlers", [&"rhen"] as Array[StringName])
 	var storm := ctl.stage.get_node_or_null(^"BattleStorm") as BattleStorm
-	assert_true(storm != null, "the headland fight is a storm fight")
-	assert_true(storm.rain != null and storm.rain.emitting, "rain")
+	assert_true(storm != null, "the scuttlers are fought in the storm")
+	var u := storm.undertow if storm.undertow != null else storm.arena_storm  # ours, or the storm arena's own
+	assert_true(u != null, "the Undertow stands in the background")
+	if u == null:
+		ctl.get_parent().remove_child(ctl)
+		ctl.free()
+		return
+	var arena_rains := storm.arena_storm != null and storm.arena_storm.rain_amount != 0.0
+	assert_true(arena_rains or (storm.rain != null and storm.rain.emitting), "rain (the arena's or ours)")
 	assert_true(storm.wind != null and storm.wind.emitting, "wind")
-	assert_true(storm.undertow != null, "the Undertow stands in the background")
+	if storm.arena_storm != null:  # the arena places its own storm; ours is aimed into the frame (below)
+		ctl.get_parent().remove_child(ctl)
+		ctl.free()
+		return
 	var to_storm := storm.undertow.storm_center() - ctl.stage.camera.global_position
 	var fwd := -ctl.stage.choreo.camera.default_transform.basis.z
 	var flat := Vector2(to_storm.x, to_storm.z).normalized().dot(Vector2(fwd.x, fwd.z).normalized())
 	assert_true(flat > cos(deg_to_rad(40.0)), "it stands in front of the battle camera (%.2f)" % flat)
 	assert_false(storm.undertow.exposure_flash, "no screen flashes (battle flash safety)")
+	ctl.get_parent().remove_child(ctl)
+	ctl.free()
+
+
+## The Lead (11-03, big47): ONE Undertow per fight. Every storm fight draws exactly one: the arena's, or ours.
+func test_no_storm_fight_draws_two_undertows() -> void:
+	for enc: String in BattleStorm.load_data()["fights"]:
+		var party: Array[StringName] = []
+		party.assign(SWEEP.party_for(StringName(enc))[0])
+		var ctl := _battle(StringName(enc), party)
+		assert_eq(BattleStorm.undertows_in(ctl), 1, "%s draws one Undertow" % enc)
+		ctl.get_parent().remove_child(ctl)
+		ctl.free()
+
+
+## A storm arena with its own Undertow owns the vortex and the sky: ours adds wind and no second storm.
+func test_an_arena_undertow_is_never_doubled() -> void:
+	var ctl := _battle(&"ch01_hullgnaw", [&"rhen"] as Array[StringName])
+	var own := BattleStorm.arena_undertow(ctl)
+	if own == null:  # an interim arena (arenas.json storm.pending): stand one in, as a storm arena has
+		own = UndertowStorm.new()
+		own.name = "Undertow"
+		own.preset = "ch01_arrival"
+		ctl.get_node(NodePath(String(BattleArena.ARENA_NODE))).add_child(own)
+	own.rain_amount = 0.5
+	var storm := BattleStorm.attached_if_storm(ctl, ctl.engine)
+	assert_true(storm.undertow == null, "no Undertow of ours")
+	assert_eq(storm.arena_storm, own, "the arena's is the one")
+	assert_true(storm.rain == null, "the arena's storm brings the rain")
+	assert_true(storm.wind != null, "the wind is ours")
+	assert_eq(BattleStorm.undertows_in(ctl), 1, "one Undertow")
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()
 
@@ -65,3 +110,19 @@ func _battle(enc: StringName, party: Array[StringName]) -> BattleController:
 	(tree.current_scene if tree.current_scene != null else tree.root).add_child(ctl)
 	ctl.start_battle(party, [] as Array[StringName], enc, 7)
 	return ctl
+
+
+## The storm fights' rest frame tilts up (choreo.json camera.rest_by_encounter) so the sky with the Undertow is in it.
+func test_a_storm_fight_rest_frame_tilts_up_to_the_sky() -> void:
+	var cam := BattleChoreo.load_data().get("camera", {}) as Dictionary
+	var xf := Transform3D(Basis.looking_at(Vector3(0.0, -0.5, -1.0), Vector3.UP), Vector3(0.0, 3.0, 8.0))
+	var tilted := BattleCameraDirector.rest_tilt(cam, xf, &"ch01_hullgnaw")
+	assert_true((-tilted.basis.z).y > (-xf.basis.z).y, "it looks higher")
+	assert_eq(tilted.origin, xf.origin, "from the same place")
+	assert_eq(BattleCameraDirector.rest_tilt(cam, xf, &"ch01_wickfry"), xf, "a calm fight keeps its frame")
+	for enc: String in BattleStorm.load_data()["fights"]:
+		if enc.begins_with("ch01"):  # Ch8's arenas hide the sky (the headland hill, the wall): M3-ENV-1340
+			assert_true(
+				((cam.get("rest_by_encounter", {}) as Dictionary).get(enc, {}) as Dictionary).has("tilt_up_deg"),
+				"%s tilts up to its storm" % enc
+			)

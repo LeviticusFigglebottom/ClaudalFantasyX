@@ -22,6 +22,7 @@ var change_scene: Callable = Callable()
 var set_flag: Callable = Callable()
 
 var _black: ColorRect
+var _band: ColorRect
 var _column: Control
 var _hint: Label
 var _labels: Array[Label] = []
@@ -104,6 +105,8 @@ func _apply() -> void:
 	var a := model.alpha()
 	_column.modulate.a = a
 	_hint.modulate.a = a
+	if _band != null:
+		_band.modulate.a = a
 	# The black stays through the lead-in and the end; only a vignette lets the scene behind show.
 	_black.color.a = a if model.phase == CreditsRollModel.Phase.VIGNETTE else 1.0
 
@@ -156,7 +159,8 @@ func _build() -> void:
 		var title: bool = row["kind"] == &"title"
 		var h := float(col.get("title_height" if title else "line_height", 0.0))
 		var l := Label.new()
-		l.theme_type_variation = &"TitleLabel" if title else &"BodyLabel"
+		var notice := bool(row.get("notice", false))
+		l.theme_type_variation = &"TitleLabel" if title else (&"SmallLabel" if notice else &"BodyLabel")
 		l.text = tr(str(row["key"]))
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -166,6 +170,8 @@ func _build() -> void:
 		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_column.add_child(l)
 		_labels.append(l)
+		h = maxf(h, l.get_minimum_size().y)  # a long line (a licence paragraph) wraps and takes its own height
+		l.size.y = h
 		y += h
 	_height = y
 	_hint = Label.new()
@@ -179,4 +185,12 @@ func _build() -> void:
 	for k in keys:
 		parts.append(InputNames.fill(tr(k)))
 	_hint.text = " · ".join(parts)
+	# A black band under the hint: the climbing lines pass beneath it, never through it (dense licence text did).
+	_band = ColorRect.new()
+	_band.color = Color(0, 0, 0, 1)
+	_band.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var hr := HudLayout.rect_of(model.data.get("hint", {}) as Dictionary)
+	var pad := float((model.data.get("hint", {}) as Dictionary).get("band_pad", 0.0))
+	HudLayout.place_rect(_band, Rect2(0.0, hr.position.y - pad, UiFrame.reference_size().x, 1080.0), Vector2(0.5, 1.0))
+	add_child(_band)
 	add_child(_hint)

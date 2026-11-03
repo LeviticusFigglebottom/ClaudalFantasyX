@@ -95,6 +95,44 @@ VEY_ARCADES = [
 ]
 
 
+# M4-A2P-1501 (env-art-b's ambient-life request): flotsam adrift on the Vey's flooded lanes, beside the walks and out of
+# reach, as Hollowmere's (ch15_hollowmere_dressing DEBRIS_*). No flicker anywhere in Ch11: every light here is bound
+# (the Engine's trimmed lamps, the conduits, the well's upwelling: lowlight.md §0, colour script rule 2) or daylight.
+DEBRIS_DRIFT = {"bob_m": 0.04, "period_s": 6.5, "tilt_deg": 2.5, "wander_m": 0.8, "wander_s": 90.0}
+DEBRIS_FLOAT_Y = 0.05  # tide_debris's planks sit 0.2 m under its origin
+DEBRIS_OFF_WALK_M = (4.2, 6.5)  # off a walk's centre line: past its rail (1.8 m) and the hero's reach
+DEBRIS_CLEAR_M = 0.8  # clear of every greybox block (walks, rails, pillars, walls) by this
+DEBRIS_ARCADE_CLEAR_M = 4.5  # and of the drowned arcades' centres
+DEBRIS_COUNT = 9
+
+
+def _vey_debris(lay: dict, rng: random.Random) -> list[dict]:
+    """A few planks adrift either side of the gallery walks, each clear of the greybox and the arcades."""
+    walks = [b for b in lay["blocks"] if b["id"].startswith("Gallery") and "Rail" not in b["id"]
+             and "Pillar" not in b["id"] and b["size"][2] == 3.6]
+    spots = []
+    for b in walks:
+        yaw = float(b.get("yaw", 0.0))
+        for t in (-0.4, -0.2, 0.0, 0.2, 0.4):
+            for side in (-1.0, 1.0):
+                for off in DEBRIS_OFF_WALK_M:
+                    dx, dz = _rot(t * b["size"][0], side * off, yaw)
+                    spots.append((b["pos"][0] + dx, b["pos"][2] + dz))
+    rng.shuffle(spots)
+    out: list[dict] = []
+    for x, z in spots:
+        if len(out) >= DEBRIS_COUNT:
+            break
+        if not _footprint_clear(lay, x, z, 0.0, (0.9, 0.9), DEBRIS_CLEAR_M):
+            continue
+        if any(math.hypot(x - ax, z - az) < DEBRIS_ARCADE_CLEAR_M for ax, az, _y, _f in VEY_ARCADES):
+            continue
+        if any(math.hypot(x - o["at"][0], z - o["at"][1]) < 6.0 for o in out):
+            continue
+        out.append(_put("tide_debris", x, DATUM_Y + DEBRIS_FLOAT_Y, z, rng.uniform(0, 360), drift=dict(DEBRIS_DRIFT)))
+    return out
+
+
 def vey() -> dict:
     lay = _layout("sunken_vey")
     bl = {b["id"]: b for b in lay["blocks"]}
@@ -120,6 +158,7 @@ def vey() -> dict:
     figs.append(_put("strangler_fig", fg["pos"][0], DATUM_Y, fg["pos"][2] + 0.1, 25.0, scale=1.15))
     figs.append(_put("strangler_fig", fg["pos"][0] - ARCADE_PIER_X, DATUM_Y, -59.2, 140.0, scale=1.3))
     pieces.append(_put("ruin_wall_sunk", fg["pos"][0], -1.6, fg["pos"][2] - 0.9, 0.0))
+    pieces += _vey_debris(lay, random.Random(SEED + 15))
     # Figs on a few of the columns too (the host broke; the roots held on and grew over the break).
     for b in lay["blocks"]:
         if "Pillar" in b["id"] and b["id"] in ("GalleryIn1PillarR1", "GallerySidePillarL2", "GalleryOut0PillarR2",

@@ -164,3 +164,20 @@ MAGIC_MENU_COUNT_NONE,None
 STATUS_HELP_LASTS_DOOM_FMT,"Counts down from {turns}, one for each of their turns. It does not wear off."
 MAGIC_MENU_ERR_PETRIFIED_FMT,{name} is stone. {spell} cannot reach them.
 MAGIC_MENU_ERR_WOULD_HURT_FMT,"{name} is Hollowed: {spell} would hurt them, not heal them."
+CREDITS_ROLL_MADE_BY_TITLE,Made by
+CREDITS_ROLL_ORIGINAL_TITLE,Made for This Game
+CREDITS_ROLL_ART,"Original art: every model, texture, animation and sound effect, made for this game."
+CREDITS_ROLL_CODE,"Original code, written for this game."
+CREDITS_ROLL_GODOT_TITLE,Engine
+CREDITS_ROLL_GODOT_MADE,Made with Godot Engine (godotengine.org)
+CREDITS_ROLL_GODOT_LICENCE_TITLE,Godot Engine Licence (MIT)
+CREDITS_ROLL_GODOT_COPYRIGHT_1,Copyright (c) 2014-present Godot Engine contributors.
+CREDITS_ROLL_GODOT_COPYRIGHT_2,"Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur."
+CREDITS_ROLL_MIT_GRANT,"Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the ""Software""), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:"
+CREDITS_ROLL_MIT_NOTICE,The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+CREDITS_ROLL_MIT_WARRANTY,"THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+CREDITS_ROLL_FREETYPE,Portions of this software are copyright (c) The FreeType Project (www.freetype.org). All rights reserved.
+CREDITS_ROLL_FONTS_TITLE,Fonts
+CREDITS_ROLL_FONT_GARAMOND,EB Garamond: Copyright 2010-2012 Georg Duffner (www.georgduffner.at).
+CREDITS_ROLL_FONT_SOURCE,"Source Sans 3: Copyright 2010-2021, 2023 Adobe (www.adobe.com), with Reserved Font Name 'Source'."
+CREDITS_ROLL_OFL,"Both are licensed under the SIL Open Font License, Version 1.1 (openfontlicense.org)."

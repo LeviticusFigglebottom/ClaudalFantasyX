@@ -589,6 +589,33 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+### 2026-11-03, Act II (ADR 0205 §4: env-art has no open Act I row)
+- **LEAD-ANSWERED:** the Lead's 17:16 message asked for rows 24/47/77/86/90. They were already logged below
+  (MERGE-READY @ 52bf4c11) and stay as written: 24, 47, 77 and 86 (my part) are fixed; 90 is in PC-QUEUE.
+- **MERGE-READY @ ad228e53: M4-A2P-115 and M4-A2P-1501**, both env-art-b's requests, both to review (env-art-b).
+  - **M4-A2P-115, Quellan at eye height.** One kit bug caused all three issues. `keth_zones.zone_height` raised the
+    road-up walls' crag behind them without limit, so everything west and east of the road became a 19–21 m mesa:
+    the sheer, "pixelated" face beside the gate, rock round the FromCloudloom spawn, and the terrace in a pit.
+    - The fix, in per-zone tables: the road walls' crag is banded to 10 m and follows the road with a 0.9 m
+      shoulder, and the mountainside behind the terrace is notched round the road.
+    - The yards are flagged (new piece `quellan_yards`) and every house stands on a footing.
+    - Viewed in walk stills of env-art-b's 12 views: the road top opens over the town, west of the gate is a parapet
+      over the valley, and the square is flagged round footed houses.
+    - Keth Pass and Cloudloom grounds rebuilt byte-identical; quellan_town too.
+  - **M4-A2P-1501, Ch11 flicker and drift.**
+    - No flicker: Ch11 has no open flame (every light is bound teal or shaft daylight; lowlight.md §0).
+    - Nine `tide_debris` pieces adrift on the Vey's lanes (Hollowmere's drift). Viewed.
+  - **Checks run:**
+    - Tools: test_ch12_keth_dressing, test_keth, test_ch11_lowlight_dressing OK.
+    - Godot `--filter`: ch12 5/0, import 20/1.
+    - validate_data, taskboard, gdlint/gdformat (no GDScript changed).
+  - **The import red isn't mine.** `test_every_glb_import_runs_its_category_script` fails on integration's own
+    files: `assets/cutscene/ch01/oruvel_seabed.glb.import` (M3-CIN-1232, cinematics) and
+    `assets/characters/props/act3/{stylus,watch_roll}.glb.import` (M5-A3P-1982, characters).
+    **LEAD-ASK:** route those two to cinematics and characters.
+  - **Baselines that move (none written):** the Quellan shots, if any frame the yards or the hills; ch11 Vey shots
+    framing the lanes' flotsam.
+
 ### 2026-11-03 (Lead session_018aiGwGLGkxsnMnu8VfCu1m; integration -ze8rrn @ e2411fb0, fast-forwarded in)
 - **MERGE-READY @ 52bf4c11:** PC rows 24, 47, 77, 86 (my part), 90 (findings), and FAST-TRACK 4's Ch1 storm arena.
   - **Checks run:**

@@ -55,6 +55,25 @@ class EaseCeilingTest(unittest.TestCase):
 
 
 
+class P90CapTest(unittest.TestCase):
+    """M4-A2P-1202: p90_turns_max gates banded policies; a report-only row is reported, not gated."""
+
+    SUITE = dict(SUITE, bands={"naive": [5, 15], "naive_swell": None})
+
+    def row(self, r: dict) -> dict:
+        return sim.summary_rows(self.SUITE, [r])[0]
+
+    def test_a_banded_row_over_the_cap_fails(self):
+        self.assertFalse(self.row(result("naive", 10.0, 30.0, p90=41))["in_band"])
+        self.assertTrue(self.row(result("naive", 10.0, 30.0, p90=40))["in_band"])
+
+    def test_a_report_only_row_over_the_cap_still_passes(self):
+        self.assertTrue(self.row(result("naive_swell", 30.0, 60.0, p90=91))["in_band"])
+
+    def test_a_report_only_row_that_times_out_still_fails(self):
+        self.assertFalse(self.row(dict(result("naive_swell", 30.0, 60.0, p90=91), timeouts=1))["in_band"])
+
+
 class SwellColumnTest(unittest.TestCase):
     """M2-CMB-01: a suite's Swell quality, the --swell override and the report's Swell columns."""
 

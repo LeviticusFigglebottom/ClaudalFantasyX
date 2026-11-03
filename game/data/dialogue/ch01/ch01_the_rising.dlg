@@ -1,6 +1,8 @@
 // Ch1 C1-12 "Cutscene: the Rising", and the start of C1-13. O11: the far horizon under a clear blue
 // sky; the sea draws back off the outer reef; the Undertow stands up out of the sea, a wall of dark
 // water and cloud lit from within by cyan wounds, into a sky that stays blue (preset ch01_arrival).
+// O11E (FAST-TRACK, the 11-03 playtest: show the vortex itself): the cut to the storm's eye from high
+// above, the maelstrom turning and a bolt striking (@storm view), then back to the horizon for Rhen's line.
 // O12: the town's drill, as old as the town, practised and fast, and frightening because it's
 // practised; Kell on her stall's roof lights the big beacon lamp so divers in the water can find the
 // keel-hull (her job in the drill). O13: the Seventh Terrace casting off for open water under full
@@ -18,7 +20,12 @@ location: ch01/oruvel
 @wait 2.0
 @sfx undertow_wall_roar
 @music undertow_rising fade=1.0
-@wait 3.0
+@wait 1.5
+@camera O11E
+@storm view
+@wait 4.5
+@camera O11
+@storm off
 Rhen [afraid]: The reef's showing. #line:ch01_rising_001
 @wait 2.0
 @camera O12

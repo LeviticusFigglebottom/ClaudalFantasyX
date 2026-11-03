@@ -110,6 +110,28 @@ class OpenSeaTests(unittest.TestCase):
         self.assertNotIn("fire_lights", d, "no warm source anywhere")
 
 
+
+class Ch17WalkTests(unittest.TestCase):
+    def test_the_walk_to_the_dry_dock_is_decked(self) -> None:
+        """M5-A3P-1500: the Act III chapters' gangway, berth walk and first berth deck carry dock modules end to end
+        (the greybox hides, its collision stays), and their piles stand where the greybox put them."""
+        import math  # noqa: PLC0415
+
+        b = GEN.blocks()
+        rows = GEN.walk_rows(b)
+        for k in GEN.WALK_BLOCKS:
+            v = b[k]
+            mine = [r for r in rows if abs(r["yaw_deg"] - round(v.get("yaw", 0.0), 3)) < 1e-6
+                    and math.hypot(r["at"][0] - v["pos"][0], r["at"][1] - v["pos"][2]) <= v["size"][0] * 0.5]
+            self.assertGreaterEqual(len(mine), 1, k)
+            covered = sum(r["scale"] * GEN.DOCK_MODULE_M for r in mine)
+            self.assertAlmostEqual(covered, v["size"][0], delta=0.05, msg=f"{k} decked end to end")
+        posts = {tuple(p["at"]) for p in GEN.dressing()["pieces"] if p["piece"] == "timber_stilt_post"}
+        for k, v in b.items():
+            if k.startswith(("GangwayGangPile", "BerthWalkBerthPile")):
+                self.assertIn((v["pos"][0], v["pos"][2]), posts, k)
+
+
 if __name__ == "__main__":
     unittest.main()
 

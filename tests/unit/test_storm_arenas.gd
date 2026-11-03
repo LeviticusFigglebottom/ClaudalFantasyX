@@ -4,11 +4,11 @@ extends TestCase
 ## its own copies of the kit's weathering materials: the sources the zones share stay dry.
 
 const STORMS: Array[StringName] = [
-	&"oruvel_raft_storm",
 	&"seawall_stairhead_storm",
 	&"seawall_stairhead_hoist",
 	&"seawall_stairhead_surge",
 	&"coilspire_headland_path",
+	&"drowned_choir_storm",
 ]
 
 var arena: BattleArenaRoot

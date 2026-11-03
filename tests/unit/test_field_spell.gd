@@ -153,3 +153,70 @@ func _spell(sid: StringName, extra: Dictionary) -> FieldSpell:
 	s.row = {"id": String(sid), "name_key": "SKILL_MEND", "mp_cost": 2, "field_usable": true}
 	s.row.merge(extra, true)
 	return s
+
+
+func test_a_field_mend_heals_what_a_battle_mend_would_at_the_same_stats() -> void:
+	# M3-CMB-1252: the battle rolls variance 92..108; the field casts at its middle, 100. Over many seeds the
+	# battle's heals bracket the field's, and the field's exact amount is among them.
+	var field_amount := -1
+	var battle: Array[int] = []
+	for s in range(1, 121):
+		var engine := BattleEngine.new()
+		var active: Array[StringName] = [&"rhen", &"asha"]
+		engine.setup(BattleDB.load_default(), active, [] as Array[StringName], &"sandbox_reef", s)
+		engine.begin()
+		if not _to_turn_of(engine, &"asha"):
+			continue
+		var asha := engine.current
+		var rhen := engine.party_active[0]
+		rhen.hp = 10
+		if field_amount < 0:
+			var copy := rhen.sim_copy()
+			var res := FieldSpell.for_skill(engine.db, &"mend").preview(asha, _party([asha, copy]), copy)
+			field_amount = int((res["healed"] as Dictionary)[&"rhen"])
+		var targets: Array[BattleCombatant] = [rhen]
+		engine.perform(&"mend", targets)
+		battle.append(rhen.hp - 10)
+	assert_true(battle.size() > 60, "reached Asha's turn on most seeds (%d)" % battle.size())
+	var lo: int = battle.min()
+	var hi: int = battle.max()
+	assert_true(lo <= field_amount and field_amount <= hi, "field %d within battle %d..%d" % [field_amount, lo, hi])
+	assert_true(battle.has(field_amount), "a battle Mend at variance 100 heals exactly the field amount")
+
+
+func test_the_result_names_mp_spent_healed_and_cured_and_silence_refuses() -> void:
+	var asha := sheet.combatant(&"asha")
+	var rhen := sheet.combatant(&"rhen")
+	rhen.hp = 40
+	var mend := FieldSpell.for_skill(db, &"mend")
+	var done := mend.cast(asha, _party([asha, rhen]), rhen)
+	assert_eq(done["mp_spent"], 4)
+	assert_eq((done["healed"] as Dictionary)[&"rhen"], rhen.hp - 40)
+	assert_eq(done["cured"], {})
+	assert_eq(done["revived"], [] as Array[StringName])
+	asha.statuses[&"silence"] = 2
+	rhen.hp = 40
+	var refused := mend.cast(asha, _party([asha, rhen]), rhen)
+	assert_eq(refused["error"], FieldSpell.ERR_SILENCED)
+	assert_eq(refused["mp_spent"], 0)
+	var cure := _spell(&"mend", {"kind": "support", "target": "single_ally", "cleanses": ["poison"], "magic": false})
+	rhen.statuses[&"poison"] = -1
+	assert_eq(cure.cast(asha, _party([asha, rhen]), rhen)["cured"], {&"rhen": [&"poison"] as Array[StringName]})
+
+
+func _to_turn_of(engine: BattleEngine, cid: StringName) -> bool:
+	for _i in 40:
+		if engine.outcome != &"":
+			return false
+		if not engine.is_party_turn():
+			engine.run_enemy_turn()
+			continue
+		if engine.current.id == cid:
+			return true
+		var foe := engine.living_foes_of(engine.current)
+		if foe.is_empty():
+			return false
+		var one: Array[BattleCombatant] = [foe[0]]
+		var sid := &"read" if engine.current.skills.has(&"read") else &"attack"
+		engine.perform(sid, one)
+	return false

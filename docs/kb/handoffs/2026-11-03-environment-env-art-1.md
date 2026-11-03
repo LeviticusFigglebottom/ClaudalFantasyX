@@ -13,6 +13,9 @@ Lead: session_018aiGwGLGkxsnMnu8VfCu1m.
 - FAST-TRACK 4 (Ch1): the `oruvel_raft_storm` arena with the real UndertowStorm, and `ArenaCameraReach`
   (M3-ENV-1340, 52bf4c11).
 - M3-ENV-1222 set to review (both halves were already built).
+- Act II (ADR 0205 §4): M4-A2P-115 (Quellan at eye height: the road walls' unbounded crag mesa, the road notch,
+  flagged yards, house footings) and M4-A2P-1501 (Ch11 drift, and no flicker: all of Ch11's light is bound), both
+  to review, MERGE-READY @ ad228e53.
 
 ## In progress
 - Nothing un-pushed.
@@ -20,11 +23,16 @@ Lead: session_018aiGwGLGkxsnMnu8VfCu1m.
 ## Exact next step
 1. If the Lead routes the repoint back to env-art: set `"arena": "oruvel_raft_storm"` on `ch01_scuttlers` and
    `ch01_hullgnaw` in game/data/battle/encounters.json, and update tests/unit/test_battle_arena.gd lines 15–16.
-2. Otherwise, Act III per the log: Ch19's full Iskarra dusk (I01–I02).
+2. Otherwise, Act II, in my lane (Ch10–Ch12): M4-A2P-040/041/042 are `doing` and STALE on the board. Re-walk Ossa
+   Fen, Reedhollow, Lowlight, the Sunken Vey, Keth Pass, Quellan and Cloudloom at eye height (as for M4-A2P-115:
+   `walk_render.tscn`, four views per spawn), fix what reads unfinished, then move each to review. Act III stays
+   paused (ADR 0205 §4).
 
 ## Known issues
 - `arena_scenes.py` with no `--arena` rewrites env-art-b's wrapped arenas. Always pass `--arena`.
 - The arena's Undertow can't stand nearer than ~14 km: the raft would be under its canopy.
+- `test_every_glb_import_runs_its_category_script` is red on integration for cinematics' and characters' imports
+  (LEAD-ASK in the live log).
 
 ## Files touched
 assets_src/environments/kits/haluna/{lowlight_zones.py,arena_scenes.py}, assets/environments/kits/haluna/lowlight_hall.glb,

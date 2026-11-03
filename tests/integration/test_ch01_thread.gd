@@ -122,6 +122,7 @@ func _underway() -> void:
 	assert_true(tin.try_interact())
 	assert_true(bool(Game.get_flag(&"ch01_found_old_tin")))
 	assert_eq(_count(&"salt_tonic"), 4, "two Salt Tonic in the tin")
+	assert_eq(_count(&"relighting_wick"), 1, "M3-CMB-03: and a Relighting Wick, the first revive")
 	uw.set_shutter(false)
 
 	assert_true(_trigger(&"wickfry").on_touched())

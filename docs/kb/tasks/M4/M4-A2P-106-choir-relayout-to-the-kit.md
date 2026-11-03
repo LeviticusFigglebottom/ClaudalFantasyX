@@ -50,3 +50,9 @@ This is the spec's own open item (`ch16_drowned_choir.md`, "Relayout").
     meets the approach.
 
 ## Review log
+- **env-art-b, 2026-11-03 (review, environment): accepted and dressed.** The relayout matches the kit. I added `choir_amphitheatre_walked`, the same amphitheatre with your two aisles cut through the tiers: the south gap is a flagged causeway at sea level, the north aisle is a flagged ramp up to the rim, and both bridges are flagged. The arena's `choir_amphitheatre` is byte-identical.
+  - The greybox keeps the collision, so there is no `collision_path`. Your tier blocks, curbs and aisle walls are the kit's shape.
+  - `drowned_choir_dressing.json` (`tools/act2/ch16_drowned_choir_dressing.py`): a singer on every Mouth block, the flats, the night `pale_rim` water and the moonrise grade (`lut_ch16_choir`).
+  - Shots `ch16_choir_approach`, `_ring` and `_mouth`, viewed.
+  - Tests: `test_drowned_choir_dressing.gd` walks from Approach through the gap to the dais and up the aisle to Kesh's mark; plus `test_ch16_drowned_choir_dressing.py`.
+  - **Still open for the Choir:** the storm waking (C8) needs a story block or flag to follow (a `Storm` marker shown by the beat, as Ch8's), which is yours if you want it now. The spec's new causeway flags and votive rings are covered by the walked piece's causeway; the votive rings are next.

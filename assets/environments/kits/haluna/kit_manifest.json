@@ -442,6 +442,17 @@
         "choir_amphitheatre-lod1": 304
       }
     },
+    "choir_amphitheatre_walked": {
+      "budget": [
+        20000,
+        1700
+      ],
+      "bytes": 508052,
+      "lods": {
+        "choir_amphitheatre_walked": 4908,
+        "choir_amphitheatre_walked-lod1": 336
+      }
+    },
     "choir_singer": {
       "budget": [
         5000,
@@ -451,6 +462,17 @@
       "lods": {
         "choir_singer": 2172,
         "choir_singer-lod1": 274
+      }
+    },
+    "choir_votive_rings": {
+      "budget": [
+        3000,
+        300
+      ],
+      "bytes": 76468,
+      "lods": {
+        "choir_votive_rings": 1728,
+        "choir_votive_rings-lod1": 270
       }
     },
     "clay_bowl": {
@@ -2020,7 +2042,7 @@
         40000,
         3000
       ],
-      "bytes": 1015504,
+      "bytes": 948084,
       "lods": {
         "quellan_ground": 26136,
         "quellan_ground-lod1": 1620
@@ -2042,10 +2064,10 @@
         45000,
         1500
       ],
-      "bytes": 1821344,
+      "bytes": 1828480,
       "lods": {
-        "quellan_houses_n": 17868,
-        "quellan_houses_n-lod1": 228
+        "quellan_houses_n": 17904,
+        "quellan_houses_n-lod1": 264
       }
     },
     "quellan_houses_s": {
@@ -2053,10 +2075,10 @@
         45000,
         1500
       ],
-      "bytes": 1827448,
+      "bytes": 1834584,
       "lods": {
-        "quellan_houses_s": 17928,
-        "quellan_houses_s-lod1": 228
+        "quellan_houses_s": 17964,
+        "quellan_houses_s-lod1": 264
       }
     },
     "quellan_inn": {
@@ -2090,6 +2112,17 @@
       "lods": {
         "quellan_well": 528,
         "quellan_well-lod1": 64
+      }
+    },
+    "quellan_yards": {
+      "budget": [
+        60000,
+        100
+      ],
+      "bytes": 1958656,
+      "lods": {
+        "quellan_yards": 19164,
+        "quellan_yards-lod1": 12
       }
     },
     "reading_table": {

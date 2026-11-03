@@ -412,6 +412,166 @@
    "scale": 1.1
   },
   {
+   "piece": "hm_dock_4m",
+   "at": [
+    60.185,
+    -0.003
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.855,
+   "scale": 0.992
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    64.154,
+    -0.062
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.855,
+   "scale": 0.992
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    68.123,
+    -0.121
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.855,
+   "scale": 0.992
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    72.092,
+    -0.18
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.855,
+   "scale": 0.992
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    76.06,
+    -0.24
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.855,
+   "scale": 0.992
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    80.029,
+    -0.299
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.855,
+   "scale": 0.992
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    83.998,
+    -0.358
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.855,
+   "scale": 0.992
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    87.967,
+    -0.417
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.855,
+   "scale": 0.992
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    88.022,
+    -0.645
+   ],
+   "y": 0.0,
+   "yaw_deg": 120.004,
+   "scale": 1.03
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    85.962,
+    -4.212
+   ],
+   "y": 0.0,
+   "yaw_deg": 120.004,
+   "scale": 1.03
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    83.902,
+    -7.78
+   ],
+   "y": 0.0,
+   "yaw_deg": 120.004,
+   "scale": 1.03
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    81.842,
+    -11.348
+   ],
+   "y": 0.0,
+   "yaw_deg": 120.004,
+   "scale": 1.03
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    79.782,
+    -14.915
+   ],
+   "y": 0.0,
+   "yaw_deg": 120.004,
+   "scale": 1.03
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    91.083,
+    -1.961
+   ],
+   "y": 0.0,
+   "yaw_deg": 7.027,
+   "scale": 0.917
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    94.725,
+    -2.41
+   ],
+   "y": 0.0,
+   "yaw_deg": 7.027,
+   "scale": 0.917
+  },
+  {
+   "piece": "hm_dock_4m",
+   "at": [
+    98.367,
+    -2.859
+   ],
+   "y": 0.0,
+   "yaw_deg": 7.027,
+   "scale": 0.917
+  },
+  {
    "piece": "hm_lashed_hulls",
    "at": [
     12.0,
@@ -942,6 +1102,126 @@
    "y": -1.6,
    "yaw_deg": 0.0,
    "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    90.039,
+    -5.551
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.375
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    87.231,
+    -12.013
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.375
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    82.765,
+    -1.351
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.375
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    78.571,
+    -7.013
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.375
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    63.562,
+    4.147
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.375
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    70.573,
+    4.843
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.375
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    77.561,
+    3.938
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.375
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    84.572,
+    4.634
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.375
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    63.437,
+    -4.252
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.375
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    70.424,
+    -5.156
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.375
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    77.435,
+    -4.461
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.375
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    84.423,
+    -5.365
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.375
   },
   {
    "piece": "tide_debris",

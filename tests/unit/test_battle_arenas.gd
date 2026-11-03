@@ -13,6 +13,7 @@ const ARENAS: Array[StringName] = [
 	&"underway_tower",
 	&"oruvel_raft_morning",
 	&"oruvel_raft_storm",
+	&"drowned_choir_storm",
 	&"seawall_stairhead_storm",
 	&"seawall_stairhead_hoist",
 	&"seawall_stairhead_surge",

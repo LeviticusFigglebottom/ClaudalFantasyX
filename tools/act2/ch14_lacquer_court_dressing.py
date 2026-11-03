@@ -9,7 +9,7 @@ so it keeps the collision and every mark cinematics uses stays where it is (the 
 greybox's columns aren't solid; the kit's columns bring their own colliders.
 
 The light is the dusk (`lut_ch14_wedding`, the game's peak contrast) and the ceremony's lamp-stands, each light on its
-stand. The lagoon is Ansedra's still mirror at y -1.0 (the ripples are M4-A2P-047's second half).
+stand; after the trap the stands lie knocked down and out (chapters' CeremonyLamps / CeremonyLampsFallen variants). The lagoon is Ansedra's still mirror at y -1.0 (the ripples are M4-A2P-047's second half).
 
 Writes, under game/levels/ch13/ansedra_lacquer_court/: ansedra_lacquer_court_dressing.json and
 court_environment.tres; reuses Ansedra's looks and water; adds the Water, Tide and Dressing nodes to the scene (once).
@@ -46,6 +46,17 @@ HALL_SCALE = 1.25
 HALLS = (((0.0, -26.0), 0.0), ((-17.0, -12.0), 90.0), ((17.0, -14.0), -90.0))  # fronts 2 m behind the edge walls
 LAMP_STANDS = [(-3.4, 0.8, -20.0), (3.4, 0.8, -20.0)] + [(sx * 10.7, 0.6, z) for sx in (-1.0, 1.0)
                                                           for z in (-18.0, -12.0, -6.0)]
+# After the trap (chapters' M4-A2P-104 variants: CeremonyLamps until ch14_declared_heretics, CeremonyLampsFallen
+# after): the wedding's stands and their lights follow CeremonyLamps; the fallen set is the same stands knocked down
+# in the guards' rush and gone out (the flame slot dark), each near its own place. (index, dx, dz, yaw, roll):
+# a roll of 0 is a stand still upright but out.
+FALLEN = ((0, 0.6, 0.4, 35.0, 84.0), (1, -0.2, 0.7, 160.0, 0.0), (2, 0.5, -0.3, 75.0, 86.0),
+          (3, -0.4, 0.2, 210.0, 83.0), (4, 0.3, 0.6, 300.0, 0.0), (5, -0.6, -0.2, 120.0, 85.0),
+          (6, 0.2, -0.5, 15.0, 0.0), (7, -0.3, 0.4, 250.0, 87.0))
+FALLEN_LIFT_M = 0.17  # a stand on its side rests on its bowl's rim (r 0.18), not sunk through the floor
+# The flame slot of a stand gone out takes the stand's own gold leaf: a dark flame read as a black teardrop, while
+# the gilt reads as the bowl's finial.
+OUT_FLAME = ans.KIT_MATERIALS + "kit_gold_leaf.tres"
 LAMP_COLOR = "#FFB16E"
 LAMP_ENERGY = 1.4
 LAMP_RANGE_M = 7.0
@@ -92,7 +103,12 @@ def dressing() -> dict:
     pieces.append(_row("wedding_dais", b["Dais"]["pos"][0], b["Dais"]["pos"][2]))
     pieces.append(_row("conclave_gallery", b["ConclaveGallery"]["pos"][0], b["ConclaveGallery"]["pos"][2]))
     pieces += [_row("lacquer_hall", x, z, yaw=yaw, scale=HALL_SCALE) for (x, z), yaw in HALLS]
-    pieces += [_row("gilt_lamp_stand", x, z, y=y) for x, y, z in LAMP_STANDS]
+    pieces += [_row("gilt_lamp_stand", x, z, y=y, block="CeremonyLamps") for x, y, z in LAMP_STANDS]
+    for i, dx, dz, yaw, roll in FALLEN:
+        x, y, z = LAMP_STANDS[i]
+        pieces.append(_row("gilt_lamp_stand", round(x + dx, 3), round(z + dz, 3),
+                           y=round(y + (FALLEN_LIFT_M if roll else 0.0), 3), yaw=yaw, tilt_deg=[0.0, roll],
+                           block="CeremonyLampsFallen", material_paths={"kit_lamp_flame": OUT_FLAME}))
     pieces.append(_row("stillguard_rack", RACK[0], RACK[1], yaw=RACK[2]))
     piece, scale, deck_y, yaw = BARGE
     pieces.append(_row(piece, b["Barge"]["pos"][0], b["Barge"]["pos"][2], y=deck_y, yaw=yaw, scale=scale, block="Barge"))
@@ -117,7 +133,7 @@ def dressing() -> dict:
         "fill_lights": [dict(f) for f in COURT_FILLS],
         "fire_light_color": LAMP_COLOR,
         "fire_lights": [{"at": [x, round(y + FLAME_Y + 0.1, 3), z], "energy": LAMP_ENERGY, "range": LAMP_RANGE_M,
-                         "flicker": LAMP_FLICKER}
+                         "flicker": LAMP_FLICKER, "block": "CeremonyLamps"}
                         for x, y, z in LAMP_STANDS],
         "kit_material_paths": looks,
         "pieces": pieces,

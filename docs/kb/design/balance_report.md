@@ -470,3 +470,12 @@ Kept: the pattern (Rib Lash; Gnaw Coil every third turn, telegraphed on the time
 Lowering the Gnaw alone (rows 2–4) would have weakened the Act III Hull Rasp too, so the shipped tune moves only the Hullgnaw's own HP and strength.
 
 The table at the top was patched for these four rows from a `--check` run of the seven Ch1 suites (all ok); a full 76-suite rerun outlasted this session's 30-minute background limit (its first 217 lines were all ok) and no other suite reads the Hullgnaw.
+
+### 2026-11-03: the sim's Vowbound call, and p90 on report-only rows (M4-A2P-1202, combat-systems)
+
+**The call rule.** With no field to answer, `SimPolicy.field_answer` now calls the **latest bound** Vowbound (the last callable; vowbound.json lists them in binding order) instead of the first (Ilun). Every Vowbound's caller is Asha, so on a late-game loadout the masher used to re-call Ilun all fight. 40 suites bind more than one Vowbound; all 40 were rerun at 1000 seeds with `--check`. Every banded row stayed in band, and only report-only `naive_swell` numbers moved.
+
+**What it didn't fix.** Forcing each Vowbound in turn (300 seeds) showed the Wakefin masher's long tail doesn't depend on the pick: `naive_swell` p90 is 91–92 for every Vowbound (cap 80). On `ch19_spire_wicks` the pick matters a little: Virel 34, the others 45–46, and the latest bound gives 48 at 1000 seeds (was 55, cap 45). The tail is the masher's Vowbound fighting on its own, which is what "calls at once" models.
+
+**Decision (tools/balance/sim.py `within_p90`).** `p90_turns_max` gates the banded policies only. A report-only row (band null) is reported, not tuned to, as balance_targets.md already says of `naive_swell`, so its length is information. A timeout still fails it. With this, `--check` is clean on the 40 multi-Vowbound suites; `ch15_wakefin` (naive_swell 26.6%, p90 91) and `ch19_spire_wicks` (91.9%, p90 48) report ok. tools/tests/test_balance_sim.py `P90CapTest` pins the rule.
+
