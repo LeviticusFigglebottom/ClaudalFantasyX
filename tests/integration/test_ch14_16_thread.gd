@@ -9,6 +9,7 @@ const SEA := "res://game/levels/ch15/open_sea/open_sea.tscn"
 const HOLLOWMERE := "res://game/levels/ch17/hollowmere/hollowmere.tscn"
 const RIM := "res://game/levels/ch16/pale_rim/pale_rim.tscn"
 const CHOIR := "res://game/levels/ch16/drowned_choir/drowned_choir.tscn"
+const PROLOGUE := "res://game/levels/prologue/prologue.tscn"
 
 
 func test_the_wedding_court_to_the_choir() -> void:
@@ -50,11 +51,36 @@ func test_the_wedding_court_to_the_choir() -> void:
 	visit(CHOIR)
 	_fought(&"ch16_storm_wakes", &"ch16_line_held")  # B09: the storm wakes on the return
 	visit(CHOIR)
-	assert_true(bool(Game.get_flag(&"ch16_act_two_complete")), "B10-B11: swept away")
 	assert_eq(
-		hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch17/hollowmere", "spawn": "Dock"}], "on to Act III (Ch17)"
+		hand_offs.back(), [ZoneStory.KIND_GO, {"location": "prologue", "spawn": "Start"}], "B10 swept away: the vigil"
 	)
+	_the_act_break()
 	after_visits()
+
+
+## B11-B12 at the Prologue's plaza (the Lead, 11-03): the vigil and the act card set ch16_act_two_complete, then the
+## plaza hands on to Act III at Hollowmere's dock. A New Game's prologue is unchanged by the visit row.
+func _the_act_break() -> void:
+	var travels: Array[Array] = []
+	var scene := (load(PROLOGUE) as PackedScene).instantiate() as PrologueScene
+	scene.autoplay = false
+	scene.travel = func(loc: StringName, spawn: StringName) -> bool:
+		travels.append([loc, spawn])
+		return true
+	var seq := CutsceneSequencer.new()
+	seq.instant = true
+	scene.add_child(seq)
+	scene.sequencer = seq
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(scene)
+	var cfg := FirstPlayableConfig.section(FirstPlayableConfig.SECTION_PROLOGUE)
+	assert_eq(str(PrologueScene.visit_of(cfg).get("scene_id", "")), "ch16_act_break", "the plaza plays the act break")
+	scene.play()  # an instant sequencer runs to the end at once (as test_fp_prologue)
+	assert_true(bool(Game.get_flag(&"ch16_act_two_complete")), "B11: the vigil ends Act II")
+	assert_eq(travels, [[&"ch17/hollowmere", &"Dock"]] as Array[Array], "on to Act III (Ch17)")
+	assert_eq(str(PrologueScene.visit_of(cfg).get("scene_id", "")), "prologue_dead_city", "the visit is spent")
+	scene.get_parent().remove_child(scene)
+	scene.free()
 
 
 ## Fires `trigger`, checks the battle it starts and wins it.

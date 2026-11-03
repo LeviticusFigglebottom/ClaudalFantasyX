@@ -18,6 +18,7 @@ signal handed_off(location_id: StringName, spawn: StringName)
 const KEY_SCENE_ID := "scene_id"
 const KEY_NEXT_LOCATION := "next_location"
 const KEY_NEXT_SPAWN := "next_spawn"
+const KEY_VISITS := "visits"
 const VIGILS := ^"City/Vigils"
 const VIGIL_FEET := &"Feet"
 
@@ -35,6 +36,8 @@ var next_location: StringName = &""
 var next_spawn: StringName = &""
 ## True once the hand-off was requested (it happens once).
 var finished := false
+## The row play() chose (visit_of): its scene and where it hands off.
+var _row: Dictionary = {}
 
 @onready var stage: CutsceneStage = $CutsceneStage
 @onready var director: FieldCameraDirector = $CameraDirector
@@ -75,15 +78,33 @@ func place_at(_spawn: StringName, _yaw_deg: float = 0.0) -> bool:
 	return true
 
 
-## Sets prologue_seen, plays the cutscene to its end, then hands off. Await it.
+## The prologue row in force: the config itself, or the first `visits` row whose `flag` is set and whose
+## `unless` flag isn't (the Lead, 11-03: Ch16's act break, B11's vigil, plays on this plaza, then hands on to Act III).
+## A visit row carries its own scene_id, next_location and next_spawn.
+static func visit_of(cfg: Dictionary) -> Dictionary:
+	for v: Variant in cfg.get(KEY_VISITS, []):
+		var row := v as Dictionary
+		var unless := str(row.get("unless", ""))
+		if (
+			bool(Game.get_flag(StringName(str(row.get("flag", "")))))
+			and (unless == "" or not bool(Game.get_flag(StringName(unless))))
+		):
+			return row
+	return cfg
+
+
+## Sets prologue_seen (the prologue itself, not a later visit), plays the cutscene to its end, then hands off.
+## Await it.
 func play() -> void:
-	Game.set_flag(&"prologue_seen")
+	var cfg := FirstPlayableConfig.section(FirstPlayableConfig.SECTION_PROLOGUE)
+	_row = visit_of(cfg)
+	if _row == cfg:
+		Game.set_flag(&"prologue_seen")
 	if sequencer == null:
 		sequencer = CutsceneSequencer.new()
 		sequencer.name = "Sequencer"
 		add_child(sequencer)
-	var cfg := FirstPlayableConfig.section(FirstPlayableConfig.SECTION_PROLOGUE)
-	var scene_id := StringName(str(cfg.get(KEY_SCENE_ID, "")))
+	var scene_id := StringName(str(_row.get(KEY_SCENE_ID, "")))
 	var played: bool = await sequencer.play(scene_id, stage)
 	if not played:
 		push_error("PrologueScene: could not play '%s'" % scene_id)
@@ -97,7 +118,7 @@ func hand_off() -> bool:
 	if finished:
 		return false
 	finished = true
-	var cfg := FirstPlayableConfig.section(FirstPlayableConfig.SECTION_PROLOGUE)
+	var cfg := _row if not _row.is_empty() else FirstPlayableConfig.section(FirstPlayableConfig.SECTION_PROLOGUE)
 	var loc := next_location if next_location != &"" else StringName(str(cfg.get(KEY_NEXT_LOCATION, "")))
 	var spawn := next_spawn if next_location != &"" else StringName(str(cfg.get(KEY_NEXT_SPAWN, "")))
 	handed_off.emit(loc, spawn)

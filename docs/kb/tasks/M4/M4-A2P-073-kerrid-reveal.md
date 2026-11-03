@@ -3,7 +3,7 @@ id: M4-A2P-073
 title: "Stage Kerrid's reveal at sea (Ch15)"
 role: cinematics
 status: doing
-owner_session: "claude/m2-slice (cinematics)"
+owner_session: "act1-chapters (claude/act1-chapters)"
 depends_on: [M4-A2P-006, M4-A2P-049, M4-A2P-054]
 reviewer: narrative
 milestone: M4
@@ -23,5 +23,9 @@ The act's emotional peak: the barge over the shoal, the held motes drifting to h
 - 2026-10-30 (cinematics): staged in game/data/cutscene/ch15/open_sea.json (U07, K01–K20 with K18b/K19b): Kerrid's
   singles on his seated eye line; Rhen at his right, out of them; the shoal's motes placed. Facial timing rides the
   lines' emotions. Stills wait on the barge's people (M4-CIN-1305).
+
+- 2026-11-03 (act1-chapters): **the Lead routed Act II Ch13–16 staging to act1-chapters** (chapter flows are
+  act1-chapters', gate-big41's ruling; LEAD-ANSWERED 11-03). slice-polish's staging data above stays as the base.
+  Shot work for slice-polish goes by request task. Next: the stills once the bodies land (M4-CIN-1305).
 
 ## Review log

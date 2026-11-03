@@ -1330,6 +1330,8 @@ DLG_CH15_DACES_011,He never said he had a son. Not once.
 DLG_CH15_DACES_013,You talked to my boy. Before. What did he say?
 DLG_CH15_DACES_014,He said nobody had to be chosen. He volunteered.
 DLG_CH15_DACES_012,Now I know why he never finished anything here.
+DLG_CH16_BREAK_001,"Everybody I loved had a reason to stay where they were. That night, all of us stopped."
+DLG_CH16_ACT_CARD_001,Act III: The Unbinding
 DLG_CH16_BARK_MOTHER_001,My mother walked here.
 DLG_CH16_BARK_CAIRN_001,Put a stone on as you pass. Not for luck. So the next one can find the way.
 DLG_NAME_TOWNSFOLK_CAIRN_WADER,Cairn-wader
@@ -1368,8 +1370,6 @@ DLG_CH16_CAIRN_003,Big stones first. Then small.
 DLG_CH16_CAIRN_004,I know. I've set steps.
 DLG_CH16_CAIRN_005,"This is not a step. It is a voice. It says, this way."
 DLG_CH16_CAIRN_006,Then it's the same thing.
-DLG_CH16_BREAK_001,"Everybody I loved had a reason to stay where they were. That night, all of us stopped."
-DLG_CH16_ACT_CARD_001,Act III: The Unbinding
 DLG_CH16_CHOIR_001,This is it.
 DLG_CH16_MEMORY_001,It doesn't sleep. It holds on. To us.
 DLG_CH16_MEMORY_002,He couldn't let me go.

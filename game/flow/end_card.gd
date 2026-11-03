@@ -53,8 +53,9 @@ func _ready() -> void:
 	var cfg := FirstPlayableConfig.section(FirstPlayableConfig.SECTION_END_CARD)
 	_min_hold = float(cfg.get("min_hold_sec", 0.0))
 	_return_scene = str(cfg.get("return_scene", DEFAULT_RETURN_SCENE))
-	next_location = StringName(str(cfg.get("next_location", "")))
-	next_spawn = StringName(str(cfg.get("next_spawn", "")))
+	var next := next_of(cfg)
+	next_location = next[0]
+	next_spawn = next[1]
 	_title.text = tr("FLOW_END_CARD_TITLE")
 	_line.text = tr("FLOW_END_CARD_LINE")
 	_prompt.text = tr("FLOW_END_CARD_PROMPT")
@@ -133,6 +134,15 @@ func handle_input(event: InputEvent) -> bool:
 		return false
 	accept()
 	return true
+
+
+## Where accept leads, from the end_card config: [location, spawn] ([&"", &""] = the title). The Lead's
+## 11-03 answer: while Act I isn't signed off the card returns to the title (next_location empty); act2_playable
+## true sends it on to act2_next_location / act2_next_spawn instead (Ch10, Ossa Fen), a one-line flip at sign-off.
+static func next_of(cfg: Dictionary) -> Array[StringName]:
+	if bool(cfg.get("act2_playable", false)) and str(cfg.get("act2_next_location", "")) != "":
+		return [StringName(str(cfg["act2_next_location"])), StringName(str(cfg.get("act2_next_spawn", "")))]
+	return [StringName(str(cfg.get("next_location", ""))), StringName(str(cfg.get("next_spawn", "")))]
 
 
 ## Returns to the title, or goes on to next_location when set (ignores the hold; handle_input enforces

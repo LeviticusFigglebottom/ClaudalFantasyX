@@ -480,5 +480,6 @@ flags = {
 "status_provoke_met": "Status help (the human's playtest FAST-TRACK, 2026-11-03; game/data/ui/status_help.json): provoke has landed on a party member and its first-time card has shown; opens its Codex Afflictions entry.",
 "codex_affliction_provoke_read": "Codex read-flag (M3-UI-03): the Afflictions entry for provoke has been opened.",
 "ending_dark_sea_seen": "Ending E5 (M5-A3P-1203): the dark sea has played at Haluna's dock and the credits have opened; once they end (credits_seen), the roll's next scene takes the game to Oruvel for E7.",
-"ending_first_lamp_seen": "Ending E7 (M5-A3P-1203): the first lamp has been lit in Oruvel after the credits; the title follows."
+"ending_first_lamp_seen": "Ending E7 (M5-A3P-1203): the first lamp has been lit in Oruvel after the credits; the title follows.",
+"ch08_kites_down": "Ch8 B08: the festival kites have come down on the run back (ch08_run_back's W04_kite shot); Corrow's storm state hides them from here (FAST-TRACK 11-03, W20 showed them over the storm)."
 }
