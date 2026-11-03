@@ -693,3 +693,23 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
     `stop_unknown_ratio` (0.5) x the walk clip speed enters walk_stop, which plays by distance; if the body keeps
     creeping it holds the stop's last pose and slides. An early START that never covers its travel (blocked by a wall)
     would freeze the same way. Worth a probe with a partial stick or a slope.
+- **Row 56:** TestRigIntegrityAsha 11 OK (my first run only timed out, at 25 min, under load). With test_hero_clips and
+  test_hero_stage above, every big45 red is green, and the outputs are committed and rebuild byte for byte.
+  SELF-RENDERED asha_clip_run and asha_clip_walk (viewed; they drift from the old baselines, as expected). The run
+  skirt now swings with the stride: it trails at the back and shows the underskirt and the feet. No notch is visible.
+  **Follow-up (not row 56):** in the run, her gauze verse-sleeve swings forward as a boxy dithered grey bag by her
+  hip. That's next on my list after rows 54 and 55.
+- **Row 55 (625302051):** big38 still saw Fenn's and Sabe's white hair as a cap. They now have a mid-grey underpaint
+  under brighter, finer, denser cards with more lift (rise 0.8), and Fenn recedes a touch.
+  SELF-RENDERED villager_{fenn,sabe}_{face,front} (viewed). Fenn reads as a cropped head of strands with a broken
+  edge. Sabe is better but still mostly a grey cap with white streaks. Both rebuild identically.
+- **Row 54:** Sefir's front falls are denser (34 cards per group, was 26; LOD0 61,822 tris, under the 62k target),
+  and the hair is solid through its body (alpha_boost 4.0, transmission 0.12). SELF-RENDERED
+  sefir_{face,front,back,three_quarter} (viewed). The backdrop no longer shows through the falls, but they still read
+  as pale flat ribbons. **Not closed.** Next: shading (clumped strand value variation and darker root/inner
+  occlusion), not more cards.
+- Checks: test_sefir 18 OK, test_villagers plus the Sefir, Fenn and Sabe rig probes 78 OK, Blender verify for sefir,
+  villager_fenn and villager_sabe (identical), test_hero_clips plus test_hero_battle_clips 34 OK, test_hero_stage
+  11/11. Skipped: gdlint (no .gd touched) and the full manifest.
+- MERGE-READY @ 4db4436a: row 56 (the rebuilt outputs are verified), row 55 (Fenn and Sabe), the row 54 step. Rows 54 and
+  55 need a real-GPU re-look (PC-QUEUE).
