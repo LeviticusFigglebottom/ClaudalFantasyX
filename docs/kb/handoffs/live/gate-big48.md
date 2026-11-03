@@ -30,3 +30,28 @@ validate_data 0/0 · taskboard --check clean · dlgc --check clean · gdlint and
 PROVENANCE rows · no conflict markers · no gate-run images.
 
 GATE-BUILT @ 79a3c1ff
+
+## After the build
+- big47 merged into -ze8rrn at cc107cea, **before** big47's shots.json fix (6b8990de: `battle_arena_oruvel_raft_storm` listed twice, so
+  compare.py rejects the manifest). big48 merges lead/gate-big47 @ 6b8990de and drops the duplicate again (env-art-b's head carries both
+  entries too), then merges -ze8rrn @ d89a9e23 (docs). **Merging big48 fixes the integration branch's manifest.**
+
+## Fast gate
+- Godot tests filtered to the touched areas: storm, battle_arena, battle_sim, field_spell, credits, portrait, cutscene, ch01_thread, drowned_choir,
+  lacquer_court, ch08 (ch15 and ch16 match no test file). Tools suite: 226 units with -j 2. Unique XDG_DATA_HOME; HYMN_STEP_TIMEOUT=10800.
+
+## Fast-gate results
+- Import clean (godot_log_check 0); boot smoke 0 ERROR lines.
+- **Godot: all green.** storm 48/0 and battle_arena 20/0 (big47's storm-arena reds are gone: env-art-b's tests no longer claim
+  oruvel_raft_storm), battle_sim 56/0, field_spell 8/0, credits 8/0, portrait 22/0, cutscene 112/0, ch01_thread 2/0, drowned_choir 2/0,
+  lacquer_court 2/0, ch08 25/0.
+- **Tools: test_b_arenas is green** (big47's red cleared). One new batch red:
+  - **test_arenas::test_scenes_are_reproducible (arena='sunken_vey_gallery')**: env-art's M4-A2P-1501 (9c1be5bf) adds flotsam to
+    `game/levels/ch11/sunken_vey/sunken_vey_dressing.json`, which `arena_scenes.py` reads, but the committed arena scene wasn't regenerated
+    (one more ext_resource). Routed: **env-art** (`arena_scenes.py --arena sunken_vey_gallery`, commit the scene). Act II only.
+  - Still routed from big47: test_act1_audio_audit (**ui**: StatusGlyph, BattleStatusTips, StatusHelpPanel, StatusTipCard need a UI sound hook),
+    test_audio_data (**audio**: storm_gale and storm_wall imports have loop=false).
+  - This container's LFS pointers: test_dialogue_clarity, test_direction_holds. The standing list: test_cutscene_sfx_files, test_freed_cast_lint
+    (audio), test_creatures (creatures-b), test_status_names (ui). Known: test_palette_check, test_screenshots.
+
+GATE-FAST-DONE (merge-approved under the standing rule: the one new red is Act II content, routed to env-art; every Godot filter is green).
