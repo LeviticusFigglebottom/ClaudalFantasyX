@@ -43,3 +43,20 @@ GATE-BUILT @ ff9eefd2
 
 GATE-FAST-DONE (merge-approved under the standing rule: the two new reds are an audit-visibility false positive in Act III content, routed;
 every Godot filter is green).
+
+## Shots (18: the new Ending and act-break shots, the beat audit's changed shots, the Corrow storm shots)
+Published on `lead/gate-big49-shots` @ b50a9362 in `docs/kb/qa/gate-runs/big49/` (out, out/diff, compare.txt, contact grids g00–g02).
+- **0 PASS, 4 DRIFT, 14 NO-BASELINE, 0 failed to capture.** The container restarted mid-capture; the one missing shot (ch08_storm_wall_f08w)
+  was re-captured alone.
+- Viewed: **ch08_wall_falls_w20 no longer has the sun glint on the storm sea** (env-art-b's FAST-TRACK follow-up), and the vortex holds over the
+  breach. ch08_corrow_storm is the wall walk under the vortex. The Ending shots (e11 the dark sea at Haluna's dock, e12 the beach rite with Toma's
+  line, e13 the first lamp in Oruvel) and ch16_act_break_vigil (the Prologue's plaza) read cleanly.
+- Drifts: slice_prologue_vigil_line 0.125 and slice_verse_hall 0.195 (the beat audit's held frames), ch01_o10_gull 0.052, ch08_corrow_lake 0.040
+  (the storm fills and the glint).
+
+**Note (the Lead's FINAL, 21:50):** the project is stopped, and the Lead folded every track head straight into -ze8rrn, so big48's and big49's
+content is already on the integration branch (its shots.json has one `battle_arena_oruvel_raft_storm`). These two gate branches stay for their
+logs and shots only; on resume, view big48's and big49's shots and the routed reds (env-art: sunken_vey_gallery; ui or slice-polish: credits_seen's
+setter visible to the audits; battle-presentation/env-art: the Hullgnaw intro's black silhouette).
+
+LEAD-REVIEW big49: 18 shots (4 DRIFT, 14 NO-BASELINE), Godot all green; content already folded in by the FINAL; view on resume
