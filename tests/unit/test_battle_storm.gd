@@ -40,9 +40,19 @@ func test_a_storm_fight_shows_rain_wind_and_the_undertow_in_view() -> void:
 	var ctl := _battle(&"ch01_scuttlers", [&"rhen"] as Array[StringName])
 	var storm := ctl.stage.get_node_or_null(^"BattleStorm") as BattleStorm
 	assert_true(storm != null, "the scuttlers are fought in the storm")
-	assert_true(storm.rain != null and storm.rain.emitting, "rain")
+	var u := storm.undertow if storm.undertow != null else storm.arena_storm  # ours, or the storm arena's own
+	assert_true(u != null, "the Undertow stands in the background")
+	if u == null:
+		ctl.get_parent().remove_child(ctl)
+		ctl.free()
+		return
+	var arena_rains := storm.arena_storm != null and storm.arena_storm.rain_amount != 0.0
+	assert_true(arena_rains or (storm.rain != null and storm.rain.emitting), "rain (the arena's or ours)")
 	assert_true(storm.wind != null and storm.wind.emitting, "wind")
-	assert_true(storm.undertow != null, "the Undertow stands in the background")
+	if storm.arena_storm != null:  # the arena places its own storm; ours is aimed into the frame (below)
+		ctl.get_parent().remove_child(ctl)
+		ctl.free()
+		return
 	var to_storm := storm.undertow.storm_center() - ctl.stage.camera.global_position
 	var fwd := -ctl.stage.choreo.camera.default_transform.basis.z
 	var flat := Vector2(to_storm.x, to_storm.z).normalized().dot(Vector2(fwd.x, fwd.z).normalized())
@@ -66,11 +76,13 @@ func test_no_storm_fight_draws_two_undertows() -> void:
 ## A storm arena with its own Undertow owns the vortex and the sky: ours adds wind and no second storm.
 func test_an_arena_undertow_is_never_doubled() -> void:
 	var ctl := _battle(&"ch01_hullgnaw", [&"rhen"] as Array[StringName])
-	var own := UndertowStorm.new()
-	own.name = "Undertow"
-	own.preset = "ch01_arrival"
+	var own := BattleStorm.arena_undertow(ctl)
+	if own == null:  # an interim arena (arenas.json storm.pending): stand one in, as a storm arena has
+		own = UndertowStorm.new()
+		own.name = "Undertow"
+		own.preset = "ch01_arrival"
+		ctl.get_node(NodePath(String(BattleArena.ARENA_NODE))).add_child(own)
 	own.rain_amount = 0.5
-	ctl.get_node(NodePath(String(BattleArena.ARENA_NODE))).add_child(own)
 	var storm := BattleStorm.attached_if_storm(ctl, ctl.engine)
 	assert_true(storm.undertow == null, "no Undertow of ours")
 	assert_eq(storm.arena_storm, own, "the arena's is the one")
