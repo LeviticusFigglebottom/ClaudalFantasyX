@@ -1487,7 +1487,8 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
       every cutscene. That test is re-running alone; its result follows.
   - **Checks skipped:** coverage (no battle or progression code); Blender (no source); the tools suite (no tools/
     change).
-- **M3-CIN-1252, the seawall side (Corrow B17 "The wall falls"), MERGE-READY @ this commit:**
+- **M3-CIN-1252, the seawall side (Corrow B17 "The wall falls"), MERGE-READY @ b3264a223** (FAST-TRACK; it includes
+  e65fb0d22, so the Lead can take everything up to b3264a223):
   - W20 (the Breach, "unlit except by the storm") aimed 32° off the Undertow, which only peeked into the top-right
     corner. It is re-aimed toward the storm (the same camera position, levelled, fov 58), so the wall-head and the
     drowned low town are the foreground and the storm with its big cyan rents fills the upper right.
