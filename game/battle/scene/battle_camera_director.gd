@@ -95,6 +95,19 @@ func _fit_rest_to_the_fight() -> void:
 	var fit := rest_fit(data, default_transform, default_fov, ids)
 	default_transform = fit[0]
 	default_fov = float(fit[1])
+	default_transform = rest_tilt(data, default_transform, _ctl.engine.encounter_id)
+
+
+## FAST-TRACK 11-03 (the storm fights showed no Undertow: the rest frame looked down at the field and the storm stood
+## above its top edge): camera.rest_by_encounter tilts a fight's rest frame up by tilt_up_deg about the lens, so the
+## sky behind the foes is in the frame. Applied after the enemy fit. Unchanged for a fight with no row.
+static func rest_tilt(cam: Dictionary, xf: Transform3D, encounter: StringName) -> Transform3D:
+	var row := (cam.get("rest_by_encounter", {}) as Dictionary).get(String(encounter), {}) as Dictionary
+	var deg := float(row.get("tilt_up_deg", 0.0))
+	if deg == 0.0:
+		return xf
+	var right := xf.basis.x.normalized()
+	return Transform3D(xf.basis.rotated(right, deg_to_rad(deg)), xf.origin)
 
 
 ## creatures-b's as-played notes (10-30): a called Vowbound stands on the middle party slot, right before the camera,

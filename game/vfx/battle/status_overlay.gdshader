@@ -1,13 +1,14 @@
 // The on-body status look (FAST-TRACK 11-03; docs/kb/tech/battle_status_looks.md): a material_overlay on every
 // surface of a fighter while a status with an "overlay" row (status_looks.json) holds. Unshaded, so it reads in a
 // dark arena as in noon sun. The pattern gives each status its own motion as well as its colour (colour-blind safe):
-//   0 rim        a steady edge glow
+//   0 rim        a steady edge glow over a light even wash
 //   1 pulse      the whole body breathes in the colour
 //   2 bands_up   bands climb the body (a tide rising: Haste quick, Doom slow)
 //   3 bands_down bands sink down the body (a veil falling: Darkness, Slow)
 //   4 flicker    the colour flickers in patches (Confuse)
 //   5 hatch      diagonal hatching (Zombie)
 //   6 frost      a still, even glaze with a hard rim, no motion at all (Stop)
+//   7 cracks     still crack lines over the body (the breaks: a stat broken)
 shader_type spatial;
 render_mode unshaded, blend_mix, depth_draw_never, cull_back, depth_test_default, shadows_disabled, fog_disabled;
 
@@ -32,9 +33,10 @@ void vertex() {
 void fragment() {
 	float rim = pow(1.0 - clamp(dot(normalize(NORMAL), normalize(VIEW)), 0.0, 1.0), rim_power);
 	float t = TIME * speed;
-	float a = rim;
+	// A floor under the rim: the whole body takes the colour, the edge most (readable at battle distance).
+	float a = 0.3 + 0.7 * rim;
 	if (pattern == 1) {
-		a = mix(0.35, 1.0, 0.5 + 0.5 * sin(t * 6.2832)) * (0.45 + 0.55 * rim);
+		a = mix(0.5, 1.0, 0.5 + 0.5 * sin(t * 6.2832)) * (0.6 + 0.4 * rim);
 	} else if (pattern == 2) {
 		float b = fract(world_pos.y / band_m - t);
 		a = max(rim * 0.6, smoothstep(0.55, 0.85, b) * (1.0 - smoothstep(0.85, 1.0, b)) * 1.4);
@@ -47,6 +49,23 @@ void fragment() {
 	} else if (pattern == 5) {
 		float h = fract((world_pos.y + world_pos.x + world_pos.z) / (band_m * 0.5) - t * 0.25);
 		a = max(rim * 0.7, step(0.7, h) * 0.85);
+	} else if (pattern == 7) {
+		// Cell edges of a jittered grid on two faces: thin bright lines, like a glaze crazed by a blow.
+		vec2 g = (world_pos.xy + world_pos.zy * 0.7) / (band_m * 0.6);
+		vec2 i = floor(g);
+		vec2 f = fract(g);
+		float d1 = 8.0;
+		float d2 = 8.0;
+		for (int y = -1; y <= 1; y++) {
+			for (int x = -1; x <= 1; x++) {
+				vec2 o = vec2(float(x), float(y));
+				vec2 p = o + vec2(hash(i + o), hash(i + o + 17.0)) - f;
+				float d = dot(p, p);
+				if (d < d1) { d2 = d1; d1 = d; } else if (d < d2) { d2 = d; }
+			}
+		}
+		float edge = sqrt(d2) - sqrt(d1);
+		a = max(rim * 0.5, (1.0 - smoothstep(0.03, 0.09, edge)) * 1.1);
 	} else if (pattern == 6) {
 		a = 0.55 + 0.45 * smoothstep(0.3, 0.6, rim);
 	}
