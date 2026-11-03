@@ -4602,7 +4602,8 @@
         "nodes": {
           ".": {
             "level_path": "res://game/levels/prologue/prologue.tscn",
-            "scene_id": "prologue_dead_city"
+            "scene_id": "prologue_dead_city",
+            "hold_line": "prologue_dead_city_001"
           }
         }
       }
