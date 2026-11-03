@@ -15,7 +15,15 @@ The gap (the human's playtest note): battles had no action animation. This track
 - **(2) Row 70, the damage numbers: LEAD-ANSWERED, taken.**
   - A new tool, tools/vfx/float_fade_sheet.tscn, takes stills of a tideline hit's number through its pop, rise and
     fade (the tween stepped by hand), with its alpha and colour logged.
-  - Rendering now; the result follows.
+  - **Result (lavapipe, 1080p, VIEWED):** the "111" over the beach sand is solid white (#F2F5FA, ui_line_white)
+    with its 4 px dark outline at alpha 1.00 at 60, 300 and 600 ms: it reads clearly for its whole 0.7 s rise.
+  - Only the last 250 ms fade (battle_hud.json damage.fade_sec) gives the row's "faint translucent grey": alpha
+    0.69 at 760 ms and 0.33 at 850 ms, with the outline fading too and the sand showing through.
+  - So the row's stills (115, 62, 203; the Reach's 132) were most likely caught mid-fade. Not a colour or theme
+    defect: nothing changed.
+  - **PC-QUEUE (row 70):** re-check on the GPU with a still inside the first 0.7 s
+    (`float_fade_sheet -- --at_ms=60,300,600,760,850`). If the human still finds them faint at play speed, the
+    lever is ui-menus' timing: a short hold at full alpha before damage.fade_sec, not a colour change.
 
 ### 2026-11-03 ~18:10: the Lead's storm-overlap decision (big47): ONE Undertow per fight
 **MERGE-READY @ 304146c55** (FAST-TRACK, for big48; supersedes 6231069dc).
@@ -107,6 +115,7 @@ The gap (the human's playtest note): battles had no action animation. This track
   translucent grey was likely a capture mid-fade.
 
 ### PC-QUEUE
+- Row 70: the damage numbers at full alpha on the GPU (float_fade_sheet; lavapipe reads them solid until the fade).
 - The status looks at 1080p on the GPU: strength and readability.
 - The Undertow's cost inside a battle: the frame time and the hitch bar (<= 2 s hidden).
 
