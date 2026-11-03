@@ -2,8 +2,9 @@
 id: M4-A2P-1501
 title: "Ch11 Lowlight and Sunken Vey: let the lamp flames flicker (ZoneKitDressing \"flicker\")"
 role: environment
-status: todo
-owner_session: ""
+status: review
+reviewer: environment (env-art-b)
+owner_session: env-art (claude/env-art)
 depends_on: []
 reviewer: environment
 milestone: M4
@@ -29,3 +30,11 @@ read). Optional: a few `drift` rows (the kit's `tide_debris`) on Sunken Vey's fl
 - [ ] env-art views a Ch11 shot with the flicker on.
 
 ## Review log
+- 2026-11-03, env-art: **no flicker rows. Ch11 has no open flame.** Every light in both zones is bound teal or grey
+  shaft daylight: the Engine's twelve trimmed lamps, the flights' conduits, the lamp bench's conduit light, the well's
+  upwelling, the Vey's conduit court. lowlight.md §0 has them "bound teal, steady", and colour script rule 2 holds
+  bound light still. The generator's comment now says so.
+  - **Drift: done.** Nine `tide_debris` pieces lie adrift on the Vey's flooded lanes (`_vey_debris`, Hollowmere's
+    float height). Each sits 4.2–6.5 m off a gallery walk, clear of every greybox block by 0.8 m and of the arcades.
+  - Viewed in walk stills: a log and plank afloat, their weed under the surface.
+  - Checks: test_ch11_lowlight_dressing OK.
