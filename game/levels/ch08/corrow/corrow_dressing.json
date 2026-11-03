@@ -62,7 +62,7 @@
    "yaw_deg": -135.0,
    "color": "#9FB4C8",
    "energy": 0.8,
-   "specular": 0.15,
+   "specular": 0.0,
    "block": "Storm"
   },
   {
@@ -88,6 +88,15 @@
    "energy": 0.3,
    "specular": 0.0,
    "block": "Storm"
+  }
+ ],
+ "block_looks": [
+  {
+   "block": "Storm",
+   "sun_specular": 0.0,
+   "water_params": {
+    "glint_strength": 0.0
+   }
   }
  ],
  "fire_light_color": "#E0702E",

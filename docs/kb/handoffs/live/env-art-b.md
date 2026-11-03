@@ -1428,3 +1428,15 @@ SELF-RENDERED @ baf421df: the Lacquer Court from the Barge, Steps and CourtEntry
 - **Checks:** Godot `--filter=storm` 41/0 (includes test_battle_storm's one-Undertow test and test_storm_encounters), battle_arena 20/0; tools test_b_arenas and test_arenas OK; validate_data, taskboard, gdlint/gdformat.
 - M3-ENV-1253 (the Choir's half) and M3-ENV-1341 are at review. M4-A2P-1502's first ask is already met by the storm table.
 - **MERGE-READY @ 74df3bdb** for big48 (everything since 211d8bd7, the Act II and Ch17 work included).
+
+### Lead 19:51: W20's sun glint under the storm (slice-polish's ch08_wall_falls_w20)
+- **Merged integration @ d89a9e23** (big47).
+- **Fixed @ 1a115b49.** The water shader draws its sun glint for every light, whatever the light's specular, so the glint can't be switched off through the lights.
+  - New `ZoneKitDressing` row type, additive: `block_looks`. While a block shows, the zone's sun takes a given specular and every water material in the zone (its Water and the `waters` rows) takes given shader params. Both go back when the block hides or the dressing leaves the tree.
+  - Corrow's `Storm` block now carries `sun_specular 0` and `glint_strength 0`, and its landward fill's specular is 0: the storm's light only.
+  - The water material is shared with Coilspire and Ch9's Corrow, so it is restored when the dressing leaves.
+- **For act1-chapters:** the festival kites still fly over the wall in W20. Removing them in the storm state is yours, as the Lead said.
+- SELF-RENDERED: ch08_wall_falls_w20 (HYMN_SHOT_TIMEOUT=1500, 548 s). I applied slice-polish's b3264a22 W20 camera and shot entry to my tree for the render only, then reverted them; that work is theirs to merge.
+  - **Viewed:** no sun glint on the sea under the storm. The water reads dark, with only the storm's cyan rents and rain on it, while the wall-head, the drowned low town and the vortex hold the frame.
+- **Checks:** Godot zone_kit 14/0 (new test: no glint under the storm, restored after), corrow 18/0, ch08 25/0, ch09 13/0; tools test_corrow_kit; validate_data; gdlint/gdformat.
+- **MERGE-READY @ 1a115b49.**
