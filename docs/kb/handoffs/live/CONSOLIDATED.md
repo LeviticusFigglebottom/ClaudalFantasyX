@@ -1,3 +1,16 @@
+## STATE 2026-11-03 21:00 UTC
+- **big48 merged** (2a3d172c), which completes the human's 11-03 FAST-TRACKs:
+  - the storm cutscenes show the Undertow's vortex (Ch1's Rising and Ch8's W20, M3-CIN-1252);
+  - one Undertow per storm fight;
+  - FieldSpell's result shape and the field Mend;
+  - credits (facts only, Godot's MIT notice, the OFL fonts).
+- Lead rulings today:
+  - The Act I end card still returns to the title. Ch10 waits behind the `act2_playable` flag until Act I sign-off.
+  - act1-chapters stages Act II Ch13–16 and wires the Act II → III break.
+  - slice-polish moves its frame-timed shots to line-held timing, then starts Act III staging.
+  - W20's sun glint goes to env-art-b, and its kites to act1-chapters.
+- Waiting on the human: whether to create `main` (or change the default branch); whether to put a name in the credits; switching the PC back on for real-GPU QA.
+
 ## STATE 2026-11-03 19:30 UTC
 - **big47 merged** (b06e963a): all five of the human's 11-03 playtest FAST-TRACKs.
   - The walk fix.
