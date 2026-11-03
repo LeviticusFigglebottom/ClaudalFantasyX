@@ -1659,3 +1659,12 @@ command-menu battle shots (help line).
 ### Next (ui-menus)
 - Act I has no other open ui row I can fix without the PC. Next: the Lead's word on row 70, then Act II items from
   my M4 tasks (M4-A2P-080..083 are STALE "doing" on the board: re-check each against what has shipped).
+- **M4-A2P-081 (6b6ffef70):** portraits baked and viewed for the Kirru who speak (`kirru`, `kirru_child`: neutral,
+  soft_smile, sad) and the Ullari woman (neutral, soft_smile, tender, sad); PROVENANCE rows; test_hero_portraits
+  22/0, test_dialogue_box 27/0. For characters: the Kirru wear Pell's human face poses, which barely move their
+  muzzles (their faces read nearly alike); the Ullari woman's laugh is a grimace with the tongue out, so it is not
+  baked. Still waiting: Liss's father and Kesh (no models).
+- **M4-A2P-080 → review (narrative):** the reader is done; only records.json's content (narrative) is left.
+- **Still blocked:** M4-A2P-082 (Pell has no characters.json battle row), M4-A2P-083's answered-by line (Venn's row
+  has no answered_key), row 70 (battle-presentation, GPU still).
+MERGE-READY @ 6b6ffef70: everything above, plus M4-A2P-081's new portraits.
