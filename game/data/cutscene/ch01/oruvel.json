@@ -1,0 +1,29 @@
+{
+ "_doc": "M5-A3P-1203 (cinematics'): Oruvel's post-credits shot, added by CutsceneStaging. E13 (ending_first_lamp, E7): a held medium on the front of Kell's stall, where the first new oil lamp is lit with her wick; the lamp (OilLamp, a light-only practical with its flame bead under the light, dark until @light OilLamp on) is the only warm light in frame.",
+ "shots": {
+  "E13": {
+   "pos": [
+    28.0,
+    2.0,
+    -3.5
+   ],
+   "look_at": [
+    31.0,
+    2.1,
+    -8.0
+   ],
+   "fov": 40
+  }
+ },
+ "props": {
+  "oil_lamp": {
+   "at": [
+    31.0,
+    2.05,
+    -8.0,
+    0.0
+   ],
+   "scene": "res://game/data/cutscene/ch01/oil_lamp.tscn"
+  }
+ }
+}

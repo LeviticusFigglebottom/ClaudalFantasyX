@@ -1,0 +1,39 @@
+{
+ "_doc": "M5-A3P-1203 (cinematics'): Haluna's Ending shots, added by CutsceneStaging (HalunaZone.location_id). E11 (ending_the_dark_sea, E5/E6): ONE LOCKED SHOT on the planks about 4 m shoreward of Asha at the dock's end and 1.5 m aside, eye height 1.5 m, a 50 mm lens (27 deg vertical), looking out to sea past her: she turns about 50 deg toward Haluna, into a front three-quarter. E12 (ending_beach_rite, the credits' vignette): from the shore side at chest height, the villagers' and Toma's faces with their backs to the sea, the motes rising behind them from beach_sea.",
+ "shots": {
+  "E11": {
+   "pos": [
+    18.2,
+    2.9,
+    44.84
+   ],
+   "look_at": [
+    22.23,
+    2.8,
+    40.14
+   ],
+   "fov": 27
+  },
+  "E12": {
+   "pos": [
+    -9.0,
+    1.6,
+    10.5
+   ],
+   "look_at": [
+    0.0,
+    1.6,
+    8.5
+   ],
+   "fov": 40
+  }
+ },
+ "marks": {
+  "beach_sea": [
+   4.0,
+   0.3,
+   8.0,
+   0.0
+  ]
+ }
+}

@@ -12,6 +12,9 @@ extends Node3D
 
 ## Spawn used at _ready (a loader then calls place_at with its own spawn).
 @export var start_spawn: StringName = &"Shrine"
+## The location id (LocationRegistry): CutsceneStaging adds cinematics' shots and marks from
+## game/data/cutscene/ch02/haluna.json before a scene plays (M5-A3P-1203: the Ending's E11 and E12).
+@export var location_id: StringName = &"ch02/haluna"
 ## Raised above the marker on placement so the capsule settles onto the ground.
 @export var spawn_lift_m: float = 0.02
 ## A shadow_normal_bias for the zone sun in place of the mood scene's 1.0; 0 (the default, and
@@ -215,8 +218,10 @@ func _apply_face_key_bias() -> void:
 ## M2-FP-15: Haluna at night for B11. `night` is first_playable.json haluna.night: the world's own
 ## night mood (HalunaMood `mood`, M2-ENV-02: moon, star sky, sea-glow, the houses' oil lamps), plus
 ## the zone's practicals, warm lanterns at the given points (the dock). `hide` lists node paths (the
-## dock villagers) that are gone home at night.
+## dock villagers) that are gone home at night. An optional `sea_glow` replaces the night's sea-glow.
 func set_night(night: Dictionary, hide: Array = []) -> void:
+	if night.has("sea_glow"):  # M5-A3P-1203: E6's sea is completely dark
+		mood.set(&"night_sea_glow", float(night["sea_glow"]))
 	mood.set(&"mood", StringName(str(night.get("mood", "night"))))
 	apply_wind_variant(&"night")
 	var lamps := Node3D.new()
