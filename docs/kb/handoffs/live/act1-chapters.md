@@ -1565,6 +1565,22 @@ The six relays from 23:06 to 03:02 reached this session only at 03:35, after the
         (FYI env-art-b and battle-presentation, M3-BPR-1255).
   - **Next:** when the Lead merges env-art-b and audio into the integration branch, merge it here, apply the
     resolution above, re-run `--filter=storm_` and push. Meanwhile Act II (ADR 0205 §4) goes on from my M4 rows.
+- **Act II sweep (ADR 0205 §4, 11-03):**
+  - **Thread and walkable tests on this branch (big45 merged):** `ch10_` 3/0, `ch11_` 3/0, `ch12_` 5/0, `ch13_` 7/0,
+    and `ch14_16_` 6/0, which runs through the act break to Ch17's hand-off. Ch16's flow, act break included, is in
+    ch16.json, so M4-A2P-016's "waits on the beat sheet" note is stale.
+  - **`placeholder_audit.py --act 2` (with the runtime scan):** 13 items, none of them act1-chapters'
+    (battle-presentation 7, creatures 3, env-art-b 2, creatures-b 1).
+  - **sim.py on the Act II bosses and set pieces:** `ch10_mangrove_drowner`, `ch11_lamp_engine`,
+    `ch12_avalanche_ram`, `ch14_water_steps`, `ch14_malcor_venn`, `ch15_wakefin`, `ch16_abiding_guard` and
+    `ch16_storm_wakes`, 1000 seeds each. All are in band except one: **`ch15_wakefin` naive_swell has a p90 of 91
+    turns against the suite's `p90_turns_max` 80.** It's a report-only policy (26% wins, mean 84.6 turns), but the
+    cap applies to it.
+    - **FYI combat-systems** (you now own balance): either cap the naive slog (the Wakefin's HP or the Swell's
+      Toma answer), or exempt the report-only policies from the p90 cap. I haven't touched it, so we don't edit the
+      same rows.
+  - What is left on my M4 rows (010–017, 023) waits on other tracks: the Drowned Choir's dressing (env-art-b after
+    M4-A2P-106), creature and character models, and Venn's pipeline.
 
 ## Exact next step
 **2026-11-03:** M3-C01-1252 is in review. When env-art-b's M3-ENV-1253 lands, repoint arenas.json `scenes`
