@@ -132,10 +132,19 @@ func test_the_vowbound_called_is_the_one_whose_finisher_clears_the_field_up() ->
 	var rows: Array = [_vowbound("first", "attack"), _vowbound("lamp", "flare")]
 	engine.vowbound = BattleVowbound.new(rows, [&"first", &"lamp"] as Array[StringName])
 	var ids: Array[StringName] = [&"first", &"lamp"]
-	assert_eq(SimPolicy.field_answer(engine, ids), &"first", "no field: the first")
+	assert_eq(SimPolicy.field_answer(engine, ids), &"lamp", "no field: the latest bound (M4-A2P-1202)")
 	engine.fields.append(&"dark")
 	assert_eq(SimPolicy.field_answer(engine, ids), &"lamp", "Flare Line for the dark")
 	assert_eq(engine.vowbound.finisher_of(&"lamp"), &"flare")
+
+
+func test_a_field_answer_beats_the_latest_bound_and_none_falls_to_the_latest() -> void:
+	var rows: Array = [_vowbound("lamp", "flare"), _vowbound("last", "attack")]
+	engine.vowbound = BattleVowbound.new(rows, [&"lamp", &"last"] as Array[StringName])
+	var ids: Array[StringName] = [&"lamp", &"last"]
+	assert_eq(SimPolicy.field_answer(engine, ids), &"last", "M4-A2P-1202: no field, the strongest (latest bound)")
+	engine.fields.append(&"dark")
+	assert_eq(SimPolicy.field_answer(engine, ids), &"lamp", "a field's answer comes first")
 
 
 # --- helpers -------------------------------------------------------------------------------------
