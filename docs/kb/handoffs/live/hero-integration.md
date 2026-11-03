@@ -2379,3 +2379,4 @@ MERGE-READY @ (this commit).
   - The hitch numbers need the PC.
   - The last fast gate is the Lead's.
 MERGE-READY @ (this commit): the two audit scope fixes and the inventory refresh.
+- Trial merge big46 @ 0ff565787: clean; hero_walk_cycle 5/0, hero_stage 11/0 (big46's characters fix: the pre-existing red is gone), hero_field_gait 13/0, hero_field_actor 15/0. MERGE-READY @ 0ff565787.
