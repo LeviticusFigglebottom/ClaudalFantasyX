@@ -162,3 +162,5 @@ MAGIC_MENU_ERR_GENERIC_FMT,{spell} cannot be cast now.
 MAGIC_MENU_COUNT_ONE,1 spell
 MAGIC_MENU_COUNT_NONE,None
 STATUS_HELP_LASTS_DOOM_FMT,"Counts down from {turns}, one for each of their turns. It does not wear off."
+MAGIC_MENU_ERR_PETRIFIED_FMT,{name} is stone. {spell} cannot reach them.
+MAGIC_MENU_ERR_WOULD_HURT_FMT,"{name} is Hollowed: {spell} would hurt them, not heal them."

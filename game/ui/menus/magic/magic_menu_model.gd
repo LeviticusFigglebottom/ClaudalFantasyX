@@ -2,7 +2,7 @@ class_name MagicMenuModel
 extends RefCounted
 ## The words and steps of the field Magic page (M3-UI-1251; the human's playtest FAST-TRACK 5, 2026-11-03), Node-free,
 ## over a PartySheet. A hero casts a field-usable spell (Mend and the like) on the party outside battle and pays its
-## MP. What a spell does, who it may reach and what it costs are combat-systems' rules (FieldMagicRules, M3-CMB-1252):
+## MP. What a spell does, who it may reach and what it costs are combat-systems' rules (FieldMagicRules over FieldSpell, combat-systems' M3-CMB-05):
 ## this page only asks them, shows the answer in words, and writes the result to the save as the Items page does
 ## (GameStateData.record_vitals, keeping each hero's Swell and only the carried statuses). The view is MagicMenu;
 ## words are loc keys (menus.csv MAGIC_MENU_*, plus the Items page's preview keys and the skill and hero names).
@@ -14,7 +14,7 @@ extends RefCounted
 const DATA_PATH := "res://game/data/ui/magic_menu.json"
 const RESULT_OK := &""
 const TARGET_ALL := ["all_allies", "all_other_allies"]
-## The refusal ids the rules return (M3-CMB-1252) -> their loc keys ({spell}, {name}, {caster} filled in).
+## The refusal ids the rules return (FieldSpell, M3-CMB-05) -> their loc keys ({spell}, {name}, {caster} filled in).
 const REFUSAL_KEYS := {
 	&"no_mp": "MAGIC_MENU_ERR_NO_MP_FMT",
 	&"silenced": "MAGIC_MENU_ERR_SILENCED_FMT",
@@ -25,6 +25,12 @@ const REFUSAL_KEYS := {
 	&"nothing_to_cure": "MAGIC_MENU_ERR_NOTHING_TO_CURE_FMT",
 	&"no_effect": "MAGIC_MENU_ERR_NO_EFFECT_FMT",
 	&"no_one": "MAGIC_MENU_ERR_NO_ONE_FMT",
+	# FieldSpell's own ids (combat-systems M3-CMB-05)
+	&"caster_down": "MAGIC_MENU_ERR_CASTER_FALLEN_FMT",
+	&"fallen": "MAGIC_MENU_ERR_FALLEN_FMT",
+	&"petrified": "MAGIC_MENU_ERR_PETRIFIED_FMT",
+	&"would_hurt": "MAGIC_MENU_ERR_WOULD_HURT_FMT",
+	&"nothing_to_do": "MAGIC_MENU_ERR_NO_EFFECT_FMT",
 }
 const ERR_NO_SPELLS := &"no_spells"
 const ERR_NO_ONE := &"no_one"
