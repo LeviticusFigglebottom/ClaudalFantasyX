@@ -1,0 +1,85 @@
+{
+ "version": 1,
+ "doc": "The human-facing start on the real GPU (pc-gpu): slice_sweep --walk=res://tools/gpu_bench/playtest_walk.json --stills=<dir> --still-every=3. Title, New Game (the Prologue plays its own flow in the 90 s dwell), the party running from behind and the side, Ch1's start, Ch2's beach arrival (Rhen in the shallows, Asha at his side), a run through Haluna and the first fight. press: an input action tapped every 1.5 s through the dwell (ui_accept taps through dialogue).",
+ "segments": [
+  {
+   "id": "title",
+   "kind": "scene",
+   "arg": "res://game/core/boot.tscn",
+   "dwell": 4
+  },
+  {
+   "id": "newgame",
+   "kind": "newgame",
+   "arg": "prologue",
+   "spawn": "Start",
+   "dwell": 90,
+   "press": "ui_accept"
+  },
+  {
+   "id": "prologue_run",
+   "kind": "run",
+   "arg": "field_move_forward",
+   "dwell": 8,
+   "press": "ui_accept"
+  },
+  {
+   "id": "prologue_run_side",
+   "kind": "run",
+   "arg": "field_move_forward+field_camera_left",
+   "dwell": 8,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch01",
+   "kind": "chapter",
+   "arg": "ch01",
+   "dwell": 40,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch01_run",
+   "kind": "run",
+   "arg": "field_move_forward",
+   "dwell": 8,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch01_run_side",
+   "kind": "run",
+   "arg": "field_move_forward+field_camera_left",
+   "dwell": 8,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch02",
+   "kind": "chapter",
+   "arg": "ch02",
+   "dwell": 75,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch02_run",
+   "kind": "run",
+   "arg": "field_move_forward",
+   "spawn": "Village",
+   "dwell": 8,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch02_run_side",
+   "kind": "run",
+   "arg": "field_move_forward+field_camera_right",
+   "dwell": 8,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch02_first_fight",
+   "kind": "battle",
+   "arg": "ch02_tideline",
+   "spawn": "BattleReturn",
+   "dwell": 24,
+   "return": "ch02/haluna"
+  }
+ ]
+}

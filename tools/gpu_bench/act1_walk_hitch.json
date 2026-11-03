@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "doc": "Row 67 hitch probe (pc-gpu): the Ch6, Ch7 and Ch8 entries with --budget. Generated from act1_walk.json.",
+ "segments": [
+  {
+   "id": "launch",
+   "kind": "launch",
+   "arg": "res://game/core/boot.tscn"
+  },
+  {
+   "id": "title",
+   "kind": "scene",
+   "arg": "res://game/core/boot.tscn"
+  },
+  {
+   "id": "ch06",
+   "kind": "chapter",
+   "arg": "ch06",
+   "dwell": 45,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch07",
+   "kind": "chapter",
+   "arg": "ch07",
+   "dwell": 45,
+   "press": "ui_accept"
+  },
+  {
+   "id": "tamsule_bell_galleries",
+   "kind": "location",
+   "arg": "ch07/tamsule_bell_galleries",
+   "dwell": 30,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch08",
+   "kind": "chapter",
+   "arg": "ch08",
+   "dwell": 45,
+   "press": "ui_accept"
+  },
+  {
+   "id": "coilspire",
+   "kind": "location",
+   "arg": "ch08/coilspire",
+   "dwell": 30,
+   "press": "ui_accept"
+  }
+ ]
+}

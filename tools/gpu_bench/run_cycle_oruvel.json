@@ -1,0 +1,34 @@
+{
+ "version": 1,
+ "doc": "Rhen's default run (jog) in Oruvel on the real GPU (pc-gpu, the human's 10-30 playtest: 'arms flail up, looks jagged'): from behind, from the side and toward the camera, a still every 0.1 s. slice_sweep --walk=res://tools/gpu_bench/run_cycle_oruvel.json --stills=<dir>.",
+ "segments": [
+  {
+   "id": "oruvel",
+   "kind": "location",
+   "arg": "ch01/oruvel",
+   "dwell": 8,
+   "press": "ui_accept"
+  },
+  {
+   "id": "jog_back",
+   "kind": "run",
+   "arg": "field_move_forward",
+   "dwell": 2.5,
+   "still_every": 0.1
+  },
+  {
+   "id": "jog_side",
+   "kind": "run",
+   "arg": "field_move_left",
+   "dwell": 2.0,
+   "still_every": 0.1
+  },
+  {
+   "id": "jog_front",
+   "kind": "run",
+   "arg": "field_move_back",
+   "dwell": 2.0,
+   "still_every": 0.1
+  }
+ ]
+}
