@@ -55,3 +55,19 @@ GATE-BUILT @ 79a3c1ff
     (audio), test_creatures (creatures-b), test_status_names (ui). Known: test_palette_check, test_screenshots.
 
 GATE-FAST-DONE (merge-approved under the standing rule: the one new red is Act II content, routed to env-art; every Godot filter is green).
+
+## Shots (36: the new shots, the tracks' self-rendered ids, the storm arenas and the Hullgnaw intro)
+Published on `lead/gate-big48-shots` @ 5c679464 in `docs/kb/qa/gate-runs/big48/` (out, out/diff, compare.txt, contact grids g00–g05).
+- **1 PASS, 11 DRIFT, 24 NO-BASELINE** (pending: the storm cutscene shots ch01_rising_eye, ch01_oruvel_storm, ch01_hullgnaw_rises,
+  ch01_going_under_u10, ch01_sadi_mooring, ch08_storm_wall_f08w, ch08_storm_eye_f08e, ch08_wall_falls_w20, plus credits_roll, magic_menu, the status
+  help pair and the two storm arenas; never baselined: the Act II/III zone shots ch14_court_*, ch15_open_sea_dawn, ch16_choir_*, ch17_hollowmere_*,
+  battle_arena_drowned_choir_ring/_storm). Four cutscene shots hung past 600 s under the parallel gate load and were re-captured alone with
+  HYMN_SHOT_TIMEOUT=1800; 0 failed in the end.
+- Viewed (FAST-TRACK 4): **the vortex now reads in the storm cutscenes**: the Rising's eye, Oruvel's storm over the reef ("The reef's showing"), Ch8's
+  storm wall and eye, W20 over the breach (with a bright sun glint on the sea, which env-art-b's big49 fix removes). battle_arena_drowned_choir_storm
+  has rain over the Choir's ring.
+- **Still watch: battle_boss_intro_hullgnaw (0.384):** the Hullgnaw is a near-black silhouette (as in big47).
+- The slice drifts (slice_prologue_vigil_line 0.16, slice_beach_h05_asha 0.29, slice_beach_h06_toma 0.28, slice_dock_night_yes 0.03) are the beat
+  audit's held-timing frames: the line is the same, and the frame is a later moment than the old baseline.
+
+LEAD-REVIEW big48: 36 shots (1 PASS, 11 DRIFT, 24 NO-BASELINE), Godot all green, fixes the integration branch's duplicate shot id; routed: env-art (sunken_vey_gallery); watch the Hullgnaw intro silhouette; merge when you approve
