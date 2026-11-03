@@ -1,6 +1,6 @@
 extends TestCase
 ## M3-AUD-865 (the human's playtest FAST-TRACK, 2026-11-03): inside the Undertow's storm the fights play
-## storm_battle, never the uplifting default, and the field between them is the storm's (undertow_storm), not the
+## battle_storm, never the uplifting default, and the field between them is the storm's (undertow_storm), not the
 ## town's bed. The battle cue's order (encounter, arena, the field zone's `battle`, default), the director keeping the
 ## field's storm cue across the swap into the battle scene, and a `from_loop` cue starting at its loop, not its intro.
 
@@ -29,12 +29,12 @@ func test_the_battle_cue_order() -> void:
 func test_the_storm_fights_never_play_the_default() -> void:
 	var music := AudioData.table(MUSIC)
 	var default := StringName(str((music["battle"] as Dictionary)["default"]))
-	assert_eq(AudioData.battle_cue(music, &"ch01_scuttlers", "oruvel_raft_morning"), &"storm_battle")
-	assert_eq(AudioData.battle_cue(music, &"ch01_hullgnaw", "oruvel_raft_morning", &"storm_battle"), &"hullgnaw")
+	assert_eq(AudioData.battle_cue(music, &"ch01_scuttlers", "oruvel_raft_morning"), &"battle_storm")
+	assert_eq(AudioData.battle_cue(music, &"ch01_hullgnaw", "oruvel_raft_morning", &"battle_storm"), &"hullgnaw")
 	assert_eq(AudioData.battle_cue(music, &"ch08_stair_hold_1", "seawall_stairhead_storm"), &"seawall_hold")
 	assert_eq(
-		AudioData.battle_cue(music, &"ch08_headland_gulls", "coilspire_headland_path", &"storm_battle"),
-		&"storm_battle",
+		AudioData.battle_cue(music, &"ch08_headland_gulls", "coilspire_headland_path", &"battle_storm"),
+		&"battle_storm",
 		"the stormgulls after the beacon"
 	)
 	assert_eq(
@@ -42,7 +42,7 @@ func test_the_storm_fights_never_play_the_default() -> void:
 		default,
 		"before it, an ordinary fight"
 	)
-	assert_true(AudioData.cue_files(AudioData.cue(music, &"storm_battle"))[0].ends_with("storm_battle.ogg"))
+	assert_true(AudioData.cue_files(AudioData.cue(music, &"battle_storm"))[0].ends_with("storm_battle.ogg"))
 
 
 func test_the_storm_variants() -> void:
@@ -55,11 +55,11 @@ func test_the_storm_variants() -> void:
 	assert_false(AudioData.zone_for(music, ORUVEL, none).has("battle"), "and its fights are ordinary")
 	var storm := AudioData.zone_for(music, ORUVEL, gulls)
 	assert_eq(str(storm["music"]), "undertow_storm", "after the gulls the field is the storm's")
-	assert_eq(str(storm["battle"]), "storm_battle", "and so are its fights")
+	assert_eq(str(storm["battle"]), "battle_storm", "and so are its fights")
 	for scene: String in [CORROW, COILSPIRE]:
 		var row := AudioData.zone_for(music, scene, beacon)
 		assert_eq(str(row["music"]), "undertow_storm", scene)
-		assert_eq(str(row["battle"]), "storm_battle", scene)
+		assert_eq(str(row["battle"]), "battle_storm", scene)
 	assert_eq(str(AudioData.zone_for(music, CORROW, fell)["music"]), "corrow_aftermath", "after the wall falls")
 
 
@@ -70,9 +70,9 @@ func test_the_director_keeps_the_field_storm_across_the_battle_swap() -> void:
 	dir.set_process(false)
 	dir.flag_reader = func(f: StringName) -> bool: return f == &"ch01_gulls_cried"
 	dir.apply_zone(ORUVEL)
-	assert_eq(dir.field_battle_cue, &"storm_battle", "the storm variant's fights")
+	assert_eq(dir.field_battle_cue, &"battle_storm", "the storm variant's fights")
 	dir.apply_zone(BATTLE_SCENE)
-	assert_eq(dir.field_battle_cue, &"storm_battle", "the battle scene's row (no music) keeps the field's")
+	assert_eq(dir.field_battle_cue, &"battle_storm", "the battle scene's row (no music) keeps the field's")
 	dir.flush_pending()
 	dir.apply_zone(ORUVEL)
 	dir.flush_pending()

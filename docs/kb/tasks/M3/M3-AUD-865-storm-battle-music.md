@@ -24,7 +24,7 @@ loudness budget) and make sure the storm's cutscenes and fields use the storm an
    `ch01_scuttlers` name no `@music` and simply inherit what plays.
 
 ## Done
-- **`storm_battle`** (`assets_src/music/storm_battle.py` → `assets/audio/music/storm_battle.ogg`, plain git, 0.75 MB):
+- **`battle_storm`**, the cue id act1-chapters' M3-C01-1252 chose (`assets_src/music/storm_battle.py` → `assets/audio/music/storm_battle.ogg`, plain git, 0.75 MB):
   a battle variant of our own `undertow_rising` (its brass line, clusters and run imported, nothing re-typed; G
   octatonic, the Undertow's mode), at 96 BPM, twice the Rising's tempo. A 5 s intro (the loop's own rise) and a
   70 s loop of 28 bars. Horns and violas come in at the tritone section (bar 17), and the cluster is bowed in
@@ -38,11 +38,11 @@ loudness budget) and make sure the storm's cutscenes and fields use the storm an
   - Oruvel on `ch01_gulls_cried`;
   - Corrow on `ch08_beacon_opened` (with `ch08_wall_fell` → `corrow_aftermath` first);
   - Coilspire on `ch08_beacon_opened`.
-  Each storm variant has `music: undertow_storm` and `battle: storm_battle`.
+  Each storm variant has `music: undertow_storm` and `battle: battle_storm`.
 - **`undertow_storm`**: undertow_rising's own stems with `resume` and the new `from_loop` key (MusicDeck starts it
   at its `.loop.json` loop start). After a fight the field returns to the storm's loop, not the Rising's
   town-tune intro.
-- **Rows:** `battle.encounters.ch01_scuttlers` → storm_battle. `battle.arenas` maps `seawall_stairhead_storm`,
+- **Rows:** `battle.encounters.ch01_scuttlers` → battle_storm (act1-chapters' row). `battle.arenas` maps `seawall_stairhead_storm`,
   `wall_head_storm`, and the proposed (pending) `oruvel_raft_storm` and `coilspire_headland_storm`.
 - **Validation** (`tools/audio/data_check.py`):
   - a zone's `battle` must name a cue;
@@ -50,19 +50,23 @@ loudness budget) and make sure the storm's cutscenes and fields use the storm an
   - a `from_loop` cue needs its sidecar.
 
 ## For other tracks (the ids they wire)
-- **act1-chapters (the storm arena variants):** name the Ch1 storm raft arena `oruvel_raft_storm` and the Ch8
-  storm headland `coilspire_headland_storm`. They play storm_battle with nothing more to wire, then take them off
-  `battle.pending_arenas` (or tell audio a different name). New storm encounters need no row of their own.
-  Giving one its own cue: `battle.encounters.<id>: storm_battle`.
+- **act1-chapters (M3-C01-1252, merged into claude/audio):** their interim `battle_storm` row now plays the
+  composed file, and their `oruvel_raft_storm` arena is mapped. `coilspire_headland_storm` remains proposed for
+  the Ch8 headland in the storm. A new storm encounter needs no row; to give one its own cue, use
+  `battle.encounters.<id>: battle_storm`. Their M3-AUD-1254 ask (the cue and the storm arenas' beds) is done.
 - **slice-polish (cutscenes):** the storm's cues are:
   - `undertow_rising`: the Rising, with stem 1 the run;
   - `undertow_storm`: the storm's field loop, no intro;
-  - `storm_battle`;
+  - `battle_storm`;
   - `undertow_reach`, `seawall_hold` and `hullgnaw`.
   A new vortex shot under the Rising needs no cue change. A storm script that wants the storm without the Rising's
   intro says `@music undertow_storm`. `tools/tests/test_storm_music.py` lists the storm scripts and fails if one
   names a calm cue.
 - **battle-presentation:** nothing to wire. BattleAudio picks the cue itself, by encounter, then arena, then zone.
+
+- **Storm beds:**
+  - `storm_gale` and `storm_wall` (`assets_src/sfx/storm_ambience.py`) on the storm arenas;
+  - the same beds in the storm variants' `ambience`.
 
 ## Tests
 - `tools/tests/test_storm_music.py` (10):

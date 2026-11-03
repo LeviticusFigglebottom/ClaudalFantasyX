@@ -23,7 +23,7 @@ import targets  # noqa: E402
 
 MUSIC = ROOT / "game" / "data" / "audio" / "music.json"
 ENCOUNTERS = ROOT / "game" / "data" / "battle" / "encounters.json"
-CUE = "storm_battle"
+CUE = "battle_storm"
 FIELD = "undertow_storm"
 OGG = ROOT / "assets" / "audio" / "music" / "storm_battle.ogg"
 SIDECAR = OGG.with_suffix(".loop.json")
@@ -95,6 +95,9 @@ def battle_cue(music: dict, encounter: str, arena: str = "", zone_cue: str = "")
 class StormMusicRowsTest(unittest.TestCase):
     def setUp(self) -> None:
         self.music = _music()
+        doc = json.loads(ENCOUNTERS.read_text(encoding="utf-8"))
+        rows = doc.get("encounters", doc) if isinstance(doc, dict) else doc
+        self.storm_rows = {str(r["id"]) for r in rows if r.get("storm")}
 
     def test_the_cue_rows(self) -> None:
         cues = self.music["cues"]
@@ -111,6 +114,7 @@ class StormMusicRowsTest(unittest.TestCase):
             self.assertNotIn("battle", calm, scene)
             self.assertEqual(storm.get("music"), FIELD, scene)
             self.assertEqual(storm.get("battle"), CUE, scene)
+            self.assertTrue({"storm_gale", "storm_wall"} & set(storm.get("ambience", [])), f"{scene}: a storm bed")
         after = zone_row(self.music, "res://game/levels/ch08/corrow/corrow.tscn",
                          {"ch08_beacon_opened", "ch08_wall_fell"})
         self.assertEqual(after.get("music"), "corrow_aftermath", "once the wall falls, the aftermath")
@@ -124,11 +128,30 @@ class StormMusicRowsTest(unittest.TestCase):
             cue = battle_cue(self.music, enc, arenas[enc], zone.get("battle", ""))
             self.assertNotEqual(cue, default, enc)
             self.assertIn(cue, self.music["cues"], enc)
+            if enc in self.storm_rows:  # act1-chapters' M3-C01-1252 flag: the cue is one of battle.storm_cues
+                self.assertIn(cue, self.music["battle"]["storm_cues"], enc)
         self.assertEqual(battle_cue(self.music, "ch01_scuttlers", arenas["ch01_scuttlers"]), CUE,
                          "the scuttlers by their own row, whatever the zone")
         self.assertEqual(battle_cue(self.music, "ch08_stair_hold_1", "seawall_stairhead_storm"), "seawall_hold",
                          "a set piece's own cue wins over its storm arena")
         self.assertEqual(battle_cue(self.music, "any_fight", "seawall_stairhead_storm"), CUE)
+
+    def test_every_storm_flagged_fight_plays_a_storm_cue(self) -> None:
+        arenas = _arenas()
+        self.assertIn("ch01_scuttlers", self.storm_rows)
+        for enc in sorted(self.storm_rows):
+            self.assertIn(battle_cue(self.music, enc, arenas.get(enc, "")), self.music["battle"]["storm_cues"], enc)
+        self.assertIn(CUE, self.music["battle"]["storm_cues"])
+        self.assertNotIn("stems", self.music["cues"][CUE], "the composed cue, not the interim undertow_rising row")
+
+    def test_the_storm_arenas_carry_storm_beds(self) -> None:
+        amb = json.loads((ROOT / "game" / "data" / "audio" / "ambience.json").read_text(encoding="utf-8"))
+        for arena in ("oruvel_raft_storm", "seawall_stairhead_storm", "seawall_stairhead_hoist",
+                      "seawall_stairhead_surge", "wall_head_storm"):
+            beds = amb["arenas"].get(arena, [])
+            self.assertTrue({"storm_gale", "storm_wall"} & set(beds), arena)
+        for bed in ("storm_gale", "storm_wall"):
+            self.assertTrue((ROOT / amb["ambience"][bed]["file"].removeprefix("res://")).is_file(), bed)
 
     def test_the_calm_zones_keep_the_default(self) -> None:
         zone = zone_row(self.music, "res://game/levels/ch08/coilspire/coilspire.tscn", set())
@@ -192,7 +215,8 @@ class StormDataCheckTest(unittest.TestCase):
         sys.path.insert(0, str(ROOT / "tools"))
         import validate_data as vd  # noqa: E402
 
-        errs, _ = dc.music_errors(m, exists, vd.declared_flags_quiet(ROOT), set(_arenas()))
+        amb = json.loads((ROOT / "game" / "data" / "audio" / "ambience.json").read_text(encoding="utf-8"))
+        errs, _ = dc.music_errors(m, exists, vd.declared_flags_quiet(ROOT), set(_arenas()), frozenset(amb["ambience"]))
         return errs
 
     def test_the_repo_rows_pass(self) -> None:

@@ -12,8 +12,8 @@ const ACT_ONE := {
 	&"ch01_wickfry": &"underway_tower",
 	&"ch01_oil_slug": &"underway_tower",
 	&"ch01_underway_limpet": &"underway_tower",
-	&"ch01_scuttlers": &"oruvel_raft_morning",
-	&"ch01_hullgnaw": &"oruvel_raft_morning",
+	&"ch01_scuttlers": &"oruvel_raft_storm",
+	&"ch01_hullgnaw": &"oruvel_raft_storm",
 	&"ch03_causeway_shore": &"causeway_route_afternoon",
 	&"ch04_spar_wraith": &"derelict_deck_night",
 	&"ch05_cinder_matron": &"ashcrown_anvil_court",  # M3-BPR-1305: Ashcrown's anvil court (B09)
