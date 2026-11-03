@@ -265,7 +265,6 @@ static func fold_rig(skel: Skeleton3D) -> Dictionary:
 		"fold": deg_to_rad(float(s["fold_deg"])),
 		"from": deg_to_rad(float(s["fold_from_deg"])),
 		"ease": deg_to_rad(float(s["fold_ease_deg"])),
-		"tuck": deg_to_rad(float(s["fold_tuck_deg"])),
 		"top": deg_to_rad(float(s["max_swing_deg"]))
 	}
 
@@ -287,7 +286,6 @@ static func apply_folds(skel: Skeleton3D, rig: Dictionary) -> void:
 			var ang := maxf(a[lv], b[lv])  # the outer of the two: the mean cut into a thigh between them
 			if lv == last:
 				ang = 0.5 * (a[lv] + b[lv])  # but the hem their mean: the outer of the two folded it into spikes
-				ang = maxf(ang, prev - float(rig["tuck"]))  # row 56: never tucked under the knee (cloud pass 6's notch)
 				var t := (ang - float(rig["from"])) / float(rig["ease"])
 				ang = minf(ang + float(rig["fold"]) * smoothstep(0.0, 1.0, t), float(rig["top"]))
 			var gr: Quaternion = own["rests"][lv]
