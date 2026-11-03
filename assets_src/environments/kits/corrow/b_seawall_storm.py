@@ -16,6 +16,11 @@ the walk past the party's right over the head landing and down the top flight.
 
 In battle the arena's Sun and WorldEnvironment move to the battle scene (battle_arena_root.gd), so the storm takes no
 zone shadow or exposure flash here (the arena's grade is already the storm's); its sea level is the arena's sea.
+The storm itself (the human's FAST-TRACK 11-03): the tables' warm low-sun sky read as a sunny day under the
+Undertow, so each arena now takes a storm look from tools/act1/storm_arenas.py (a dark storm sky with no sun, cool
+storm light and a rim from the storm's bearing, rain on the battle camera, the wall and walk soaked):
+`ch08_storm` for the stair holds, `ch08_reach` for the surge (the rain eased so the party's turns read, PC row 72).
+
 Re-run after the tables change, instead of `arena_scenes.py`'s own write of these arenas:
 
     python3 assets_src/environments/kits/corrow/b_seawall_storm.py
@@ -25,16 +30,15 @@ from __future__ import annotations
 
 import importlib.util
 import math
-import re
 import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
-STORM_SCRIPT = "res://game/vfx/undertow/undertow_storm.gd"
-FAR_SCRIPT = "res://game/levels/act1/storm_far_plane.gd"
 PRESETS = {"seawall_stairhead_storm": "ch08_seawall", "seawall_stairhead_hoist": "ch08_seawall",
            "seawall_stairhead_surge": "ch08_landfall"}
+LOOKS = {"seawall_stairhead_storm": "ch08_storm", "seawall_stairhead_hoist": "ch08_storm",
+         "seawall_stairhead_surge": "ch08_reach"}
 HINT = "the_storm_wall"
 STAIR_GLB = "fisher_stair.glb"
 STAIR_FLIGHT_STEPS_DOWN = 5
@@ -55,26 +59,6 @@ def azimuth_deg(table: dict) -> float:
     """The hint's bearing, clockwise from north (-Z), as UndertowStorm.approach_azimuth_deg reads it."""
     (px, _py, pz), (lx, _ly, lz) = table["hints"][HINT]
     return round(math.degrees(math.atan2(lx - px, -(lz - pz))) % 360.0, 2)
-
-
-def add_storm(text: str, table: dict, preset: str) -> str:
-    head = re.match(r"\[gd_scene load_steps=(\d+) format=3\]", text)
-    text = text.replace(head.group(0), f"[gd_scene load_steps={int(head.group(1)) + 2} format=3]", 1)
-    last = list(re.finditer(r'^\[ext_resource [^\n]*\]$', text, flags=re.M))[-1]
-    res = (f'\n[ext_resource type="Script" path="{STORM_SCRIPT}" id="storm_script"]'
-           f'\n[ext_resource type="Script" path="{FAR_SCRIPT}" id="storm_far"]')
-    text = text[:last.end()] + res + text[last.end():]
-    return text.rstrip("\n") + (
-        '\n\n[node name="Undertow" type="Node3D" parent="."]\n'
-        'script = ExtResource("storm_script")\n'
-        f"approach_azimuth_deg = {azimuth_deg(table)}\n"
-        f'preset = "{preset}"\n'
-        "zone_shadow = false\n"
-        "exposure_flash = false\n"
-        f"sea_level_y = {table['sea']['y']}\n"
-        "sea_level_from_water = false\n"
-        '\n[node name="FarPlane" type="Node" parent="Undertow"]\n'
-        'script = ExtResource("storm_far")\n')
 
 
 def stair_marks(table: dict) -> dict[str, tuple[float, float, float]]:
@@ -135,19 +119,31 @@ def _zone_looks():
     return mod
 
 
+def _storm_arenas():
+    """tools/act1/storm_arenas.py: the storm looks and the Undertow, rim and wetting additions."""
+    spec = importlib.util.spec_from_file_location("storm_arenas", ROOT / "tools" / "act1" / "storm_arenas.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def main(out_dir: Path | None = None) -> int:
     AS = _arena_scenes()
     if out_dir is not None:  # tools/tests/test_b_arenas.py writes to a scratch dir
         AS.OUT_DIR = out_dir
     zl = _zone_looks()
+    sa = _storm_arenas()
     mod = zl.load_generator("ch08_corrow_dressing")
     paths = mod.kit_material_paths()  # the zone's slot looks (M3-ENV-1326)
     for aid, preset in PRESETS.items():
         table = AS.ARENAS[aid]
-        path = AS.write_arena(table)
-        text = add_stair_marks(add_storm(path.read_text(encoding="utf-8"), table, preset), table)
-        path.write_text(zl.add_kit_slot_swaps(text, paths), encoding="utf-8")
-        print(f"ARENA {path.name} (+ Undertow {preset} at {azimuth_deg(table)} deg)")
+        look = LOOKS[aid]
+        path = AS.write_arena(sa.styled(table, look))
+        text = sa.dress(path.read_text(encoding="utf-8"), look, azimuth=azimuth_deg(table), preset=preset,
+                        sea_y=table["sea"]["y"])
+        text = zl.add_kit_slot_swaps(add_stair_marks(text, table), paths)
+        path.write_text(sa.add_rain_wet(text, look), encoding="utf-8")
+        print(f"ARENA {path.name} (storm look {look}, Undertow {preset} at {azimuth_deg(table)} deg)")
     return 0
 
 

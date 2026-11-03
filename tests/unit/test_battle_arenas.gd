@@ -12,6 +12,7 @@ const ARENAS: Array[StringName] = [
 	&"ash_terrace_lanternfall",
 	&"underway_tower",
 	&"oruvel_raft_morning",
+	&"oruvel_raft_storm",
 	&"seawall_stairhead_storm",
 	&"seawall_stairhead_hoist",
 	&"seawall_stairhead_surge",
@@ -59,7 +60,9 @@ func test_every_arena_is_a_battle_arena_with_its_grade_and_no_camera() -> void:
 		assert_true(arena.sea() is ArenaSea, "%s: its Sea is an ArenaSea" % id)
 		assert_eq(_count(arena, "Camera3D"), 0, "%s: no camera (the battle scene owns the BattleCamera)" % id)
 		assert_eq(_count(arena, "WorldEnvironment"), 1, "%s: one WorldEnvironment" % id)
-		assert_eq(_count(arena, "DirectionalLight3D"), 1, "%s: one sun" % id)
+		# One sun: the only shadow-casting DirectionalLight3D. Shadowless fills and rims (the storm arenas' StormRim,
+		# the derelict's MoonRim, env-art-b) stay in the arena in battle and cast nothing.
+		assert_eq(_count_shadowed_suns(arena), 1, "%s: one sun" % id)
 		assert_true(not arena.camera_hints().is_empty(), "%s: camera hints for the presentation track" % id)
 		arena.free()
 
@@ -240,6 +243,13 @@ func _instance(id: StringName) -> Node:
 	var scene := load(BattleArenaRoot.path_for(id)) as PackedScene
 	assert_true(scene != null, "%s loads" % id)
 	return scene.instantiate() if scene != null else Node3D.new()
+
+
+func _count_shadowed_suns(n: Node) -> int:
+	var c := 1 if n is DirectionalLight3D and (n as DirectionalLight3D).shadow_enabled else 0
+	for k in n.get_children():
+		c += _count_shadowed_suns(k)
+	return c
 
 
 func _count(n: Node, cls: String) -> int:
