@@ -115,6 +115,63 @@ def water() -> str:
     return "\n".join(lines) + "\n"
 
 
+# M4-A2P-105, the dawn at the bow (chapters' ch15_dawn variant points its environment_res here): the spec's grey-rose
+# sky with no sun yet and fog 0.03, which also lies thickest on the water (height fog), so from the bow the barge sails
+# into a bank and the Hollowmere shore is a shape in it. The same LUT; the night's sea material carries on.
+DAWN_ENV_NAME = "open_sea_dawn_environment.tres"
+DAWN_SKY = {"col_zenith": "Color(0.4118, 0.4157, 0.498, 1)", "col_horizon": "Color(0.7843, 0.651, 0.6431, 1)",
+            "sky_energy": "1.0", "glow_energy": "0.15", "haze_energy": "0.8", "star_density": "0.0",
+            "star_energy": "0.0"}
+DAWN_FOG = {"color": "Color(0.7216, 0.6431, 0.6588, 1)", "density": 0.03, "height": 1.5, "height_density": 0.35}
+DAWN_EXPOSURE = 1.0
+
+
+def dawn_environment() -> str:
+    sky = "\n".join(f"shader_parameter/{k} = {v}" for k, v in DAWN_SKY.items())
+    return f"""[gd_resource type="Environment" load_steps=5 format=3]
+
+[ext_resource type="Shader" path="{SKY_SHADER}" id="1_sky"]
+[ext_resource type="Texture3D" path="{LUT_RES}" id="2_lut"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("1_sky")
+{sky}
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+radiance_size = 1
+
+[resource]
+resource_name = "open_sea_ch15_dawn"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.6039, 0.5569, 0.5882, 1)
+ambient_light_energy = 0.55
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = {DAWN_EXPOSURE}
+tonemap_agx_white = 12.0
+ssr_enabled = true
+ssr_max_steps = 48
+ssr_fade_in = 0.2
+ssr_fade_out = 2.0
+glow_enabled = true
+glow_intensity = 0.4
+glow_bloom = 0.02
+glow_hdr_threshold = 1.0
+fog_enabled = true
+fog_light_color = {DAWN_FOG["color"]}
+fog_light_energy = 1.0
+fog_density = {DAWN_FOG["density"]}
+fog_sky_affect = 0.6
+fog_height = {DAWN_FOG["height"]}
+fog_height_density = {DAWN_FOG["height_density"]}
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("2_lut")
+"""
+
+
 def environment() -> str:
     sky = "\n".join(f"shader_parameter/{k} = {v}" for k, v in SKY.items())
     return f"""[gd_resource type="Environment" load_steps=5 format=3]
@@ -200,6 +257,7 @@ def main() -> None:
     (ZONE / "open_sea_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
     (ZONE / WATER_NAME).write_text(water(), encoding="utf-8")
     (ZONE / ENV_NAME).write_text(environment(), encoding="utf-8")
+    (ZONE / DAWN_ENV_NAME).write_text(dawn_environment(), encoding="utf-8")
     wire_scene()
 
 

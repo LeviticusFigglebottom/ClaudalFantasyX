@@ -1,0 +1,47 @@
+[gd_resource type="Environment" load_steps=5 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_pemakar.gdshader" id="1_sky"]
+[ext_resource type="Texture3D" path="res://assets/environments/arenas/bridal_barge_night/lut_ch15_unlamped.png" id="2_lut"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("1_sky")
+shader_parameter/col_zenith = Color(0.4118, 0.4157, 0.498, 1)
+shader_parameter/col_horizon = Color(0.7843, 0.651, 0.6431, 1)
+shader_parameter/sky_energy = 1.0
+shader_parameter/glow_energy = 0.15
+shader_parameter/haze_energy = 0.8
+shader_parameter/star_density = 0.0
+shader_parameter/star_energy = 0.0
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+radiance_size = 1
+
+[resource]
+resource_name = "open_sea_ch15_dawn"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.6039, 0.5569, 0.5882, 1)
+ambient_light_energy = 0.55
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.0
+tonemap_agx_white = 12.0
+ssr_enabled = true
+ssr_max_steps = 48
+ssr_fade_in = 0.2
+ssr_fade_out = 2.0
+glow_enabled = true
+glow_intensity = 0.4
+glow_bloom = 0.02
+glow_hdr_threshold = 1.0
+fog_enabled = true
+fog_light_color = Color(0.7216, 0.6431, 0.6588, 1)
+fog_light_energy = 1.0
+fog_density = 0.03
+fog_sky_affect = 0.6
+fog_height = 1.5
+fog_height_density = 0.35
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("2_lut")

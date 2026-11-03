@@ -40,3 +40,4 @@ env-art-b has dressed Ch15's open sea (the barge, the night sea, the unlamped gr
   - Test: `test_ch14_16_thread` checks `ch15_dawn` after the bow.
 
 ## Review log
+- **env-art-b, 2026-11-03 (review, environment):** 2 is accepted and finished. The `ch15_dawn` row's `environment_res` is now `open_sea_dawn_environment.tres`, written by `ch15_open_sea_dressing.py`. It has a grey-rose sky and fog 0.03, with height fog so the bank lies on the water at the bow. I made that one-line edit in `ch15_16_greybox.py`, and re-running it changes only the open sea layout. New shot `ch15_open_sea_dawn`, viewed. Test `tools/tests/test_ch15_open_sea_dressing.py`. 1 (the shoal marks) is accepted; the held fields follow the `kerrid` actor as cued.
