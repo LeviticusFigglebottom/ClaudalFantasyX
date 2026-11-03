@@ -118,3 +118,38 @@ func _party(list: Array) -> Array[BattleCombatant]:
 	var out: Array[BattleCombatant] = []
 	out.assign(list)
 	return out
+
+
+func test_self_and_all_other_allies_spells_and_null_inputs() -> void:
+	var asha := sheet.combatant(&"asha")
+	var rhen := sheet.combatant(&"rhen")
+	var party := _party([asha, rhen])
+	var self_cure := _spell(&"mend", {"kind": "support", "target": "self", "cleanses": ["poison"]})
+	assert_eq(self_cure.cast_error(asha, party, rhen), FieldSpell.ERR_NOTHING, "self: the caster, not the pick")
+	asha.statuses[&"poison"] = -1
+	rhen.statuses[&"poison"] = -1
+	var done := self_cure.cast(asha, party, rhen)
+	assert_true(done["ok"])
+	assert_false(asha.has_status(&"poison"))
+	assert_true(rhen.has_status(&"poison"), "the pick is ignored")
+	assert_eq((done["changes"] as Array)[0]["removed"], [&"poison"] as Array[StringName])
+	var others := _spell(&"mend", {"kind": "heal", "power": 10, "target": "all_other_allies"})
+	asha.hp = 10
+	rhen.hp = 10
+	assert_true(others.is_group())
+	var reached := others.reach(asha, party, null)
+	assert_eq(reached.size(), 1)
+	assert_eq(reached[0], rhen, "not the caster")
+	var mend := FieldSpell.for_skill(db, &"mend")
+	assert_eq(mend.name_key(), "SKILL_MEND")
+	assert_eq(mend.caster_error(null), FieldSpell.ERR_UNKNOWN)
+	assert_eq(mend.target_error(asha, null), FieldSpell.ERR_UNKNOWN)
+	assert_eq(FieldSpell.castable(db, null), [] as Array[StringName])
+
+
+func _spell(sid: StringName, extra: Dictionary) -> FieldSpell:
+	var s := FieldSpell.new()
+	s.skill_id = sid
+	s.row = {"id": String(sid), "name_key": "SKILL_MEND", "mp_cost": 2, "field_usable": true}
+	s.row.merge(extra, true)
+	return s

@@ -153,7 +153,7 @@
       "lore_key": "LORE_HULLGNAW",
       "model": "res://game/creatures/hullgnaw/hullgnaw_battle.tscn",
       "phase_name_key": "PHASE_HULLGNAW_RIBS",
-      "stats": {"level": 6, "hp": 2000, "mp": 0, "strength": 3, "magic": 6, "defense": 40,
+      "stats": {"level": 6, "hp": 1850, "mp": 0, "strength": 2, "magic": 6, "defense": 40,
                 "magic_defense": 10, "agility": 12, "accuracy": 10, "evasion": 4, "luck": 6},
       "affinities": {},
       "skills": ["gnaw_coil", "gnaw", "rib_lash"],
