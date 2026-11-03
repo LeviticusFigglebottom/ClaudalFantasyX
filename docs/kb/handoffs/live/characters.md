@@ -714,3 +714,15 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
 - MERGE-READY @ 4db4436a: row 56 (the rebuilt outputs are verified), row 55 (Fenn and Sabe), the row 54 step. Rows 54 and
   55 need a real-GPU re-look (PC-QUEUE).
 - Row 54 shading (6e3cd47a): root_occlusion 0.7, depth_occlusion 0.8, strand_value_jitter 0.35. SELF-RENDERED sefir_face and sefir_back (viewed): the back reads as clumped locks, and the face falls are slightly less flat. Blender verify sefir: identical. MERGE-READY @ 6e3cd47a. Row 54 still wants a real-GPU look (PC-QUEUE). Next for me: Asha's verse-sleeve in the run.
+
+## 2026-11-03 (later): the Lead's 17:21 note (big46 merged): row 55, then the remaining Act I items, then Act II
+- Merged -ze8rrn (big46).
+- **Row 55, Sabe (59fb4fc4):** a darker base (#665F57) under denser, lifted cards (scalp cards 440/330/210, rise 1.0,
+  feather 0.9). SELF-RENDERED villager_sabe_face (viewed): she now reads like Fenn, a textured white-grey crop with
+  a fuzzy edge, not a cap. Blender verify villager_sabe: identical. test_villagers and the Sabe rig probe: OK.
+  On what I can see, row 55 is fixed for Fenn and Sabe. It needs the PC's real-GPU re-look (PC-QUEUE).
+- **Act I characters inventory:** the open characters rows in act1_gpu_qa.md (gpu/act1-qa-7) are 54, 55 and 56 only.
+  Row 31 was fixed in pass 4. Pell's look has no open row: the PC pass 3 items went in at e151c0f0, and nothing newer
+  flags him. The "Pell's look" in CONSOLIDATED §1 looks stale. LEAD-ASK: is there a Pell item I'm missing? If not,
+  please drop it from CONSOLIDATED.
+- MERGE-READY @ 59fb4fc4: row 55 (Sabe), on top of the earlier row 54, 55 and 56 work.
