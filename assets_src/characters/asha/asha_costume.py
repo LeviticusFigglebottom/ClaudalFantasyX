@@ -304,21 +304,12 @@ def convex_radii(r: np.ndarray, D: np.ndarray) -> np.ndarray:
 SKIRT_OUTER_GRID = (64, 20)  # columns round, rows down (was 56 x 22; the LOD0 budget, asha.md §8.1, holds it here)
 UNDERSKIRT_HEM = 0.095  # m (x S) above the floor: just above the ankle (GPU QA row 56: at 0.065 the feet never
 # showed in the run, so she seemed to slide)
-UNDERSKIRT_INSET = 0.015  # m (x S): row 56 (cloud pass 6, a white notch through the outer skirt in the run): where
-# the outer skirt covers it, the underskirt is drawn in this far (never into the body), so its folds stay under the outer's
-UNDERSKIRT_INSET_ABOVE = 0.04  # m (x S) above the outer hem, where the inset starts
-UNDERSKIRT_INSET_FADE = 0.06  # m (x S) over which it eases in
 SKIRT_INNER_GRID = (48, 12)  # (it follows the outer skirt's weights now, so its own density matters less)
-
-
-def smooth01(x):
-    x = np.clip(x, 0.0, 1.0)
-    return x * x * (3.0 - 2.0 * x)
 
 
 def skirt(fields: Fields, name: str, rect, z_top: float, hem_fn, off: float, n_th: int, n_rows: int, folds: int,
           fold_amp: float, flare: float, back_inset: float | None, seed: int,
-          convex: tuple[float, float] | None = None, inset_fn=None) -> Part:
+          convex: tuple[float, float] | None = None) -> Part:
     part = Part(name)
     part._mat = "cloth"
     lm = fields.lm
@@ -338,7 +329,6 @@ def skirt(fields: Fields, name: str, rect, z_top: float, hem_fn, off: float, n_t
         z = z_top + (hem - z_top) * t ** 0.95
         O = np.stack([np.zeros(n_th), np.full(n_th, 0.01 * S), z], axis=-1)
         r = cast_last(fn, O, D, 0.5 * S)
-        r_body = r
         if prev_r is not None:
             r = np.maximum(r, prev_r + flare * (prev_z - z))
         if convex:  # M1-CHR-15: below z0, blending in by z1, span the gap between the legs (the skirt panels carry it)
@@ -348,8 +338,6 @@ def skirt(fields: Fields, name: str, rect, z_top: float, hem_fn, off: float, n_t
         prev_r, prev_z = r, z
         amp = fold_amp * S * t ** 1.3
         rr = r * (1.0 + 0) + amp * (np.sin(folds * th + phase) + 0.4 * np.sin(2.3 * folds * th + 1.7 * phase))
-        if inset_fn is not None:  # row 56 (cloud pass 6): drawn in where another layer covers it, never into the body
-            rr = np.maximum(rr - inset_fn(z, th_deg), r_body)
         P[j] = O + D * rr[:, None]
     centre = np.array([0.0, 0.01 * S, 0.0])
     cols = [[(t ** 1.2, t, (i / n_th * 3.0) % 1.0, 0.15 * t) for i in range(n_th)] for t in np.linspace(0, 1, n_rows)]
@@ -591,9 +579,7 @@ def build_costume(body, params: dict) -> dict[str, Part]:
     out["SkirtInner"] = skirt(fields, "SkirtInner", ATLAS["skirt_inner"], float(lm.P("crotch")[2]) - 0.05 * S,
                               lambda th: np.full_like(th, UNDERSKIRT_HEM * S), 0.004 * S, SKIRT_INNER_GRID[0],
                               SKIRT_INNER_GRID[1], 9, 0.008, 0.13,
-                              0.0012 * S, int(params["seed"]) + 1, convex=(z_waist, z_waist - 0.01 * S),
-                              inset_fn=lambda z, th: UNDERSKIRT_INSET * S * smooth01(
-                                  (z - hem_outer(th) - UNDERSKIRT_INSET_ABOVE * S) / (UNDERSKIRT_INSET_FADE * S)))
+                              0.0012 * S, int(params["seed"]) + 1, convex=(z_waist, z_waist - 0.01 * S))
     # 4. sash
     out["Sash"] = sash(fields, out["SkirtOuter"], out["Vest"], ATLAS["sash"], ATLAS["sash_tails"],
                        float(params["sash_width_m"]) * S, z_waist - 0.02 * S, int(params["seed"]) + 2)
