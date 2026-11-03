@@ -1652,6 +1652,14 @@ The six relays from 23:06 to 03:02 reached this session only at 03:35, after the
   - What is left on my M4 rows (010–017, 023) waits on other tracks: the Drowned Choir's dressing (env-art-b after
     M4-A2P-106), creature and character models, and Venn's pipeline.
 
+## FINAL (2026-11-03 21:30, the human: "finish, commit everything, and stop")
+- **FINAL MERGE-READY @ 5ea5ecebe.** Everything is committed; no WIP, nothing uncommitted. Scoped checks: validate_data 0/0,
+  taskboard --check, dlgc --check 0/0 (the Godot runs are listed in the entries above).
+- **Exact next step for whoever resumes:** docs/kb/handoffs/2026-11-03-cinematics-act1-chapters-2.md, "Exact next
+  step". In short: merge the next integration batch and re-run the storm, Ch8, Ch14–16 and prologue tests. Move
+  `drowned_choir_storm` out of pending when its scene exists. Swap the act break's `#card` for the act_card event
+  when M4-UI-1256 lands. Do the M4-A2P-071–075 stills once the bodies land.
+
 ## Exact next step
 **2026-11-03:** M3-C01-1252 is in review. When env-art-b's M3-ENV-1253 lands, repoint arenas.json `scenes`
 for `oruvel_raft_storm` and `drowned_choir_storm` to their own scenes, move both ids from `storm.pending` to
