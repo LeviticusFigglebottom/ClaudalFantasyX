@@ -1586,6 +1586,26 @@ The six relays from 23:06 to 03:02 reached this session only at 03:35, after the
   - **`drowned_choir_storm` stays in `storm.pending`** (Act II): env-art-b built no Choir variant, and
     M3-ENV-1253 keeps that half. `oruvel_raft_storm` moves to `storm.arenas` when env-art-b's 6b8e416d reaches the
     integration branch (the resolution is above).
+- **Merged the integration branch (big47, d89a9e23), clean.** `oruvel_raft_storm` is now in `storm.arenas` (env-art's
+  scene) and `drowned_choir_storm` is still pending.
+  - **FYI Lead, a red on the integration branch itself:** `test_storm_arenas` fails 2/12 on `oruvel_raft_storm`: no
+    far plane, rain 0.0, no StormRim, not soaked, and `wetted_count` called on Nil. That's env-art-b's test against
+    env-art's scene kept by big47. My tree is byte-identical to the integration branch for those paths.
+- **FAST-TRACK (Lead 19:51, the W20 follow-up): the festival kites come down in Corrow's storm** (@ a0e7ae974).
+  - They had flown over the seawall until `ch08_wave1_held`, so through B08–B09 and in any later start without
+    that flag (W20's shot sets only `ch08_beacon_opened` and `ch08_reach_survived`).
+  - Now `ch08_run_back` still plays its W04_kite shot (the kites coming down, one torn loose). Its arrival row then
+    sets the new flag `ch08_kites_down` (flags.tres) and refreshes the zone's states. The layout's
+    `ch08_kites_down` state hides `Kites` and `KitesHigh`, and `ch08_reach_survived` hides them too, so any start
+    after the Reach has no kites.
+  - `test_ch08_thread` asserts the flag and no kites after B08.
+  - **SELF-RENDERED `ch08_wall_falls_w20`** on a scratch merge with slice-polish's m2-slice (its shot and its W20
+    camera live there), viewed: no kites over the wall. The storm and the Undertow's wounds fill the sky with rain
+    over the breach. The bright sun glint on the sea is still there; that's env-art-b's item.
+  - **Checks run:** validate_data 0/0, gdlint and gdformat. `--filter=ch08` 25/0. The tools corrow tests 28 OK.
+    `storm_` 10/12 (the 2 reds are the integration branch's, above).
+  - **Checks skipped:** coverage (no battle or progression code) and Blender (no source).
+- MERGE-READY @ a0e7ae974 (FAST-TRACK: kites down in the storm)
 - **Act II sweep (ADR 0205 §4, 11-03):**
   - **Thread and walkable tests on this branch (big45 merged):** `ch10_` 3/0, `ch11_` 3/0, `ch12_` 5/0, `ch13_` 7/0,
     and `ch14_16_` 6/0, which runs through the act break to Ch17's hand-off. Ch16's flow, act break included, is in
