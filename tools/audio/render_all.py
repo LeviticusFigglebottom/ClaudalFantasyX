@@ -357,6 +357,9 @@ JOBS = [
     ("assets_src/music/going_under.py", "assets/audio/music", ["going_under.ogg"], "music"),
     ("assets_src/music/undertow_rising.py", "assets/audio/music",
      [f"undertow_rising_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
+    # M3-AUD-865 (the human's playtest FAST-TRACK): the storm's battle theme, a variant of undertow_rising
+    ("assets_src/music/storm_battle.py", "assets/audio/music", ["storm_battle.ogg", "storm_battle.loop.json"],
+     "music_loop"),
     ("assets_src/music/corrow_night.py", "assets/audio/music", ["corrow_night.ogg", "corrow_night.loop.json"],
      "music_loop"),
     ("assets_src/music/dawn_road.py", "assets/audio/music", ["dawn_road.ogg", "dawn_road.loop.json"], "music_loop"),

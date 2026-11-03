@@ -51,7 +51,7 @@ func attach(dir: AudioDirector, controller: BattleController, eng: BattleEngine,
 	if _settings != null:
 		_settings.changed.connect(_on_setting_changed)
 	_apply_reduced()
-	var cue := AudioData.battle_cue(dir.music_data, eng.encounter_id)
+	var cue := AudioData.battle_cue(dir.music_data, eng.encounter_id, _arena_id(), dir.field_battle_cue)
 	if cue != &"":
 		dir.play_music_async(cue, float(dir.music_cfg().get("battle_in_sec", 0.0)))
 	_apply_arena_ambience()
@@ -66,12 +66,19 @@ func attach(dir: AudioDirector, controller: BattleController, eng: BattleEngine,
 func _apply_arena_ambience() -> void:
 	if engine.db == null:
 		return
+	var ids := AudioData.battle_beds(director.ambience_data, String(engine.encounter_id), _arena_id())
+	if not ids.is_empty():
+		director.set_arena_ambience(self, ids)
+
+
+## The encounter's arena id (encounters.json `arena`), "" when the engine has no table or the row names none.
+func _arena_id() -> String:
+	if engine.db == null:
+		return ""
 	var enc: Dictionary = engine.db.encounters.get(
 		engine.encounter_id, engine.db.encounters.get(String(engine.encounter_id), {})
 	)
-	var ids := AudioData.battle_beds(director.ambience_data, String(engine.encounter_id), str(enc.get("arena", "")))
-	if not ids.is_empty():
-		director.set_arena_ambience(self, ids)
+	return str(enc.get("arena", ""))
 
 
 ## M3-AUD-14: the creatures' voices and movement (creature_audio.gd, creature_voices.json).

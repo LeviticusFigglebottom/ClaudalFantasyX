@@ -81,6 +81,13 @@ leaves the music alone, and `BattleAudio` cuts to the encounter's cue in `battle
 it over `battle_out_sec`, and the return to the field brings the zone's cue back from where it stopped
 (`resume`).
 
+**The battle's cue** (M3-AUD-865, the storm): `AudioData.battle_cue` takes the first of the encounter's own row
+(`battle.encounters`, a boss or set piece), the arena's (`battle.arenas`, e.g. the storm arenas), the field zone's
+`battle` key (`AudioDirector.field_battle_cue`, set by the last zone row with a `music` key, so the battle scene's
+own row does not clear it; a flag variant gives it, e.g. the storm's `storm_battle`), else `battle.default`. A cue
+with `from_loop` starts at its `.loop.json` loop start instead of 0 (`undertow_storm`: the Rising's loop without its
+town-tune intro); with `resume` too, a later start carries on where it stopped.
+
 ## Battle SFX (M2-AUD-04)
 
 - **Sounds:** `assets_src/sfx/battle_sfx.py` renders `assets/audio/sfx/battle/*.ogg` (rows in `sfx_battle.json`,

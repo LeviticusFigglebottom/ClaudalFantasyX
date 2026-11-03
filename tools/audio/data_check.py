@@ -131,6 +131,9 @@ def music_errors(music: object, exists, flags: set[str], encounters: set[str],
         m = row.get("music")
         if m is not None and m != SILENCE and m not in cues:
             errs.append(f"{w}.music: unknown cue {m}")
+        bc = row.get("battle")  # M3-AUD-865: the cue of the fights started in this zone (a storm variant's)
+        if bc is not None and bc not in cues:
+            errs.append(f"{w}.battle: unknown cue {bc}")
         for a in row.get("ambience", []):
             if a not in beds:
                 errs.append(f"{w}.ambience: unknown bed {a}")
@@ -163,6 +166,21 @@ def music_errors(music: object, exists, flags: set[str], encounters: set[str],
             errs.append(f"{MUSIC} battle.encounters: unknown encounter {enc}")
         if cid not in cues:
             errs.append(f"{MUSIC} battle.encounters.{enc}: unknown cue {cid}")
+    arenas = _arena_ids()
+    pending_ar = set(battle.get("pending_arenas") or [])
+    for ar in sorted(pending_ar & (arenas or set())):
+        errs.append(f"{MUSIC} battle.pending_arenas: {ar} exists now, take it off the list")
+    for ar, cid in (battle.get("arenas") or {}).items():
+        if arenas is not None and ar not in arenas and ar not in pending_ar:
+            errs.append(f"{MUSIC} battle.arenas: {ar} is not an arenas.json arena (or listed in pending_arenas)")
+        if cid not in cues:
+            errs.append(f"{MUSIC} battle.arenas.{ar}: unknown cue {cid}")
+    for cid, row in (music.get("cues") or {}).items():
+        if isinstance(row, dict) and row.get("from_loop"):  # M3-AUD-865: it starts at its sidecar's loop start
+            files = row.get("stems") or [row.get("file", "")]
+            side = str(files[0]).removeprefix("res://").rsplit(".", 1)[0] + ".loop.json"
+            if not exists("res://" + side):
+                errs.append(f"{MUSIC} cues.{cid}.from_loop: {side} (its loop start) does not exist")
     most = max(cues.values(), default=0)
     for ph, row in (battle.get("phases") or {}).items():
         for k in ("stems_on", "stems_off"):

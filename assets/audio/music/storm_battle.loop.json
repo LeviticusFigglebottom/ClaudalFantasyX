@@ -1,0 +1,14 @@
+{
+  "bar_beats": 4,
+  "beat_count": 112,
+  "bpm": 96.0,
+  "intro_bars": 2,
+  "loop_bars": 28,
+  "loop_length_samples": 3087000,
+  "loop_length_seconds": 70.0,
+  "loop_offset_seconds": 5.0,
+  "loop_start_samples": 220500,
+  "sample_rate": 44100,
+  "total_samples": 3307500,
+  "variant_of": "undertow_rising"
+}
