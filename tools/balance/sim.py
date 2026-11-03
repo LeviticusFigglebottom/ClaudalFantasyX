@@ -103,6 +103,13 @@ def not_too_easy(mean_turns: float, floor: float | None) -> bool:
     return floor is None or mean_turns >= floor
 
 
+def within_p90(suite: dict, band: list | None, p90: int) -> bool:
+    """The suite's p90_turns_max gates the banded policies only (M4-A2P-1202). A report-only row
+    (band None, e.g. the naive_swell masher calling its Vowbound at once) is reported, not tuned to,
+    so its length is information; a stall still fails it through `timeouts`."""
+    return band is None or p90 <= suite.get("p90_turns_max", p90)
+
+
 def summary_rows(suite: dict, results: list[dict], swell: str | None = None) -> list[dict]:
     rows = []
     for r in results:
@@ -114,7 +121,7 @@ def summary_rows(suite: dict, results: list[dict], swell: str | None = None) -> 
             "policy": r["policy"], "n": r["n"], "wins": r["wins"], "win_pct": round(r["win_pct"], 1),
             "band": band_text(band, floor),
             "in_band": (in_band(r["win_pct"], band) and r["timeouts"] == 0 and not_too_easy(r["mean_turns"], floor)
-                        and r["p90_turns"] <= suite.get("p90_turns_max", r["p90_turns"])),
+                        and within_p90(suite, band, r["p90_turns"])),
             "timeouts": r["timeouts"], "mean_turns": round(r["mean_turns"], 1), "p90_turns": r["p90_turns"],
             "mean_party_ko": round(r["mean_party_ko"], 2), "mean_items": round(r["mean_items"], 2),
             "mean_lume": round(r.get("mean_lume", 0.0), 1),
