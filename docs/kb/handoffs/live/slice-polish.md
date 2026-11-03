@@ -1499,6 +1499,20 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     storm.
   - The cutscene suite's long test (test_hero_cutscene_snaps, which plays every cutscene) passed alone: 1 run,
     0 failed. With the 110 passed before the cap, the cutscene filter is green.
+- **Beat audit on big45 (self-rendered and viewed), MERGE-READY @ this commit:**
+  - **Read as staged:**
+    - beach H05 (Asha kneeling over Rhen) and H06 ("One.", Toma off-frame, his spear entering);
+    - the verse steps two-shot and the dock at night;
+    - ch01_hullgnaw_rises: the Hullgnaw clear in the pen;
+    - ch01_going_under_u10: the hull's belly and the three boats read (row 75);
+    - ch01_sadi_mooring.
+  - **Fixed, slice_prologue_vigil_line:**
+    - c054ce546's title card (`prologue_dead_city_000`) delayed the line past the shot's 990 frames, so it caught
+      P01's wide with no line.
+    - The shot now holds `prologue_dead_city_001` and runs at time_scale 4, like the other cutscene shots.
+    - Viewed: the P02 two-shot, the line up, the lantern lit.
+  - Shots still timed by frame count, all early in their scenes: slice_prologue_p01, slice_verse_hall and
+    ch01_o10_gull.
 - **Act I rows (act1_gpu_qa.md @ gpu/act1-qa-7):**
   - 31 and 32 are fixed.
   - 75's hull key and rim (1086628b1) is on integration now; it only needs the PC's GPU re-check (PC-QUEUE).

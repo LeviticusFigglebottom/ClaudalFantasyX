@@ -4605,7 +4605,8 @@
             "scene_id": "prologue_dead_city",
             "hold_line": "prologue_dead_city_001"
           }
-        }
+        },
+        "time_scale": 4.0
       }
     },
     {
