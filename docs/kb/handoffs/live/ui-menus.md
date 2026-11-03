@@ -1700,3 +1700,12 @@ MERGE-READY @ 1e18ff21d: the credits answer, on top of everything above.
   test_creatures (creatures-b), test_dialogue_clarity and test_direction_holds (LFS pointers here), test_palette_check
   and test_screenshots (known).
 MERGE-READY @ c71894a7b (big48): the two routed reds fixed, on top of the credits answer.
+
+### FINAL (11-03, the human: finish, commit everything, stop)
+FINAL MERGE-READY @ f136fa1f8: everything in this log since the 11-03 heading (FAST-TRACK 3 status help, FAST-TRACK 5 Magic
+page and field revive, Act I rows 68/69/73, the Kirru and Ullari portraits, the facts-only credits, big47's two routed
+reds). Nothing unfinished, nothing uncommitted. Checks at the end: validate_data 0/0, taskboard ok.
+**Exact next step for whoever resumes:** after the Lead's next merge, render `magic_menu` on the integration branch
+(it needs claude/combat-systems' FieldSpell to show the picker) and check that the field menu lists Magic after Items.
+Then: row 70 once battle-presentation has a GPU still; M4-A2P-082 once Pell has a characters.json row; M4-A2P-083's
+answered-by line once Venn's row has answered_key. Handoff: docs/kb/handoffs/2026-11-03-ui-ui-menus-2.md.
