@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3]
+[gd_scene load_steps=36 format=3]
 
 [ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
@@ -27,39 +27,43 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/lowtown_house_a.glb" id="25_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/lowtown_house_b.glb" id="26_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/arena_headland_path.glb" id="27_r"]
+[ext_resource type="Script" path="res://game/vfx/undertow/undertow_storm.gd" id="storm_script"]
+[ext_resource type="Script" path="res://game/levels/act1/storm_far_plane.gd" id="storm_far"]
 [ext_resource type="Script" path="res://game/levels/act1/kit_slot_swaps.gd" id="slot_swaps"]
+[ext_resource type="Script" path="res://game/levels/act1/arena_rain_wet.gd" id="rain_wet"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
-shader_parameter/azimuth_power = 2.0
-shader_parameter/band_energy = 0.5
-shader_parameter/band_height = 0.04
-shader_parameter/cloud_ambient_energy = 1.35
-shader_parameter/cloud_coverage = 0.6
-shader_parameter/cloud_height_m = 1800.0
-shader_parameter/cloud_horizon_fade = 0.08
-shader_parameter/cloud_opacity = 0.96
-shader_parameter/cloud_scale_m = 5000.0
-shader_parameter/cloud_softness = 0.22
-shader_parameter/cloud_stretch = Vector2(1, 2.5)
-shader_parameter/cloud_sun_energy = 2.6
+shader_parameter/azimuth_power = 1.5
+shader_parameter/background_energy = 1.0
+shader_parameter/band_energy = 0.15
+shader_parameter/band_height = 0.05
+shader_parameter/cloud_ambient_energy = 1.0
+shader_parameter/cloud_coverage = 0.7
+shader_parameter/cloud_height_m = 1400.0
+shader_parameter/cloud_horizon_fade = 0.06
+shader_parameter/cloud_opacity = 1.0
+shader_parameter/cloud_scale_m = 3800.0
+shader_parameter/cloud_softness = 0.3
+shader_parameter/cloud_stretch = Vector2(1, 2.0)
+shader_parameter/cloud_sun_energy = 0.35
 shader_parameter/cloud_wind_deg = 135.0
-shader_parameter/col_band = Color(1, 0.8235, 0.6588, 1)
-shader_parameter/col_cloud_lit = Color(0.9098, 0.7216, 0.5647, 1)
-shader_parameter/col_cloud_shadow = Color(0.2039, 0.251, 0.298, 1)
-shader_parameter/col_glow = Color(1, 0.8941, 0.8078, 1)
-shader_parameter/col_ground = Color(0.1647, 0.2118, 0.251, 1)
-shader_parameter/col_horizon_away = Color(0.3686, 0.4, 0.4392, 1)
-shader_parameter/col_horizon_sun = Color(0.7216, 0.6039, 0.4784, 1)
-shader_parameter/col_zenith = Color(0.2431, 0.2902, 0.3412, 1)
-shader_parameter/glow_energy = 0.8
-shader_parameter/glow_power = 6.0
-shader_parameter/halo_energy = 1.5
+shader_parameter/col_band = Color(0.549, 0.6039, 0.651, 1)
+shader_parameter/col_cloud_lit = Color(0.5412, 0.5804, 0.6039, 1)
+shader_parameter/col_cloud_shadow = Color(0.2039, 0.2392, 0.2706, 1)
+shader_parameter/col_glow = Color(0.7216, 0.7686, 0.8, 1)
+shader_parameter/col_ground = Color(0.1333, 0.1647, 0.1922, 1)
+shader_parameter/col_horizon_away = Color(0.4863, 0.5294, 0.5569, 1)
+shader_parameter/col_horizon_sun = Color(0.5804, 0.6196, 0.6353, 1)
+shader_parameter/col_zenith = Color(0.2431, 0.2863, 0.3216, 1)
+shader_parameter/glow_energy = 0.15
+shader_parameter/glow_power = 3.0
+shader_parameter/halo_energy = 0.0
 shader_parameter/halo_power = 200.0
-shader_parameter/horizon_curve = 0.25
+shader_parameter/horizon_curve = 0.3
 shader_parameter/mid_strength = 0.0
-shader_parameter/sky_energy = 1.9
-shader_parameter/sun_disc_energy = 10.0
+shader_parameter/sky_energy = 1.2
+shader_parameter/sun_disc_energy = 0.0
 
 [sub_resource type="Sky" id="Sky"]
 sky_material = SubResource("SkyMat")
@@ -70,11 +74,11 @@ resource_name = "coilspire_headland_path_ch08"
 background_mode = 2
 sky = SubResource("Sky")
 ambient_light_source = 2
-ambient_light_color = Color(0.4784, 0.5412, 0.6118, 1)
-ambient_light_energy = 1.0
+ambient_light_color = Color(0.4941, 0.5569, 0.6118, 1)
+ambient_light_energy = 0.9
 reflected_light_source = 2
 tonemap_mode = 4
-tonemap_exposure = 0.8
+tonemap_exposure = 0.9
 tonemap_agx_white = 12.0
 ssao_enabled = true
 ssao_radius = 1.2
@@ -85,10 +89,10 @@ glow_bloom = 0.03
 glow_hdr_threshold = 1.2
 fog_enabled = true
 fog_mode = 0
-fog_light_color = Color(0.3686, 0.4, 0.4392, 1)
+fog_light_color = Color(0.4078, 0.451, 0.4784, 1)
 fog_aerial_perspective = 0.5
-fog_density = 0.0018
-fog_sky_affect = 0.3
+fog_density = 0.0022
+fog_sky_affect = 0.2
 fog_height = 0.0
 fog_height_density = 0.0
 adjustment_enabled = true
@@ -121,9 +125,9 @@ sub_frame = &"ch08"
 environment = SubResource("Env")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.379456, -0.462605, 0.801255, 0, 0.866025, 0.5, -0.92521, 0.189728, -0.328619, 0, 30, 0)
-light_color = Color(1, 0.8941, 0.8078, 1)
-light_energy = 2.0
+transform = Transform3D(0.939693, -0.210569, 0.269516, 0, 0.788011, 0.615661, -0.34202, -0.578533, 0.740488, 0, 30, 0)
+light_color = Color(0.7882, 0.8235, 0.8471, 1)
+light_energy = 1.4
 shadow_enabled = true
 shadow_bias = 0.03
 shadow_normal_bias = 1.0
@@ -1562,6 +1566,26 @@ transform = Transform3D(0.490844, 0.0745636, -0.868051, -0, 0.996331, 0.0855825,
 [node name="to_the_spire" type="Marker3D" parent="CameraHints"]
 transform = Transform3D(0.965716, 0.0352537, 0.257196, 0, 0.990736, -0.1358, -0.259601, 0.131144, 0.95677, 4.5, 1.4, 6.5)
 
+[node name="Undertow" type="Node3D" parent="."]
+script = ExtResource("storm_script")
+approach_azimuth_deg = 20.0
+preset = "ch08_seawall"
+rain_amount = 0.2
+zone_shadow = false
+exposure_flash = false
+sea_level_y = -27.285
+sea_level_from_water = false
+
+[node name="FarPlane" type="Node" parent="Undertow"]
+script = ExtResource("storm_far")
+
+[node name="StormRim" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.939693, -0.07111, 0.334546, 0, 0.978148, 0.207912, -0.34202, 0.195373, -0.919158, 0, 30, 0)
+light_color = Color(0.6588, 0.8, 0.8157, 1)
+light_energy = 0.4
+light_specular = 0.0
+shadow_enabled = false
+
 [node name="KitSlotSwaps" type="Node" parent="."]
 script = ExtResource("slot_swaps")
 paths = {"cs_copper": "res://game/levels/ch08/coilspire/coilspire_copper_material.tres", "cs_copper_worn": "res://game/levels/ch08/coilspire/coilspire_copper_worn_material.tres", "cs_iron": "res://game/levels/ch08/coilspire/coilspire_iron_material.tres"}
@@ -1571,3 +1595,7 @@ visibility_range_end = 2000.0
 
 [node name="arena_headland_ground-lod1" parent="Ground" index="1"]
 visibility_range_begin = 2000.0
+
+[node name="RainWet" type="Node" parent="."]
+script = ExtResource("rain_wet")
+amount = 0.45

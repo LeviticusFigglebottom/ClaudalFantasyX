@@ -218,6 +218,14 @@ omni_attenuation = 1.2
 light_volumetric_fog_energy = 0.0
 
 [node name="Lamp10" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 1.2, 44.5)
+light_color = Color(0.9098, 0.8235, 0.7216, 1)
+light_energy = 3.5
+omni_range = 14.0
+omni_attenuation = 1.2
+light_volumetric_fog_energy = 0.0
+
+[node name="Lamp11" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 0.55, -6.8)
 light_color = Color(0.8784, 0.4392, 0.1804, 1)
 light_energy = 1.6
@@ -225,7 +233,7 @@ omni_range = 7.0
 omni_attenuation = 1.2
 light_volumetric_fog_energy = 0.0
 
-[node name="Lamp11" type="OmniLight3D" parent="Lamps"]
+[node name="Lamp12" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 11.2, -9.4)
 light_color = Color(0.7882, 0.8235, 0.8549, 1)
 light_energy = 5.0
@@ -233,7 +241,7 @@ omni_range = 14.0
 omni_attenuation = 1.2
 light_volumetric_fog_energy = 0.0
 
-[node name="Lamp12" type="OmniLight3D" parent="Lamps"]
+[node name="Lamp13" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 3.5, 16.0)
 light_color = Color(0.851, 0.7961, 0.7216, 1)
 light_energy = 3.0
@@ -241,7 +249,7 @@ omni_range = 18.0
 omni_attenuation = 1.2
 light_volumetric_fog_energy = 0.0
 
-[node name="Lamp13" type="OmniLight3D" parent="Lamps"]
+[node name="Lamp14" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, -34.387, -43.0)
 light_color = Color(0.8784, 0.4392, 0.1804, 1)
 light_energy = 6.0
@@ -249,7 +257,7 @@ omni_range = 40.0
 omni_attenuation = 1.2
 light_volumetric_fog_energy = 0.0
 
-[node name="Lamp14" type="OmniLight3D" parent="Lamps"]
+[node name="Lamp15" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 3.2, 0.4)
 light_color = Color(1, 0.6941, 0.4314, 1)
 light_energy = 1.6
