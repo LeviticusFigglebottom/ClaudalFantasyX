@@ -1536,10 +1536,72 @@ The six relays from 23:06 to 03:02 reached this session only at 03:35, after the
   Keth cameras were fixed earlier; their remaining parts are lighting (env-art and env-art-b).
 ### PC-QUEUE
 - Re-check rows 82 (corrow_lake's camera) and 86 (Keth Pass flight cameras) on the GPU.
-- LEAD-ASK: if env-art-b can't take M3-ENV-1253 soon, may act1-chapters write `oruvel_raft_storm` itself (the
+- LEAD-ANSWERED (18:45: env-art built `oruvel_raft_storm` as M3-ENV-1340; big47 keeps env-art's scene and the gate moves it from `storm.pending` to `storm.arenas`, so act1-chapters writes nothing; on the next integration merge I re-run `--filter=storm_`). ~~LEAD-ASK: if env-art-b can't take M3-ENV-1253 soon, may act1-chapters write `oruvel_raft_storm` itself (the
   `oruvel_raft_morning` table plus M3-ENV-07B's storm pieces, `lut_ch01_storm` and an Undertow node, through
-  env-art's `arena_scenes.write_arena`)? It would be a one-row table in a new act1-chapters module.
+  env-art's `arena_scenes.write_arena`)? It would be a one-row table in a new act1-chapters module.~~
 - MERGE-READY @ 1bcae269f (FAST-TRACK M3-C01-1252)
+- **Lead relay (17:16) handled:**
+  - **Act I rows 82 and 86 (act1_gpu_qa.md):** nothing is left in my lane. Row 82's camera (`ch08_corrow_lake`,
+    reframed) is mine and is done; env-art-b's 9e66085b added the storm fills. For row 86, my Keth Pass flight cameras
+    (17bf3a44) are done, and env-art-b did the Barge spawn, Lamp Archive, Ossa Fen and still water. Every other row
+    naming act1-chapters is `fixed`. Both rows wait on the PC re-check (PC-QUEUE).
+  - **Storm wiring checked against env-art-b's storm arenas and audio's storm cues.** They are not on the
+    integration branch yet. `211d8bd7` is env-art-b's row 84 commit, and the storm arenas are 6b8e416d on
+    claude/env-art-b. Audio's storm cue is on claude/audio @ 9ff655c1. I pre-merged integration + env-art-b + audio
+    onto this branch in a scratch worktree:
+    - **The one conflict** was arenas.json `scenes.oruvel_raft_storm`. The resolution to apply when both land: point
+      it at `res://assets/environments/arenas/oruvel_raft_storm/oruvel_raft_storm.tscn`, add `oruvel_raft_storm` to
+      `storm.arenas`, and drop its `storm.pending` row. `drowned_choir_storm` stays pending: env-art-b built no
+      Choir variant, so M3-ENV-1253 keeps that half.
+    - **PROVENANCE.md** resolved with merge_union. Audio's music.json merged clean: `battle_storm` is now the composed
+      `storm_battle.ogg`, plus `battle.arenas` and the storm zone variants.
+    - **Results on the pre-merge:** validate_data 0/0. Godot: `storm_` 12/0 (mine, env-art-b's test_storm_arenas and
+      audio's test_storm_music), `battle_arena.` 8/0, `arena_ambience` 5/0, `music` 20/0, `battle_audio` 22/0,
+      `act1_encounters_resolve` 2/0, `ch01_thread` 2/0, `ch08_thread` 6/0.
+    - **SELF-RENDERED (pre-merge):** `battle_arena_oruvel_raft_storm`, `_seawall_stairhead_storm` and `_surge`, all
+      viewed.
+      - **Raft:** reads as the storm: a dark sky over the town, rain, the wall's mass top-left, and the deck soaked.
+      - **Stair-head:** heavy rain and a storm sky, but the wall itself is still not a distinct shape in that frame
+        (FYI env-art-b and battle-presentation, M3-BPR-1255).
+  - **Next:** when the Lead merges env-art-b and audio into the integration branch, merge it here, apply the
+    resolution above, re-run `--filter=storm_` and push. Meanwhile Act II (ADR 0205 §4) goes on from my M4 rows.
+- **Lead DECISION (18:04), the storm table is the single source of truth.** Confirmed from the data (ch08.json,
+  coilspire_layout.json, act1_ch08.md):
+  - **Ch8 storm fights: exactly four, `ch08_stair_hold_1`, `_2`, `_3` and `undertows_reach`** (B10–B16, 16:00–16:42,
+    after `ch08_beacon_opened`).
+  - **Not storm fights:**
+    - `ch08_headland_gulls` and `ch08_headland_crabs`: B04 at 13:00. The random table is gated
+      `unset: ch08_entered_coilspire`. The forced `path_fight` trigger sits at PathMid on the way out, before the door.
+      `to_headland` needs `unset: ch08_beacon_opened`, so the party can't walk the path again in the storm.
+    - `ch08_flue_moths`: Coilspire's tiers 2 and 4 during the trial (B05, 13:30).
+    - The storm comes at B07 (15:40, the crown), and `open_beacon` then goes straight to ch08/corrow WallGate (B08's
+      run back is that hand-off).
+  - **For battle-presentation:** `storm_fights.json` should drop `ch08_headland_gulls`, `ch08_headland_crabs` and
+    `ch08_flue_moths`. It should add `ch16_storm_wakes` (Ch16 B09, the storm waking at the Choir; its arena is
+    still pending). So the full storm list is the seven `storm: true` rows in encounters.json, which
+    `test_storm_encounters` enforces.
+  - **Headland arena:** env-art-b's overcast `ch08_brewing` look on `coilspire_headland_path` is a mood call. The
+    beat sheet has B04 as a bright noon with kites still up and a storm that "always breaks" out there. It is not a
+    storm fight, so it keeps no vortex requirement.
+  - **`drowned_choir_storm` stays in `storm.pending`** (Act II): env-art-b built no Choir variant, and
+    M3-ENV-1253 keeps that half. `oruvel_raft_storm` moves to `storm.arenas` when env-art-b's 6b8e416d reaches the
+    integration branch (the resolution is above).
+- **Act II sweep (ADR 0205 §4, 11-03):**
+  - **Thread and walkable tests on this branch (big45 merged):** `ch10_` 3/0, `ch11_` 3/0, `ch12_` 5/0, `ch13_` 7/0,
+    and `ch14_16_` 6/0, which runs through the act break to Ch17's hand-off. Ch16's flow, act break included, is in
+    ch16.json, so M4-A2P-016's "waits on the beat sheet" note is stale.
+  - **`placeholder_audit.py --act 2` (with the runtime scan):** 13 items, none of them act1-chapters'
+    (battle-presentation 7, creatures 3, env-art-b 2, creatures-b 1).
+  - **sim.py on the Act II bosses and set pieces:** `ch10_mangrove_drowner`, `ch11_lamp_engine`,
+    `ch12_avalanche_ram`, `ch14_water_steps`, `ch14_malcor_venn`, `ch15_wakefin`, `ch16_abiding_guard` and
+    `ch16_storm_wakes`, 1000 seeds each. All are in band except one: **`ch15_wakefin` naive_swell has a p90 of 91
+    turns against the suite's `p90_turns_max` 80.** It's a report-only policy (26% wins, mean 84.6 turns), but the
+    cap applies to it.
+    - **FYI combat-systems** (you now own balance): either cap the naive slog (the Wakefin's HP or the Swell's
+      Toma answer), or exempt the report-only policies from the p90 cap. I haven't touched it, so we don't edit the
+      same rows.
+  - What is left on my M4 rows (010–017, 023) waits on other tracks: the Drowned Choir's dressing (env-art-b after
+    M4-A2P-106), creature and character models, and Venn's pipeline.
 
 ## Exact next step
 **2026-11-03:** M3-C01-1252 is in review. When env-art-b's M3-ENV-1253 lands, repoint arenas.json `scenes`
