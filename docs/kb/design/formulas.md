@@ -27,6 +27,8 @@ Notation: `floor`, `ceil`, `clamp(x, lo, hi)`. **`round` rounds half away from z
 | `BERSERK_STR_RATIO` | 3/2 | Berserk strength multiplier (after Power Break, floored) |
 | `CONFUSE_ALLY_PCT` | 50 | Chance a Confused unit turns on its own side |
 | `REVIVE_MIN_HP` / `PCT` | 1 / 100 | Revive floor; percent base for item and threshold math |
+| `FIELD_VARIANCE_PCT` | 100 | The fixed variance of a spell cast from the field menu (§ Field spells, M3-CMB-05) |
+| `VICTORY_RISE_HP` | 1 | HP a KO'd party member gets up with after a won fight (§ Rewards, M3-CMB-04) |
 | `DELAY_STACK_DIVISOR` / `DELAY_STACK_MAX_STEPS` | 2 / 16 | Delay diminishing returns |
 | `ESCAPE_BASE_PCT`, `ESCAPE_AGI_FACTOR`, `ESCAPE_MIN_PCT`, `ESCAPE_MAX_PCT` | 50, 2, 10, 95 | Escape |
 | `OPENING_BASE_PCT`, `OPENING_AGI_FACTOR`, `OPENING_MIN_PCT`, `OPENING_MAX_PCT` | 8, 1, 2, 25 | Preemptive / ambush chance (§ Openings) |
@@ -156,6 +158,18 @@ Examples: revive 25% of 420 → 105; of 301 → 75; of 3 → 1. Item damage 150 
 - **Preview:** `preview_item(item_id, target, items, count)` shows the item's rank, its delay push, the time statuses it adds, a revived ally rejoining, and a target the item downs leaving: a felled Zombie, or a Zombie a heal item KOs (`BattleEngine.item_downs`, which runs the effects in order on a `sim_copy`; items use no RNG, so it is exact). `item_defeats_party` uses the same rule over every target and the whole active party: it is a defeat only when nobody stands afterwards, so a group revive that fells the last Zombie and revives a fallen ally is not one, and a last foe felled first is a victory.
 - `Formulas.revive_hp` / `item_damage` mirror `ItemBattleAction.revive_hp` / `fixed_damage` (Progression's reference implementation), and a test keeps them equal.
 
+## Field spells (M3-CMB-05)
+
+A skill row with `"field_usable": true` (skills.json; validate_data `field_usable_errors`) may be cast from the field menu by a hero who knows it (base, Lattice or lent skills on the hero as `PartySheet.combatant` builds them). `FieldSpell` (`game/progression/field_spell.gd`) is the rule; ui-menus draws the screen.
+
+```
+field_heal_amount(power, magic, level) = heal_amount(power, magic, level, FIELD_VARIANCE_PCT = 100)
+```
+- **No RNG out of battle**, so the preview is the result. Mend (power 10) cast by a base Asha (magic 18, level 5): `10 × 23 × 100 ÷ 100 = 230`.
+- **Cost:** the skill's `mp_cost` from the caster, paid once per cast (an all-allies spell reaches everyone it helps for one cost).
+- **The caster** must be standing (HP above 0, not stone) and have the MP. Silence ends with a battle, so it never blocks a field cast.
+- **Targets:** like the field items: a heal reaches the living, not the KO'd or stone; a heal on a Zombie would harm and is refused; a target it would change nothing on (full HP, nothing to clear) is refused. An all-allies spell is refused only when it helps nobody. `cleanses` lift those statuses; a heal and a cleanse run in that order.
+
 ## Equipment in battle (M1-CMB-06)
 
 `EquipmentEffects.apply_to` (Progression) leaves engine-facing data on each party combatant (`BattleCombatant.equipment()`, metadata key `equipment_effects`). The engine applies it as follows:
@@ -174,6 +188,12 @@ Equipment "always" auto-statuses are ordinary duration −1 statuses. **Decision
 At victory:
 - **Lume:** `currency_award()` = Σ every enemy's `currency` (`enemies.json`, petrified enemies included) × `currency_multiplier(credited_ids())`. The multiplier is a hook, `EquipmentEffects.currency_multiplier` (Full Net ×2), and ×1 when unset.
 - **Drops:** `drop_awards()` is rolled **once** when the battle is won, on the battle RNG. For each enemy in encounter order, each `drops` entry `{item, chance}` adds one item when `randi_range(1, 100) ≤ chance`.
+
+**The fallen get up (M3-CMB-04, the human's playtest 2026-11-03).** After a won fight (a victory, or a set piece's scripted way out: `SPOILS_OUTCOMES`), every party member at HP 0 leaves the battle with `VICTORY_RISE_HP` HP:
+```
+victory_rise_hp(hp) = hp if hp > 0 else VICTORY_RISE_HP     # 0 → 1; 37 → 37
+```
+`BattleSpoils.returning_party(engine)` hands the saved vitals a risen copy of each fallen member (its MP, statuses, Swell gauge and mode kept; a KO already cleared its statuses), and the battle's own combatants stay as they ended, so the XP credit rule (alive at victory) is unchanged: the fallen still earn no XP. A petrified member is not KO'd (HP above 0) and stays stone, a carried status that a shrine or a cure clears. An escape keeps the fallen down, and a defeat records nothing.
 
 Escape and defeat award nothing. Sandbox values: Reef Crab 24 lume (Crab Carapace 50%, Salt Tonic 10%), Lantern Eel 20 (Eel Lantern 50%, Salt Tonic 10%), Gull Harrier 18 (Gull Quill 50%, Salt Tonic 10%), so 62 lume per sandbox win. Drownbell's ~300 lands with its encounter data.
 
