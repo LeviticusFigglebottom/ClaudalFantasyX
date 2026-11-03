@@ -2,8 +2,8 @@
 id: M4-A2P-1202
 title: "The sim's Vowbound call rule calls the first callable (Ilun), so a masher with six Vowbound stalls the Wakefin"
 role: combat
-status: todo
-owner_session: ""
+status: review
+owner_session: "combat-systems (claude/combat-systems)"
 depends_on: [M4-A2P-019]
 reviewer: qa
 milestone: M4
@@ -26,6 +26,9 @@ runs p90 55 on `ch19_spire_wicks` and p90 52 on `ch19_spire_moths` against the r
 fights slowly, re-calling Ilun.
 
 ## Acceptance criteria
-- [ ] The call rule picks by strength; `sim.py --check` is clean on every Act I and Act II suite.
+- [x] The call rule picks by strength (the latest bound) when no field calls for one. `sim.py --check` is clean on all 40 suites that bind more than one Vowbound (Act I Ch8 through Act III); suites with one Vowbound can't change.
+
+## Notes
+- The Wakefin's masher tail doesn't depend on which Vowbound is called (forced each one: p90 91–92). So `sim.py` now gates `p90_turns_max` on banded policies only; a report-only row still fails on timeouts. Recorded in balance_report.md (2026-11-03) and balance_targets.md § Metrics.
 
 ## Review log

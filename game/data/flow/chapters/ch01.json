@@ -32,7 +32,7 @@
           {"battle": "ch01_wickfry", "party": ["rhen"], "reserve": [], "return_spawn": "GalleryAfter",
            "victory_flag": "ch01_wickfry_won"}
         ]},
-        "old_tin": {"steps": [{"zone": "give", "args": [{"salt_tonic": 2, "brine_eyewash": 1}, 0]}]},
+        "old_tin": {"steps": [{"zone": "give", "args": [{"salt_tonic": 2, "brine_eyewash": 1, "relighting_wick": 1}, 0]}]},
         "bell_rest_2": {"steps": [{"zone": "rest", "args": ["ch01_bell_room_2"]}]},
         "low_lights": {"when": {"unset": ["ch01_saw_low_lights"]}, "steps": [
           {"play": "ch01_low_lights"},
