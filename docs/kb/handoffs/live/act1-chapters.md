@@ -1536,9 +1536,9 @@ The six relays from 23:06 to 03:02 reached this session only at 03:35, after the
   Keth cameras were fixed earlier; their remaining parts are lighting (env-art and env-art-b).
 ### PC-QUEUE
 - Re-check rows 82 (corrow_lake's camera) and 86 (Keth Pass flight cameras) on the GPU.
-- LEAD-ASK: if env-art-b can't take M3-ENV-1253 soon, may act1-chapters write `oruvel_raft_storm` itself (the
+- LEAD-ANSWERED (18:45: env-art built `oruvel_raft_storm` as M3-ENV-1340; big47 keeps env-art's scene and the gate moves it from `storm.pending` to `storm.arenas`, so act1-chapters writes nothing; on the next integration merge I re-run `--filter=storm_`). ~~LEAD-ASK: if env-art-b can't take M3-ENV-1253 soon, may act1-chapters write `oruvel_raft_storm` itself (the
   `oruvel_raft_morning` table plus M3-ENV-07B's storm pieces, `lut_ch01_storm` and an Undertow node, through
-  env-art's `arena_scenes.write_arena`)? It would be a one-row table in a new act1-chapters module.
+  env-art's `arena_scenes.write_arena`)? It would be a one-row table in a new act1-chapters module.~~
 - MERGE-READY @ 1bcae269f (FAST-TRACK M3-C01-1252)
 - **Lead relay (17:16) handled:**
   - **Act I rows 82 and 86 (act1_gpu_qa.md):** nothing is left in my lane. Row 82's camera (`ch08_corrow_lake`,
