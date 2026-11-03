@@ -1407,3 +1407,15 @@ SELF-RENDERED @ baf421df: the Lacquer Court from the Barge, Steps and CourtEntry
 - SELF-RENDERED @ 33c75049: ch16_choir_offerings, ch16_choir_ring, battle_arena_drowned_choir_storm, battle_arena_drowned_choir_ring (unchanged).
 - **MERGE-READY @ 33c75049.**
 - **Next:** M5-A3P-1500 (Ch17's dry-dock and Dace's hull, ADR 0207) while M4-A2P-1502, M3-C01-1335 and M4-C14-01 wait on others.
+- **M5-A3P-1500, Ch17's walk to the dry-dock (bec5e5e0):** chapters' new `Gangway`, `BerthWalk` and `FirstBerthDeck` (M5-A3P-1001) were greybox. With the greybox hidden, the player walked an invisible deck over the water.
+  - Each is now a run of `hm_dock_4m` modules along the block at its own yaw. The gang and berth piles are stilt posts scaled to their 1.7 m tops.
+  - Shots `ch17_hollowmere_gangway` and `_berth_walk`, viewed.
+  - **Checks:** tools test_ch15_hollowmere_dressing 10/0 (new Ch17WalkTests); Godot hollowmere 2/0, ch14_16 6/0, ch17 3/0, ambient_life 3/0; validate_data.
+- SELF-RENDERED @ bec5e5e0: ch17_hollowmere_gangway, ch17_hollowmere_berth_walk (new, viewed).
+- **MERGE-READY @ bec5e5e0.**
+- **Waiting on others:**
+  - M3-C01-1335: the Ch1 fights onto `oruvel_raft_storm`;
+  - M4-A2P-1502: Ch16's storm fight and its Storm block;
+  - M4-C14-01: the Ch14 barge's `wake_target`;
+  - the Ch17 beats' `environment_res` rows.
+- **Mine, next:** the hull's hatch ramp (deck to cabin; boarding is by `place` until then). It needs a walk-collision ramp in the zone, through chapters' `ramps` or a `collision_path` file of mine. I'll write the collision file next session unless chapters prefers a layout ramp.
