@@ -1,0 +1,72 @@
+{
+  "doc": "hero_gait_strip.gd with this file (FAST-TRACK 2026-11-03, shot field_hero_walk_release): Rhen walking (stick under walk_run_threshold) after a cutscene clip was left on his body, frozen at successive frames. Rows from the camera (the bottom of the image) back: a line's talk (a loop) left by an overheard bark; then a held pose (kneel_over_rhen) left at a scene's end; then a plain walk from rest for comparison. Every row should show the walk cycle's stride, not the talk or the pose sliding. Layout keys as in hero_gait_strip.json.",
+  "fps": 60,
+  "rest_frames": 30,
+  "start_yaw_deg": -90.0,
+  "sim_origin": [
+    -20.0,
+    0.0,
+    -20.0
+  ],
+  "sim_gap_m": 6.0,
+  "spacing_m": 1.25,
+  "row_gap_m": 2.8,
+  "rows": [
+    {
+      "name": "walk after a bark",
+      "stick": [
+        0.5,
+        0.0
+      ],
+      "clip": "talk",
+      "frames": [
+        20,
+        32,
+        44,
+        56,
+        68
+      ]
+    },
+    {
+      "name": "walk after a held pose",
+      "stick": [
+        0.5,
+        0.0
+      ],
+      "clip": "kneel_over_rhen",
+      "hold": true,
+      "frames": [
+        20,
+        32,
+        44,
+        56,
+        68
+      ]
+    },
+    {
+      "name": "plain walk",
+      "stick": [
+        0.5,
+        0.0
+      ],
+      "frames": [
+        20,
+        32,
+        44,
+        56,
+        68
+      ]
+    }
+  ],
+  "camera_at": [
+    0.0,
+    6.0,
+    5.2
+  ],
+  "look_at": [
+    0.0,
+    0.5,
+    -2.8
+  ],
+  "camera_size_m": 6.4
+}
