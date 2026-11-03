@@ -4,6 +4,54 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+### 2026-11-03: the human's playtest FAST-TRACKS (Lead session_018aiGwGLGkxsnMnu8VfCu1m; integration -ze8rrn merged @ e2411fb04)
+**FAST-TRACK 1: statuses obvious on the character (M3-BPR-450).** In progress; first cut pushed @ d2543cc20.
+- BattleStatusLooks (game/vfx/battle/battle_status_looks.gd, attached by BattleVfx): every status a fighter holds
+  shows ON it while it lasts: an overlay pattern (status_overlay.gdshader), a looping aura, a prop (Shell's bubble,
+  Protect's rings, Reflect's panes, Silence's muffle band, Provoke's ground crosshair), and its icon beside the head.
+  Doom shows its count. Data: game/data/vfx/battle/status_looks.json; docs/kb/tech/battle_status_looks.md.
+- 21 icons (assets/vfx/battle/status_icons/*.svg, tools/vfx/status_icons.py): circle = beneficial, rounded square =
+  harmful, a glyph per status, a down-arrow tab on the breaks. Colour-blind safe by shape and motion (tested).
+- SELF-RENDERED the contact sheet (tools/vfx/status_look_sheet.tscn; every status on Rhen AND a Scuttler, ch01
+  storm arena, lavapipe 720p), VIEWED. Fixed from it: weak overlays (stronger, with a body-wide floor), Stop looked
+  like stone (now deep-blue glass), Doom invisible on dark bodies (red tide), the breaks invisible on the body (a
+  cracks pattern), oversized Shell/Protect props, icons under the actor marker and off the screen's edge (now beside
+  the marker, flipping side by screen half). Pass 2 rendering now.
+- ui-menus: M3-UI-212 (the icon set and a reads_as line per status for the help panel, tip and codex).
+
+**FAST-TRACK 2: the storm fights show the storm (M3-BPR-451).** First cut pushed.
+- BattleStorm (game/vfx/battle/battle_storm.gd; game/data/vfx/battle/storm_fights.json), battle-side, arena scenes
+  untouched: storm sky (Oruvel's storm grade for Ch1; the arena sky shader overcast for Ch8), a dimmer cool sun, rain
+  streaks and wind spray over the field, and the Undertow (UndertowStorm at its undertow.json preset) in the battle
+  camera's view. No screen flashes (exposure_flash off).
+- **The fights:** Ch1 after the Rising, ch01_scuttlers and ch01_hullgnaw (oruvel_raft_morning: this is the
+  gulls/Rising scene). Ch8: the headland gulls and crabs, the flue moths, the three stair holds, and the Reach.
+  ch06_ridge_gulls is a calm afternoon, so it is left out.
+- The Reach adds no rain: act1_gpu_qa row 72 says its own rain already hides the party.
+- SELF-RENDERED ch01_scuttlers (in the contact sheet): a dark storm sky and rain over the raft. The Ch8 and Hullgnaw
+  rest frames are rendering now.
+- act1-chapters and env-art-b: M3-ENV-1340 (an FYI: confirm the fight list; an optional baked storm grade per arena).
+- audio owns the storm battle music (the Lead's item 4).
+
+**FAST-TRACK 3: the revive VFX.** Waiting on combat-systems' item. The existing Relighting Wick has its own effect.
+
+**Act I rows:**
+- Row 72 (the Reach's rain hides the party): not made worse; the storm layer adds no rain there.
+- Row 70 (faint damage numbers): the theme and DamageNumber are ui-menus'. My 10-31 readability pass found the
+  numbers reading at full size with their 4 px outline. LEAD-ASK / PC-QUEUE: a GPU re-check of row 70; the
+  translucent grey was likely a capture mid-fade.
+
+### PC-QUEUE
+- The status looks at 1080p on the GPU: strength and readability.
+- The Undertow's cost inside a battle: the frame time and the hitch bar (<= 2 s hidden).
+
+MERGE-READY @ d2543cc20 (FAST-TRACK, first cut): status looks and storm fights.
+- Checks run: gdlint and gdformat on the touched files; validate_data; taskboard --check; the status_icons tools
+  test; Godot `--filter=battle_st` 35/1 (the one failure is test_battle_stings: LFS audio is not in this container)
+  and `--filter=battle_status` 8/0.
+- Checks skipped: the full suite, Blender (no Blender source touched), and screenshot baselines (self-rendered
+  instead).
+
 ### 2026-10-31 ~06:30: the Act II readability pass is DONE (MERGE-READY @ the branch head, 8cf83d11+)
 - **All 14 Act II fights** (Ch10–12 and Ch16 regulars; the Drowner, the Lamp Engine with its crawlers, the Ram and the
   Wakefin) at 1920x1080. Text 1.3 for all of them; 1.0 too for the four Ch10–11 fights.
