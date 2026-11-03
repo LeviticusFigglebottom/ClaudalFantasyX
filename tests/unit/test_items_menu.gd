@@ -397,3 +397,26 @@ func _wheel(button: MouseButton) -> InputEventMouseButton:
 	ev.button_index = button
 	ev.pressed = true
 	return ev
+
+
+## M3-UI-1253 (FAST-TRACK 5): every field item whose battle effect is a revive, today's and combat-systems' new one
+## alike, raises a fallen hero from the Items page, previews it in words, and is refused on a standing hero.
+func test_every_field_revive_item_raises_the_fallen_from_the_bag() -> void:
+	var db := ItemDB.load_default()
+	var revives: Array[StringName] = []
+	for iid in db.item_order:
+		var effects: Array = (db.item(iid).get("battle", {}) as Dictionary).get("effects", [])
+		var raises := effects.any(func(e: Variant) -> bool: return str((e as Dictionary).get("type", "")) == "revive")
+		if raises and bool(db.item(iid).get("field", false)):
+			revives.append(iid)
+	assert_false(revives.is_empty(), "the bag has a revive")
+	for iid in revives:
+		state.inventory = {String(iid): 1}
+		state.party_vitals = {"asha": {"hp": 0}}
+		var m := _model()
+		assert_true(m.hero_rows(iid)[1]["label"].ends_with(tr("ITEMS_MENU_FALLEN_TAG")), "%s: Asha shows fallen" % iid)
+		assert_eq(m.hero_error(iid, &"rhen"), ItemsMenuModel.ERR_NOT_FALLEN, "%s: not on a standing hero" % iid)
+		assert_true(m.preview(iid, &"asha")["ok"], "%s: previews the raise" % iid)
+		assert_true(m.use(iid, &"asha")["ok"], "%s: raises her" % iid)
+		assert_true(m.sheet.combatant(&"asha").hp > 0, "%s: she stands" % iid)
+		assert_true(int(state.vitals_of(&"asha").get("hp", 1)) > 0, "%s: saved standing" % iid)
