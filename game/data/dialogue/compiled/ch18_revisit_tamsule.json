@@ -15,7 +15,8 @@
     {"op": "line", "id": "ch18_tamsule_002", "key": "DLG_CH18_TAMSULE_002", "speaker": "asha", "emotion": "tender", "voice": "", "src": 11},
     {"op": "goto", "to": 9, "src": 7},
     {"op": "line", "id": "ch18_tamsule_003", "key": "DLG_CH18_TAMSULE_003", "speaker": "townsfolk", "emotion": "smile", "voice": "", "src": 13, "name_key": "DLG_NAME_TOWNSFOLK_SUPPORTER"},
-    {"op": "goto", "to": 9, "src": 12}
+    {"op": "goto", "to": 9, "src": 12},
+    {"op": "set", "flag": "ch18_revisit_tamsule", "value": ["lit", true], "src": 15}
    ]
   }
  }

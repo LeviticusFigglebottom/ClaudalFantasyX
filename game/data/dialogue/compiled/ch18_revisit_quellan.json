@@ -11,7 +11,8 @@
     {"op": "line", "id": "ch18_quellan_001", "key": "DLG_CH18_QUELLAN_001", "speaker": "ullari_woman", "emotion": "soft_smile", "voice": "", "src": 7, "name_key": "DLG_NAME_ULLARI_WOMAN_DORRO_S_DAUGHTER"},
     {"op": "goto", "to": 5, "src": 6},
     {"op": "line", "id": "ch18_quellan_002", "key": "DLG_CH18_QUELLAN_002", "speaker": "ullari_woman", "emotion": "neutral", "voice": "", "src": 9, "name_key": "DLG_NAME_ULLARI_WOMAN_DORRO_S_DAUGHTER"},
-    {"op": "goto", "to": 5, "src": 8}
+    {"op": "goto", "to": 5, "src": 8},
+    {"op": "set", "flag": "ch18_revisit_quellan", "value": ["lit", true], "src": 11}
    ]
   }
  }

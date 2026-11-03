@@ -62,6 +62,13 @@
       "overheard_read_cps": 15.0,
       "party": {"party": ["rhen"], "reserve": []},
       "arrive": [
+        {"when": {"set": ["credits_seen"], "unset": ["ending_first_lamp_seen"]}, "steps": [
+          {"zone": "set_storm", "args": [false]},
+          {"place": "KellRun"},
+          {"play": "ending_first_lamp"},
+          {"set": "ending_first_lamp_seen"},
+          {"scene": "res://game/core/boot.tscn"}
+        ]},
         {"when": {"set": ["ch01_hullgnaw_defeated"], "unset": ["ch01_went_under"]}, "steps": [
           {"play": "ch01_going_under"},
           {"set": "ch01_went_under"},

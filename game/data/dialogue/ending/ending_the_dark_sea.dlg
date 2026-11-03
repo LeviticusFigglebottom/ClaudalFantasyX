@@ -6,13 +6,14 @@
 // still a little funny, ≤ 25 words each. No cut, no push. `ending_dock`: solo piano, the Hush's first phrase resolving.
 title: ending_the_dark_sea
 location: ch02/haluna
+grade: ending_dock
 ---
 @letterbox on
 @fade in 3.0
 @camera E11
 @music ending_dock fade=2.0
 @wait 6.0
-@anim asha turn_to haluna
+@anim asha look_at haluna
 @wait 3.0
 @anim asha draw_breath
 @wait 4.0

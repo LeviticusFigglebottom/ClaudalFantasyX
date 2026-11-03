@@ -2,8 +2,8 @@
 id: M5-A3P-1701
 title: "Request (ui-menus): the ending flow's hooks: E6 opens the credits, the beach-rite vignette's scene, E7 after the roll"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "slice-polish (claude/m2-slice)"
 depends_on: [M5-A3P-1700]
 reviewer: ui
 milestone: M5
@@ -25,7 +25,17 @@ scenes.
    should return to the title itself when it ends.
 
 ## Acceptance criteria
-- [ ] E6 opens the credits; the beach rite plays at its point; E7 follows the roll; the title follows E7.
-- [ ] test_credits_roll stays green (claude/ui).
+- [x] E6 opens the credits; the beach rite plays at its point; E7 follows the roll; the title follows E7.
+- [x] test_credits_roll stays green (claude/ui).
+
+## Done (slice-polish, 2026-11-03)
+- E6 (here E5, `ending_the_dark_sea`) opens the credits: HalunaStory's ending row (first_playable.json `haluna.ending`)
+  plays it and then changes scene to `CreditsRoll.SCENE`.
+- The beach rite: `res://game/flow/ending_beach_rite.tscn` (EndingBeachRite: Haluna by day, story off, Toma on the beach,
+  Rhen's field body hidden, the scene on E12) is `vignettes[0].scene`.
+- E7 after the roll: `next_scene` is `res://game/flow/post_credits.tscn`, which travels to ch01/oruvel at KellRun.
+  Oruvel's first arrival row (on `credits_seen`, which the roll sets at its end) plays `ending_first_lamp` and opens
+  the title (boot.tscn).
+- test_credits_roll: its two default-data cases now build their own data (the live hooks are set); 6/0.
 
 ## Review log

@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3]
+
+[sub_resource type="StandardMaterial3D" id="Flame"]
+shading_mode = 0
+albedo_color = Color(1, 0.78, 0.45, 1)
+emission_enabled = true
+emission = Color(1, 0.66, 0.32, 1)
+emission_energy_multiplier = 4.0
+
+[sub_resource type="SphereMesh" id="Bead"]
+material = SubResource("Flame")
+radius = 0.025
+height = 0.07
+radial_segments = 12
+rings = 6
+
+[node name="OilLampProp" type="Node3D"]
+
+[node name="OilLamp" type="OmniLight3D" parent="."]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+light_color = Color(1, 0.682, 0.404, 1)
+light_energy = 1.4
+omni_range = 6.0
+omni_attenuation = 1.4
+shadow_enabled = true
+
+[node name="Flame" type="MeshInstance3D" parent="OilLamp"]
+cast_shadow = 0
+mesh = SubResource("Bead")

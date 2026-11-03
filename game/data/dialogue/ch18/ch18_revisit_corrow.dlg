@@ -16,4 +16,5 @@ Marra [neutral]: The children asked for a watch. So there's a watch. #line:ch18_
     @wait 3.0
     Toma [sad]: I told him I'd come back. I didn't say it would be like this. #line:ch18_corrow_003
 <<endif>>
+<<set $ch18_revisit_corrow = true>>
 ===

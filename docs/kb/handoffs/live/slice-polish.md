@@ -1499,12 +1499,86 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     storm.
   - The cutscene suite's long test (test_hero_cutscene_snaps, which plays every cutscene) passed alone: 1 run,
     0 failed. With the 110 passed before the cap, the cutscene filter is green.
+- **Beat audit on big45 (self-rendered and viewed), MERGE-READY @ this commit:**
+  - **Read as staged:**
+    - beach H05 (Asha kneeling over Rhen) and H06 ("One.", Toma off-frame, his spear entering);
+    - the verse steps two-shot and the dock at night;
+    - ch01_hullgnaw_rises: the Hullgnaw clear in the pen;
+    - ch01_going_under_u10: the hull's belly and the three boats read (row 75);
+    - ch01_sadi_mooring.
+  - **Fixed, slice_prologue_vigil_line:**
+    - c054ce546's title card (`prologue_dead_city_000`) delayed the line past the shot's 990 frames, so it caught
+      P01's wide with no line.
+    - The shot now holds `prologue_dead_city_001` and runs at time_scale 4, like the other cutscene shots.
+    - Viewed: the P02 two-shot, the line up, the lantern lit.
+  - Shots still timed by frame count, all early in their scenes: slice_prologue_p01, slice_verse_hall and
+    ch01_o10_gull.
+- **Queue status (2026-11-03, after the FAST-TRACK, the Act I rows and the audit):** MERGE-READY @ 7558cebe6 (it
+  includes b3264a223). Every other open item waits on another track:
+  - the Act II stills (M4-A2P-070..075) wait on M4-CIN-1305 and M4-A2P-077 (chapters; both still todo);
+  - Ch17's D01–D18 is M5-A3P-1001, which act1-chapters is doing;
+  - row 75 and the storm shots wait on the GPU (PC-QUEUE).
+  - **LEAD-ASK:** anything you want ahead of those? Otherwise I'll pick up Act III staging as each chapter's set lands.
+    **LEAD-ANSWERED (19:51):** first convert the three frame-count shots to held timing, then Act III staging per
+    ADR 0207 as each set lands; Act I FAST-TRACKs always come first. W20's glint and kites went to env-art-b and
+    act1-chapters.
+  - **Held timing (the Lead's answer), done in shots.json:**
+    - slice_verse_hall holds `ch03_verse_002` (the baseline's moment, S07_reverse);
+    - ch01_o10_gull holds `ch01_gulls_001`;
+    - slice_prologue_p01 holds the `mark rhen` cue, at time_scale 4 (P01 fully faded in, just before Rhen crosses).
+    - **SELF-RENDERED @ 539546088, VIEWED:**
+      - P01: fully faded in on Asha on the paving, before Rhen crosses;
+      - verse_hall: "Shout if it bites." on S07_reverse, Asha's shoulder in the foreground and Toma and Rhen at the
+        portal. It drifts from the old baseline because of M3-CIN-1236's restaged reverse, which is intended;
+        **Lead:** please re-approve it.
+      - o10_gull: the gull and "...That's the gulls.", unchanged.
+    - No cutscene shot in the manifest is timed by frame count any more.
+    - **Next:** Act III staging per ADR 0207 as each set lands; Act I FAST-TRACKs first.
 - **Act I rows (act1_gpu_qa.md @ gpu/act1-qa-7):**
   - 31 and 32 are fixed.
   - 75's hull key and rim (1086628b1) is on integration now; it only needs the PC's GPU re-check (PC-QUEUE).
   - No other slice-polish row is open.
 
+- **Ui's Act III requests, done (all review: ui):**
+  - **M5-A3P-1704:** each Ch18 revisit sets `ch18_revisit_<town>`; Haluna's is set on arrival in the open world.
+  - **M5-A3P-1707:** Ch17 B05 mounts the ledger page (a `mount_ledger` zone step before `ch17_the_ledger`). For
+    act1-chapters: this is one step in ch17.json and one method in Ch17Zone.
+  - **M5-A3P-1701 + M5-A3P-1203, the Ending's last stops (review: ui / narrative):**
+    - E5 `ending_the_dark_sea` at Haluna's dark dock (E11, `grade: ending_dock`), then the credits;
+    - the beach-rite vignette (`game/flow/ending_beach_rite.tscn`, E12);
+    - after the roll, PostCredits travels to Oruvel, which plays E7 `ending_first_lamp` (E13, `grade: post_credits`,
+      Kell's-wick oil lamp) and then the title.
+    - credits.json's two hooks are set, and test_credits_roll's default-data cases build their own data.
+  - **Fixed:** CutsceneGrade never found a GreyboxZone's environment, so no greybox scene's `grade:` ever applied.
+    Only the two ending scenes use a built grade row, so no other shot changes.
+  - **SELF-RENDERED and VIEWED (new pending shots):**
+    - ending_e12_beach_rite: Toma, backs to the sea;
+    - ending_e13_first_lamp: the blue hour, the lamp's warm light on Kell's stall, the only warm light in frame;
+    - ending_e11_dark_sea: Asha centred under the stars, the sea completely dark. Her face is barely lit on lavapipe
+      (PC-QUEUE).
+  - **Checks run:**
+    - validate_data, taskboard, dlgc, gdlint and gdformat clean;
+    - Godot: ending_last_stops 4, credits 6, cutscene_grade 4, cutscene_directives 2, haluna 67, ch01 20, ch17 3,
+      ledger 3, ch18_revisit 3, all 0 failed.
+  - **Checks skipped:** coverage (no battle or progression code); Blender (no source); the tools suite (no tools/
+    change).
+  - **For other tracks:**
+    - creatures: the rite's `@anim crowd turn_back sea` has no `crowd` actor;
+    - env-art: the rite plays by day, and the script says dawn (no dawn grade for Haluna yet);
+    - nothing plays `ch18_backs_to_the_water` in Haluna yet (Ch18's flow, M5-A3P-1004).
+
+## FINAL (2026-11-03, the human: "finish, commit everything, and stop")
+- **FINAL MERGE-READY @ HEAD of claude/m2-slice** (the commit that adds this line; it includes every commit above). Nothing
+  is unfinished or uncommitted.
+- **Exact next step for whoever resumes:**
+  1. Merge `origin/claude/undertow-lead-handoff-ze8rrn`.
+  2. View the Lead's renders of the new pending shots: ch01_rising_eye, ch08_storm_wall_f08w, ch08_storm_eye_f08e,
+     ch08_wall_falls_w20, ending_e11_dark_sea, ending_e12_beach_rite, ending_e13_first_lamp.
+  3. Work the PC-QUEUE below on the GPU.
+  4. Act III staging per ADR 0207 as each set lands (Act I FAST-TRACKs first).
+
 ### PC-QUEUE
+- ending_e11_dark_sea: under ending_dock, does Asha's face read on the GPU (the rim)? If not, a cutscene key on E11.
 - M3-CIN-1252: ch01_rising_eye, ch08_storm_wall_f08w and ch08_storm_eye_f08e on the GPU. Does the eye read as a turning vortex in motion (play the Rising and B07)? Are F08E's rim arcs a lavapipe artefact?
 - Row 75: ch01_going_under_u10/_u11 with the new hull key and rim (dive_hull_lights): does the hull read on the GPU?
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
