@@ -29,7 +29,7 @@ read). Optional: a few `drift` rows (the kit's `tide_debris`) on Sunken Vey's fl
 - [ ] Ch11's open flames flicker; any bound or steady lights stay steady.
 - [ ] env-art views a Ch11 shot with the flicker on.
 
-## Review log
+## Notes
 - 2026-11-03, env-art: **no flicker rows. Ch11 has no open flame.** Every light in both zones is bound teal or grey
   shaft daylight: the Engine's twelve trimmed lamps, the flights' conduits, the lamp bench's conduit light, the well's
   upwelling, the Vey's conduit court. lowlight.md §0 has them "bound teal, steady", and colour script rule 2 holds
@@ -38,3 +38,5 @@ read). Optional: a few `drift` rows (the kit's `tide_debris`) on Sunken Vey's fl
     float height). Each sits 4.2–6.5 m off a gallery walk, clear of every greybox block by 0.8 m and of the arcades.
   - Viewed in walk stills: a log and plank afloat, their weed under the surface.
   - Checks: test_ch11_lowlight_dressing OK.
+
+## Review log
