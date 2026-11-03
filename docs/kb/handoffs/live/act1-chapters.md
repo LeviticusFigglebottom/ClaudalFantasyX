@@ -1606,6 +1606,35 @@ The six relays from 23:06 to 03:02 reached this session only at 03:35, after the
     `storm_` 10/12 (the 2 reds are the integration branch's, above).
   - **Checks skipped:** coverage (no battle or progression code) and Blender (no source).
 - MERGE-READY @ a0e7ae974 (FAST-TRACK: kites down in the storm)
+- **LEAD-ANSWERED (20:32), the three asks of 10-31:**
+  1. **Ch9 → Ch10 (@ 5df49e678):** the end card still returns to the TITLE. The new `first_playable.json`
+     `end_card.act2_playable` (false), with `act2_next_location` `ch10/ossa_fen` and `act2_next_spawn` `FenEdge`,
+     is the one-line flip at sign-off. `EndCard.next_of` reads it (a small edit to game/flow/end_card.gd, FYI
+     slice-polish). `test_end_card_act2` 2/0 checks the switch ships off and points at a real location. Act II stays
+     reachable by F8.
+  2. **Act II Ch13–16 staging (M4-A2P-071–075):** taken. owner_session is now act1-chapters, and slice-polish's
+     staging data stays as the base. Their remaining items are the stills, which wait on the bodies (M4-CIN-1305).
+  3. **The Act II break (@ d447da840):**
+     - `ch16_swept_away` keeps B10. B11 (the vigil, Rhen's VO) and B12 ("Act III: The Unbinding", now `#card`: UI's
+       ActCard caption) move unchanged to the new `ch16_act_break.dlg` (location `prologue`, the same line ids).
+     - Ch16's last row goes to `prologue` Start. `first_playable.json` `prologue.visits` plays `ch16_act_break`
+       there while `ch16_line_held` is set and `ch16_act_two_complete` isn't, then hands on to `ch17/hollowmere`
+       Dock. `PrologueScene.visit_of` picks the row; `prologue_seen` is set only for the real prologue (a small
+       edit to game/levels/prologue/prologue_scene.gd, FYI slice-polish).
+     - `test_ch14_16_thread` runs the Choir → the plaza → Ch17. Request **M4-UI-1256** (ui-menus): the two-line act
+       card from `<<event act_card 3>>`.
+     - **SELF-RENDERED `ch16_act_break_vigil`** (new, pending_baseline), viewed: the Iskarra plaza at dusk, Rhen
+       beside Asha on the rise, the VO line up. Before this the Choir's P04 played under black. Still to do: the
+       sheet's "deeper again, the burner lower" (a darker grade for this visit), for the M4-A2P-074 stills pass.
+  - **Checks run:** validate_data 0/0, dlgc --check 0/0, taskboard, gdlint and gdformat. Godot: `end_card` 7/0,
+    `fp_prologue` 8/0, `ch14_16_thread` 1/0, `cutscene_music` 3/0. Tools: dlg, dialogue, flow, chapter and loc pass.
+  - **Reds that aren't mine (FYI Lead):**
+    - `tools.tests.test_cutscene_sfx_files` (19 music cues without stand-ins) fails on the tree without my change.
+    - `tools.tests.test_screenshots` fails on a **duplicate shot id `battle_arena_oruvel_raft_storm`** in
+      shots.json on the integration branch (big47 took both env-art's and env-art-b's rows).
+    - `test_dialogue_box` fails because `ullari_woman` has a model but no portrait (no speaker or portrait change
+      of mine).
+- MERGE-READY @ d046e5c70 (LEAD-ANSWERED 1–3: the end card's act2 switch, the Act II break at the plaza, staging taken)
 - **Act II sweep (ADR 0205 §4, 11-03):**
   - **Thread and walkable tests on this branch (big45 merged):** `ch10_` 3/0, `ch11_` 3/0, `ch12_` 5/0, `ch13_` 7/0,
     and `ch14_16_` 6/0, which runs through the act break to Ch17's hand-off. Ch16's flow, act break included, is in
