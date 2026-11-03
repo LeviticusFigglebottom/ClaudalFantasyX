@@ -56,6 +56,9 @@ WELL_MOUTH_R = 3.0
 SANCTUM_SPRING = -2.0  # the drowned sanctum's dome springs here; its oculus at the walls' top
 SHAFT_TOP = 6.0  # the greybox's WellShaft: the shaft's mouth to the light above
 FLOOD_Y = 0.03  # the hall's water film over its flags
+POOL_SHARDS = 46  # PC row 86: the fallen bay's shards where its sunlight lands
+POOL_SPILL_M = 0.9  # they spill this far past the pool's edge, so its outline lands on the broken edge of the heap
+POOL_TOP_M = 0.24  # no block stands taller (stepped over, no collision)
 
 
 def layout() -> dict:
@@ -429,8 +432,53 @@ def build_hall(seed: int = 1841) -> list[kc.MeshBuilder]:
                 kc.rounded_block(mb, tuple(c + [0, -0.02, 0]), (0.06, 0.08, 0.06), mb.material("kit_bound_core"),
                                  radius=0.05, seg=1)
                 kc.tube(mb, np.stack([c + [0, -0.45, 0], c + [0, -0.22, 0]]), 0.025, 4, mb.material(ll.M_COPPER))
+            _pool_rubble(mb, seed, bl, y1)
         out.append(mb)
     return out
+
+
+def sun_pool(bl: dict | None = None) -> tuple[float, float, float, float]:
+    """Where the layout's sun, through the hall's fallen bay, lands on the hall floor (x0, x1, z0, z1): the bay
+    shifted along the sun's travel from the vault's top down to the floor (GreyboxZone's sun: rotation (pitch, yaw)
+    in degrees, the light along its -Z)."""
+    bl = bl or blocks()
+    sun = layout().get("sun", {})
+    pitch, yaw = math.radians(float(sun.get("pitch_deg", -65.0))), math.radians(float(sun.get("yaw_deg", 0.0)))
+    d = np.array([-math.cos(pitch) * math.sin(yaw), math.sin(pitch), -math.cos(pitch) * math.cos(yaw)])
+    floor_y = _box(bl["Hall"])[3]
+    t = (HALL_H + 0.5 - floor_y) / max(-d[1], 1e-3)
+    fx0, fx1, fz0, fz1 = HALL_FALLEN
+    return fx0 + d[0] * t, fx1 + d[0] * t, fz0 + d[2] * t, fz1 + d[2] * t
+
+
+def _pool_rubble(mb, seed: int, bl: dict, floor_y: float) -> None:
+    """PC row 86 (Lowlight's jagged white floor patch): the fallen bay's shards and blocks lie where its light falls,
+    so the hard-edged pool lands on broken vault, not on bare pale flags. Low (the walker steps over them, no
+    collision), clear of the Engine's footprint; a separate stream, so the rest of the hall is unchanged."""
+    rng = kc.rng_for("lowlight_hall_pool", seed)
+    noise = kc.Noise3(rng)
+    hx0, hx1, _, _, hz0, hz1 = _box(bl["Hall"])
+    ex0, ex1, _, _, ez0, ez1 = _box(bl["LampEngine"])
+    px0, px1, pz0, pz1 = sun_pool(bl)
+    px0, px1 = max(px0 - POOL_SPILL_M, hx0 + 0.8), min(px1 + POOL_SPILL_M, hx1 - 0.8)
+    pz0, pz1 = max(pz0 - POOL_SPILL_M, hz0 + 0.8), min(pz1 + POOL_SPILL_M, hz1 - 0.8)
+    placed = 0
+    for _ in range(POOL_SHARDS * 4):
+        if placed >= POOL_SHARDS:
+            break
+        x, z = rng.uniform(px0, px1), rng.uniform(pz0, pz1)
+        if ex0 - 0.35 < x < ex1 + 0.35 and ez0 - 0.35 < z < ez1 + 0.35:
+            continue
+        big = rng.random() < 0.25
+        s = rng.uniform(0.35, 0.8) if big else rng.uniform(0.12, 0.4)
+        stone = rng.random() < 0.7  # the vault's grey core more than its white skin: the pool reads broken
+        h = min(s * (0.75 if stone else 0.3), POOL_TOP_M * 1.4)  # core blocks chunky, skin shards thin
+        kc.rounded_block(mb, (x, floor_y + h * 0.3, z), (s, h * 0.5, s * rng.uniform(0.5, 0.9)),
+                         mb.material(ll.M_STONE if stone else ll.M_CERAMIC),
+                         rot=kc.rot_y(rng.uniform(0, 3.14)) @ kc.rot_x(rng.normal(0, 0.04)), radius=0.05, seg=1,
+                         noise=noise, disp_m=0.03, weather=ll.STONE if stone else ll.CERAMIC,
+                         variation=float(rng.random()))
+        placed += 1
 
 
 def lamp_points(bl: dict | None = None) -> list[tuple[float, float, float]]:

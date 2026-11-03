@@ -13,8 +13,9 @@ An arena is the scene **`assets/environments/arenas/<arena_id>/<arena_id>.tscn`*
 `arena_id` and `sub_frame`).
 
 1. **It lights itself.** Direct children `WorldEnvironment` (the colour-script grade, with its LUT) and `Sun`
-   (the one `DirectionalLight3D`). The battle scene drops its own `WorldEnvironment` and `Sun` when it swaps the
-   arena in.
+   (the one shadow-casting `DirectionalLight3D`). The battle scene drops its own `WorldEnvironment` and `Sun` when it
+   swaps the arena in. Shadowless directional fills and rims may sit beside it (the storm arenas' `StormRim`, the
+   derelict's `MoonRim`/`NightFill`; env-art-b, 11-03): they stay in the arena in battle.
 2. **It is built around the sandbox's slot layout at the origin.** The slot markers
    (`Stage/PartySlots/Slot0..2`, `Stage/EnemySlots/Slot0..2`) and `Stage/BattleCamera` stay in the battle
    scene. Fighters stand where the battle seats them: the arena puts the floor there.
@@ -382,6 +383,12 @@ the encounter row. The first fight (Haluna beach) and the Drownbell get their ar
    colour-script values of its sub-frame.
 2. A preview scene and a shot; add its id to `ARENAS` in `tests/unit/test_battle_arenas.gd`.
 3. The encounter row's `arena` field (the presentation track).
+4. **A storm arena** (the human's 11-03 FAST-TRACK 4): give its table an `undertow` row (`preset`, `azimuth_deg`,
+   `time_s`, `ambient`, `haze`, `camera_far_m`). The generator writes Rendering's `UndertowStorm` as `Undertow`
+   (preset first, clock held, no zone shadow, flash or rain) and an `ArenaCameraReach` as `CameraReach`. The reach is
+   a child, not the root, because `BattleArena.apply` frees the root. Its `far_m` raises whichever camera draws,
+   since the storm stands kilometres off and Godot's default far is 4 km. The first is `oruvel_raft_storm`
+   (M3-ENV-1340).
 
 ## Known limits
 

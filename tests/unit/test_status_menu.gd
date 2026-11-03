@@ -129,7 +129,9 @@ func test_keys_switch_heroes_and_cancel_closes() -> void:
 	var tree := menu.get_tree()
 	assert_true(tree.paused)
 	assert_eq(menu.hero, &"rhen")
-	assert_eq(menu.help_text(), tr("STATUS_MENU_HELP"))
+	assert_eq(
+		menu.help_text(), tr("STATUS_MENU_HELP_FMT").format({"key": InputNames.first_name(StatusHelpPanel.ACTION)})
+	)
 	assert_true(menu.detail_texts().has(tr("CHAR_RHEN")))
 	assert_true(menu.detail_texts().has(tr("STAT_MAGIC_DEFENSE")), "the stat table")
 	assert_eq(menu.detail_gauges().size(), 3, "HP, MP and Swell")

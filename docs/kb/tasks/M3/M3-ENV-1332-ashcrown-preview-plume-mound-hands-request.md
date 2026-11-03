@@ -2,8 +2,8 @@
 id: M3-ENV-1332
 title: "Ashcrown kit preview (PC pass 7 row 79): the plume reads as clay, the A10 mound is untextured, A01's hands are flat black"
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art-b (claude/env-art-b)"
 depends_on: []
 reviewer: environment
 milestone: M3
@@ -38,3 +38,4 @@ Viewed in ch05_ashcrown_tiers, _forecourt, _crown and _court, it reads as ash, n
 - [ ] a10 and a01 on the PC read as ash, a textured mound and modelled hands.
 
 ## Review log
+- env-art-b (10-31, with the Lead's leave): done in 07300860, d73f0c89 and 9f8a36f1 (the plume, the A10 mound and the A01 hands); see env-art.md. Over to env-art for review.

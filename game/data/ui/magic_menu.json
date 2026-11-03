@@ -1,0 +1,26 @@
+{
+  "magic_menu": {
+    "doc": "The field Magic page (M3-UI-1251; the human's playtest FAST-TRACK 5, 2026-11-03): a hero casts a field-usable spell on the party outside battle, paying its MP. The rules are combat-systems' (M3-CMB-05, FieldSpell): 'rules_class' names their global class with static castable(db, caster) and for_skill(db, sid), whose spell answers caster_error, target_error and cast (FieldMagicRules.live binds it by name); while the project has no such class the field menu shows no Magic row. Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'casters' (every hero: name, MP, how many field spells), 'spells' (the caster's field spells, each with its MP cost) and 'picker' (the heroes a spell can go to, HP and MP with a gauge under each) are MenuPage metrics blocks. 'detail' is the right column before a spell is chosen: the spell's name, its cost and reach, and the line under it (how to cast it, or why not, in the danger color). 'preview' (what the cast would do, the receipt, or why not) sits 'gap' under the picker. canvas_layer: the Items page's.",
+    "rules_class": "FieldSpell",
+    "canvas_layer": 64,
+    "panel": {"rect": [219, 111, 1482, 858], "pad": 27, "title_height": 56, "help_height": 40},
+    "casters": {
+      "rect": [246, 219, 450, 0], "header_height": 45, "row_pitch": 57, "max_rows": 7, "row_inset": 12, "text_indent": 40,
+      "cost_width": 252, "rank_width": 108, "submenu_dim": 0.5, "cursor_sec": 0.09, "mote_lag_sec": 0.03, "mote_px": 10,
+      "mote_offset": 14, "breath_sec": 2.4, "breath_min": 0.75
+    },
+    "spells": {
+      "rect": [720, 219, 420, 0], "header_height": 45, "row_pitch": 48, "max_rows": 12, "row_inset": 12, "text_indent": 40,
+      "cost_width": 105, "rank_width": 105, "submenu_dim": 0.5, "cursor_sec": 0.09, "mote_lag_sec": 0.03, "mote_px": 10,
+      "mote_offset": 14, "breath_sec": 2.4, "breath_min": 0.75
+    },
+    "detail": {"rect": [1164, 219, 510, 660], "name_height": 48, "line_height": 36, "gap": 18, "use_height": 120},
+    "picker": {
+      "rect": [1164, 219, 510, 0], "header_height": 45, "row_pitch": 63, "max_rows": 7, "row_inset": 12, "text_indent": 40,
+      "cost_width": 297, "rank_width": 126, "submenu_dim": 0.5, "cursor_sec": 0.09, "mote_lag_sec": 0.03, "mote_px": 10,
+      "mote_offset": 14, "breath_sec": 2.4, "breath_min": 0.75
+    },
+    "preview": {"gap": 18, "height": 150},
+    "gauge": {"height": 6, "inset_bottom": 9, "gap": 12}
+  }
+}

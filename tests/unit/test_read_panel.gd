@@ -119,7 +119,13 @@ func test_a_read_opens_the_panel_on_the_foe_as_it_stands() -> void:
 	assert_eq(panel.page()["statuses"], tr("STATUS_REFLECT"), "the eel's Reflect, from the fixture")
 	var shown := panel.shown_text()
 	assert_true(shown.has(tr("LORE_LANTERN_EEL")), "lore on screen")
-	assert_true(shown.has(tr("HUD_READ_CLOSE_HINT")), "how to close it")
+	var hint := tr("HUD_READ_HINTS_FMT").format(
+		{
+			"close": tr("HUD_READ_CLOSE_HINT"),
+			"help": tr("STATUS_HELP_OPEN_HINT_FMT").format({"key": InputNames.first_name(StatusHelpPanel.ACTION)})
+		}
+	)
+	assert_true(shown.has(hint), "how to close it, and the key that explains its statuses")
 	assert_true(shown.has(tr("STAT_MAGIC_DEFENSE")), "the stats on screen")
 	_free()
 

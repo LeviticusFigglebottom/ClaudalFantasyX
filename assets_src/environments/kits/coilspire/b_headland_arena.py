@@ -4,7 +4,10 @@ landing with the headland's ground rising round it; at battle-camera distance th
 grey-brown triangles behind every angle (`battle`, `party_side`, `to_the_spire`). This writes the table through the
 same `write_arena` with the kit's scrub clumps scattered over the slopes in view, each set on the ground's own height
 (the table's `_headland_ground_y`), clear of the fight and of the path up to the spire. Re-run after the table
-changes, instead of `arena_scenes.py`'s own write of this arena. It also writes `coilspire_tier_landing` (env-art's
+changes, instead of `arena_scenes.py`'s own write of this arena. The headland's fights come at 16:00 with the storm
+wall standing on the sea, before the binding (the human's FAST-TRACK 11-03: they had a sunny backdrop and no
+Undertow): the arena takes tools/act1/storm_arenas.py's `ch08_brewing` look (overcast, cool light, the first rain)
+and the Undertow at `ch08_seawall` down the battle camera's view. It also writes `coilspire_tier_landing` (env-art's
 TIER_HALL table as is) so both arenas wear the zone's slot looks (M3-ENV-1326, KitSlotSwaps):
 
     python3 assets_src/environments/kits/coilspire/b_headland_arena.py
@@ -81,6 +84,20 @@ def _zone_looks():
     return mod
 
 
+STORM_PRESET = "ch08_seawall"
+STORM_LOOK = "ch08_brewing"
+# Down the battle camera's view (it looks along -Z) and off the spire's line, so the wall stands beside the tower
+STORM_AZIMUTH = 20.0
+
+
+def _storm_arenas():
+    """tools/act1/storm_arenas.py: the storm looks and the Undertow, rim and wetting additions."""
+    spec = importlib.util.spec_from_file_location("storm_arenas", ROOT / "tools" / "act1" / "storm_arenas.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def main(out_dir: Path | None = None) -> int:
     AS = _arena_scenes()
     if out_dir is not None:  # tools/tests/test_b_arenas.py writes to a scratch dir
@@ -88,12 +105,15 @@ def main(out_dir: Path | None = None) -> int:
     zl = _zone_looks()
     mod = zl.load_generator("ch08_coilspire_dressing")
     paths = {slot: mod.RES_ZONE + name for slot, (name, _) in mod.KIT_LOOKS.items()}  # the zone's slot looks (M3-ENV-1326)
+    sa = _storm_arenas()
     table = AS.HEADLAND
     extra = scrub(AS, table)
-    path = AS.write_arena({**table, "pieces": list(table["pieces"]) + extra})
-    text = zl.add_kit_slot_swaps(path.read_text(encoding="utf-8"), paths)
+    path = AS.write_arena(sa.styled({**table, "pieces": list(table["pieces"]) + extra}, STORM_LOOK))
+    text = sa.dress(path.read_text(encoding="utf-8"), STORM_LOOK, azimuth=STORM_AZIMUTH, preset=STORM_PRESET,
+                    sea_y=table["sea"]["y"])
+    text = zl.add_kit_slot_swaps(text, paths)
     # The ground's centre stands ~80 m from the fight, so its import chain drew the coarse LOD1 as the backdrop
-    path.write_text(zl.pin_lod0(text, "Ground", "arena_headland_ground"), encoding="utf-8")
+    path.write_text(sa.add_rain_wet(zl.pin_lod0(text, "Ground", "arena_headland_ground"), STORM_LOOK), encoding="utf-8")
     print(f"ARENA {path.name} (+{len(extra)} scrub clumps)")
     # The tier landing (env-art's TIER_HALL table, unchanged): only the zone's slot looks (its pipes read pale mint)
     path = AS.write_arena(AS.TIER_HALL)

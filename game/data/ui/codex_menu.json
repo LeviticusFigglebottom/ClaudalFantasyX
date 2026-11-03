@@ -4,7 +4,7 @@
     "canvas_layer": 64,
     "panel": {"rect": [159, 87, 1602, 906], "pad": 27, "title_height": 57, "help_height": 39},
     "categories": {
-      "rect": [186, 177, 402, 216],
+      "rect": [186, 177, 402, 264],
       "header_height": 0,
       "row_pitch": 48,
       "max_rows": 8,

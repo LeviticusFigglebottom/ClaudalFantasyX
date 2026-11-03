@@ -447,9 +447,14 @@ STORM = {"name": "Undertow", "at": [cf.r3(v) for v in STORM_AT], "preset": "ch08
 # block shows: a cool fill from landward on the faces the cameras see, and a glimmer rim from the storm's own bearing
 # that edges the figures against it. Shadowless (yaw = 180 - the bearing they come from, as the zones' sun rows).
 STORM_FILLS = [
-    {"pitch_deg": -25.0, "yaw_deg": 180.0 - 315.0, "color": "#9FB4C8", "energy": 0.6, "specular": 0.3, "block": "Storm"},
+    {"pitch_deg": -25.0, "yaw_deg": 180.0 - 315.0, "color": "#9FB4C8", "energy": 0.8, "specular": 0.15, "block": "Storm"},
     {"pitch_deg": -12.0, "yaw_deg": 180.0 - STORM["azimuth_deg"], "color": "#8FD0D8", "energy": 0.55, "specular": 0.0,
      "block": "Storm"},
+    # big38 (row 82 partly): the flood's and the lake's cameras look landward (WNW), so the faces they see turn to the
+    # sea and took only the low rim: dark-faced figures, roofs as one mass. A soft front fill from the sea under the
+    # storm (bearing 120), and a soft sky fill from overhead for the tops of heads, roofs and the walk.
+    {"pitch_deg": -20.0, "yaw_deg": 180.0 - 120.0, "color": "#93A8BA", "energy": 0.55, "specular": 0.0, "block": "Storm"},
+    {"pitch_deg": -70.0, "yaw_deg": 0.0, "color": "#8C9CAC", "energy": 0.3, "specular": 0.0, "block": "Storm"},
 ]
 
 

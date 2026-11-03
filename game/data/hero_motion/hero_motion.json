@@ -91,6 +91,11 @@
       "run": "run"
     },
     "clip_blend_sec": 0.25,
+    "clip_release": {
+      "doc": "FAST-TRACK 2026-11-03 (the playtest: Rhen slid with no walk cycle): a cutscene clip left on a field body gives way to its locomotion. The player's stick (a FieldController that accepts input and is steered) takes any clip, held or not. A loop that nobody asked to hold (a line's talk that an overheard bark, an auto-advanced or a skipped line never sent back to idle) gives way once the body has travelled faster than walk_ratio x its walk clip speed for after_sec, which is longer than a stand-in glide (sequencer.json standin_glide_sec). Explicitly held clips on other bodies stay.",
+      "walk_ratio": 0.5,
+      "after_sec": 0.6
+    },
     "gait_measure": {
       "doc": "HeroClipGait: each bone is in contact while within contact_tol_m of its lowest height in the cycle; its backward speed then (mean over every contact sample of every bone, sampled `samples` times a cycle) is the clip's ground speed. The data above must match it within measure_tolerance (a fraction).",
       "bones": [

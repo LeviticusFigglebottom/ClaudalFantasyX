@@ -304,6 +304,6 @@ func _sync_status(c: BattleCombatant) -> void:
 		return
 	var px := float(HudLayout.section(&"party").get("status_icon_px", 0))
 	for sid: StringName in c.statuses:
-		var g := StatusGlyph.new(sid, StatusGlyph.inverted_for(c, sid))
+		var g := StatusGlyph.with_help(sid, StatusGlyph.inverted_for(c, sid))  # hover or hold: its one line
 		g.custom_minimum_size = Vector2(px, px)
 		_info_status.add_child(g)
