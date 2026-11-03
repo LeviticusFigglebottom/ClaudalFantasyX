@@ -30,6 +30,13 @@
       "held": {"desaturate": 0.6, "wash": 0.14, "wash_color": "#7FC6D9", "edge_inner": 0.9, "edge_outer": 2.0, "edge_wash": 0.55, "edge_blur_lod": 2.5}
     }
   },
+  "_storm_note": "FAST-TRACK (11-03 playtest): @storm view|off [look=<id>] (CutsceneStorm). playing and time_scale: the Undertow's clock during the view (a zone holds it still); fog_density: the zone fog while the view is up (a storm zone's spray fog greys the maelstrom out from a shot standing off it); sun_energy: the zone sun while the view is up (the storm's top in full sun); flash: a bolt on the side facing the camera.",
+  "storm": {
+    "default_look": "eye",
+    "looks": {
+      "eye": {"playing": true, "time_scale": 1.0, "fog_density": 0.000012, "sun_energy": 2.2, "flash": true}
+    }
+  },
   "_hold_note": "M2-FP-103 (the playtest: a kneeling Asha stood up for her first line): an @anim of one of hold_clips is a pose the actor holds (a hero body's play_clip hold) until its own next @anim or @mark, and its lines don't play the talk or idle clip over it. Any other @anim is a gesture, after which lines play talk and idle again.",
   "hold_clips": ["kneel_over_rhen", "laugh", "offer_hand", "face_west", "sit_in_shallows", "sit_up", "sit_steps", "spear_level", "catch_rhen", "take_hand", "vigil_book_shut", "stand_apart", "kneel", "lie_in_shallows"],
   "_stand_in_note": "M2-FP-103: clip_stand_ins maps '<actor>/<clip>' to a clip the rig has, played while the requested clip (assets_src/characters/requested_clips.json) is not built yet; the real clip plays as soon as the rig carries it. Rhen lies in the shallows as his KO pose (the human's playtest: his kneel twinned Asha's), sits up into his kneel and stands as his rise.",

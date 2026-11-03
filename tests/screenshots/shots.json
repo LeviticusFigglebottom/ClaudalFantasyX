@@ -7581,6 +7581,103 @@
       }
     },
     {
+      "id": "ch01_rising_eye",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "ScaleHull",
+            "flags": [
+              "ch01_started",
+              "ch01_gulls_cried"
+            ],
+            "scene_id": "ch01_the_rising",
+            "hold_cue": "storm view"
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch08_storm_wall_f08w",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch08/coilspire/coilspire.tscn",
+            "spawn": "Gallery",
+            "flags": [
+              "ch08_virel_bound"
+            ],
+            "scene_id": "ch08_storm_against_wind",
+            "hold_cue": "camera F08W"
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch08_storm_eye_f08e",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch08/coilspire/coilspire.tscn",
+            "spawn": "Gallery",
+            "flags": [
+              "ch08_virel_bound"
+            ],
+            "scene_id": "ch08_storm_against_wind",
+            "hold_cue": "storm view"
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
       "id": "ch01_drop",
       "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
