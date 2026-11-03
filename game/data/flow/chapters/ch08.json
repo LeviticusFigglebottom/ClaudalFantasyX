@@ -54,6 +54,8 @@
         {"when": {"set": ["ch08_beacon_opened"], "unset": ["ch08_wave1_held"]}, "steps": [
           {"place": "WallGate"},
           {"play": "ch08_run_back"},
+          {"set": "ch08_kites_down"},
+          {"zone": "refresh_states"},
           {"zone": "place_actor", "args": ["toma", "stair_toma_wait"]},
           {"place": "WallHead"},
           {"play": "ch08_first_down"},
