@@ -5,7 +5,7 @@
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
 ### 2026-11-03 ~18:10: the Lead's storm-overlap decision (big47): ONE Undertow per fight
-**MERGE-READY @ 6231069dc** (FAST-TRACK, for big48).
+**MERGE-READY @ 304146c55** (FAST-TRACK, for big48; supersedes 6231069dc).
 - **BattleStorm:** when the arena has its own Undertow (an UndertowStorm in the battle scene: the seawall arenas,
   env-art's oruvel_raft_storm), that arena owns the sky, the wet surfaces and the vortex.
   - BattleStorm then adds only wind and spray, plus rain only when the arena's storm has none (row 72).
@@ -16,7 +16,19 @@ The gap (the human's playtest note): battles had no action animation. This track
 - **Tests** (test_battle_storm 6/0):
   - test_no_storm_fight_draws_two_undertows: all seven fights, each drawing exactly one.
   - test_an_arena_undertow_is_never_doubled: an arena Undertow means none of ours and no doubled rain.
-- **Trial merge with act1-chapters, env-art-b and env-art:** running (the result follows).
+- **Trial merge with act1-chapters, env-art-b and env-art** (a scratch worktree, not pushed): `--filter=storm`.
+  - **Mine pass:** test_battle_storm 6/0 there and here.
+    - test_no_storm_fight_draws_two_undertows passes with the real storm arenas: one Undertow each, the arena's
+      where it has one.
+  - **For the Lead at big48: env-art and env-art-b both add oruvel_raft_storm.tscn and its preview, and they
+    conflict.** With env-art's version, env-art-b's test_storm_arenas fails on oruvel_raft_storm:
+    - no far plane;
+    - rain_amount 0;
+    - no rim light;
+    - no RainWet.
+  - act1-chapters' test_a_pending_storm_arena_has_its_request_and_a_fallback then asks for the id to move from
+    storm.pending to storm.arenas.
+  - None of these is battle-presentation's.
   - The arenas.json conflict: env-art-b repoints oruvel_raft_storm at env-art's new scene, while act1-chapters
     keeps it pending on oruvel_raft_morning. Lead, pick one at big48. If the scene lands, move the id from
     storm.pending to storm.arenas.
