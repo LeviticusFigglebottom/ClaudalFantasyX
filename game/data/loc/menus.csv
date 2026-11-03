@@ -128,7 +128,7 @@ HUD_READ_HINTS_FMT,{close} · {help}
 STATUS_MENU_HELP_FMT,Up and Down or Left and Right: hero · {key}: what statuses do · Cancel: back
 CTRL_ACT_STATUS_HELP,What statuses do
 HUD_HELP_NEXT_SINGLE_FMT,{name} acts again after one turn
-HUD_HELP_RANK_WAIT_FMT,{rank} wait: {next}
+HUD_HELP_RANK_WAIT_FMT,{rank}: {next}
 FIELD_MENU_MAGIC,Magic
 FIELD_MENU_MAGIC_DESC,Cast healing and mending on the party between battles.
 MAGIC_MENU_CASTERS,Caster
