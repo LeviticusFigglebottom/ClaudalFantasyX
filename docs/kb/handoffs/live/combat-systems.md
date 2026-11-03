@@ -81,3 +81,15 @@ LEAD-ASK: M3-CMB-04 put a one-line hook in `game/battle/scene/battle_vitals.gd` 
 
 MERGE-READY @ dd522443: FAST-TRACKs 1–4 complete. Checks: validate_data; test_ch01_thread and test_ch01_zones green; the sim on the touched suites as above.
 **Next:** no open combat Act I rows, so Act II per ADR 0205 §4: my M4 combat tasks and docs/kb/plan/act2_plan.md.
+
+### 2026-11-03 ~19:00: Act II (ADR 0205 §4): M4-A2P-1202 to review
+MERGE-READY @ f096de6b: M4-A2P-1202.
+- When no field calls for a particular Vowbound, the sim now calls the latest bound one (3e843993).
+- `sim.py` gates `p90_turns_max` on banded rows only (`within_p90`); report-only rows still fail on timeouts.
+- `--check` is clean on all 40 suites that bind more than one Vowbound.
+  - The Wakefin's masher tail is the same whichever Vowbound is called (p90 91–92), so the call rule alone couldn't fix it.
+  - Spire Wicks p90 went 55 → 48.
+  - Details are in balance_report.md (2026-11-03).
+- Checks: battle_sim tests 56/0; tools test_balance_sim and test_balance_naive_swell OK; taskboard --check.
+- LEAD-ASK: the p90 cap no longer gates report-only rows (my lane, tools/balance). Overrule if you want the cap back on naive_swell. Assumed OK.
+- **Next:** no open combat-rules task on the board. Battle-presentation owns the open BPR and A2P VFX requests. I'm waiting for the Lead's next combat item, or the cure/revive-spell content call above.
