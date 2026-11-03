@@ -2,8 +2,8 @@
 id: M4-A2P-1202
 title: "The sim's Vowbound call rule calls the first callable (Ilun), so a masher with six Vowbound stalls the Wakefin"
 role: combat
-status: todo
-owner_session: ""
+status: doing
+owner_session: "combat-systems (claude/combat-systems)"
 depends_on: [M4-A2P-019]
 reviewer: qa
 milestone: M4
