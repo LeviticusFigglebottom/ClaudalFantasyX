@@ -24,12 +24,13 @@ func before_each() -> void:
 # --- the model ----------------------------------------------------------------------------------
 
 
-func test_the_shipped_codex_has_four_categories_and_a_small_starter_set() -> void:
+## Afflictions (the human's playtest FAST-TRACK, 2026-11-03) is the fifth: one entry per status.
+func test_the_shipped_codex_has_five_categories_and_a_small_starter_set() -> void:
 	var m := _model()
 	var ids: Array[StringName] = []
 	for c in m.categories():
 		ids.append(c["id"])
-	assert_eq(ids, [&"world", &"places", &"people", &"records"] as Array[StringName], "data order")
+	assert_eq(ids, [&"world", &"places", &"people", &"records", &"afflictions"] as Array[StringName], "data order")
 	assert_true(m.entry_rows.size() >= 32, "the starter set and Act I's (Ch1 to Ch9); Narrative reviews it (M3-NAR-01)")
 	for e in m.entry_rows:
 		var id := StringName(str(e["id"]))
@@ -146,7 +147,7 @@ func test_the_menu_lists_categories_with_counts_and_new_and_shows_a_category_lin
 	flags[&"ch02_met_asha"] = true
 	var menu := _menu()
 	var cats := menu.categories_page()
-	assert_eq(cats.row_count(), 4)
+	assert_eq(cats.row_count(), 5)
 	assert_eq(cats.rows[0]["right"], tr("CODEX_ROW_COUNT_FMT").format({"found": 4, "total": 19}))
 	assert_eq(cats.rows[0]["mp"], tr("CODEX_NEW_TAG"), "unread entries: New, in words")
 	assert_eq(cats.rows[3]["mp"], "", "nothing found: nothing new")

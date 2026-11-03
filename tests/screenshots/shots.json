@@ -362,6 +362,16 @@
       "scene": "res://game/battle/scene/shots/battle_statuses.tscn"
     },
     {
+      "id": "battle_status_help",
+      "pending_baseline": true,
+      "scene": "res://game/battle/scene/shots/battle_status_help.tscn"
+    },
+    {
+      "id": "battle_status_tip",
+      "pending_baseline": true,
+      "scene": "res://game/battle/scene/shots/battle_status_tip.tscn"
+    },
+    {
       "id": "save_shrine_field",
       "scene": "res://game/levels/_tests/save_shrine/shot_save_field.tscn",
       "settle_frames": 30,

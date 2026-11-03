@@ -471,7 +471,9 @@ func item_help(engine: BattleEngine, items: BattleItemSource, iid: StringName, n
 		if key != "":
 			parts.append(tr(key))
 	if next_in >= 0:
-		parts.append(next_turn_text(display_name(engine.current), next_in))
+		var action := items.action_for(iid)
+		var rank := action.rank if action != null else -1
+		parts.append(rank_turn_text(rank, display_name(engine.current), next_in))
 	return " · ".join(parts)
 
 
@@ -529,7 +531,8 @@ func skill_help(engine: BattleEngine, skill_id: StringName, next_in: int) -> Str
 		if copy.is_empty():
 			parts.append(tr("HUD_HELP_ECHO_NONE"))
 			if next_in >= 0:
-				parts.append(next_turn_text(display_name(engine.current), next_in))
+				var rank := int(sk.get("rank", Formulas.DEFAULT_RANK))
+				parts.append(rank_turn_text(rank, display_name(engine.current), next_in))
 			return " · ".join(parts)
 		var copied := tr(str(engine.db.skill(engine.last_foe_skill).get("name_key", "")))
 		parts.append(tr("HUD_HELP_ECHO_FMT").format({"skill": copied}))
@@ -551,14 +554,23 @@ func skill_help(engine: BattleEngine, skill_id: StringName, next_in: int) -> Str
 	if delay > 0:
 		parts.append(tr("HUD_HELP_DELAY_FMT").format({"n": delay}))
 	if next_in >= 0:
-		parts.append(next_turn_text(display_name(engine.current), next_in))
+		parts.append(rank_turn_text(int(sk.get("rank", Formulas.DEFAULT_RANK)), display_name(engine.current), next_in))
 	return " · ".join(parts)
 
 
 func next_turn_text(actor_name: String, next_in: int) -> String:
 	if next_in <= 0:
 		return tr("HUD_HELP_NEXT_ONE").format({"name": actor_name})
+	if next_in == 1:  # Act I GPU QA row 69: "in 1 turns"
+		return tr("HUD_HELP_NEXT_SINGLE_FMT").format({"name": actor_name})
 	return tr("HUD_HELP_NEXT_FMT").format({"name": actor_name, "n": next_in})
+
+
+## The row's "R3" read on the help line (Act I GPU QA row 73: the rank had no legend): "R3 wait: Rhen acts again in
+## 2 turns". A rank under 0 (unknown) gives the next-turn words alone.
+func rank_turn_text(rank: int, actor_name: String, next_in: int) -> String:
+	var next := next_turn_text(actor_name, next_in)
+	return tr("HUD_HELP_RANK_WAIT_FMT").format({"rank": _rank_text(rank), "next": next}) if rank >= 0 else next
 
 
 func escape_help(engine: BattleEngine) -> String:

@@ -1,11 +1,12 @@
 {
   "codex": {
-    "doc": "The lore codex (M3-UI-03, SPEC §6.11; docs/kb/tech/ui.md section Lore codex). 'categories' are listed in this order, each with name_key and desc_key. An entry is {id, category, title_key, body_key, unlock}; entries show in file order within their category. 'unlock' is one of {\"flag\": <declared story flag>} (shown once the flag is set), {\"record\": true} (a text record found in the field: an Interactable whose payload is {\"record\": \"<id>\"} sets its seen flag codex_<id>_found), or {\"always\": true}. A record entry may name a document reader record (\"reader\": a game/data/lore/records.json id): Confirm on it opens the record in the reader (M4-A2P-080). Every entry also has a read flag codex_<id>_read (the 'New' marker until it is opened). Both flags are declared in game/data/flags.tres; validate_data.py (check_codex) checks categories, flags, loc keys and unique ids. Text lives in game/data/loc/codex.csv. Narrative reviews and extends the entries (M3-NAR-01). M3-UI-207 added Act II's places (Ch10 to Ch16, each on its chapter's arrival flag) and two peoples (the Kirru, the Ullari), saying only what a traveller knows on arriving.",
+    "doc": "The lore codex (M3-UI-03, SPEC §6.11; docs/kb/tech/ui.md section Lore codex). 'categories' are listed in this order, each with name_key and desc_key. An entry is {id, category, title_key, body_key, unlock}; entries show in file order within their category. 'unlock' is one of {\"flag\": <declared story flag>} (shown once the flag is set), {\"record\": true} (a text record found in the field: an Interactable whose payload is {\"record\": \"<id>\"} sets its seen flag codex_<id>_found), or {\"always\": true}. An Afflictions entry (the human's playtest FAST-TRACK, 2026-11-03) names its \"status\" (a statuses.json id): it unlocks on that status's met flag (status_<id>_met, set the first time it lands on the party) and its page is StatusHelpModel.body, what it does and every way it ends, from the game's own tables (body_key stays its one-line description). A record entry may name a document reader record (\"reader\": a game/data/lore/records.json id): Confirm on it opens the record in the reader (M4-A2P-080). Every entry also has a read flag codex_<id>_read (the 'New' marker until it is opened). Both flags are declared in game/data/flags.tres; validate_data.py (check_codex) checks categories, flags, loc keys and unique ids. Text lives in game/data/loc/codex.csv. Narrative reviews and extends the entries (M3-NAR-01). M3-UI-207 added Act II's places (Ch10 to Ch16, each on its chapter's arrival flag) and two peoples (the Kirru, the Ullari), saying only what a traveller knows on arriving.",
     "categories": [
       {"id": "world", "name_key": "CODEX_CAT_WORLD", "desc_key": "CODEX_CAT_WORLD_DESC"},
       {"id": "places", "name_key": "CODEX_CAT_PLACES", "desc_key": "CODEX_CAT_PLACES_DESC"},
       {"id": "people", "name_key": "CODEX_CAT_PEOPLE", "desc_key": "CODEX_CAT_PEOPLE_DESC"},
-      {"id": "records", "name_key": "CODEX_CAT_RECORDS", "desc_key": "CODEX_CAT_RECORDS_DESC"}
+      {"id": "records", "name_key": "CODEX_CAT_RECORDS", "desc_key": "CODEX_CAT_RECORDS_DESC"},
+      {"id": "afflictions", "name_key": "CODEX_CAT_AFFLICTIONS", "desc_key": "CODEX_CAT_AFFLICTIONS_DESC"}
     ],
     "entries": [
       {"id": "glimmer", "category": "world", "title_key": "CODEX_GLIMMER_TITLE", "body_key": "CODEX_GLIMMER_BODY",
@@ -148,7 +149,28 @@
       {"id": "keth", "category": "world", "title_key": "CODEX_KETH_TITLE", "body_key": "CODEX_KETH_BODY", "unlock": {"flag": "ch12_reached_quellan"}},
       {"id": "conclave", "category": "world", "title_key": "CODEX_CONCLAVE_TITLE", "body_key": "CODEX_CONCLAVE_BODY", "unlock": {"flag": "ch13_started"}},
       {"id": "malcor_venn", "category": "people", "title_key": "CODEX_MALCOR_VENN_TITLE", "body_key": "CODEX_MALCOR_VENN_BODY", "unlock": {"flag": "ch14_started"}},
-      {"id": "heresy", "category": "world", "title_key": "CODEX_HERESY_TITLE", "body_key": "CODEX_HERESY_BODY", "unlock": {"flag": "ch14_declared_heretics"}}
+      {"id": "heresy", "category": "world", "title_key": "CODEX_HERESY_TITLE", "body_key": "CODEX_HERESY_BODY", "unlock": {"flag": "ch14_declared_heretics"}},
+      {"id": "affliction_poison", "category": "afflictions", "status": "poison", "title_key": "STATUS_POISON", "body_key": "STATUS_POISON_DESC", "unlock": {"flag": "status_poison_met"}},
+      {"id": "affliction_sleep", "category": "afflictions", "status": "sleep", "title_key": "STATUS_SLEEP", "body_key": "STATUS_SLEEP_DESC", "unlock": {"flag": "status_sleep_met"}},
+      {"id": "affliction_silence", "category": "afflictions", "status": "silence", "title_key": "STATUS_SILENCE", "body_key": "STATUS_SILENCE_DESC", "unlock": {"flag": "status_silence_met"}},
+      {"id": "affliction_darkness", "category": "afflictions", "status": "darkness", "title_key": "STATUS_DARKNESS", "body_key": "STATUS_DARKNESS_DESC", "unlock": {"flag": "status_darkness_met"}},
+      {"id": "affliction_petrify", "category": "afflictions", "status": "petrify", "title_key": "STATUS_PETRIFY", "body_key": "STATUS_PETRIFY_DESC", "unlock": {"flag": "status_petrify_met"}},
+      {"id": "affliction_slow", "category": "afflictions", "status": "slow", "title_key": "STATUS_SLOW", "body_key": "STATUS_SLOW_DESC", "unlock": {"flag": "status_slow_met"}},
+      {"id": "affliction_haste", "category": "afflictions", "status": "haste", "title_key": "STATUS_HASTE", "body_key": "STATUS_HASTE_DESC", "unlock": {"flag": "status_haste_met"}},
+      {"id": "affliction_stop", "category": "afflictions", "status": "stop", "title_key": "STATUS_STOP", "body_key": "STATUS_STOP_DESC", "unlock": {"flag": "status_stop_met"}},
+      {"id": "affliction_berserk", "category": "afflictions", "status": "berserk", "title_key": "STATUS_BERSERK", "body_key": "STATUS_BERSERK_DESC", "unlock": {"flag": "status_berserk_met"}},
+      {"id": "affliction_confuse", "category": "afflictions", "status": "confuse", "title_key": "STATUS_CONFUSE", "body_key": "STATUS_CONFUSE_DESC", "unlock": {"flag": "status_confuse_met"}},
+      {"id": "affliction_doom", "category": "afflictions", "status": "doom", "title_key": "STATUS_DOOM", "body_key": "STATUS_DOOM_DESC", "unlock": {"flag": "status_doom_met"}},
+      {"id": "affliction_zombie", "category": "afflictions", "status": "zombie", "title_key": "STATUS_ZOMBIE", "body_key": "STATUS_ZOMBIE_DESC", "unlock": {"flag": "status_zombie_met"}},
+      {"id": "affliction_shell", "category": "afflictions", "status": "shell", "title_key": "STATUS_SHELL", "body_key": "STATUS_SHELL_DESC", "unlock": {"flag": "status_shell_met"}},
+      {"id": "affliction_protect", "category": "afflictions", "status": "protect", "title_key": "STATUS_PROTECT", "body_key": "STATUS_PROTECT_DESC", "unlock": {"flag": "status_protect_met"}},
+      {"id": "affliction_reflect", "category": "afflictions", "status": "reflect", "title_key": "STATUS_REFLECT", "body_key": "STATUS_REFLECT_DESC", "unlock": {"flag": "status_reflect_met"}},
+      {"id": "affliction_regen", "category": "afflictions", "status": "regen", "title_key": "STATUS_REGEN", "body_key": "STATUS_REGEN_DESC", "unlock": {"flag": "status_regen_met"}},
+      {"id": "affliction_armor_break", "category": "afflictions", "status": "armor_break", "title_key": "STATUS_ARMOR_BREAK", "body_key": "STATUS_ARMOR_BREAK_DESC", "unlock": {"flag": "status_armor_break_met"}},
+      {"id": "affliction_mental_break", "category": "afflictions", "status": "mental_break", "title_key": "STATUS_MENTAL_BREAK", "body_key": "STATUS_MENTAL_BREAK_DESC", "unlock": {"flag": "status_mental_break_met"}},
+      {"id": "affliction_power_break", "category": "afflictions", "status": "power_break", "title_key": "STATUS_POWER_BREAK", "body_key": "STATUS_POWER_BREAK_DESC", "unlock": {"flag": "status_power_break_met"}},
+      {"id": "affliction_magic_break", "category": "afflictions", "status": "magic_break", "title_key": "STATUS_MAGIC_BREAK", "body_key": "STATUS_MAGIC_BREAK_DESC", "unlock": {"flag": "status_magic_break_met"}},
+      {"id": "affliction_provoke", "category": "afflictions", "status": "provoke", "title_key": "STATUS_PROVOKE", "body_key": "STATUS_PROVOKE_DESC", "unlock": {"flag": "status_provoke_met"}}
     ]
   }
 }

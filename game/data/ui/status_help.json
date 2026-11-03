@@ -1,0 +1,44 @@
+{
+  "status_help": {
+    "doc": "The human's playtest FAST-TRACK (2026-11-03): every status says how to IDENTIFY it and how to REMOVE it. StatusHelpModel (game/ui/status_help/status_help_model.gd) builds each status's words from the game's own tables, never a copy: its name and what it does (statuses.json name_key, and name_key + '_DESC'), how long it lasts (default_duration: > 0 is about that many of the bearer's own turns, -1 until cured), whether it outlasts a battle (game/data/world/party_rest.json carried_statuses) and what removes it: every consumable in items.json whose battle effects 'cure' it (marked 'in battle' when the item has no field use), every party skill whose 'cleanses' lists it (the heroes' skills in characters.json, the Lattice's ability nodes, and a Vowbound's skills once its bound_flag is set, so a Vowbound not yet met is never named), a save shrine's rest (shrine_cures), and the one-off ways in 'notes' (status id -> loc key). 'action' is the status help key (menu context; ControlsModel adds it so it can be remapped): it opens StatusHelpPanel from the battle command menu (the acting hero's statuses first), the Read panel (the foe's) and the field Status page (the hero's). 'met_flag_prefix' + id + '_met' is the declared flag set the first time the status lands on a party member (BattleStatusTips): it raises that status's tip card once per save and unlocks its Codex Afflictions entry. Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'panel' is the help panel: the status list on the left (row_pitch per row, glyph_px glyphs), the chosen status's page on the right. 'tip' is the first-time card: it holds the battle until Confirm (or the help key, which opens the panel on that status). The panel's and the card's canvas layer is the battle pause's, over the HUD.",
+    "action": {"status_help": {"keys": ["H"], "joy_buttons": [4]}},
+    "met_flag_prefix": "status_",
+    "notes": {
+      "sleep": "STATUS_HELP_NOTE_SLEEP",
+      "confuse": "STATUS_HELP_NOTE_CONFUSE",
+      "doom": "STATUS_HELP_NOTE_DOOM",
+      "zombie": "STATUS_HELP_NOTE_ZOMBIE",
+      "petrify": "STATUS_HELP_NOTE_PETRIFY",
+      "provoke": "STATUS_HELP_NOTE_PROVOKE",
+      "berserk": "STATUS_HELP_NOTE_BERSERK"
+    },
+    "panel": {
+      "rect": [279, 111, 1362, 858],
+      "pad": 27,
+      "title_height": 54,
+      "help_height": 36,
+      "list_width": 420,
+      "row_pitch": 33,
+      "glyph_px": 27,
+      "row_gap": 12,
+      "detail_glyph_px": 72,
+      "detail_gap": 18,
+      "line_gap": 9,
+      "open_sec": 0.18
+    },
+    "tip": {
+      "rect": [519, 249, 882, 438],
+      "pad": 27,
+      "glyph_px": 63,
+      "gap": 18,
+      "line_gap": 9,
+      "open_sec": 0.18
+    },
+    "chip": {
+      "long_press_sec": 0.45,
+      "callout_width": 540,
+      "callout_pad": 12,
+      "callout_lift_px": 9
+    }
+  }
+}
