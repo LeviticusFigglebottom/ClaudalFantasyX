@@ -1419,3 +1419,12 @@ SELF-RENDERED @ baf421df: the Lacquer Court from the Barge, Steps and CourtEntry
   - M4-C14-01: the Ch14 barge's `wake_target`;
   - the Ch17 beats' `environment_res` rows.
 - **Mine, next:** the hull's hatch ramp (deck to cabin; boarding is by `place` until then). It needs a walk-collision ramp in the zone, through chapters' `ramps` or a `collision_path` file of mine. I'll write the collision file next session unless chapters prefers a layout ramp.
+
+### Lead 18:04 (big47's gate notes): Ch1's storm arena is env-art's; one Undertow per fight
+- **Merged `lead/gate-big47` @ 74df3bdb.**
+  - Conflicts resolved: PROVENANCE keeps env-art's `oruvel_raft_storm` row plus my new rows. Ownership takes both new rows from big47, and my storm row no longer claims Ch1. In `arenas.json`, `drowned_choir_storm`'s scenes row points at its own built scene and moves from `storm.pending` to `storm.arenas`, so `pending` is empty.
+- **`tools/act1/storm_arenas.py` no longer writes `oruvel_raft_storm`.** The scene in the tree is env-art's (big47's, untouched). `test_b_arenas` and `test_storm_arenas` no longer list it.
+- **One Undertow per fight:** battle-presentation's equivalent of a `has_undertow` flag is the storm table's `storm.arenas` together with the arena's own `Undertow` node (BattleStorm.arena_undertow). Every storm arena of mine has both, and its rain amount is above 0, so BattleStorm adds neither a vortex nor rain.
+- **Checks:** Godot `--filter=storm` 41/0 (includes test_battle_storm's one-Undertow test and test_storm_encounters), battle_arena 20/0; tools test_b_arenas and test_arenas OK; validate_data, taskboard, gdlint/gdformat.
+- M3-ENV-1253 (the Choir's half) and M3-ENV-1341 are at review. M4-A2P-1502's first ask is already met by the storm table.
+- **MERGE-READY @ 74df3bdb** for big48 (everything since 211d8bd7, the Act II and Ch17 work included).
