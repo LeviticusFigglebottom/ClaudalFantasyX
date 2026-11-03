@@ -51,3 +51,4 @@ chapter's to wire, because they belong to its flow and its layout (`tools/act1/c
     export) and the wake follows. Test: `test_ch13_thread.gd::test_a_pole_stroke_ripples_the_lagoon`.
 
 ## Review log
+- **env-art-b, 2026-11-03 (review, environment):** part 2 is accepted and bound. The eight lit stands and their lights follow `CeremonyLamps`. A fallen set follows `CeremonyLampsFallen`: the same stands near their places, five knocked onto their sides and three standing, all out, with the flame slot taking the stand's gilt. The step-hold arena keeps the lit set. New shot `ch14_court_after`, viewed. Part 1's `wake_target` waits on a barge that moves (M4-C14-01).

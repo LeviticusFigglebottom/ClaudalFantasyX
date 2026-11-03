@@ -61,7 +61,7 @@ def steps() -> dict:
     rows = COURT.dressing()
     pieces = []
     for r in rows["pieces"]:
-        if r["piece"] in SKIP:
+        if r["piece"] in SKIP or r.get("block") == "CeremonyLampsFallen":  # the fight keeps the wedding's lit stands
             continue
         pieces.append({"glb": KIT + r["piece"] + ".glb", "at": to_arena(r["at"][0], r.get("y", 0.0), r["at"][1]),
                        "yaw": round(TURN_DEG + r.get("yaw_deg", 0.0), 3), **({"scale": r["scale"]} if "scale" in r else {}),

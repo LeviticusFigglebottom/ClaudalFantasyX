@@ -39,7 +39,8 @@
    ],
    "energy": 1.4,
    "range": 7.0,
-   "flicker": 0.15
+   "flicker": 0.15,
+   "block": "CeremonyLamps"
   },
   {
    "at": [
@@ -49,7 +50,8 @@
    ],
    "energy": 1.4,
    "range": 7.0,
-   "flicker": 0.15
+   "flicker": 0.15,
+   "block": "CeremonyLamps"
   },
   {
    "at": [
@@ -59,7 +61,8 @@
    ],
    "energy": 1.4,
    "range": 7.0,
-   "flicker": 0.15
+   "flicker": 0.15,
+   "block": "CeremonyLamps"
   },
   {
    "at": [
@@ -69,7 +72,8 @@
    ],
    "energy": 1.4,
    "range": 7.0,
-   "flicker": 0.15
+   "flicker": 0.15,
+   "block": "CeremonyLamps"
   },
   {
    "at": [
@@ -79,7 +83,8 @@
    ],
    "energy": 1.4,
    "range": 7.0,
-   "flicker": 0.15
+   "flicker": 0.15,
+   "block": "CeremonyLamps"
   },
   {
    "at": [
@@ -89,7 +94,8 @@
    ],
    "energy": 1.4,
    "range": 7.0,
-   "flicker": 0.15
+   "flicker": 0.15,
+   "block": "CeremonyLamps"
   },
   {
    "at": [
@@ -99,7 +105,8 @@
    ],
    "energy": 1.4,
    "range": 7.0,
-   "flicker": 0.15
+   "flicker": 0.15,
+   "block": "CeremonyLamps"
   },
   {
    "at": [
@@ -109,7 +116,8 @@
    ],
    "energy": 1.4,
    "range": 7.0,
-   "flicker": 0.15
+   "flicker": 0.15,
+   "block": "CeremonyLamps"
   }
  ],
  "kit_material_paths": {
@@ -407,7 +415,8 @@
     -20.0
    ],
    "y": 0.8,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "block": "CeremonyLamps"
   },
   {
    "piece": "gilt_lamp_stand",
@@ -416,7 +425,8 @@
     -20.0
    ],
    "y": 0.8,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "block": "CeremonyLamps"
   },
   {
    "piece": "gilt_lamp_stand",
@@ -425,7 +435,8 @@
     -18.0
    ],
    "y": 0.6,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "block": "CeremonyLamps"
   },
   {
    "piece": "gilt_lamp_stand",
@@ -434,7 +445,8 @@
     -12.0
    ],
    "y": 0.6,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "block": "CeremonyLamps"
   },
   {
    "piece": "gilt_lamp_stand",
@@ -443,7 +455,8 @@
     -6.0
    ],
    "y": 0.6,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "block": "CeremonyLamps"
   },
   {
    "piece": "gilt_lamp_stand",
@@ -452,7 +465,8 @@
     -18.0
    ],
    "y": 0.6,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "block": "CeremonyLamps"
   },
   {
    "piece": "gilt_lamp_stand",
@@ -461,7 +475,8 @@
     -12.0
    ],
    "y": 0.6,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "block": "CeremonyLamps"
   },
   {
    "piece": "gilt_lamp_stand",
@@ -470,7 +485,144 @@
     -6.0
    ],
    "y": 0.6,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "block": "CeremonyLamps"
+  },
+  {
+   "piece": "gilt_lamp_stand",
+   "at": [
+    -2.8,
+    -19.6
+   ],
+   "y": 0.97,
+   "yaw_deg": 35.0,
+   "tilt_deg": [
+    0.0,
+    84.0
+   ],
+   "block": "CeremonyLampsFallen",
+   "material_paths": {
+    "kit_lamp_flame": "res://assets/environments/kits/haluna/materials/kit_gold_leaf.tres"
+   }
+  },
+  {
+   "piece": "gilt_lamp_stand",
+   "at": [
+    3.2,
+    -19.3
+   ],
+   "y": 0.8,
+   "yaw_deg": 160.0,
+   "tilt_deg": [
+    0.0,
+    0.0
+   ],
+   "block": "CeremonyLampsFallen",
+   "material_paths": {
+    "kit_lamp_flame": "res://assets/environments/kits/haluna/materials/kit_gold_leaf.tres"
+   }
+  },
+  {
+   "piece": "gilt_lamp_stand",
+   "at": [
+    -10.2,
+    -18.3
+   ],
+   "y": 0.77,
+   "yaw_deg": 75.0,
+   "tilt_deg": [
+    0.0,
+    86.0
+   ],
+   "block": "CeremonyLampsFallen",
+   "material_paths": {
+    "kit_lamp_flame": "res://assets/environments/kits/haluna/materials/kit_gold_leaf.tres"
+   }
+  },
+  {
+   "piece": "gilt_lamp_stand",
+   "at": [
+    -11.1,
+    -11.8
+   ],
+   "y": 0.77,
+   "yaw_deg": 210.0,
+   "tilt_deg": [
+    0.0,
+    83.0
+   ],
+   "block": "CeremonyLampsFallen",
+   "material_paths": {
+    "kit_lamp_flame": "res://assets/environments/kits/haluna/materials/kit_gold_leaf.tres"
+   }
+  },
+  {
+   "piece": "gilt_lamp_stand",
+   "at": [
+    -10.4,
+    -5.4
+   ],
+   "y": 0.6,
+   "yaw_deg": 300.0,
+   "tilt_deg": [
+    0.0,
+    0.0
+   ],
+   "block": "CeremonyLampsFallen",
+   "material_paths": {
+    "kit_lamp_flame": "res://assets/environments/kits/haluna/materials/kit_gold_leaf.tres"
+   }
+  },
+  {
+   "piece": "gilt_lamp_stand",
+   "at": [
+    10.1,
+    -18.2
+   ],
+   "y": 0.77,
+   "yaw_deg": 120.0,
+   "tilt_deg": [
+    0.0,
+    85.0
+   ],
+   "block": "CeremonyLampsFallen",
+   "material_paths": {
+    "kit_lamp_flame": "res://assets/environments/kits/haluna/materials/kit_gold_leaf.tres"
+   }
+  },
+  {
+   "piece": "gilt_lamp_stand",
+   "at": [
+    10.9,
+    -12.5
+   ],
+   "y": 0.6,
+   "yaw_deg": 15.0,
+   "tilt_deg": [
+    0.0,
+    0.0
+   ],
+   "block": "CeremonyLampsFallen",
+   "material_paths": {
+    "kit_lamp_flame": "res://assets/environments/kits/haluna/materials/kit_gold_leaf.tres"
+   }
+  },
+  {
+   "piece": "gilt_lamp_stand",
+   "at": [
+    10.4,
+    -5.6
+   ],
+   "y": 0.77,
+   "yaw_deg": 250.0,
+   "tilt_deg": [
+    0.0,
+    87.0
+   ],
+   "block": "CeremonyLampsFallen",
+   "material_paths": {
+    "kit_lamp_flame": "res://assets/environments/kits/haluna/materials/kit_gold_leaf.tres"
+   }
   },
   {
    "piece": "stillguard_rack",
