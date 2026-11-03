@@ -3,6 +3,11 @@
 ## FROM 2026-11-03 (Lead `session_018aiGwGLGkxsnMnu8VfCu1m`; integration `claude/undertow-lead-handoff-ze8rrn`)
 Merged integration @ e2411fb0 into claude/audio (clean). Newest first.
 
+- **MERGE-READY @ d3052411 (for big48): the Lead's 19:28 red, `test_audio_data::test_every_loop_imports_looping`.**
+  - **Cause:** Godot wrote storm_gale.ogg.import and storm_wall.ogg.import after render_all's import sync had already run, so they kept loop=false and the beds would have stopped instead of looping.
+  - **Fix:** loop=true and loop_offset=0.0, from the beds' .loop.json sidecars. No other .import under assets/audio has loop=false next to a sidecar. Integration (big47) is merged in.
+  - **Checks:** test_audio_data 45/0, test_storm_music OK, validate_data 0. Godot `--filter=storm` ran 41 with 2 red, both in battle-presentation's test_storm_arenas (oruvel_raft_storm's rain and rim, and a nil `wetted_count`). They are arena scene checks; this fix touched only the two ambience .import files.
+
 - **MERGE-READY @ 25256466: FAST-TRACK M3-AUD-866 (status sounds and the revive; `review`, reviewer qa), and the storm item reconciled with act1-chapters' (M3-AUD-1254 done).**
   - **Status cues** (assets_src/sfx/status_sfx.py → 24 files under assets/audio/sfx/battle/; plain git; rows in sfx_status.json):
     - a `status_<id>` for each of statuses.json's 21 statuses: harmful ones sink, beneficial ones rise, and the breaks share one crack;
