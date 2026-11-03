@@ -3,6 +3,25 @@
 ## FROM 2026-11-03 (Lead `session_018aiGwGLGkxsnMnu8VfCu1m`; integration `claude/undertow-lead-handoff-ze8rrn`)
 Merged integration @ e2411fb0 into claude/audio (clean). Newest first.
 
+- **MERGE-READY @ 25256466: FAST-TRACK M3-AUD-866 (status sounds and the revive; `review`, reviewer qa), and the storm item reconciled with act1-chapters' (M3-AUD-1254 done).**
+  - **Status cues** (assets_src/sfx/status_sfx.py → 24 files under assets/audio/sfx/battle/; plain git; rows in sfx_status.json):
+    - a `status_<id>` for each of statuses.json's 21 statuses: harmful ones sink, beneficial ones rise, and the breaks share one crack;
+    - `status_cure`, `status_fade` and `revive`.
+    - Levels −20 to −21 LUFS momentary (the revive −18), and `--determinism` identical.
+  - **BattleAudio.play_statuses** works off the engine's results, so **nothing needs wiring**. Each added status plays its own cue in place of the generic `status_apply`. An item's removed statuses play the cure (harmful) or the fade (beneficial), and a `revived` hit plays the revive.
+  - **combat-systems' Relighting Wick:** its effect now rings `revive` instead of `heal`.
+  - **battle-presentation:** if you add per-status effects, map them in battle_sfx.json `vfx` to the same `status_<id>` rows; the dedupe keeps one sound. A status expiry signal, when one exists, would play `status_fade`/`status_cure`.
+  - **The storm, reconciled:** merged act1-chapters @ fd4c131f (M3-C01-1252: their `storm: true`, `battle.storm_cues`, `oruvel_raft_storm`, and their interim `battle_storm` row).
+    - **One cue id:** `battle_storm` now plays the composed storm_battle.ogg; my `storm_battle` id is retired. **IDS FOR OTHER TRACKS: `battle_storm` (fights), `undertow_storm` (the storm's field loop), `undertow_rising` (the Rising).**
+    - **New storm beds** (assets_src/sfx/storm_ambience.py, plain git, −26 LUFS): `storm_gale` on oruvel_raft_storm, and `storm_wall` on the three seawall storm arenas and wall_head_storm. The storm zone variants carry them into the field too.
+    - `coilspire_headland_storm` is still a proposed arena id in `battle.pending_arenas`; until it exists, the headland's stormgulls play `battle_storm` through the zone variant.
+  - **Checks:**
+    - Godot: `--filter=storm` 36/0 (act1-chapters' test_storm_encounters and mine), status_audio 7/0, field_audio 22/0, audio_loops 3/0. battle_audio 21/22: its one red is the unfetched-LFS `abl_ember`, as before.
+    - Tools: test_storm_music 12/0; test_audio_loudness OK (all new files measured); test_audio_data and test_act1_audio_audit OK.
+    - validate_data 0; taskboard --check; gdlint and gdformat clean.
+  - **Skipped:** screenshots, Blender, coverage (nothing under game/battle/ or game/progression/).
+  - **Queue:** empty of FAST-TRACK items. Next is Act II and III audio from the plan (M5-A3P-1951/1952 and Ch17–Ch20's music cues), unless the Lead or battle-presentation asks for more.
+
 - **MERGE-READY @ 7d388d54: FAST-TRACK M3-AUD-865, the storm's music (the human's playtest item 4). `review`, reviewer qa.**
   - **Why it was uplifting (two causes):**
     1. `ch01_scuttlers`, the fight straight after the Rising, had no battle row, so it played `battle_standard_v2`.
