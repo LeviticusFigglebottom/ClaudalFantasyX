@@ -1540,6 +1540,31 @@ The six relays from 23:06 to 03:02 reached this session only at 03:35, after the
   `oruvel_raft_morning` table plus M3-ENV-07B's storm pieces, `lut_ch01_storm` and an Undertow node, through
   env-art's `arena_scenes.write_arena`)? It would be a one-row table in a new act1-chapters module.
 - MERGE-READY @ 1bcae269f (FAST-TRACK M3-C01-1252)
+- **Lead relay (17:16) handled:**
+  - **Act I rows 82 and 86 (act1_gpu_qa.md):** nothing is left in my lane. Row 82's camera (`ch08_corrow_lake`,
+    reframed) is mine and is done; env-art-b's 9e66085b added the storm fills. For row 86, my Keth Pass flight cameras
+    (17bf3a44) are done, and env-art-b did the Barge spawn, Lamp Archive, Ossa Fen and still water. Every other row
+    naming act1-chapters is `fixed`. Both rows wait on the PC re-check (PC-QUEUE).
+  - **Storm wiring checked against env-art-b's storm arenas and audio's storm cues.** They are not on the
+    integration branch yet. `211d8bd7` is env-art-b's row 84 commit, and the storm arenas are 6b8e416d on
+    claude/env-art-b. Audio's storm cue is on claude/audio @ 9ff655c1. I pre-merged integration + env-art-b + audio
+    onto this branch in a scratch worktree:
+    - **The one conflict** was arenas.json `scenes.oruvel_raft_storm`. The resolution to apply when both land: point
+      it at `res://assets/environments/arenas/oruvel_raft_storm/oruvel_raft_storm.tscn`, add `oruvel_raft_storm` to
+      `storm.arenas`, and drop its `storm.pending` row. `drowned_choir_storm` stays pending: env-art-b built no
+      Choir variant, so M3-ENV-1253 keeps that half.
+    - **PROVENANCE.md** resolved with merge_union. Audio's music.json merged clean: `battle_storm` is now the composed
+      `storm_battle.ogg`, plus `battle.arenas` and the storm zone variants.
+    - **Results on the pre-merge:** validate_data 0/0. Godot: `storm_` 12/0 (mine, env-art-b's test_storm_arenas and
+      audio's test_storm_music), `battle_arena.` 8/0, `arena_ambience` 5/0, `music` 20/0, `battle_audio` 22/0,
+      `act1_encounters_resolve` 2/0, `ch01_thread` 2/0, `ch08_thread` 6/0.
+    - **SELF-RENDERED (pre-merge):** `battle_arena_oruvel_raft_storm`, `_seawall_stairhead_storm` and `_surge`, all
+      viewed.
+      - **Raft:** reads as the storm: a dark sky over the town, rain, the wall's mass top-left, and the deck soaked.
+      - **Stair-head:** heavy rain and a storm sky, but the wall itself is still not a distinct shape in that frame
+        (FYI env-art-b and battle-presentation, M3-BPR-1255).
+  - **Next:** when the Lead merges env-art-b and audio into the integration branch, merge it here, apply the
+    resolution above, re-run `--filter=storm_` and push. Meanwhile Act II (ADR 0205 §4) goes on from my M4 rows.
 
 ## Exact next step
 **2026-11-03:** M3-C01-1252 is in review. When env-art-b's M3-ENV-1253 lands, repoint arenas.json `scenes`
