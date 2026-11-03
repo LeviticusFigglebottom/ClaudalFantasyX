@@ -713,3 +713,4 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   11/11. Skipped: gdlint (no .gd touched) and the full manifest.
 - MERGE-READY @ 4db4436a: row 56 (the rebuilt outputs are verified), row 55 (Fenn and Sabe), the row 54 step. Rows 54 and
   55 need a real-GPU re-look (PC-QUEUE).
+- Row 54 shading (6e3cd47a): root_occlusion 0.7, depth_occlusion 0.8, strand_value_jitter 0.35. SELF-RENDERED sefir_face and sefir_back (viewed): the back reads as clumped locks, and the face falls are slightly less flat. Blender verify sefir: identical. MERGE-READY @ 6e3cd47a. Row 54 still wants a real-GPU look (PC-QUEUE). Next for me: Asha's verse-sleeve in the run.
